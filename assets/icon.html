@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<style>
+  html, body { background: transparent; }
+
+  * { margin: 0; box-sizing: border-box; }
+  body {
+    width: 100vmin; height: 100vmin;
+    -webkit-font-smoothing: antialiased;
+  }
+  .tile { width: 100%; height: 100%; }
+  .tile svg { display: block; width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+  <div class="tile">
+    <!--
+      StashBay mark — no background plate, so it sits on any surface.
+
+      The mark has to read on both light and dark, so every shape carries its
+      own contrast: fills are saturated teal (visible on white), edges are
+      lit mint (visible on near-black).
+    -->
+    <svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="cardFill" x1="196" y1="128" x2="348" y2="324" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#6FEBD7" />
+          <stop offset="52%" stop-color="#2ED3BA" />
+          <stop offset="100%" stop-color="#0E9E87" />
+        </linearGradient>
+
+        <linearGradient id="ghostFill" x1="146" y1="118" x2="274" y2="282" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#12907B" stop-opacity="0.92" />
+          <stop offset="100%" stop-color="#08473F" stop-opacity="0.92" />
+        </linearGradient>
+
+        <linearGradient id="bayFill" x1="256" y1="288" x2="256" y2="356" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#14887A" />
+          <stop offset="30%" stop-color="#0B6459" />
+          <stop offset="78%" stop-color="#07463E" />
+          <stop offset="100%" stop-color="#0A6A5E" />
+        </linearGradient>
+
+        <linearGradient id="gloss" x1="208" y1="128" x2="278" y2="284" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.55" />
+          <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.10" />
+          <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+        </linearGradient>
+
+        <radialGradient id="spill" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0%" stop-color="#5EEAD4" stop-opacity="0.30" />
+          <stop offset="100%" stop-color="#5EEAD4" stop-opacity="0" />
+        </radialGradient>
+
+        <clipPath id="cardClip"><rect x="196" y="128" width="152" height="196" rx="24"/></clipPath>
+        <clipPath id="ghostClip"><rect x="146" y="118" width="128" height="164" rx="20"/></clipPath>
+      </defs>
+
+      <g transform="translate(256 256) scale(1.2) translate(-258 -251.5)">
+        <g transform="translate(0,16)">
+          <!-- the card behind: already stashed -->
+          <g transform="rotate(-24 210 200)">
+            <rect x="146" y="118" width="128" height="164" rx="20" fill="url(#ghostFill)" />
+            <g clip-path="url(#ghostClip)">
+              <rect x="170" y="160" width="80" height="12" rx="6" fill="#9FF5E6" opacity="0.45" />
+              <rect x="170" y="190" width="80" height="12" rx="6" fill="#9FF5E6" opacity="0.28" />
+            </g>
+            <rect x="146" y="118" width="128" height="164" rx="20"
+                  stroke="#7FF0DC" stroke-opacity="0.72" stroke-width="3" />
+          </g>
+
+          <!-- the card in front, tilting as it is lifted out -->
+          <g transform="rotate(-13 272 226)">
+            <rect x="196" y="128" width="152" height="196" rx="24" fill="url(#cardFill)" />
+            <g clip-path="url(#cardClip)">
+              <rect x="222" y="172" width="100" height="15" rx="7.5" fill="#04342E" opacity="0.62" />
+              <rect x="222" y="206" width="100" height="15" rx="7.5" fill="#04342E" opacity="0.46" />
+              <rect x="222" y="240" width="58" height="15" rx="7.5" fill="#04342E" opacity="0.32" />
+              <rect x="196" y="128" width="68" height="196" fill="url(#gloss)" />
+            </g>
+            <rect x="196" y="128" width="152" height="196" rx="24"
+                  stroke="#D6FFF6" stroke-opacity="0.85" stroke-width="3" />
+          </g>
+
+          <!-- the bay: a tray seen in shallow perspective -->
+          <path d="M 140 288 L 372 288 Q 382 288 388 298 L 418 342 Q 428 356 408 356
+                   L 104 356 Q 84 356 94 342 L 124 298 Q 130 288 140 288 Z"
+                fill="url(#bayFill)" stroke="#5EEAD4" stroke-opacity="0.88" stroke-width="3.5" />
+
+          <!-- the near lip catching light -->
+          <path d="M 100 352 L 412 352" stroke="#A7F3E8" stroke-opacity="0.85" stroke-width="5" stroke-linecap="round" />
+        </g>
+      </g>
+    </svg>
+  </div>
+</body>
+</html>
