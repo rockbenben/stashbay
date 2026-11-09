@@ -1,0 +1,984 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ============ 通用 ============ -->
+  <data name="AppName" xml:space="preserve">
+    <value>StashBay</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Inconnu</value>
+  </data>
+  <data name="OkButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="CloseButton" xml:space="preserve">
+    <value>Fermer</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Enregistrer</value>
+  </data>
+  <data name="RefreshButton" xml:space="preserve">
+    <value>Actualiser</value>
+  </data>
+  <data name="AddButton" xml:space="preserve">
+    <value>Ajouter</value>
+  </data>
+  <data name="AbortButton" xml:space="preserve">
+    <value>Arrêter</value>
+  </data>
+  <data name="UndoButton" xml:space="preserve">
+    <value>Annuler l’action</value>
+  </data>
+  <data name="UndoLastButton" xml:space="preserve">
+    <value>Annuler la dernière action</value>
+  </data>
+  <data name="UndoNeedsWrite" xml:space="preserve">
+    <value>Seules les réécritures peuvent être annulées (un export par glissement n’a rien à restaurer)</value>
+  </data>
+  <data name="UndoThisButton" xml:space="preserve">
+    <value>Annuler cette action</value>
+  </data>
+  <data name="PreviewButton" xml:space="preserve">
+    <value>Aperçu</value>
+  </data>
+  <data name="ApplyButton" xml:space="preserve">
+    <value>Réécrire</value>
+  </data>
+  <data name="SettingsButton" xml:space="preserve">
+    <value>Paramètres</value>
+  </data>
+  <data name="ExpandButton" xml:space="preserve">
+    <value>Développer</value>
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
+    <value>Supprimer</value>
+  </data>
+  <data name="CompareDiffButton" xml:space="preserve">
+    <value>Comparer avec le contenu cible actuel</value>
+  </data>
+
+  <!-- ============ 枚举显示名 ============ -->
+  <data name="StateNew" xml:space="preserve">
+    <value>Nouveau</value>
+  </data>
+  <data name="StateOverwrite" xml:space="preserve">
+    <value>Écrasement</value>
+  </data>
+  <data name="StateIdentical" xml:space="preserve">
+    <value>Identique</value>
+  </data>
+  <data name="StateTypeConflict" xml:space="preserve">
+    <value>Conflit de type</value>
+  </data>
+  <data name="StateInvalid" xml:space="preserve">
+    <value>Invalide</value>
+  </data>
+  <data name="ActionCreate" xml:space="preserve">
+    <value>Créer</value>
+  </data>
+  <data name="ActionOverwrite" xml:space="preserve">
+    <value>Écraser</value>
+  </data>
+  <data name="ActionSkip" xml:space="preserve">
+    <value>Ignorer</value>
+  </data>
+  <data name="ActionRename" xml:space="preserve">
+    <value>Renommer</value>
+  </data>
+  <data name="OpRunning" xml:space="preserve">
+    <value>En cours</value>
+  </data>
+  <data name="OpSucceeded" xml:space="preserve">
+    <value>Réussi</value>
+  </data>
+  <data name="OpPartiallyFailed" xml:space="preserve">
+    <value>Partiellement écrit</value>
+  </data>
+  <data name="OpFailed" xml:space="preserve">
+    <value>Échec</value>
+  </data>
+  <data name="OpCancelled" xml:space="preserve">
+    <value>Annulé</value>
+  </data>
+  <data name="OpUndone" xml:space="preserve">
+    <value>Restauré</value>
+  </data>
+  <data name="ResultCreated" xml:space="preserve">
+    <value>Créé</value>
+  </data>
+  <data name="ResultOverwritten" xml:space="preserve">
+    <value>Écrasé</value>
+  </data>
+  <data name="ResultSkipped" xml:space="preserve">
+    <value>Ignoré</value>
+  </data>
+  <data name="ResultRenamed" xml:space="preserve">
+    <value>Renommé</value>
+  </data>
+  <data name="ResultFailed" xml:space="preserve">
+    <value>Échec</value>
+  </data>
+  <data name="ResultDirectoryCreated" xml:space="preserve">
+    <value>Dossier créé</value>
+  </data>
+  <data name="SourceUnchanged" xml:space="preserve">
+    <value>Inchangé</value>
+  </data>
+  <data name="SourceModified" xml:space="preserve">
+    <value>Modifié</value>
+  </data>
+  <data name="SourceMissing" xml:space="preserve">
+    <value>Fichier source supprimé</value>
+  </data>
+
+  <!-- ============ 主窗口：紧凑暂存区 ============ -->
+  <data name="CompactTitle" xml:space="preserve">
+    <value>Zone de stockage temporaire</value>
+  </data>
+  <data name="CompactEmptyTitle" xml:space="preserve">
+    <value>La zone de stockage temporaire est vide</value>
+  </data>
+  <data name="CompactEmptyHint" xml:space="preserve">
+    <value>Utilisez « Ajouter » pour y déposer des éléments, puis faites-les glisser pour les enregistrer</value>
+  </data>
+  <data name="CompactFooter" xml:space="preserve">
+    <value>Glisser vers n’importe quel dossier = enregistrer à cet emplacement</value>
+  </data>
+
+  <!-- ============ 主窗口：工作台 ============ -->
+  <data name="StashBoxLabel" xml:space="preserve">
+    <value>Boîtes de stockage</value>
+  </data>
+  <data name="NewGroupButton" xml:space="preserve">
+    <value>Nouvelle boîte</value>
+  </data>
+  <data name="WorkbenchEmptyTitle" xml:space="preserve">
+    <value>L’établi est vide</value>
+  </data>
+  <data name="WorkbenchEmptyHint" xml:space="preserve">
+    <value>Déposez des fichiers ou des dossiers ici, ou utilisez « Ajouter » en haut à droite</value>
+  </data>
+  <data name="ColumnNamePath" xml:space="preserve">
+    <value>Nom / chemin</value>
+  </data>
+  <data name="ColumnSize" xml:space="preserve">
+    <value>Taille</value>
+  </data>
+  <data name="ColumnSourceBranch" xml:space="preserve">
+    <value>Branche source</value>
+  </data>
+  <data name="ColumnSourceState" xml:space="preserve">
+    <value>État de la source</value>
+  </data>
+  <data name="MenuOpenSource" xml:space="preserve">
+    <value>Ouvrir l’emplacement source</value>
+  </data>
+  <data name="MenuCopySourcePath" xml:space="preserve">
+    <value>Copier le chemin source</value>
+  </data>
+  <data name="MenuCopyToClipboard" xml:space="preserve">
+    <value>Copier dans le presse-papiers</value>
+  </data>
+  <data name="MenuRefreshSnapshot" xml:space="preserve">
+    <value>Actualiser l’instantané</value>
+  </data>
+  <data name="MenuSetRoot" xml:space="preserve">
+    <value>Définir la racine</value>
+  </data>
+  <data name="MenuMoveToGroup" xml:space="preserve">
+    <value>Déplacer vers la boîte</value>
+  </data>
+  <data name="WillWriteMany" xml:space="preserve">
+    <value>{0} fichiers seront réécrits, par exemple :</value>
+  </data>
+  <data name="WriteBackLabel" xml:space="preserve">
+    <value>Réécrire</value>
+  </data>
+  <data name="TargetOriginal" xml:space="preserve">
+    <value>Emplacement d’origine</value>
+  </data>
+  <data name="TargetAnotherRoot" xml:space="preserve">
+    <value>Autre racine</value>
+  </data>
+  <data name="TargetSpecifiedPath" xml:space="preserve">
+    <value>Chemin spécifié</value>
+  </data>
+  <data name="BrowseTargetTooltip" xml:space="preserve">
+    <value>Parcourir le dossier cible</value>
+  </data>
+  <data name="StructureLabel" xml:space="preserve">
+    <value>Structure</value>
+  </data>
+  <data name="ConflictLabel" xml:space="preserve">
+    <value>Conflits</value>
+  </data>
+  <data name="WillWrite" xml:space="preserve">
+    <value>Réécriture prévue</value>
+  </data>
+  <data name="NothingToWrite" xml:space="preserve">
+    <value>Rien à réécrire pour l’instant</value>
+  </data>
+
+  <!-- ============ 目标模式 / 结构 / 冲突策略 ============ -->
+  <data name="StructureFullRelative" xml:space="preserve">
+    <value>Chemin relatif complet</value>
+  </data>
+  <data name="StructureItemOnly" xml:space="preserve">
+    <value>L’élément stocké uniquement</value>
+  </data>
+  <data name="StructureFlatten" xml:space="preserve">
+    <value>Tout aplatir</value>
+  </data>
+  <data name="ConflictAsk" xml:space="preserve">
+    <value>Demander</value>
+  </data>
+
+  <!-- ============ 主 ViewModel 的状态与提示 ============ -->
+  <data name="StatusReady" xml:space="preserve">
+    <value>Prêt</value>
+  </data>
+  <data name="StatusEmpty" xml:space="preserve">
+    <value>Aucun élément stocké pour l’instant</value>
+  </data>
+  <data name="StatusSummary" xml:space="preserve">
+    <value>{0} éléments · {1} fichiers · {2}</value>
+  </data>
+  <data name="StatusBusy" xml:space="preserve">
+    <value>Traitement …</value>
+  </data>
+  <data name="StatusAdding" xml:space="preserve">
+    <value>Ajout à la zone de stockage temporaire ({0}/{1})</value>
+  </data>
+  <data name="StatusAddAborted" xml:space="preserve">
+    <value>Ajout interrompu</value>
+  </data>
+  <data name="StatusAborting" xml:space="preserve">
+    <value>Interruption …</value>
+  </data>
+  <data name="StatusRefreshing" xml:space="preserve">
+    <value>Actualisation de l’instantané</value>
+  </data>
+  <data name="StatusSnapshotRefreshed" xml:space="preserve">
+    <value>Instantané actualisé</value>
+  </data>
+  <data name="StatusRootUpdated" xml:space="preserve">
+    <value>Racine mise à jour</value>
+  </data>
+  <data name="StatusSourcePathCopied" xml:space="preserve">
+    <value>Chemin source copié</value>
+  </data>
+  <data name="StatusClipboardFilled" xml:space="preserve">
+    <value>Chemin cible renseigné à partir du presse-papiers</value>
+  </data>
+  <data name="StatusPreparingExport" xml:space="preserve">
+    <value>Préparation du contenu à faire glisser …</value>
+  </data>
+  <data name="StatusCopiedToClipboard" xml:space="preserve">
+    <value>Copié dans le presse-papiers ({0} éléments)</value>
+  </data>
+  <data name="StatusWriting" xml:space="preserve">
+    <value>Réécriture en cours ({0}/{1})</value>
+  </data>
+  <data name="StatusLoadFailed" xml:space="preserve">
+    <value>Échec du chargement des éléments stockés : {0}</value>
+  </data>
+  <data name="StatusSourceStateFailed" xml:space="preserve">
+    <value>Échec de la lecture de l’état de la source : {0}</value>
+  </data>
+  <data name="ToastAdded" xml:space="preserve">
+    <value>{0} éléments ajoutés</value>
+  </data>
+  <data name="ToastDuplicates" xml:space="preserve">
+    <value>{0} chemins sont déjà dans la zone de stockage temporaire (ignorés)</value>
+  </data>
+  <data name="ToastFailedPaths" xml:space="preserve">
+    <value>{0} chemins en échec</value>
+  </data>
+  <data name="ToastWarnings" xml:space="preserve">
+    <value>{0} avertissements</value>
+  </data>
+  <data name="AddToStashTitle" xml:space="preserve">
+    <value>Ajouter à la zone de stockage temporaire</value>
+  </data>
+  <data name="SkippedTitle" xml:space="preserve">
+    <value>Éléments ignorés</value>
+  </data>
+  <data name="DefaultGroupName" xml:space="preserve">
+    <value>Stockage par défaut</value>
+  </data>
+  <data name="NewGroupTitle" xml:space="preserve">
+    <value>Nouvelle boîte</value>
+  </data>
+  <data name="RenameGroupTitle" xml:space="preserve">
+    <value>Renommer la boîte</value>
+  </data>
+  <data name="DeleteGroupTitle" xml:space="preserve">
+    <value>Supprimer la boîte</value>
+  </data>
+  <data name="DeleteGroupConfirm" xml:space="preserve">
+    <value>Supprimer la boîte « {0} » ? Ses éléments stockés seront également supprimés.</value>
+  </data>
+  <data name="NoGroupTitle" xml:space="preserve">
+    <value>Pas encore de boîte de stockage</value>
+  </data>
+  <data name="NoGroupHint" xml:space="preserve">
+    <value>Créez d’abord une boîte avant d’ajouter des éléments à la zone de stockage temporaire.</value>
+  </data>
+  <data name="SetRootFailedTitle" xml:space="preserve">
+    <value>Échec de la définition de la racine</value>
+  </data>
+  <data name="DeleteItemTitle" xml:space="preserve">
+    <value>Retirer de la boîte</value>
+  </data>
+  <data name="DeleteItemConfirm" xml:space="preserve">
+    <value>Retirer « {0} » de la boîte ? Le fichier d’origine ne sera pas supprimé, seule la copie stockée sera effacée.</value>
+  </data>
+  <data name="NoOtherGroupHint" xml:space="preserve">
+    <value>Aucune autre boîte disponible. Créez-en une d’abord.</value>
+  </data>
+  <data name="OpenSourceFailedTitle" xml:space="preserve">
+    <value>Échec de l’ouverture de l’emplacement source</value>
+  </data>
+  <data name="CopyFailedTitle" xml:space="preserve">
+    <value>Échec de la copie</value>
+  </data>
+  <data name="ClipboardBusy" xml:space="preserve">
+    <value>Le presse-papiers est utilisé par un autre programme.</value>
+  </data>
+  <data name="DragExportTarget" xml:space="preserve">
+    <value>Faire glisser {0} éléments</value>
+  </data>
+  <data name="NothingToWriteTitle" xml:space="preserve">
+    <value>Rien à réécrire</value>
+  </data>
+  <data name="NothingToWriteHint" xml:space="preserve">
+    <value>Cette boîte ne contient aucun élément stocké.</value>
+  </data>
+  <data name="NothingToUndoMessage" xml:space="preserve">
+    <value>Aucune réécriture n’a encore été effectuée.</value>
+  </data>
+  <data name="NothingToUndoTitle" xml:space="preserve">
+    <value>Aucune opération à annuler</value>
+  </data>
+  <data name="UndoDoneMessage" xml:space="preserve">
+    <value>{0} fichiers restaurés, {1} supprimés.</value>
+  </data>
+
+  <!-- ============ 树行 ============ -->
+  <data name="TreeEmpty" xml:space="preserve">
+    <value>Vide</value>
+  </data>
+  <data name="TreeItemCount" xml:space="preserve">
+    <value>{0} éléments</value>
+  </data>
+  <data name="TreeItemFileCount" xml:space="preserve">
+    <value>{0} éléments · {1} fichiers</value>
+  </data>
+
+  <!-- ============ Git 改动对话框 ============ -->
+  <data name="GitStatusTitle" xml:space="preserve">
+    <value>Choisir les fichiers modifiés</value>
+  </data>
+  <data name="GitChangedSummary" xml:space="preserve">
+    <value>{0} modifications</value>
+  </data>
+  <data name="GitChangedSummaryWithDeleted" xml:space="preserve">
+    <value>{0} modifications, dont {1} supprimées (impossibles à ajouter à la zone de stockage temporaire)</value>
+  </data>
+  <data name="GitNoSelection" xml:space="preserve">
+    <value>Aucun fichier sélectionné.</value>
+  </data>
+  <data name="GitAddedMessage" xml:space="preserve">
+    <value>{0} éléments ajoutés.</value>
+  </data>
+  <data name="GitDeletedSkipped" xml:space="preserve">
+    <value>{0} fichiers supprimés ont été ignorés (le chemin source n’existe plus).</value>
+  </data>
+
+  <!-- ============ 操作历史 ============ -->
+  <data name="HistoryTitle" xml:space="preserve">
+    <value>Historique des opérations</value>
+  </data>
+  <data name="ColumnTime" xml:space="preserve">
+    <value>Heure</value>
+  </data>
+  <data name="ColumnTarget" xml:space="preserve">
+    <value>Cible</value>
+  </data>
+  <data name="ColumnSourceItem" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="ColumnStatus" xml:space="preserve">
+    <value>État</value>
+  </data>
+  <data name="ColumnTargetPath" xml:space="preserve">
+    <value>Chemin cible</value>
+  </data>
+  <data name="ColumnResult" xml:space="preserve">
+    <value>Résultat</value>
+  </data>
+  <data name="ColumnError" xml:space="preserve">
+    <value>Erreur</value>
+  </data>
+  <data name="OpenTargetFolderButton" xml:space="preserve">
+    <value>Ouvrir le dossier cible</value>
+  </data>
+  <data name="UndoConfirmTitle" xml:space="preserve">
+    <value>Annuler l’opération</value>
+  </data>
+  <data name="UndoConfirmMessage" xml:space="preserve">
+    <value>Annuler la réécriture de {0} ?</value>
+  </data>
+  <data name="UndoConfirmNote" xml:space="preserve">
+    <value>Les fichiers modifiés depuis seront ignorés.</value>
+  </data>
+  <data name="TargetFolderMissing" xml:space="preserve">
+    <value>Le dossier cible n’existe pas.</value>
+  </data>
+  <data name="OpenFailedTitle" xml:space="preserve">
+    <value>Échec de l’ouverture</value>
+  </data>
+
+  <!-- ============ 写入预览 ============ -->
+  <data name="PreviewTitle" xml:space="preserve">
+    <value>Aperçu de la réécriture</value>
+  </data>
+  <data name="ColumnAction" xml:space="preserve">
+    <value>Action</value>
+  </data>
+  <data name="ColumnWarning" xml:space="preserve">
+    <value>Avertissement</value>
+  </data>
+  <data name="PreviewTargetOriginal" xml:space="preserve">
+    <value>Cible : emplacement d’origine (chaque élément est réécrit vers sa propre racine)</value>
+  </data>
+  <data name="PreviewTargetAnotherRoot" xml:space="preserve">
+    <value>Cible : autre racine {0}</value>
+  </data>
+  <data name="PreviewTargetSpecifiedPath" xml:space="preserve">
+    <value>Cible : chemin spécifié {0}</value>
+  </data>
+  <data name="PreviewTargetDragExport" xml:space="preserve">
+    <value>Cible : export par glissement</value>
+  </data>
+  <data name="PreviewSummary" xml:space="preserve">
+    <value>Nouveau {0} · Remplacer {1} · Identique {2} · Conflit de type {3} · Non valide {4}</value>
+  </data>
+  <data name="PreviewWritten" xml:space="preserve">
+    <value>Réécrit : {0}</value>
+  </data>
+  <data name="PreviewAborted" xml:space="preserve">
+    <value>Réécriture interrompue</value>
+  </data>
+  <data name="PreviewFailed" xml:space="preserve">
+    <value>Échec de la réécriture : {0}</value>
+  </data>
+  <data name="CompareFailed" xml:space="preserve">
+    <value>Échec de l’ouverture de l’outil de comparaison : {0}</value>
+  </data>
+
+  <!-- ============ 写入结果提示 ============ -->
+  <data name="ToastTargetLine" xml:space="preserve">
+    <value>Cible {0}</value>
+  </data>
+  <data name="ToastTitle" xml:space="preserve">
+    <value>Résultat de la réécriture</value>
+  </data>
+  <data name="ToastSucceeded" xml:space="preserve">
+    <value>Réécriture terminée</value>
+  </data>
+  <data name="ToastPartiallyFailed" xml:space="preserve">
+    <value>Partiellement écrit</value>
+  </data>
+  <data name="ToastCancelled" xml:space="preserve">
+    <value>Annulé</value>
+  </data>
+  <data name="ToastRetryElevated" xml:space="preserve">
+    <value>Réessayer en tant qu’administrateur</value>
+  </data>
+  <data name="ToastViewDetails" xml:space="preserve">
+    <value>Détails</value>
+  </data>
+  <data name="ToastCreated" xml:space="preserve">
+    <value>Créés {0}</value>
+  </data>
+  <data name="ToastOverwritten" xml:space="preserve">
+    <value>Écrasés {0}</value>
+  </data>
+  <data name="ToastSkipped" xml:space="preserve">
+    <value>Ignorés {0}</value>
+  </data>
+  <data name="ToastFailed" xml:space="preserve">
+    <value>Échecs {0}</value>
+  </data>
+  <data name="ItemSeparator" xml:space="preserve">
+    <value>, </value>
+  </data>
+  <data name="SentenceEnd" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="ClauseSeparator" xml:space="preserve">
+    <value> ; </value>
+  </data>
+  <data name="ProgressSeparator" xml:space="preserve">
+    <value> · </value>
+  </data>
+  <data name="ToastNothingWritten" xml:space="preserve">
+    <value>Aucun fichier n’a été réécrit.</value>
+  </data>
+  <data name="ToastDetailLine" xml:space="preserve">
+    <value>{0} : {1}</value>
+  </data>
+  <data name="ToastNoFailures" xml:space="preserve">
+    <value>Aucune entrée en échec.</value>
+  </data>
+  <data name="ToastDetailsTitle" xml:space="preserve">
+    <value>Détails de la réécriture</value>
+  </data>
+  <data name="ToastElevatedFailed" xml:space="preserve">
+    <value>Impossible de démarrer le processus avec élévation (l’invite UAC a peut-être été annulée).</value>
+  </data>
+
+  <!-- ============ 设置 ============ -->
+  <data name="SettingsTitle" xml:space="preserve">
+    <value>Paramètres</value>
+  </data>
+  <data name="SectionGeneral" xml:space="preserve">
+    <value>Général</value>
+  </data>
+  <data name="LanguageLabel" xml:space="preserve">
+    <value>Langue</value>
+  </data>
+  <data name="LanguageSystem" xml:space="preserve">
+    <value>Suivre le système</value>
+  </data>
+  <data name="LanguageChinese" xml:space="preserve">
+    <value>简体中文</value>
+  </data>
+  <data name="LanguageTraditionalChinese" xml:space="preserve">
+    <value>繁體中文</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="LanguageJapanese" xml:space="preserve">
+    <value>日本語</value>
+  </data>
+  <data name="LanguageKorean" xml:space="preserve">
+    <value>한국어</value>
+  </data>
+  <data name="LanguageSpanish" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="LanguagePortugueseBrazil" xml:space="preserve">
+    <value>Português (Brasil)</value>
+  </data>
+  <data name="LanguageFrench" xml:space="preserve">
+    <value>Français</value>
+  </data>
+  <data name="LanguageGerman" xml:space="preserve">
+    <value>Deutsch</value>
+  </data>
+  <data name="LanguageItalian" xml:space="preserve">
+    <value>Italiano</value>
+  </data>
+  <data name="LanguageRussian" xml:space="preserve">
+    <value>Русский</value>
+  </data>
+  <data name="LanguageArabic" xml:space="preserve">
+    <value>العربية</value>
+  </data>
+  <data name="LanguageHindi" xml:space="preserve">
+    <value>हिन्दी</value>
+  </data>
+  <data name="LanguageIndonesian" xml:space="preserve">
+    <value>Bahasa Indonesia</value>
+  </data>
+  <data name="LanguageThai" xml:space="preserve">
+    <value>ไทย</value>
+  </data>
+  <data name="LanguageTurkish" xml:space="preserve">
+    <value>Türkçe</value>
+  </data>
+  <data name="LanguageVietnamese" xml:space="preserve">
+    <value>Tiếng Việt</value>
+  </data>
+  <data name="LanguageBengali" xml:space="preserve">
+    <value>বাংলা</value>
+  </data>
+  <data name="LanguageRestartFailed" xml:space="preserve">
+    <value>La langue a été enregistrée, mais l’application n’a pas pu redémarrer — elle prendra effet au prochain démarrage.</value>
+  </data>
+  <data name="DefaultConflictPolicyLabel" xml:space="preserve">
+    <value>Stratégie de résolution des conflits par défaut</value>
+  </data>
+  <data name="SkipIdenticalLabel" xml:space="preserve">
+    <value>Ignorer les fichiers au contenu identique (conserve la date de modification de la cible)</value>
+  </data>
+  <data name="BackupBeforeOverwriteLabel" xml:space="preserve">
+    <value>Sauvegarder avant d’écraser (une fois désactivé, l’écrasement n’est plus réversible)</value>
+  </data>
+  <data name="HistoryRetentionLabel" xml:space="preserve">
+    <value>Nombre de jours conservés pour l’historique (0 = toujours)</value>
+  </data>
+  <data name="AutoGitAddLabel" xml:space="preserve">
+    <value>Exécuter git add après la réécriture</value>
+  </data>
+  <data name="WatchBranchLabel" xml:space="preserve">
+    <value>Avertir en cas de changement de branche</value>
+  </data>
+  <data name="RespectGitIgnoreLabel" xml:space="preserve">
+    <value>Dans les dossiers du dépôt, ne stocker que les fichiers non ignorés par Git</value>
+  </data>
+  <data name="SectionExcludes" xml:space="preserve">
+    <value>Exclusions</value>
+  </data>
+  <data name="ExcludeHint" xml:space="preserve">
+    <value>Un motif glob par ligne, par exemple **/node_modules/**</value>
+  </data>
+  <data name="SectionWindowsIntegration" xml:space="preserve">
+    <value>Intégration Windows</value>
+  </data>
+  <data name="ContextMenuLabel" xml:space="preserve">
+    <value>Afficher « Ajouter à la zone de stockage temporaire » dans le menu contextuel de l’Explorateur Windows</value>
+  </data>
+  <data name="StartWithWindowsLabel" xml:space="preserve">
+    <value>Démarrer avec Windows</value>
+  </data>
+  <data name="CloseToTrayLabel" xml:space="preserve">
+    <value>Réduire dans la zone de notification à la fermeture de la fenêtre</value>
+  </data>
+  <data name="StartMinimizedLabel" xml:space="preserve">
+    <value>Démarrer réduit dans la zone de notification</value>
+  </data>
+  <data name="HotkeyLabel" xml:space="preserve">
+    <value>Raccourci global (ajouter à la zone de stockage temporaire)</value>
+  </data>
+  <data name="SectionStorage" xml:space="preserve">
+    <value>Stockage</value>
+  </data>
+  <data name="RefreshStorageButton" xml:space="preserve">
+    <value>Actualiser l’espace utilisé</value>
+  </data>
+  <data name="CleanupStorageButton" xml:space="preserve">
+    <value>Nettoyer les données inutilisées</value>
+  </data>
+  <data name="ClearHistoryButton" xml:space="preserve">
+    <value>Effacer tout l’historique</value>
+  </data>
+  <data name="SettingsSavedMessage" xml:space="preserve">
+    <value>Paramètres enregistrés.</value>
+  </data>
+  <data name="StorageUsageLabel" xml:space="preserve">
+    <value>Contenu stocké : {0}</value>
+  </data>
+  <data name="StorageExportLabel" xml:space="preserve">
+    <value>Fichiers temporaires d’export : {0}</value>
+  </data>
+  <data name="StorageHistoryLabel" xml:space="preserve">
+    <value>Historique : {0} entrées</value>
+  </data>
+  <data name="CleanupConfirmTitle" xml:space="preserve">
+    <value>Nettoyer les données inutilisées</value>
+  </data>
+  <data name="CleanupConfirmMessage" xml:space="preserve">
+    <value>Supprimer le contenu qui n’est référencé par aucun élément stocké ni aucune entrée d’historique ?</value>
+  </data>
+  <data name="CleanupDoneMessage" xml:space="preserve">
+    <value>{0} éléments supprimés.</value>
+  </data>
+  <data name="ClearHistoryConfirmTitle" xml:space="preserve">
+    <value>Effacer tout l’historique</value>
+  </data>
+  <data name="ClearHistoryConfirmMessage" xml:space="preserve">
+    <value>Tout l’historique et toutes les sauvegardes seront supprimés et l’annulation cessera de fonctionner. Continuer ?</value>
+  </data>
+  <data name="ClearHistoryDoneMessage" xml:space="preserve">
+    <value>{0} entrées d’historique supprimées.</value>
+  </data>
+  <data name="NewPresetButton" xml:space="preserve">
+    <value>Ajouter …</value>
+  </data>
+  <data name="NewPresetTitle" xml:space="preserve">
+    <value>Nouveau préréglage de racine</value>
+  </data>
+  <data name="NewPresetDefaultName" xml:space="preserve">
+    <value>Nouveau préréglage</value>
+  </data>
+
+  <!-- ============ 根目录预设 ============ -->
+  <data name="RootPresetsTitle" xml:space="preserve">
+    <value>Préréglages de racines</value>
+  </data>
+  <data name="ColumnName" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="ColumnPath" xml:space="preserve">
+    <value>Chemin</value>
+  </data>
+
+  <!-- ============ 对话框 ============ -->
+  <data name="MoveToGroupTitle" xml:space="preserve">
+    <value>Déplacer vers la boîte</value>
+  </data>
+  <data name="ChooseTargetGroup" xml:space="preserve">
+    <value>Choisir une boîte</value>
+  </data>
+  <data name="InputTitle" xml:space="preserve">
+    <value>Saisie</value>
+  </data>
+  <data name="SetRootTitle" xml:space="preserve">
+    <value>Définir la racine</value>
+  </data>
+  <data name="SetRootHint" xml:space="preserve">
+    <value>Choisissez la racine : le sous-chemin de chaque élément stocké est calculé à partir d’elle, et la réécriture vers l’emplacement d’origine l’utilise également.</value>
+  </data>
+  <data name="NewRelativePathLabel" xml:space="preserve">
+    <value>Nouveau sous-chemin :</value>
+  </data>
+  <data name="EmptyRelativePath" xml:space="preserve">
+    <value>(aucun sous-chemin)</value>
+  </data>
+
+  <!-- ============ 关于 ============ -->
+  <data name="AboutTitle" xml:space="preserve">
+    <value>À propos de StashBay</value>
+  </data>
+  <data name="AboutTagline" xml:space="preserve">
+    <value>Un bac de fichiers — stockez maintenant, réécrivez en un clic après un changement de branche</value>
+  </data>
+  <data name="VersionLabel" xml:space="preserve">
+    <value>Version {0}</value>
+  </data>
+  <data name="RuntimeLabel" xml:space="preserve">
+    <value>Runtime .NET {0}</value>
+  </data>
+  <data name="GitFound" xml:space="preserve">
+    <value>Git détecté</value>
+  </data>
+  <data name="GitMissing" xml:space="preserve">
+    <value>Git non détecté (les fonctions Git sont désactivées)</value>
+  </data>
+  <data name="GitUnknown" xml:space="preserve">
+    <value>État Git inconnu</value>
+  </data>
+  <data name="DataDirectoryLabel" xml:space="preserve">
+    <value>Dossier de données {0}</value>
+  </data>
+
+  <!-- ============ 托盘菜单 ============ -->
+  <data name="TrayShowCompact" xml:space="preserve">
+    <value>Afficher la zone de stockage temporaire</value>
+  </data>
+  <data name="TrayOpenWorkbench" xml:space="preserve">
+    <value>Ouvrir l’établi</value>
+  </data>
+  <data name="TrayApplyOriginal" xml:space="preserve">
+    <value>Appliquer aux emplacements d’origine</value>
+  </data>
+  <data name="TrayUndoLast" xml:space="preserve">
+    <value>Annuler la dernière action</value>
+  </data>
+  <data name="TrayGitChanges" xml:space="preserve">
+    <value>Ajouter depuis les modifications Git …</value>
+  </data>
+  <data name="TrayFloatingWindow" xml:space="preserve">
+    <value>Afficher la fenêtre flottante</value>
+  </data>
+  <data name="TrayHistory" xml:space="preserve">
+    <value>Historique des opérations …</value>
+  </data>
+  <data name="TrayRootPresets" xml:space="preserve">
+    <value>Préréglages de racines …</value>
+  </data>
+  <data name="TraySettings" xml:space="preserve">
+    <value>Paramètres …</value>
+  </data>
+  <data name="TrayAbout" xml:space="preserve">
+    <value>À propos de StashBay …</value>
+  </data>
+  <data name="TrayExit" xml:space="preserve">
+    <value>Quitter</value>
+  </data>
+  <data name="NoGitItems" xml:space="preserve">
+    <value>Cette boîte ne contient aucun élément stocké provenant d’un dépôt Git.</value>
+  </data>
+  <data name="BranchSwitchedMessage" xml:space="preserve">
+    <value>{0} est passé à {1}. {2} éléments stockés peuvent être appliqués à leurs emplacements d’origine — cliquez pour les appliquer.</value>
+  </data>
+  <data name="UnhandledErrorTitle" xml:space="preserve">
+    <value>StashBay a rencontré une erreur inattendue</value>
+  </data>
+
+  <!-- ============ 文件选择 / 拖出 ============ -->
+  <data name="PickItemsTitle" xml:space="preserve">
+    <value>Sélectionner des fichiers et des dossiers</value>
+  </data>
+  <data name="PickItemsHint" xml:space="preserve">
+    <value>Utilisez Ctrl ou Maj pour sélectionner plusieurs éléments. Double-cliquez sur un dossier pour l’ouvrir.</value>
+  </data>
+  <data name="ParentFolder" xml:space="preserve">
+    <value>Dossier parent</value>
+  </data>
+  <data name="ClipboardBusyLong" xml:space="preserve">
+    <value>Le presse-papiers est utilisé par un autre programme. Réessayez plus tard.</value>
+  </data>
+  <data name="LoadStashFailed" xml:space="preserve">
+    <value>Échec du chargement de la zone de stockage temporaire : {0}</value>
+  </data>
+  <data name="DragOutFailed" xml:space="preserve">
+    <value>Échec de l’export par glissement : {0}</value>
+  </data>
+  <data name="AddToStashFailed" xml:space="preserve">
+    <value>Échec de l’ajout à la zone de stockage temporaire : {0}</value>
+  </data>
+  <data name="ThemeLabel" xml:space="preserve">
+    <value>Thème</value>
+  </data>
+  <data name="ThemeSystem" xml:space="preserve">
+    <value>Suivre le système</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Clair</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Sombre</value>
+  </data>
+  <data name="AddSelectedButton" xml:space="preserve">
+    <value>Ajouter la sélection</value>
+  </data>
+
+  <data name="ClearAllBoxesButton" xml:space="preserve">
+    <value>Effacer toutes les boîtes</value>
+  </data>
+  <data name="ClearAllBoxesTooltip" xml:space="preserve">
+    <value>Effacer toutes les boîtes et les éléments stockés</value>
+  </data>
+  <data name="ClearAllBoxesTitle" xml:space="preserve">
+    <value>Effacer toutes les boîtes</value>
+  </data>
+  <data name="ClearAllBoxesConfirm" xml:space="preserve">
+    <value>Voulez-vous vraiment effacer toutes les boîtes ? Tous les éléments stockés seront supprimés.</value>
+  </data>
+  <data name="ClearAllBoxesDone" xml:space="preserve">
+    <value>Toutes les boîtes ont été effacées.</value>
+  </data>
+  <data name="ClearBoxButton" xml:space="preserve">
+    <value>Vider la boîte actuelle</value>
+  </data>
+  <data name="ClearBoxConfirm" xml:space="preserve">
+    <value>Vider la boîte « {0} » ? Tous les éléments stockés seront supprimés.</value>
+  </data>
+  <data name="ClearBoxDone" xml:space="preserve">
+    <value>La boîte « {0} » a été vidée.</value>
+  </data>
+  <data name="DropToStashPrompt" xml:space="preserve">
+    <value>Déposer pour stocker</value>
+  </data>
+  <data name="DropToStashHint" xml:space="preserve">
+    <value>Relâchez les fichiers ou dossiers pour les stocker automatiquement</value>
+  </data>
+  <data name="TrayClearAll" xml:space="preserve">
+    <value>Effacer toutes les boîtes</value>
+  </data>
+
+  <data name="RemoveAfterDragExportLabel" xml:space="preserve">
+    <value>Retirer automatiquement du stockage après l’exportation par glisser (comportement DropPoint)</value>
+  </data>
+  <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
+    <value>Supprime automatiquement les éléments une fois déposés dans un dossier cible ; si désactivé, ils sont conservés</value>
+  </data>
+
+  <data name="CollapseButton" xml:space="preserve">
+    <value>Réduire</value>
+  </data>
+  <data name="CollapseButtonTooltip" xml:space="preserve">
+    <value>Réduire en panneau compact (idéal pour le glisser-déposer, raccourci : Échap / F11)</value>
+  </data>
+
+  <data name="StatusClipboardPasted" xml:space="preserve">
+    <value>Contenu du presse-papiers ajouté à la réserve</value>
+  </data>
+  <data name="DragAllButton" xml:space="preserve">
+    <value>Tout glisser</value>
+  </data>
+  <data name="DragAllTooltip" xml:space="preserve">
+    <value>Glisser cette poignée pour exporter tous les fichiers en réserve en une seule fois</value>
+  </data>
+  <data name="AutoDismissWhenEmptyLabel" xml:space="preserve">
+    <value>Masquer automatiquement si vide</value>
+  </data>
+  <data name="AutoDismissWhenEmptyTooltip" xml:space="preserve">
+    <value>Masquer la fenêtre dès que tous les fichiers sont glissés hors de la réserve ou effacés</value>
+  </data>
+  <data name="SummonAtCursorLabel" xml:space="preserve">
+    <value>Ouvrir près du curseur</value>
+  </data>
+  <data name="SummonAtCursorTooltip" xml:space="preserve">
+    <value>Afficher la fenêtre directement à la position du curseur lors du raccourci</value>
+  </data>
+  <data name="EnableShakeToSummonLabel" xml:space="preserve">
+    <value>Secouer pour afficher lors du glissement</value>
+  </data>
+  <data name="EnableShakeToSummonTooltip" xml:space="preserve">
+    <value>Secouer la souris en glissant des fichiers pour faire apparaître la réserve au curseur</value>
+  </data>
+  <data name="SectionDeveloperOptions" xml:space="preserve">
+    <value>Options avancées et développeur (Git)</value>
+  </data>
+  <data name="DeveloperOptionsHint" xml:space="preserve">
+    <value>S'applique uniquement aux fichiers dans un dépôt Git. Le stockage temporaire et la restauration générale restent entièrement indépendants.</value>
+  </data>
+  <data name="HotkeyRegisterFailedTitle" xml:space="preserve">
+    <value>Échec de l'enregistrement du raccourci</value>
+  </data>
+  <data name="HotkeyRegisterFailedMessage" xml:space="preserve">
+    <value>Impossible d'enregistrer le raccourci global « {0} ». Il est peut-être déjà utilisé par une autre application.</value>
+  </data>
+  <data name="HotkeyWorkbenchLabel" xml:space="preserve">
+    <value>Raccourci global (ouvrir l'établi)</value>
+  </data>
+  <data name="HotkeyPasteLabel" xml:space="preserve">
+    <value>Raccourci global (coller les fichiers du presse-papiers)</value>
+  </data>
+  <data name="HotkeyRecordingHint" xml:space="preserve">
+    <value>Cliquez et appuyez sur une combinaison pour l'enregistrer. Échap pour annuler.</value>
+  </data>
+  <data name="HotkeyClearButton" xml:space="preserve">
+    <value>Effacer</value>
+  </data>
+  <data name="PinButtonTooltip" xml:space="preserve">
+    <value>Épingler au premier plan</value>
+  </data>
+  <data name="ViewModeTree" xml:space="preserve">
+    <value>Arborescence</value>
+  </data>
+  <data name="ViewModeList" xml:space="preserve">
+    <value>Liste</value>
+  </data>
+  <data name="ViewModeSource" xml:space="preserve">
+    <value>Par origine</value>
+  </data>
+  <data name="ShelfApply" xml:space="preserve">
+    <value>Réécrire</value>
+  </data>
+  <data name="ShelfClearAll" xml:space="preserve">
+    <value>Tout vider</value>
+  </data>
+  <data name="ViewModeIcons" xml:space="preserve"><value>Icônes</value></data>
+</root>

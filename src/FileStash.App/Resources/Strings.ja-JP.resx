@@ -1,0 +1,984 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ============ 通用 ============ -->
+  <data name="AppName" xml:space="preserve">
+    <value>StashBay</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>不明</value>
+  </data>
+  <data name="OkButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="CloseButton" xml:space="preserve">
+    <value>閉じる</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="RefreshButton" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="AddButton" xml:space="preserve">
+    <value>追加</value>
+  </data>
+  <data name="AbortButton" xml:space="preserve">
+    <value>中止</value>
+  </data>
+  <data name="UndoButton" xml:space="preserve">
+    <value>元に戻す</value>
+  </data>
+  <data name="UndoLastButton" xml:space="preserve">
+    <value>直前の操作を元に戻す</value>
+  </data>
+  <data name="UndoNeedsWrite" xml:space="preserve">
+    <value>元に戻せるのは書き込み操作のみです。ドラッグで書き出した項目は元に戻せません</value>
+  </data>
+  <data name="UndoThisButton" xml:space="preserve">
+    <value>この操作を元に戻す</value>
+  </data>
+  <data name="PreviewButton" xml:space="preserve">
+    <value>プレビュー</value>
+  </data>
+  <data name="ApplyButton" xml:space="preserve">
+    <value>書き戻し</value>
+  </data>
+  <data name="SettingsButton" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="ExpandButton" xml:space="preserve">
+    <value>展開</value>
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
+    <value>削除</value>
+  </data>
+  <data name="CompareDiffButton" xml:space="preserve">
+    <value>現在の対象内容と比較</value>
+  </data>
+
+  <!-- ============ 枚举显示名 ============ -->
+  <data name="StateNew" xml:space="preserve">
+    <value>新規</value>
+  </data>
+  <data name="StateOverwrite" xml:space="preserve">
+    <value>上書き</value>
+  </data>
+  <data name="StateIdentical" xml:space="preserve">
+    <value>同一</value>
+  </data>
+  <data name="StateTypeConflict" xml:space="preserve">
+    <value>種類が競合</value>
+  </data>
+  <data name="StateInvalid" xml:space="preserve">
+    <value>無効</value>
+  </data>
+  <data name="ActionCreate" xml:space="preserve">
+    <value>作成</value>
+  </data>
+  <data name="ActionOverwrite" xml:space="preserve">
+    <value>上書き</value>
+  </data>
+  <data name="ActionSkip" xml:space="preserve">
+    <value>スキップ</value>
+  </data>
+  <data name="ActionRename" xml:space="preserve">
+    <value>名前の変更</value>
+  </data>
+  <data name="OpRunning" xml:space="preserve">
+    <value>実行中</value>
+  </data>
+  <data name="OpSucceeded" xml:space="preserve">
+    <value>成功</value>
+  </data>
+  <data name="OpPartiallyFailed" xml:space="preserve">
+    <value>一部の書き込み失敗</value>
+  </data>
+  <data name="OpFailed" xml:space="preserve">
+    <value>失敗</value>
+  </data>
+  <data name="OpCancelled" xml:space="preserve">
+    <value>キャンセル済み</value>
+  </data>
+  <data name="OpUndone" xml:space="preserve">
+    <value>元に戻しました</value>
+  </data>
+  <data name="ResultCreated" xml:space="preserve">
+    <value>作成済み</value>
+  </data>
+  <data name="ResultOverwritten" xml:space="preserve">
+    <value>上書き済み</value>
+  </data>
+  <data name="ResultSkipped" xml:space="preserve">
+    <value>スキップ済み</value>
+  </data>
+  <data name="ResultRenamed" xml:space="preserve">
+    <value>名前を変更しました</value>
+  </data>
+  <data name="ResultFailed" xml:space="preserve">
+    <value>失敗</value>
+  </data>
+  <data name="ResultDirectoryCreated" xml:space="preserve">
+    <value>フォルダーを作成しました</value>
+  </data>
+  <data name="SourceUnchanged" xml:space="preserve">
+    <value>変更なし</value>
+  </data>
+  <data name="SourceModified" xml:space="preserve">
+    <value>変更あり</value>
+  </data>
+  <data name="SourceMissing" xml:space="preserve">
+    <value>元ファイルが削除されました</value>
+  </data>
+
+  <!-- ============ 主窗口：紧凑暂存区 ============ -->
+  <data name="CompactTitle" xml:space="preserve">
+    <value>一時保管エリア</value>
+  </data>
+  <data name="CompactEmptyTitle" xml:space="preserve">
+    <value>一時保管エリアは空です</value>
+  </data>
+  <data name="CompactEmptyHint" xml:space="preserve">
+    <value>「追加」で登録してから、そのままドラッグで書き出せます</value>
+  </data>
+  <data name="CompactFooter" xml:space="preserve">
+    <value>任意のフォルダーにドラッグ = そこに保存</value>
+  </data>
+
+  <!-- ============ 主窗口：工作台 ============ -->
+  <data name="StashBoxLabel" xml:space="preserve">
+    <value>一時保管ボックス</value>
+  </data>
+  <data name="NewGroupButton" xml:space="preserve">
+    <value>新しいボックス</value>
+  </data>
+  <data name="WorkbenchEmptyTitle" xml:space="preserve">
+    <value>ワークベンチは空です</value>
+  </data>
+  <data name="WorkbenchEmptyHint" xml:space="preserve">
+    <value>ファイルやフォルダーをここにドラッグするか、右上の「追加」を使います</value>
+  </data>
+  <data name="ColumnNamePath" xml:space="preserve">
+    <value>名前 / パス</value>
+  </data>
+  <data name="ColumnSize" xml:space="preserve">
+    <value>サイズ</value>
+  </data>
+  <data name="ColumnSourceBranch" xml:space="preserve">
+    <value>ソースのブランチ</value>
+  </data>
+  <data name="ColumnSourceState" xml:space="preserve">
+    <value>ソースの状態</value>
+  </data>
+  <data name="MenuOpenSource" xml:space="preserve">
+    <value>ソースの場所を開く</value>
+  </data>
+  <data name="MenuCopySourcePath" xml:space="preserve">
+    <value>ソースのパスをコピー</value>
+  </data>
+  <data name="MenuCopyToClipboard" xml:space="preserve">
+    <value>クリップボードにコピー</value>
+  </data>
+  <data name="MenuRefreshSnapshot" xml:space="preserve">
+    <value>スナップショットを更新</value>
+  </data>
+  <data name="MenuSetRoot" xml:space="preserve">
+    <value>ルートフォルダーを設定</value>
+  </data>
+  <data name="MenuMoveToGroup" xml:space="preserve">
+    <value>ボックスへ移動</value>
+  </data>
+  <data name="WillWriteMany" xml:space="preserve">
+    <value>{0} 件のファイルを書き込みます。例：</value>
+  </data>
+  <data name="WriteBackLabel" xml:space="preserve">
+    <value>書き戻し</value>
+  </data>
+  <data name="TargetOriginal" xml:space="preserve">
+    <value>元の場所</value>
+  </data>
+  <data name="TargetAnotherRoot" xml:space="preserve">
+    <value>別のルートフォルダー</value>
+  </data>
+  <data name="TargetSpecifiedPath" xml:space="preserve">
+    <value>指定パス</value>
+  </data>
+  <data name="BrowseTargetTooltip" xml:space="preserve">
+    <value>対象フォルダーを参照</value>
+  </data>
+  <data name="StructureLabel" xml:space="preserve">
+    <value>構造</value>
+  </data>
+  <data name="ConflictLabel" xml:space="preserve">
+    <value>競合</value>
+  </data>
+  <data name="WillWrite" xml:space="preserve">
+    <value>書き込み件数</value>
+  </data>
+  <data name="NothingToWrite" xml:space="preserve">
+    <value>書き込む内容がありません</value>
+  </data>
+
+  <!-- ============ 目标模式 / 结构 / 冲突策略 ============ -->
+  <data name="StructureFullRelative" xml:space="preserve">
+    <value>完全なサブパス</value>
+  </data>
+  <data name="StructureItemOnly" xml:space="preserve">
+    <value>一時保管項目のみ</value>
+  </data>
+  <data name="StructureFlatten" xml:space="preserve">
+    <value>すべてフラット化</value>
+  </data>
+  <data name="ConflictAsk" xml:space="preserve">
+    <value>確認する</value>
+  </data>
+
+  <!-- ============ 主 ViewModel 的状态与提示 ============ -->
+  <data name="StatusReady" xml:space="preserve">
+    <value>準備完了</value>
+  </data>
+  <data name="StatusEmpty" xml:space="preserve">
+    <value>一時保管する内容がありません</value>
+  </data>
+  <data name="StatusSummary" xml:space="preserve">
+    <value>{0} 件 · {1} ファイル · {2}</value>
+  </data>
+  <data name="StatusBusy" xml:space="preserve">
+    <value>処理中…</value>
+  </data>
+  <data name="StatusAdding" xml:space="preserve">
+    <value>一時保管に追加中（{0}/{1}）</value>
+  </data>
+  <data name="StatusAddAborted" xml:space="preserve">
+    <value>追加を中止しました</value>
+  </data>
+  <data name="StatusAborting" xml:space="preserve">
+    <value>中止中…</value>
+  </data>
+  <data name="StatusRefreshing" xml:space="preserve">
+    <value>スナップショットを更新中</value>
+  </data>
+  <data name="StatusSnapshotRefreshed" xml:space="preserve">
+    <value>スナップショットを更新しました</value>
+  </data>
+  <data name="StatusRootUpdated" xml:space="preserve">
+    <value>ルートフォルダーを更新しました</value>
+  </data>
+  <data name="StatusSourcePathCopied" xml:space="preserve">
+    <value>ソースのパスをコピーしました</value>
+  </data>
+  <data name="StatusClipboardFilled" xml:space="preserve">
+    <value>クリップボードから対象パスにコピーしました</value>
+  </data>
+  <data name="StatusPreparingExport" xml:space="preserve">
+    <value>書き出し内容を準備中…</value>
+  </data>
+  <data name="StatusCopiedToClipboard" xml:space="preserve">
+    <value>クリップボードにコピーしました（{0} 件）</value>
+  </data>
+  <data name="StatusWriting" xml:space="preserve">
+    <value>書き込み中（{0}/{1}）</value>
+  </data>
+  <data name="StatusLoadFailed" xml:space="preserve">
+    <value>一時保管項目を読み込めませんでした：{0}</value>
+  </data>
+  <data name="StatusSourceStateFailed" xml:space="preserve">
+    <value>ソースの状態を読み込めませんでした：{0}</value>
+  </data>
+  <data name="ToastAdded" xml:space="preserve">
+    <value>{0} 件を追加しました</value>
+  </data>
+  <data name="ToastDuplicates" xml:space="preserve">
+    <value>{0} 件のパスはすでに一時保管エリアにあるためスキップしました</value>
+  </data>
+  <data name="ToastFailedPaths" xml:space="preserve">
+    <value>{0} 件のパスが失敗しました</value>
+  </data>
+  <data name="ToastWarnings" xml:space="preserve">
+    <value>{0} 件の警告</value>
+  </data>
+  <data name="AddToStashTitle" xml:space="preserve">
+    <value>一時保管に追加</value>
+  </data>
+  <data name="SkippedTitle" xml:space="preserve">
+    <value>スキップされた項目</value>
+  </data>
+  <data name="DefaultGroupName" xml:space="preserve">
+    <value>既定の一時保管</value>
+  </data>
+  <data name="NewGroupTitle" xml:space="preserve">
+    <value>新しいボックス</value>
+  </data>
+  <data name="RenameGroupTitle" xml:space="preserve">
+    <value>ボックスの名前変更</value>
+  </data>
+  <data name="DeleteGroupTitle" xml:space="preserve">
+    <value>ボックスの削除</value>
+  </data>
+  <data name="DeleteGroupConfirm" xml:space="preserve">
+    <value>ボックス「{0}」を削除しますか？ボックス内の項目も削除されます。</value>
+  </data>
+  <data name="NoGroupTitle" xml:space="preserve">
+    <value>一時保管ボックスがまだありません</value>
+  </data>
+  <data name="NoGroupHint" xml:space="preserve">
+    <value>先にボックスを作成してから一時保管に追加してください。</value>
+  </data>
+  <data name="SetRootFailedTitle" xml:space="preserve">
+    <value>ルートフォルダーを設定できませんでした</value>
+  </data>
+  <data name="DeleteItemTitle" xml:space="preserve">
+    <value>ボックスから削除</value>
+  </data>
+  <data name="DeleteItemConfirm" xml:space="preserve">
+    <value>「{0}」をボックスから削除しますか？元のファイルは削除されず、一時保管されたコピーのみ削除されます。</value>
+  </data>
+  <data name="NoOtherGroupHint" xml:space="preserve">
+    <value>移動先となる他のボックスがありません。先に作成してください。</value>
+  </data>
+  <data name="OpenSourceFailedTitle" xml:space="preserve">
+    <value>ソースの場所を開けませんでした</value>
+  </data>
+  <data name="CopyFailedTitle" xml:space="preserve">
+    <value>コピーに失敗しました</value>
+  </data>
+  <data name="ClipboardBusy" xml:space="preserve">
+    <value>クリップボードを別のプログラムが使用しています。</value>
+  </data>
+  <data name="DragExportTarget" xml:space="preserve">
+    <value>{0} 件をドラッグで書き出す</value>
+  </data>
+  <data name="NothingToWriteTitle" xml:space="preserve">
+    <value>書き込む内容がありません</value>
+  </data>
+  <data name="NothingToWriteHint" xml:space="preserve">
+    <value>このボックスには一時保管項目がありません。</value>
+  </data>
+  <data name="NothingToUndoMessage" xml:space="preserve">
+    <value>まだ何も書き込んでいません。</value>
+  </data>
+  <data name="NothingToUndoTitle" xml:space="preserve">
+    <value>元に戻す操作がありません</value>
+  </data>
+  <data name="UndoDoneMessage" xml:space="preserve">
+    <value>{0} 件のファイルを復元し、{1} 件を削除しました。</value>
+  </data>
+
+  <!-- ============ 树行 ============ -->
+  <data name="TreeEmpty" xml:space="preserve">
+    <value>空</value>
+  </data>
+  <data name="TreeItemCount" xml:space="preserve">
+    <value>{0} 件</value>
+  </data>
+  <data name="TreeItemFileCount" xml:space="preserve">
+    <value>{0} 件 · {1} ファイル</value>
+  </data>
+
+  <!-- ============ Git 改动对话框 ============ -->
+  <data name="GitStatusTitle" xml:space="preserve">
+    <value>変更されたファイルを選択</value>
+  </data>
+  <data name="GitChangedSummary" xml:space="preserve">
+    <value>{0} 件の変更</value>
+  </data>
+  <data name="GitChangedSummaryWithDeleted" xml:space="preserve">
+    <value>{0} 件の変更（うち {1} 件は削除済みのため一時保管に追加できません）</value>
+  </data>
+  <data name="GitNoSelection" xml:space="preserve">
+    <value>追加できるファイルが選択されていません。</value>
+  </data>
+  <data name="GitAddedMessage" xml:space="preserve">
+    <value>{0} 件を追加しました。</value>
+  </data>
+  <data name="GitDeletedSkipped" xml:space="preserve">
+    <value>削除済みのファイル {0} 件はスキップしました（ソースのパスが既に存在しません）。</value>
+  </data>
+
+  <!-- ============ 操作历史 ============ -->
+  <data name="HistoryTitle" xml:space="preserve">
+    <value>操作履歴</value>
+  </data>
+  <data name="ColumnTime" xml:space="preserve">
+    <value>時刻</value>
+  </data>
+  <data name="ColumnTarget" xml:space="preserve">
+    <value>対象</value>
+  </data>
+  <data name="ColumnSourceItem" xml:space="preserve">
+    <value>元</value>
+  </data>
+  <data name="ColumnStatus" xml:space="preserve">
+    <value>状態</value>
+  </data>
+  <data name="ColumnTargetPath" xml:space="preserve">
+    <value>対象パス</value>
+  </data>
+  <data name="ColumnResult" xml:space="preserve">
+    <value>結果</value>
+  </data>
+  <data name="ColumnError" xml:space="preserve">
+    <value>エラー</value>
+  </data>
+  <data name="OpenTargetFolderButton" xml:space="preserve">
+    <value>対象フォルダーを開く</value>
+  </data>
+  <data name="UndoConfirmTitle" xml:space="preserve">
+    <value>元に戻す</value>
+  </data>
+  <data name="UndoConfirmMessage" xml:space="preserve">
+    <value>{0} への書き込みを元に戻しますか？</value>
+  </data>
+  <data name="UndoConfirmNote" xml:space="preserve">
+    <value>その後に変更されたファイルはスキップされます。</value>
+  </data>
+  <data name="TargetFolderMissing" xml:space="preserve">
+    <value>対象のフォルダーが存在しません。</value>
+  </data>
+  <data name="OpenFailedTitle" xml:space="preserve">
+    <value>開けませんでした</value>
+  </data>
+
+  <!-- ============ 写入预览 ============ -->
+  <data name="PreviewTitle" xml:space="preserve">
+    <value>書き込みプレビュー</value>
+  </data>
+  <data name="ColumnAction" xml:space="preserve">
+    <value>操作</value>
+  </data>
+  <data name="ColumnWarning" xml:space="preserve">
+    <value>警告</value>
+  </data>
+  <data name="PreviewTargetOriginal" xml:space="preserve">
+    <value>ターゲット：元の場所（各項目はそれぞれのルートに書き戻されます）</value>
+  </data>
+  <data name="PreviewTargetAnotherRoot" xml:space="preserve">
+    <value>ターゲット：別のルートフォルダー {0}</value>
+  </data>
+  <data name="PreviewTargetSpecifiedPath" xml:space="preserve">
+    <value>ターゲット：指定パス {0}</value>
+  </data>
+  <data name="PreviewTargetDragExport" xml:space="preserve">
+    <value>ターゲット：ドラッグで書き出し</value>
+  </data>
+  <data name="PreviewSummary" xml:space="preserve">
+    <value>新規 {0} · 上書き {1} · 同一 {2} · 型の衝突 {3} · 無効 {4}</value>
+  </data>
+  <data name="PreviewWritten" xml:space="preserve">
+    <value>書き込みました：{0}</value>
+  </data>
+  <data name="PreviewAborted" xml:space="preserve">
+    <value>書き込みを中止しました</value>
+  </data>
+  <data name="PreviewFailed" xml:space="preserve">
+    <value>書き込みに失敗しました：{0}</value>
+  </data>
+  <data name="CompareFailed" xml:space="preserve">
+    <value>差分ツールを開けませんでした：{0}</value>
+  </data>
+
+  <!-- ============ 写入结果提示 ============ -->
+  <data name="ToastTargetLine" xml:space="preserve">
+    <value>対象 {0}</value>
+  </data>
+  <data name="ToastTitle" xml:space="preserve">
+    <value>書き込み結果</value>
+  </data>
+  <data name="ToastSucceeded" xml:space="preserve">
+    <value>書き込み完了</value>
+  </data>
+  <data name="ToastPartiallyFailed" xml:space="preserve">
+    <value>一部の書き込み失敗</value>
+  </data>
+  <data name="ToastCancelled" xml:space="preserve">
+    <value>キャンセルしました</value>
+  </data>
+  <data name="ToastRetryElevated" xml:space="preserve">
+    <value>管理者として再試行</value>
+  </data>
+  <data name="ToastViewDetails" xml:space="preserve">
+    <value>詳細</value>
+  </data>
+  <data name="ToastCreated" xml:space="preserve">
+    <value>{0} 件作成しました</value>
+  </data>
+  <data name="ToastOverwritten" xml:space="preserve">
+    <value>{0} 件上書きしました</value>
+  </data>
+  <data name="ToastSkipped" xml:space="preserve">
+    <value>{0} 件スキップしました</value>
+  </data>
+  <data name="ToastFailed" xml:space="preserve">
+    <value>{0} 件失敗しました</value>
+  </data>
+  <data name="ItemSeparator" xml:space="preserve">
+    <value>、</value>
+  </data>
+  <data name="SentenceEnd" xml:space="preserve">
+    <value>。</value>
+  </data>
+  <data name="ClauseSeparator" xml:space="preserve">
+    <value>；</value>
+  </data>
+  <data name="ProgressSeparator" xml:space="preserve">
+    <value> · </value>
+  </data>
+  <data name="ToastNothingWritten" xml:space="preserve">
+    <value>何も書き込んでいません。</value>
+  </data>
+  <data name="ToastDetailLine" xml:space="preserve">
+    <value>{0}：{1}</value>
+  </data>
+  <data name="ToastNoFailures" xml:space="preserve">
+    <value>失敗した項目はありません。</value>
+  </data>
+  <data name="ToastDetailsTitle" xml:space="preserve">
+    <value>書き込みの詳細</value>
+  </data>
+  <data name="ToastElevatedFailed" xml:space="preserve">
+    <value>管理者権限のプロセスを開始できませんでした（UAC の確認がキャンセルされた可能性があります）。</value>
+  </data>
+
+  <!-- ============ 设置 ============ -->
+  <data name="SettingsTitle" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="SectionGeneral" xml:space="preserve">
+    <value>全般</value>
+  </data>
+  <data name="LanguageLabel" xml:space="preserve">
+    <value>言語</value>
+  </data>
+  <data name="LanguageSystem" xml:space="preserve">
+    <value>システムに従う</value>
+  </data>
+  <data name="LanguageChinese" xml:space="preserve">
+    <value>简体中文</value>
+  </data>
+  <data name="LanguageTraditionalChinese" xml:space="preserve">
+    <value>繁體中文</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="LanguageJapanese" xml:space="preserve">
+    <value>日本語</value>
+  </data>
+  <data name="LanguageKorean" xml:space="preserve">
+    <value>한국어</value>
+  </data>
+  <data name="LanguageSpanish" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="LanguagePortugueseBrazil" xml:space="preserve">
+    <value>Português (Brasil)</value>
+  </data>
+  <data name="LanguageFrench" xml:space="preserve">
+    <value>Français</value>
+  </data>
+  <data name="LanguageGerman" xml:space="preserve">
+    <value>Deutsch</value>
+  </data>
+  <data name="LanguageItalian" xml:space="preserve">
+    <value>Italiano</value>
+  </data>
+  <data name="LanguageRussian" xml:space="preserve">
+    <value>Русский</value>
+  </data>
+  <data name="LanguageArabic" xml:space="preserve">
+    <value>العربية</value>
+  </data>
+  <data name="LanguageHindi" xml:space="preserve">
+    <value>हिन्दी</value>
+  </data>
+  <data name="LanguageIndonesian" xml:space="preserve">
+    <value>Bahasa Indonesia</value>
+  </data>
+  <data name="LanguageThai" xml:space="preserve">
+    <value>ไทย</value>
+  </data>
+  <data name="LanguageTurkish" xml:space="preserve">
+    <value>Türkçe</value>
+  </data>
+  <data name="LanguageVietnamese" xml:space="preserve">
+    <value>Tiếng Việt</value>
+  </data>
+  <data name="LanguageBengali" xml:space="preserve">
+    <value>বাংলা</value>
+  </data>
+  <data name="LanguageRestartFailed" xml:space="preserve">
+    <value>言語は保存されましたが、アプリを再起動できませんでした。次の起動時に反映されます。</value>
+  </data>
+  <data name="DefaultConflictPolicyLabel" xml:space="preserve">
+    <value>既定の競合ポリシー</value>
+  </data>
+  <data name="SkipIdenticalLabel" xml:space="preserve">
+    <value>内容が同じファイルは書き込まない（対象の更新日時を維持します）</value>
+  </data>
+  <data name="BackupBeforeOverwriteLabel" xml:space="preserve">
+    <value>上書きする前にバックアップする（オフにすると上書きは元に戻せません）</value>
+  </data>
+  <data name="HistoryRetentionLabel" xml:space="preserve">
+    <value>履歴を保持する日数（0 = 無期限）</value>
+  </data>
+  <data name="AutoGitAddLabel" xml:space="preserve">
+    <value>書き込み後に git add を実行</value>
+  </data>
+  <data name="WatchBranchLabel" xml:space="preserve">
+    <value>ブランチの切り替え時に通知</value>
+  </data>
+  <data name="RespectGitIgnoreLabel" xml:space="preserve">
+    <value>リポジトリ内のフォルダーでは、Git に無視されていないファイルのみ一時保管します</value>
+  </data>
+  <data name="SectionExcludes" xml:space="preserve">
+    <value>除外ルール</value>
+  </data>
+  <data name="ExcludeHint" xml:space="preserve">
+    <value>1 行に 1 つのワイルドカードを指定します。例：**/node_modules/**</value>
+  </data>
+  <data name="SectionWindowsIntegration" xml:space="preserve">
+    <value>Windows 連携</value>
+  </data>
+  <data name="ContextMenuLabel" xml:space="preserve">
+    <value>エクスプローラーの右クリックメニューに「一時保管に追加」を表示します</value>
+  </data>
+  <data name="StartWithWindowsLabel" xml:space="preserve">
+    <value>Windows と同時に起動</value>
+  </data>
+  <data name="CloseToTrayLabel" xml:space="preserve">
+    <value>ウィンドウを閉じたときにトレイに最小化</value>
+  </data>
+  <data name="StartMinimizedLabel" xml:space="preserve">
+    <value>起動時にトレイに最小化</value>
+  </data>
+  <data name="HotkeyLabel" xml:space="preserve">
+    <value>グローバルショートカット（一時保管に追加）</value>
+  </data>
+  <data name="SectionStorage" xml:space="preserve">
+    <value>ストレージ</value>
+  </data>
+  <data name="RefreshStorageButton" xml:space="preserve">
+    <value>使用量を更新</value>
+  </data>
+  <data name="CleanupStorageButton" xml:space="preserve">
+    <value>未使用のデータを削除</value>
+  </data>
+  <data name="ClearHistoryButton" xml:space="preserve">
+    <value>すべての履歴を消去</value>
+  </data>
+  <data name="SettingsSavedMessage" xml:space="preserve">
+    <value>設定を保存しました。</value>
+  </data>
+  <data name="StorageUsageLabel" xml:space="preserve">
+    <value>一時保管の内容：{0}</value>
+  </data>
+  <data name="StorageExportLabel" xml:space="preserve">
+    <value>書き出し用の一時ファイル：{0}</value>
+  </data>
+  <data name="StorageHistoryLabel" xml:space="preserve">
+    <value>履歴：{0} 件</value>
+  </data>
+  <data name="CleanupConfirmTitle" xml:space="preserve">
+    <value>未使用のデータを削除</value>
+  </data>
+  <data name="CleanupConfirmMessage" xml:space="preserve">
+    <value>一時保管項目や履歴から参照されていない内容を削除しますか？</value>
+  </data>
+  <data name="CleanupDoneMessage" xml:space="preserve">
+    <value>{0} 件の内容を削除しました。</value>
+  </data>
+  <data name="ClearHistoryConfirmTitle" xml:space="preserve">
+    <value>すべての履歴を消去</value>
+  </data>
+  <data name="ClearHistoryConfirmMessage" xml:space="preserve">
+    <value>すべての履歴とバックアップが削除され、元に戻す機能が使えなくなります。続行しますか？</value>
+  </data>
+  <data name="ClearHistoryDoneMessage" xml:space="preserve">
+    <value>{0} 件の履歴を削除しました。</value>
+  </data>
+  <data name="NewPresetButton" xml:space="preserve">
+    <value>追加…</value>
+  </data>
+  <data name="NewPresetTitle" xml:space="preserve">
+    <value>新しいルートフォルダープリセット</value>
+  </data>
+  <data name="NewPresetDefaultName" xml:space="preserve">
+    <value>新しいプリセット</value>
+  </data>
+
+  <!-- ============ 根目录预设 ============ -->
+  <data name="RootPresetsTitle" xml:space="preserve">
+    <value>ルートフォルダープリセット</value>
+  </data>
+  <data name="ColumnName" xml:space="preserve">
+    <value>名前</value>
+  </data>
+  <data name="ColumnPath" xml:space="preserve">
+    <value>パス</value>
+  </data>
+
+  <!-- ============ 对话框 ============ -->
+  <data name="MoveToGroupTitle" xml:space="preserve">
+    <value>ボックスへ移動</value>
+  </data>
+  <data name="ChooseTargetGroup" xml:space="preserve">
+    <value>対象ボックスを選択</value>
+  </data>
+  <data name="InputTitle" xml:space="preserve">
+    <value>入力</value>
+  </data>
+  <data name="SetRootTitle" xml:space="preserve">
+    <value>ルートフォルダーの設定</value>
+  </data>
+  <data name="SetRootHint" xml:space="preserve">
+    <value>ルートフォルダーを選択します。一時保管項目のサブパスはここから計算され、元の場所へ書き戻すときにも使用されます。</value>
+  </data>
+  <data name="NewRelativePathLabel" xml:space="preserve">
+    <value>新しいサブパス：</value>
+  </data>
+  <data name="EmptyRelativePath" xml:space="preserve">
+    <value>（サブパスなし）</value>
+  </data>
+
+  <!-- ============ 关于 ============ -->
+  <data name="AboutTitle" xml:space="preserve">
+    <value>StashBay の詳細</value>
+  </data>
+  <data name="AboutTagline" xml:space="preserve">
+    <value>ファイル一時保管箱 — 一時保管して、ブランチの切り替え後にワンクリックで書き戻します</value>
+  </data>
+  <data name="VersionLabel" xml:space="preserve">
+    <value>バージョン {0}</value>
+  </data>
+  <data name="RuntimeLabel" xml:space="preserve">
+    <value>ランタイム .NET {0}</value>
+  </data>
+  <data name="GitFound" xml:space="preserve">
+    <value>Git が見つかりました</value>
+  </data>
+  <data name="GitMissing" xml:space="preserve">
+    <value>Git が見つかりません（Git 関連の機能は自動的に無効になります）</value>
+  </data>
+  <data name="GitUnknown" xml:space="preserve">
+    <value>Git の状態は不明です</value>
+  </data>
+  <data name="DataDirectoryLabel" xml:space="preserve">
+    <value>データフォルダー {0}</value>
+  </data>
+
+  <!-- ============ 托盘菜单 ============ -->
+  <data name="TrayShowCompact" xml:space="preserve">
+    <value>一時保管エリアを表示</value>
+  </data>
+  <data name="TrayOpenWorkbench" xml:space="preserve">
+    <value>ワークベンチを開く</value>
+  </data>
+  <data name="TrayApplyOriginal" xml:space="preserve">
+    <value>元の場所へ適用</value>
+  </data>
+  <data name="TrayUndoLast" xml:space="preserve">
+    <value>直前の操作を元に戻す</value>
+  </data>
+  <data name="TrayGitChanges" xml:space="preserve">
+    <value>Git の変更から一時保管に追加…</value>
+  </data>
+  <data name="TrayFloatingWindow" xml:space="preserve">
+    <value>フローティングウィンドウを表示</value>
+  </data>
+  <data name="TrayHistory" xml:space="preserve">
+    <value>操作履歴…</value>
+  </data>
+  <data name="TrayRootPresets" xml:space="preserve">
+    <value>ルートフォルダープリセット…</value>
+  </data>
+  <data name="TraySettings" xml:space="preserve">
+    <value>設定…</value>
+  </data>
+  <data name="TrayAbout" xml:space="preserve">
+    <value>StashBay の詳細…</value>
+  </data>
+  <data name="TrayExit" xml:space="preserve">
+    <value>終了</value>
+  </data>
+  <data name="NoGitItems" xml:space="preserve">
+    <value>このボックスには Git リポジトリの項目がありません。</value>
+  </data>
+  <data name="BranchSwitchedMessage" xml:space="preserve">
+    <value>{0} が {1} に切り替わりました。{2} 件の一時保管項目を元の場所へ適用できます。クリックして適用してください。</value>
+  </data>
+  <data name="UnhandledErrorTitle" xml:space="preserve">
+    <value>StashBay で予期しないエラーが発生しました</value>
+  </data>
+
+  <!-- ============ 文件选择 / 拖出 ============ -->
+  <data name="PickItemsTitle" xml:space="preserve">
+    <value>ファイルとフォルダーを選択</value>
+  </data>
+  <data name="PickItemsHint" xml:space="preserve">
+    <value>Ctrl または Shift で複数選択できます。フォルダーはダブルクリックで開きます。</value>
+  </data>
+  <data name="ParentFolder" xml:space="preserve">
+    <value>親フォルダー</value>
+  </data>
+  <data name="ClipboardBusyLong" xml:space="preserve">
+    <value>クリップボードを別のプログラムが使用しています。しばらくしてから再試行してください。</value>
+  </data>
+  <data name="LoadStashFailed" xml:space="preserve">
+    <value>一時保管エリアを読み込めませんでした：{0}</value>
+  </data>
+  <data name="DragOutFailed" xml:space="preserve">
+    <value>ドラッグでの書き出しに失敗しました：{0}</value>
+  </data>
+  <data name="AddToStashFailed" xml:space="preserve">
+    <value>一時保管への追加に失敗しました：{0}</value>
+  </data>
+  <data name="ThemeLabel" xml:space="preserve">
+    <value>テーマ</value>
+  </data>
+  <data name="ThemeSystem" xml:space="preserve">
+    <value>システムに従う</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>ライト</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>ダーク</value>
+  </data>
+  <data name="AddSelectedButton" xml:space="preserve">
+    <value>選択を追加</value>
+  </data>
+
+  <data name="ClearAllBoxesButton" xml:space="preserve">
+    <value>すべてのボックスを消去</value>
+  </data>
+  <data name="ClearAllBoxesTooltip" xml:space="preserve">
+    <value>すべての一時保管ボックスと項目を消去します</value>
+  </data>
+  <data name="ClearAllBoxesTitle" xml:space="preserve">
+    <value>すべての一時保管ボックスを消去</value>
+  </data>
+  <data name="ClearAllBoxesConfirm" xml:space="preserve">
+    <value>すべての一時保管ボックスを消去しますか？すべての項目が削除されます。</value>
+  </data>
+  <data name="ClearAllBoxesDone" xml:space="preserve">
+    <value>すべての一時保管ボックスを消去しました。</value>
+  </data>
+  <data name="ClearBoxButton" xml:space="preserve">
+    <value>現在のボックスを消去</value>
+  </data>
+  <data name="ClearBoxConfirm" xml:space="preserve">
+    <value>一時保管ボックス「{0}」を消去しますか？ボックス内のすべての項目が削除されます。</value>
+  </data>
+  <data name="ClearBoxDone" xml:space="preserve">
+    <value>一時保管ボックス「{0}」を消去しました。</value>
+  </data>
+  <data name="DropToStashPrompt" xml:space="preserve">
+    <value>ドロップして一時保管</value>
+  </data>
+  <data name="DropToStashHint" xml:space="preserve">
+    <value>離すとファイルやフォルダーが自動的に一時保管されます</value>
+  </data>
+  <data name="TrayClearAll" xml:space="preserve">
+    <value>すべてのボックスを消去</value>
+  </data>
+
+  <data name="RemoveAfterDragExportLabel" xml:space="preserve">
+    <value>ドラッグして取り出した後に一時保管から自動削除（DropPoint 仕様）</value>
+  </data>
+  <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
+    <value>対象フォルダーにドロップすると一時保管から自動的に削除されます。オフにすると保管されたままになります</value>
+  </data>
+
+  <data name="CollapseButton" xml:space="preserve">
+    <value>折りたたむ</value>
+  </data>
+  <data name="CollapseButtonTooltip" xml:space="preserve">
+    <value>コンパクトな小パネルに折りたたむ（ドラッグ＆ドロップに最適、ショートカット：Esc / F11）</value>
+  </data>
+
+  <data name="StatusClipboardPasted" xml:space="preserve">
+    <value>クリップボードの内容をスタッシュに追加しました</value>
+  </data>
+  <data name="DragAllButton" xml:space="preserve">
+    <value>すべてドラッグ</value>
+  </data>
+  <data name="DragAllTooltip" xml:space="preserve">
+    <value>ハンドルをドラッグして、すべてのスタッシュファイルを一度に外部へエクスポート</value>
+  </data>
+  <data name="AutoDismissWhenEmptyLabel" xml:space="preserve">
+    <value>空になったら自動で隠す</value>
+  </data>
+  <data name="AutoDismissWhenEmptyTooltip" xml:space="preserve">
+    <value>すべてのファイルをドラッグアウトまたはクリアした時、自動でウィンドウを非表示にします</value>
+  </data>
+  <data name="SummonAtCursorLabel" xml:space="preserve">
+    <value>カーソル付近に呼び出し</value>
+  </data>
+  <data name="SummonAtCursorTooltip" xml:space="preserve">
+    <value>ショートカットキー押下時、マウスポインタの現在位置にウィンドウを表示します</value>
+  </data>
+  <data name="EnableShakeToSummonLabel" xml:space="preserve">
+    <value>ドラッグ中のシェイクで呼び出し</value>
+  </data>
+  <data name="EnableShakeToSummonTooltip" xml:space="preserve">
+    <value>ファイルドラッグ中にマウスを左右に振ることでスタッシュ棚を展開します</value>
+  </data>
+  <data name="SectionDeveloperOptions" xml:space="preserve">
+    <value>高度な設定と開発者オプション (Git)</value>
+  </data>
+  <data name="DeveloperOptionsHint" xml:space="preserve">
+    <value>Git リポジトリ内のファイルを退避する場合にのみ適用されます。通常のファイル退避と復元は完全に独立して動作します。</value>
+  </data>
+  <data name="HotkeyRegisterFailedTitle" xml:space="preserve">
+    <value>ショートカットキーの登録失敗</value>
+  </data>
+  <data name="HotkeyRegisterFailedMessage" xml:space="preserve">
+    <value>グローバルショートカット「{0}」の登録に失敗しました。他のアプリで使用されている可能性があります。</value>
+  </data>
+  <data name="HotkeyWorkbenchLabel" xml:space="preserve">
+    <value>グローバルショートカット（ワークベンチを開く）</value>
+  </data>
+  <data name="HotkeyPasteLabel" xml:space="preserve">
+    <value>グローバルホットキー（クリップボードのファイルを貼り付け）</value>
+  </data>
+  <data name="HotkeyRecordingHint" xml:space="preserve">
+    <value>入力欄をクリックしてキーを押すと登録できます。Esc でキャンセル。</value>
+  </data>
+  <data name="HotkeyClearButton" xml:space="preserve">
+    <value>クリア</value>
+  </data>
+  <data name="PinButtonTooltip" xml:space="preserve">
+    <value>常に最前面に表示</value>
+  </data>
+  <data name="ViewModeTree" xml:space="preserve">
+    <value>ツリー</value>
+  </data>
+  <data name="ViewModeList" xml:space="preserve">
+    <value>リスト</value>
+  </data>
+  <data name="ViewModeSource" xml:space="preserve">
+    <value>フォルダ別</value>
+  </data>
+  <data name="ShelfApply" xml:space="preserve">
+    <value>書き戻す</value>
+  </data>
+  <data name="ShelfClearAll" xml:space="preserve">
+    <value>すべて消去</value>
+  </data>
+  <data name="ViewModeIcons" xml:space="preserve"><value>アイコン</value></data>
+</root>

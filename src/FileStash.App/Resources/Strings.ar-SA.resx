@@ -1,0 +1,984 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ============ 通用 ============ -->
+  <data name="AppName" xml:space="preserve">
+    <value>StashBay</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>غير معروف</value>
+  </data>
+  <data name="OkButton" xml:space="preserve">
+    <value>موافق</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+  <data name="CloseButton" xml:space="preserve">
+    <value>إغلاق</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>حفظ</value>
+  </data>
+  <data name="RefreshButton" xml:space="preserve">
+    <value>تحديث</value>
+  </data>
+  <data name="AddButton" xml:space="preserve">
+    <value>إضافة</value>
+  </data>
+  <data name="AbortButton" xml:space="preserve">
+    <value>إيقاف</value>
+  </data>
+  <data name="UndoButton" xml:space="preserve">
+    <value>تراجع</value>
+  </data>
+  <data name="UndoLastButton" xml:space="preserve">
+    <value>تراجع عن آخر عملية</value>
+  </data>
+  <data name="UndoNeedsWrite" xml:space="preserve">
+    <value>لا يمكن التراجع إلا عن عمليات الكتابة - أما السحب والإفلات فلا شيء لاستعادته</value>
+  </data>
+  <data name="UndoThisButton" xml:space="preserve">
+    <value>التراجع عن هذه العملية</value>
+  </data>
+  <data name="PreviewButton" xml:space="preserve">
+    <value>معاينة</value>
+  </data>
+  <data name="ApplyButton" xml:space="preserve">
+    <value>إعادة الكتابة</value>
+  </data>
+  <data name="SettingsButton" xml:space="preserve">
+    <value>الإعدادات</value>
+  </data>
+  <data name="ExpandButton" xml:space="preserve">
+    <value>توسيع</value>
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+  <data name="CompareDiffButton" xml:space="preserve">
+    <value>مقارنة بمحتوى الوجهة الحالي</value>
+  </data>
+
+  <!-- ============ 枚举显示名 ============ -->
+  <data name="StateNew" xml:space="preserve">
+    <value>جديد</value>
+  </data>
+  <data name="StateOverwrite" xml:space="preserve">
+    <value>استبدال</value>
+  </data>
+  <data name="StateIdentical" xml:space="preserve">
+    <value>متطابق</value>
+  </data>
+  <data name="StateTypeConflict" xml:space="preserve">
+    <value>تعارض في النوع</value>
+  </data>
+  <data name="StateInvalid" xml:space="preserve">
+    <value>غير صالح</value>
+  </data>
+  <data name="ActionCreate" xml:space="preserve">
+    <value>إنشاء</value>
+  </data>
+  <data name="ActionOverwrite" xml:space="preserve">
+    <value>استبدال</value>
+  </data>
+  <data name="ActionSkip" xml:space="preserve">
+    <value>تخطّي</value>
+  </data>
+  <data name="ActionRename" xml:space="preserve">
+    <value>إعادة التسمية</value>
+  </data>
+  <data name="OpRunning" xml:space="preserve">
+    <value>قيد التنفيذ</value>
+  </data>
+  <data name="OpSucceeded" xml:space="preserve">
+    <value>نجحت</value>
+  </data>
+  <data name="OpPartiallyFailed" xml:space="preserve">
+    <value>كُتب جزئيًا</value>
+  </data>
+  <data name="OpFailed" xml:space="preserve">
+    <value>فشلت</value>
+  </data>
+  <data name="OpCancelled" xml:space="preserve">
+    <value>أُلغيت</value>
+  </data>
+  <data name="OpUndone" xml:space="preserve">
+    <value>تم التراجع عنها</value>
+  </data>
+  <data name="ResultCreated" xml:space="preserve">
+    <value>أُنشئ</value>
+  </data>
+  <data name="ResultOverwritten" xml:space="preserve">
+    <value>تم استبداله</value>
+  </data>
+  <data name="ResultSkipped" xml:space="preserve">
+    <value>تم تخطّيه</value>
+  </data>
+  <data name="ResultRenamed" xml:space="preserve">
+    <value>أُعيدت تسميته</value>
+  </data>
+  <data name="ResultFailed" xml:space="preserve">
+    <value>فشلت</value>
+  </data>
+  <data name="ResultDirectoryCreated" xml:space="preserve">
+    <value>أُنشئ المجلد</value>
+  </data>
+  <data name="SourceUnchanged" xml:space="preserve">
+    <value>دون تغيير</value>
+  </data>
+  <data name="SourceModified" xml:space="preserve">
+    <value>معدَّل</value>
+  </data>
+  <data name="SourceMissing" xml:space="preserve">
+    <value>الملف المصدر محذوف</value>
+  </data>
+
+  <!-- ============ 主窗口：紧凑暂存区 ============ -->
+  <data name="CompactTitle" xml:space="preserve">
+    <value>منطقة التخزين المؤقت</value>
+  </data>
+  <data name="CompactEmptyTitle" xml:space="preserve">
+    <value>منطقة التخزين المؤقت فارغة</value>
+  </data>
+  <data name="CompactEmptyHint" xml:space="preserve">
+    <value>استخدم «إضافة» لإدخال عنصر، ثم اسحبه إلى الخارج</value>
+  </data>
+  <data name="CompactFooter" xml:space="preserve">
+    <value>اسحب إلى أي مجلد = الحفظ في ذلك المكان</value>
+  </data>
+
+  <!-- ============ 主窗口：工作台 ============ -->
+  <data name="StashBoxLabel" xml:space="preserve">
+    <value>صناديق التخزين المؤقت</value>
+  </data>
+  <data name="NewGroupButton" xml:space="preserve">
+    <value>صندوق جديد</value>
+  </data>
+  <data name="WorkbenchEmptyTitle" xml:space="preserve">
+    <value>لا شيء على طاولة العمل</value>
+  </data>
+  <data name="WorkbenchEmptyHint" xml:space="preserve">
+    <value>أفلت ملفات أو مجلدات هنا، أو استخدم «إضافة» في أعلى النافذة</value>
+  </data>
+  <data name="ColumnNamePath" xml:space="preserve">
+    <value>الاسم / المسار</value>
+  </data>
+  <data name="ColumnSize" xml:space="preserve">
+    <value>الحجم</value>
+  </data>
+  <data name="ColumnSourceBranch" xml:space="preserve">
+    <value>فرع المصدر</value>
+  </data>
+  <data name="ColumnSourceState" xml:space="preserve">
+    <value>حالة المصدر</value>
+  </data>
+  <data name="MenuOpenSource" xml:space="preserve">
+    <value>فتح موقع المصدر</value>
+  </data>
+  <data name="MenuCopySourcePath" xml:space="preserve">
+    <value>نسخ مسار المصدر</value>
+  </data>
+  <data name="MenuCopyToClipboard" xml:space="preserve">
+    <value>نسخ إلى الحافظة</value>
+  </data>
+  <data name="MenuRefreshSnapshot" xml:space="preserve">
+    <value>تحديث اللقطة</value>
+  </data>
+  <data name="MenuSetRoot" xml:space="preserve">
+    <value>تعيين المجلد الجذر</value>
+  </data>
+  <data name="MenuMoveToGroup" xml:space="preserve">
+    <value>نقل إلى صندوق</value>
+  </data>
+  <data name="WillWriteMany" xml:space="preserve">
+    <value>سيُكتب {0} ملف، مثال</value>
+  </data>
+  <data name="WriteBackLabel" xml:space="preserve">
+    <value>إعادة الكتابة</value>
+  </data>
+  <data name="TargetOriginal" xml:space="preserve">
+    <value>الموقع الأصلي</value>
+  </data>
+  <data name="TargetAnotherRoot" xml:space="preserve">
+    <value>جذر آخر</value>
+  </data>
+  <data name="TargetSpecifiedPath" xml:space="preserve">
+    <value>مسار محدَّد</value>
+  </data>
+  <data name="BrowseTargetTooltip" xml:space="preserve">
+    <value>استعراض المجلد الهدف</value>
+  </data>
+  <data name="StructureLabel" xml:space="preserve">
+    <value>البنية</value>
+  </data>
+  <data name="ConflictLabel" xml:space="preserve">
+    <value>التعارضات</value>
+  </data>
+  <data name="WillWrite" xml:space="preserve">
+    <value>سيُكتب</value>
+  </data>
+  <data name="NothingToWrite" xml:space="preserve">
+    <value>لا يوجد ما يكتب بعد</value>
+  </data>
+
+  <!-- ============ 目标模式 / 结构 / 冲突策略 ============ -->
+  <data name="StructureFullRelative" xml:space="preserve">
+    <value>المسار الفرعي الكامل</value>
+  </data>
+  <data name="StructureItemOnly" xml:space="preserve">
+    <value>العنصر المخزَّن مؤقتًا فقط</value>
+  </data>
+  <data name="StructureFlatten" xml:space="preserve">
+    <value>تسطيح الكل</value>
+  </data>
+  <data name="ConflictAsk" xml:space="preserve">
+    <value>سؤال</value>
+  </data>
+
+  <!-- ============ 主 ViewModel 的状态与提示 ============ -->
+  <data name="StatusReady" xml:space="preserve">
+    <value>جاهز</value>
+  </data>
+  <data name="StatusEmpty" xml:space="preserve">
+    <value>لا يوجد شيء مخزَّن مؤقتًا بعد</value>
+  </data>
+  <data name="StatusSummary" xml:space="preserve">
+    <value>{0} عنصر · {1} ملف · {2}</value>
+  </data>
+  <data name="StatusBusy" xml:space="preserve">
+    <value>جارٍ العمل…</value>
+  </data>
+  <data name="StatusAdding" xml:space="preserve">
+    <value>جارٍ الإضافة إلى التخزين المؤقت ({0}/{1})</value>
+  </data>
+  <data name="StatusAddAborted" xml:space="preserve">
+    <value>تم إيقاف الإضافة</value>
+  </data>
+  <data name="StatusAborting" xml:space="preserve">
+    <value>جارٍ الإيقاف…</value>
+  </data>
+  <data name="StatusRefreshing" xml:space="preserve">
+    <value>جارٍ تحديث اللقطة</value>
+  </data>
+  <data name="StatusSnapshotRefreshed" xml:space="preserve">
+    <value>تم تحديث اللقطة</value>
+  </data>
+  <data name="StatusRootUpdated" xml:space="preserve">
+    <value>تم تحديث المجلد الجذر</value>
+  </data>
+  <data name="StatusSourcePathCopied" xml:space="preserve">
+    <value>تم نسخ مسار المصدر</value>
+  </data>
+  <data name="StatusClipboardFilled" xml:space="preserve">
+    <value>تم ملء المسار الهدف من الحافظة</value>
+  </data>
+  <data name="StatusPreparingExport" xml:space="preserve">
+    <value>جارٍ تحضير السحب والإفلات…</value>
+  </data>
+  <data name="StatusCopiedToClipboard" xml:space="preserve">
+    <value>تم النسخ إلى الحافظة ({0} عنصر)</value>
+  </data>
+  <data name="StatusWriting" xml:space="preserve">
+    <value>جارٍ الكتابة ({0}/{1})</value>
+  </data>
+  <data name="StatusLoadFailed" xml:space="preserve">
+    <value>تعذّر تحميل العناصر المخزَّنة مؤقتًا: {0}</value>
+  </data>
+  <data name="StatusSourceStateFailed" xml:space="preserve">
+    <value>تعذّرت قراءة حالة المصدر: {0}</value>
+  </data>
+  <data name="ToastAdded" xml:space="preserve">
+    <value>تمت إضافة {0} عنصر</value>
+  </data>
+  <data name="ToastDuplicates" xml:space="preserve">
+    <value>{0} مسار موجود بالفعل في منطقة التخزين المؤقت (تم التخطّي)</value>
+  </data>
+  <data name="ToastFailedPaths" xml:space="preserve">
+    <value>فشل {0} مسار</value>
+  </data>
+  <data name="ToastWarnings" xml:space="preserve">
+    <value>{0} تحذير</value>
+  </data>
+  <data name="AddToStashTitle" xml:space="preserve">
+    <value>الإضافة إلى التخزين المؤقت</value>
+  </data>
+  <data name="SkippedTitle" xml:space="preserve">
+    <value>المحتوى المتخطَّى</value>
+  </data>
+  <data name="DefaultGroupName" xml:space="preserve">
+    <value>التخزين المؤقت الافتراضي</value>
+  </data>
+  <data name="NewGroupTitle" xml:space="preserve">
+    <value>صندوق جديد</value>
+  </data>
+  <data name="RenameGroupTitle" xml:space="preserve">
+    <value>إعادة تسمية الصندوق</value>
+  </data>
+  <data name="DeleteGroupTitle" xml:space="preserve">
+    <value>حذف الصندوق</value>
+  </data>
+  <data name="DeleteGroupConfirm" xml:space="preserve">
+    <value>حذف الصندوق «{0}»؟ ستُحذف عناصره المخزَّنة مؤقتًا أيضًا.</value>
+  </data>
+  <data name="NoGroupTitle" xml:space="preserve">
+    <value>لا توجد صناديق تخزين مؤقت بعد</value>
+  </data>
+  <data name="NoGroupHint" xml:space="preserve">
+    <value>أنشئ صندوقًا أولًا ثم أضف إلى التخزين المؤقت.</value>
+  </data>
+  <data name="SetRootFailedTitle" xml:space="preserve">
+    <value>تعذّر تعيين المجلد الجذر</value>
+  </data>
+  <data name="DeleteItemTitle" xml:space="preserve">
+    <value>إزالة من الصندوق</value>
+  </data>
+  <data name="DeleteItemConfirm" xml:space="preserve">
+    <value>إزالة «{0}» من الصندوق؟ لن يُحذف الملف الأصلي، بل ستُمسح النسخة المخزَّنة مؤقتًا فقط.</value>
+  </data>
+  <data name="NoOtherGroupHint" xml:space="preserve">
+    <value>لا يوجد صندوق آخر للنقل إليه. أنشئ صندوقًا أولًا.</value>
+  </data>
+  <data name="OpenSourceFailedTitle" xml:space="preserve">
+    <value>تعذّر فتح موقع المصدر</value>
+  </data>
+  <data name="CopyFailedTitle" xml:space="preserve">
+    <value>فشل النسخ</value>
+  </data>
+  <data name="ClipboardBusy" xml:space="preserve">
+    <value>الحافظة مستخدمة من برنامج آخر.</value>
+  </data>
+  <data name="DragExportTarget" xml:space="preserve">
+    <value>السحب والإفلات: {0} عنصر</value>
+  </data>
+  <data name="NothingToWriteTitle" xml:space="preserve">
+    <value>لا يوجد ما يكتب</value>
+  </data>
+  <data name="NothingToWriteHint" xml:space="preserve">
+    <value>لا توجد عناصر مخزَّنة مؤقتًا في هذا الصندوق.</value>
+  </data>
+  <data name="NothingToUndoMessage" xml:space="preserve">
+    <value>لم تُنفَّذ أي كتابة بعد.</value>
+  </data>
+  <data name="NothingToUndoTitle" xml:space="preserve">
+    <value>لا يوجد ما يمكن التراجع عنه</value>
+  </data>
+  <data name="UndoDoneMessage" xml:space="preserve">
+    <value>تمت استعادة {0} ملف، وحُذف {1}.</value>
+  </data>
+
+  <!-- ============ 树行 ============ -->
+  <data name="TreeEmpty" xml:space="preserve">
+    <value>فارغ</value>
+  </data>
+  <data name="TreeItemCount" xml:space="preserve">
+    <value>{0} عنصر</value>
+  </data>
+  <data name="TreeItemFileCount" xml:space="preserve">
+    <value>{0} عنصر · {1} ملف</value>
+  </data>
+
+  <!-- ============ Git 改动对话框 ============ -->
+  <data name="GitStatusTitle" xml:space="preserve">
+    <value>اختيار الملفات المعدَّلة</value>
+  </data>
+  <data name="GitChangedSummary" xml:space="preserve">
+    <value>{0} تغيير</value>
+  </data>
+  <data name="GitChangedSummaryWithDeleted" xml:space="preserve">
+    <value>{0} تغيير، منها {1} محذوف (لا يمكن إضافتها إلى التخزين المؤقت)</value>
+  </data>
+  <data name="GitNoSelection" xml:space="preserve">
+    <value>لم تُحدَّد أي ملفات.</value>
+  </data>
+  <data name="GitAddedMessage" xml:space="preserve">
+    <value>تمت إضافة {0} عنصر.</value>
+  </data>
+  <data name="GitDeletedSkipped" xml:space="preserve">
+    <value>تم تخطّي {0} ملف محذوف (لم يعد مسار المصدر موجودًا).</value>
+  </data>
+
+  <!-- ============ 操作历史 ============ -->
+  <data name="HistoryTitle" xml:space="preserve">
+    <value>سجل العمليات</value>
+  </data>
+  <data name="ColumnTime" xml:space="preserve">
+    <value>الوقت</value>
+  </data>
+  <data name="ColumnTarget" xml:space="preserve">
+    <value>الهدف</value>
+  </data>
+  <data name="ColumnSourceItem" xml:space="preserve">
+    <value>من</value>
+  </data>
+  <data name="ColumnStatus" xml:space="preserve">
+    <value>الحالة</value>
+  </data>
+  <data name="ColumnTargetPath" xml:space="preserve">
+    <value>المسار الهدف</value>
+  </data>
+  <data name="ColumnResult" xml:space="preserve">
+    <value>النتيجة</value>
+  </data>
+  <data name="ColumnError" xml:space="preserve">
+    <value>الخطأ</value>
+  </data>
+  <data name="OpenTargetFolderButton" xml:space="preserve">
+    <value>فتح المجلد الهدف</value>
+  </data>
+  <data name="UndoConfirmTitle" xml:space="preserve">
+    <value>التراجع عن العملية</value>
+  </data>
+  <data name="UndoConfirmMessage" xml:space="preserve">
+    <value>التراجع عن الكتابة من {0}؟</value>
+  </data>
+  <data name="UndoConfirmNote" xml:space="preserve">
+    <value>الملفات التي غُيِّرت بعد ذلك سيتم تخطّيها.</value>
+  </data>
+  <data name="TargetFolderMissing" xml:space="preserve">
+    <value>المجلد الهدف غير موجود.</value>
+  </data>
+  <data name="OpenFailedTitle" xml:space="preserve">
+    <value>تعذّر الفتح</value>
+  </data>
+
+  <!-- ============ 写入预览 ============ -->
+  <data name="PreviewTitle" xml:space="preserve">
+    <value>معاينة إعادة الكتابة</value>
+  </data>
+  <data name="ColumnAction" xml:space="preserve">
+    <value>الإجراء</value>
+  </data>
+  <data name="ColumnWarning" xml:space="preserve">
+    <value>تحذير</value>
+  </data>
+  <data name="PreviewTargetOriginal" xml:space="preserve">
+    <value>الهدف: الموقع الأصلي (يُكتب كل عنصر في جذره)</value>
+  </data>
+  <data name="PreviewTargetAnotherRoot" xml:space="preserve">
+    <value>الهدف: جذر آخر {0}</value>
+  </data>
+  <data name="PreviewTargetSpecifiedPath" xml:space="preserve">
+    <value>الهدف: مسار محدَّد {0}</value>
+  </data>
+  <data name="PreviewTargetDragExport" xml:space="preserve">
+    <value>الهدف: السحب والإفلات</value>
+  </data>
+  <data name="PreviewSummary" xml:space="preserve">
+    <value>جديد {0} · استبدال {1} · مطابق {2} · تعارض في النوع {3} · غير صالح {4}</value>
+  </data>
+  <data name="PreviewWritten" xml:space="preserve">
+    <value>تم الكتابة: {0}</value>
+  </data>
+  <data name="PreviewAborted" xml:space="preserve">
+    <value>تم إيقاف إعادة الكتابة</value>
+  </data>
+  <data name="PreviewFailed" xml:space="preserve">
+    <value>فشلت إعادة الكتابة: {0}</value>
+  </data>
+  <data name="CompareFailed" xml:space="preserve">
+    <value>تعذّر فتح أداة المقارنة: {0}</value>
+  </data>
+
+  <!-- ============ 写入结果提示 ============ -->
+  <data name="ToastTargetLine" xml:space="preserve">
+    <value>الهدف {0}</value>
+  </data>
+  <data name="ToastTitle" xml:space="preserve">
+    <value>نتيجة إعادة الكتابة</value>
+  </data>
+  <data name="ToastSucceeded" xml:space="preserve">
+    <value>اكتملت إعادة الكتابة</value>
+  </data>
+  <data name="ToastPartiallyFailed" xml:space="preserve">
+    <value>كُتب جزئيًا</value>
+  </data>
+  <data name="ToastCancelled" xml:space="preserve">
+    <value>أُلغي</value>
+  </data>
+  <data name="ToastRetryElevated" xml:space="preserve">
+    <value>إعادة المحاولة كمسؤول</value>
+  </data>
+  <data name="ToastViewDetails" xml:space="preserve">
+    <value>التفاصيل</value>
+  </data>
+  <data name="ToastCreated" xml:space="preserve">
+    <value>إنشاء {0}</value>
+  </data>
+  <data name="ToastOverwritten" xml:space="preserve">
+    <value>استبدال {0}</value>
+  </data>
+  <data name="ToastSkipped" xml:space="preserve">
+    <value>تخطّي {0}</value>
+  </data>
+  <data name="ToastFailed" xml:space="preserve">
+    <value>فشل {0}</value>
+  </data>
+  <data name="ItemSeparator" xml:space="preserve">
+    <value>، </value>
+  </data>
+  <data name="SentenceEnd" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="ClauseSeparator" xml:space="preserve">
+    <value>؛ </value>
+  </data>
+  <data name="ProgressSeparator" xml:space="preserve">
+    <value> · </value>
+  </data>
+  <data name="ToastNothingWritten" xml:space="preserve">
+    <value>لم تُكتب أي ملفات.</value>
+  </data>
+  <data name="ToastDetailLine" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="ToastNoFailures" xml:space="preserve">
+    <value>لا توجد عناصر فاشلة.</value>
+  </data>
+  <data name="ToastDetailsTitle" xml:space="preserve">
+    <value>تفاصيل إعادة الكتابة</value>
+  </data>
+  <data name="ToastElevatedFailed" xml:space="preserve">
+    <value>تعذّر تشغيل العملية المرتفعة (ربما أُلغي طلب UAC).</value>
+  </data>
+
+  <!-- ============ 设置 ============ -->
+  <data name="SettingsTitle" xml:space="preserve">
+    <value>الإعدادات</value>
+  </data>
+  <data name="SectionGeneral" xml:space="preserve">
+    <value>عام</value>
+  </data>
+  <data name="LanguageLabel" xml:space="preserve">
+    <value>اللغة</value>
+  </data>
+  <data name="LanguageSystem" xml:space="preserve">
+    <value>اتّباع النظام</value>
+  </data>
+  <data name="LanguageChinese" xml:space="preserve">
+    <value>简体中文</value>
+  </data>
+  <data name="LanguageTraditionalChinese" xml:space="preserve">
+    <value>繁體中文</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="LanguageJapanese" xml:space="preserve">
+    <value>日本語</value>
+  </data>
+  <data name="LanguageKorean" xml:space="preserve">
+    <value>한국어</value>
+  </data>
+  <data name="LanguageSpanish" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="LanguagePortugueseBrazil" xml:space="preserve">
+    <value>Português (Brasil)</value>
+  </data>
+  <data name="LanguageFrench" xml:space="preserve">
+    <value>Français</value>
+  </data>
+  <data name="LanguageGerman" xml:space="preserve">
+    <value>Deutsch</value>
+  </data>
+  <data name="LanguageItalian" xml:space="preserve">
+    <value>Italiano</value>
+  </data>
+  <data name="LanguageRussian" xml:space="preserve">
+    <value>Русский</value>
+  </data>
+  <data name="LanguageArabic" xml:space="preserve">
+    <value>العربية</value>
+  </data>
+  <data name="LanguageHindi" xml:space="preserve">
+    <value>हिन्दी</value>
+  </data>
+  <data name="LanguageIndonesian" xml:space="preserve">
+    <value>Bahasa Indonesia</value>
+  </data>
+  <data name="LanguageThai" xml:space="preserve">
+    <value>ไทย</value>
+  </data>
+  <data name="LanguageTurkish" xml:space="preserve">
+    <value>Türkçe</value>
+  </data>
+  <data name="LanguageVietnamese" xml:space="preserve">
+    <value>Tiếng Việt</value>
+  </data>
+  <data name="LanguageBengali" xml:space="preserve">
+    <value>বাংলা</value>
+  </data>
+  <data name="LanguageRestartFailed" xml:space="preserve">
+    <value>حُفظت اللغة، لكن تعذّر إعادة تشغيل التطبيق - لن يسري التغيير عند بدء التشغيل التالي.</value>
+  </data>
+  <data name="DefaultConflictPolicyLabel" xml:space="preserve">
+    <value>سياسة التعارض الافتراضية</value>
+  </data>
+  <data name="SkipIdenticalLabel" xml:space="preserve">
+    <value>تخطّي الملفات ذات المحتوى المطابق (يحافظ على وقت تعديل الهدف)</value>
+  </data>
+  <data name="BackupBeforeOverwriteLabel" xml:space="preserve">
+    <value>أخذ نسخة احتياطية قبل الاستبدال (وإيقافه يجعل الاستبدال غير قابل للتراجع)</value>
+  </data>
+  <data name="HistoryRetentionLabel" xml:space="preserve">
+    <value>عدد أيام الاحتفاظ بالسجل (0 = دائم)</value>
+  </data>
+  <data name="AutoGitAddLabel" xml:space="preserve">
+    <value>تشغيل git add بعد الكتابة</value>
+  </data>
+  <data name="WatchBranchLabel" xml:space="preserve">
+    <value>إشعار عند تغيّر الفرع</value>
+  </data>
+  <data name="RespectGitIgnoreLabel" xml:space="preserve">
+    <value>داخل مجلدات المستودع، خزّن فقط الملفات التي لا يتجاهلها Git</value>
+  </data>
+  <data name="SectionExcludes" xml:space="preserve">
+    <value>الاستثناءات</value>
+  </data>
+  <data name="ExcludeHint" xml:space="preserve">
+    <value>نمط بديل واحد في كل سطر، مثال **/node_modules/**</value>
+  </data>
+  <data name="SectionWindowsIntegration" xml:space="preserve">
+    <value>تكامل Windows</value>
+  </data>
+  <data name="ContextMenuLabel" xml:space="preserve">
+    <value>إظهار «الإضافة إلى التخزين المؤقت» في قائمة السياق في مستكشف الملفات</value>
+  </data>
+  <data name="StartWithWindowsLabel" xml:space="preserve">
+    <value>البدء مع Windows</value>
+  </data>
+  <data name="CloseToTrayLabel" xml:space="preserve">
+    <value>تصغير إلى شريط النظام عند إغلاق النافذة</value>
+  </data>
+  <data name="StartMinimizedLabel" xml:space="preserve">
+    <value>البدء مصغَّرًا في شريط النظام</value>
+  </data>
+  <data name="HotkeyLabel" xml:space="preserve">
+    <value>اختصار عام (إضافة إلى التخزين المؤقت)</value>
+  </data>
+  <data name="SectionStorage" xml:space="preserve">
+    <value>التخزين</value>
+  </data>
+  <data name="RefreshStorageButton" xml:space="preserve">
+    <value>تحديث المساحة المستخدمة</value>
+  </data>
+  <data name="CleanupStorageButton" xml:space="preserve">
+    <value>تنظيف البيانات غير المستخدمة</value>
+  </data>
+  <data name="ClearHistoryButton" xml:space="preserve">
+    <value>مسح كل السجل</value>
+  </data>
+  <data name="SettingsSavedMessage" xml:space="preserve">
+    <value>حُفظت الإعدادات.</value>
+  </data>
+  <data name="StorageUsageLabel" xml:space="preserve">
+    <value>المحتوى المخزَّن مؤقتًا: {0}</value>
+  </data>
+  <data name="StorageExportLabel" xml:space="preserve">
+    <value>ملفات السحب والإفلات المؤقتة: {0}</value>
+  </data>
+  <data name="StorageHistoryLabel" xml:space="preserve">
+    <value>السجل: {0} مدخل</value>
+  </data>
+  <data name="CleanupConfirmTitle" xml:space="preserve">
+    <value>تنظيف البيانات غير المستخدمة</value>
+  </data>
+  <data name="CleanupConfirmMessage" xml:space="preserve">
+    <value>حذف المحتوى الذي لا يشير إليه أي عنصر مخزَّن مؤقتًا أو مدخل في السجل؟</value>
+  </data>
+  <data name="CleanupDoneMessage" xml:space="preserve">
+    <value>حُذف {0} عنصر.</value>
+  </data>
+  <data name="ClearHistoryConfirmTitle" xml:space="preserve">
+    <value>مسح كل السجل</value>
+  </data>
+  <data name="ClearHistoryConfirmMessage" xml:space="preserve">
+    <value>سيُحذف كل السجل والنسخ الاحتياطية، وسيتوقف التراجع عن العمل. هل تريد المتابعة؟</value>
+  </data>
+  <data name="ClearHistoryDoneMessage" xml:space="preserve">
+    <value>حُذف {0} مدخل من السجل.</value>
+  </data>
+  <data name="NewPresetButton" xml:space="preserve">
+    <value>إضافة…</value>
+  </data>
+  <data name="NewPresetTitle" xml:space="preserve">
+    <value>إعداد مسبق جديد للجذر</value>
+  </data>
+  <data name="NewPresetDefaultName" xml:space="preserve">
+    <value>إعداد مسبق جديد</value>
+  </data>
+
+  <!-- ============ 根目录预设 ============ -->
+  <data name="RootPresetsTitle" xml:space="preserve">
+    <value>الإعدادات المسبقة للجذور</value>
+  </data>
+  <data name="ColumnName" xml:space="preserve">
+    <value>الاسم</value>
+  </data>
+  <data name="ColumnPath" xml:space="preserve">
+    <value>المسار</value>
+  </data>
+
+  <!-- ============ 对话框 ============ -->
+  <data name="MoveToGroupTitle" xml:space="preserve">
+    <value>نقل إلى صندوق</value>
+  </data>
+  <data name="ChooseTargetGroup" xml:space="preserve">
+    <value>اختيار صندوق الوجهة</value>
+  </data>
+  <data name="InputTitle" xml:space="preserve">
+    <value>إدخال</value>
+  </data>
+  <data name="SetRootTitle" xml:space="preserve">
+    <value>تعيين المجلد الجذر</value>
+  </data>
+  <data name="SetRootHint" xml:space="preserve">
+    <value>اختر المجلد الجذر: يُحسب المسار الفرعي للعنصر المخزَّن مؤقتًا منه، وتُستخدمه إعادة الكتابة إلى الموقع الأصلي أيضًا.</value>
+  </data>
+  <data name="NewRelativePathLabel" xml:space="preserve">
+    <value>المسار الفرعي الجديد: </value>
+  </data>
+  <data name="EmptyRelativePath" xml:space="preserve">
+    <value>(لا يوجد مسار فرعي)</value>
+  </data>
+
+  <!-- ============ 关于 ============ -->
+  <data name="AboutTitle" xml:space="preserve">
+    <value>حول StashBay</value>
+  </data>
+  <data name="AboutTagline" xml:space="preserve">
+    <value>صندوق ملفات - خزّن الآن، وأعد الكتابة بعد تبديل الفرع</value>
+  </data>
+  <data name="VersionLabel" xml:space="preserve">
+    <value>الإصدار {0}</value>
+  </data>
+  <data name="RuntimeLabel" xml:space="preserve">
+    <value>وقت التشغيل .NET {0}</value>
+  </data>
+  <data name="GitFound" xml:space="preserve">
+    <value>تم العثور على Git</value>
+  </data>
+  <data name="GitMissing" xml:space="preserve">
+    <value>لم يُعثر على Git (تُعطَّل ميزات Git تلقائيًا)</value>
+  </data>
+  <data name="GitUnknown" xml:space="preserve">
+    <value>حالة Git غير معروفة</value>
+  </data>
+  <data name="DataDirectoryLabel" xml:space="preserve">
+    <value>مجلد البيانات {0}</value>
+  </data>
+
+  <!-- ============ 托盘菜单 ============ -->
+  <data name="TrayShowCompact" xml:space="preserve">
+    <value>إظهار منطقة التخزين المؤقت</value>
+  </data>
+  <data name="TrayOpenWorkbench" xml:space="preserve">
+    <value>فتح طاولة العمل</value>
+  </data>
+  <data name="TrayApplyOriginal" xml:space="preserve">
+    <value>تطبيق على المواقع الأصلية</value>
+  </data>
+  <data name="TrayUndoLast" xml:space="preserve">
+    <value>تراجع عن آخر عملية</value>
+  </data>
+  <data name="TrayGitChanges" xml:space="preserve">
+    <value>إضافة من تغييرات Git…</value>
+  </data>
+  <data name="TrayFloatingWindow" xml:space="preserve">
+    <value>إظهار النافذة العائمة</value>
+  </data>
+  <data name="TrayHistory" xml:space="preserve">
+    <value>سجل العمليات…</value>
+  </data>
+  <data name="TrayRootPresets" xml:space="preserve">
+    <value>الإعدادات المسبقة للجذور…</value>
+  </data>
+  <data name="TraySettings" xml:space="preserve">
+    <value>الإعدادات…</value>
+  </data>
+  <data name="TrayAbout" xml:space="preserve">
+    <value>حول StashBay…</value>
+  </data>
+  <data name="TrayExit" xml:space="preserve">
+    <value>خروج</value>
+  </data>
+  <data name="NoGitItems" xml:space="preserve">
+    <value>لا توجد في هذا الصندوق عناصر مخزَّنة مؤقتًا من مستودع Git.</value>
+  </data>
+  <data name="BranchSwitchedMessage" xml:space="preserve">
+    <value>تبدَّل {0} إلى {1}، ويمكن تطبيق {2} عنصر مخزَّن مؤقتًا على مواقعها الأصلية - انقر للتطبيق.</value>
+  </data>
+  <data name="UnhandledErrorTitle" xml:space="preserve">
+    <value>حدث خطأ غير متوقع في StashBay</value>
+  </data>
+
+  <!-- ============ 文件选择 / 拖出 ============ -->
+  <data name="PickItemsTitle" xml:space="preserve">
+    <value>تحديد الملفات والمجلدات</value>
+  </data>
+  <data name="PickItemsHint" xml:space="preserve">
+    <value>استخدم Ctrl أو Shift لتحديد عدة عناصر. انقر نقرًا مزدوجًا على مجلد لفتحه.</value>
+  </data>
+  <data name="ParentFolder" xml:space="preserve">
+    <value>المجلد الأصل</value>
+  </data>
+  <data name="ClipboardBusyLong" xml:space="preserve">
+    <value>الحافظة مستخدمة من برنامج آخر. حاول مرة أخرى لاحقًا.</value>
+  </data>
+  <data name="LoadStashFailed" xml:space="preserve">
+    <value>تعذّر تحميل منطقة التخزين المؤقت: {0}</value>
+  </data>
+  <data name="DragOutFailed" xml:space="preserve">
+    <value>فشل السحب والإفلات: {0}</value>
+  </data>
+  <data name="AddToStashFailed" xml:space="preserve">
+    <value>تعذّرت الإضافة إلى التخزين المؤقت: {0}</value>
+  </data>
+  <data name="ThemeLabel" xml:space="preserve">
+    <value>السمة</value>
+  </data>
+  <data name="ThemeSystem" xml:space="preserve">
+    <value>اتّباع النظام</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>فاتح</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>داكن</value>
+  </data>
+  <data name="AddSelectedButton" xml:space="preserve">
+    <value>إضافة المحدد</value>
+  </data>
+
+  <data name="ClearAllBoxesButton" xml:space="preserve">
+    <value>مسح جميع الصناديق</value>
+  </data>
+  <data name="ClearAllBoxesTooltip" xml:space="preserve">
+    <value>مسح جميع صناديق وعناصر التخزين المؤقت</value>
+  </data>
+  <data name="ClearAllBoxesTitle" xml:space="preserve">
+    <value>مسح جميع صناديق التخزين المؤقت</value>
+  </data>
+  <data name="ClearAllBoxesConfirm" xml:space="preserve">
+    <value>هل أنت متأكد من مسح جميع الصناديق؟ ستُحذف جميع العناصر المخزَّنة مؤقتًا.</value>
+  </data>
+  <data name="ClearAllBoxesDone" xml:space="preserve">
+    <value>تم مسح جميع صناديق التخزين المؤقت.</value>
+  </data>
+  <data name="ClearBoxButton" xml:space="preserve">
+    <value>مسح الصندوق الحالي</value>
+  </data>
+  <data name="ClearBoxConfirm" xml:space="preserve">
+    <value>مسح الصندوق «{0}»؟ ستُحذف جميع العناصر الموجودة بداخله.</value>
+  </data>
+  <data name="ClearBoxDone" xml:space="preserve">
+    <value>تم مسح الصندوق «{0}».</value>
+  </data>
+  <data name="DropToStashPrompt" xml:space="preserve">
+    <value>أفلِت للتخزين المؤقت</value>
+  </data>
+  <data name="DropToStashHint" xml:space="preserve">
+    <value>أفلِت الملفات أو المجلدات لإضافتها تلقائيًا إلى التخزين المؤقت</value>
+  </data>
+  <data name="TrayClearAll" xml:space="preserve">
+    <value>مسح جميع الصناديق</value>
+  </data>
+
+  <data name="RemoveAfterDragExportLabel" xml:space="preserve">
+    <value>الإزالة تلقائيًا من التخزين المؤقت بعد السحب للخارج (سلوك DropPoint)</value>
+  </data>
+  <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
+    <value>يزيل العناصر تلقائيًا بعد إفلاتها في المجلد الوجهة؛ عند التعطيل، يتم الاحتفاظ بها</value>
+  </data>
+
+  <data name="CollapseButton" xml:space="preserve">
+    <value>طي</value>
+  </data>
+  <data name="CollapseButtonTooltip" xml:space="preserve">
+    <value>طي إلى اللوحة المدمجة (ملائم للسحب والإفلات، الاختصار: Esc / F11)</value>
+  </data>
+
+  <data name="StatusClipboardPasted" xml:space="preserve">
+    <value>تم حفظ محتوى الحافظة في صندوق التخزين المؤقت</value>
+  </data>
+  <data name="DragAllButton" xml:space="preserve">
+    <value>سحب الكل</value>
+  </data>
+  <data name="DragAllTooltip" xml:space="preserve">
+    <value>اسحب هذا المقبض لتصدير جميع الملفات المؤقتة دفعة واحدة</value>
+  </data>
+  <data name="AutoDismissWhenEmptyLabel" xml:space="preserve">
+    <value>إخفاء تلقائي عند الفراغ</value>
+  </data>
+  <data name="AutoDismissWhenEmptyTooltip" xml:space="preserve">
+    <value>إخفاء النافذة تلقائيًا بمجرد سحب جميع الملفات أو إفراغ الصندوق</value>
+  </data>
+  <data name="SummonAtCursorLabel" xml:space="preserve">
+    <value>استدعاء قرب المؤشر</value>
+  </data>
+  <data name="SummonAtCursorTooltip" xml:space="preserve">
+    <value>إظهار النافذة عند موضع مؤشر الفأرة الحالي عند الضغط على مفتاح الاختصار</value>
+  </data>
+  <data name="EnableShakeToSummonLabel" xml:space="preserve">
+    <value>هز المؤشر أثناء السحب للاستدعاء</value>
+  </data>
+  <data name="EnableShakeToSummonTooltip" xml:space="preserve">
+    <value>حرك الفأرة يمينًا ويسارًا بسرعة أثناء سحب الملفات لإظهار الرف المؤقت</value>
+  </data>
+  <data name="SectionDeveloperOptions" xml:space="preserve">
+    <value>خيارات متقدمة وللمطورين (تكامل Git)</value>
+  </data>
+  <data name="DeveloperOptionsHint" xml:space="preserve">
+    <value>ينطبق فقط على الملفات الموجودة داخل مستودع Git. يظل التخزين المؤقت العام للملفات واستعادتها مستقلاً تماماً.</value>
+  </data>
+  <data name="HotkeyRegisterFailedTitle" xml:space="preserve">
+    <value>فشل تسجيل مفتاح الاختصار</value>
+  </data>
+  <data name="HotkeyRegisterFailedMessage" xml:space="preserve">
+    <value>فشل تسجيل مفتاح الاختصار العام "{0}". قد يكون قيد الاستخدام بواسطة تطبيق آخر.</value>
+  </data>
+  <data name="HotkeyWorkbenchLabel" xml:space="preserve">
+    <value>مفتاح الاختصار العام (فتح مساحة العمل)</value>
+  </data>
+  <data name="HotkeyPasteLabel" xml:space="preserve">
+    <value>اختصار عام (لصق ملفات الحافظة)</value>
+  </data>
+  <data name="HotkeyRecordingHint" xml:space="preserve">
+    <value>انقر واضغط على تركيبة المفاتيح للتسجيل. اضغط على Esc للإلغاء.</value>
+  </data>
+  <data name="HotkeyClearButton" xml:space="preserve">
+    <value>مسح</value>
+  </data>
+  <data name="PinButtonTooltip" xml:space="preserve">
+    <value>تثبيت في المقدمة</value>
+  </data>
+  <data name="ViewModeTree" xml:space="preserve">
+    <value>شجرة</value>
+  </data>
+  <data name="ViewModeList" xml:space="preserve">
+    <value>قائمة</value>
+  </data>
+  <data name="ViewModeSource" xml:space="preserve">
+    <value>حسب المصدر</value>
+  </data>
+  <data name="ShelfApply" xml:space="preserve">
+    <value>إعادة الكتابة</value>
+  </data>
+  <data name="ShelfClearAll" xml:space="preserve">
+    <value>مسح الكل</value>
+  </data>
+  <data name="ViewModeIcons" xml:space="preserve"><value>أيقونات</value></data>
+</root>

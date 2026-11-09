@@ -1,0 +1,15 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:h="http://www.hardcodet.net/taskbar"
+                    xmlns:app="clr-namespace:FileStash.App.Resources">
+
+    <!--
+        放在资源字典里的 TaskbarIcon 不会进入可视树，
+        H.NotifyIcon 的 Loaded 事件永远不触发 → 必须在代码里手动 ForceCreate()。
+    -->
+    <h:TaskbarIcon x:Key="Tray"
+                    Id="3D4A80BE-1BF8-4061-B9D1-5A8EFA062F8A"
+                    ToolTipText="{x:Static app:Strings.AppName}"
+                    IconSource="pack://application:,,,/Resources/app.ico" />
+
+</ResourceDictionary>

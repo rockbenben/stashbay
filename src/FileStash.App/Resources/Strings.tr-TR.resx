@@ -1,0 +1,984 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ============ 通用 ============ -->
+  <data name="AppName" xml:space="preserve">
+    <value>StashBay</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Bilinmiyor</value>
+  </data>
+  <data name="OkButton" xml:space="preserve">
+    <value>Tamam</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>İptal</value>
+  </data>
+  <data name="CloseButton" xml:space="preserve">
+    <value>Kapat</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Kaydet</value>
+  </data>
+  <data name="RefreshButton" xml:space="preserve">
+    <value>Yenile</value>
+  </data>
+  <data name="AddButton" xml:space="preserve">
+    <value>Ekle</value>
+  </data>
+  <data name="AbortButton" xml:space="preserve">
+    <value>Durdur</value>
+  </data>
+  <data name="UndoButton" xml:space="preserve">
+    <value>Geri al</value>
+  </data>
+  <data name="UndoLastButton" xml:space="preserve">
+    <value>Son işlemi geri al</value>
+  </data>
+  <data name="UndoNeedsWrite" xml:space="preserve">
+    <value>Yalnızca yazma işlemleri geri alınabilir, dışarı sürüklemenin geri alınacak bir öğesi yok</value>
+  </data>
+  <data name="UndoThisButton" xml:space="preserve">
+    <value>Bunu geri al</value>
+  </data>
+  <data name="PreviewButton" xml:space="preserve">
+    <value>Önizle</value>
+  </data>
+  <data name="ApplyButton" xml:space="preserve">
+    <value>Geri yaz</value>
+  </data>
+  <data name="SettingsButton" xml:space="preserve">
+    <value>Ayarlar</value>
+  </data>
+  <data name="ExpandButton" xml:space="preserve">
+    <value>Genişlet</value>
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
+    <value>Sil</value>
+  </data>
+  <data name="CompareDiffButton" xml:space="preserve">
+    <value>Geçerli hedef içerikle karşılaştır</value>
+  </data>
+
+  <!-- ============ 枚举显示名 ============ -->
+  <data name="StateNew" xml:space="preserve">
+    <value>Yeni</value>
+  </data>
+  <data name="StateOverwrite" xml:space="preserve">
+    <value>Üzerine yaz</value>
+  </data>
+  <data name="StateIdentical" xml:space="preserve">
+    <value>Aynı</value>
+  </data>
+  <data name="StateTypeConflict" xml:space="preserve">
+    <value>Tür çakışması</value>
+  </data>
+  <data name="StateInvalid" xml:space="preserve">
+    <value>Geçersiz</value>
+  </data>
+  <data name="ActionCreate" xml:space="preserve">
+    <value>Oluştur</value>
+  </data>
+  <data name="ActionOverwrite" xml:space="preserve">
+    <value>Üzerine yaz</value>
+  </data>
+  <data name="ActionSkip" xml:space="preserve">
+    <value>Atla</value>
+  </data>
+  <data name="ActionRename" xml:space="preserve">
+    <value>Yeniden adlandır</value>
+  </data>
+  <data name="OpRunning" xml:space="preserve">
+    <value>Çalışıyor</value>
+  </data>
+  <data name="OpSucceeded" xml:space="preserve">
+    <value>Başarılı</value>
+  </data>
+  <data name="OpPartiallyFailed" xml:space="preserve">
+    <value>Kısmen yazıldı</value>
+  </data>
+  <data name="OpFailed" xml:space="preserve">
+    <value>Başarısız</value>
+  </data>
+  <data name="OpCancelled" xml:space="preserve">
+    <value>İptal edildi</value>
+  </data>
+  <data name="OpUndone" xml:space="preserve">
+    <value>Geri alındı</value>
+  </data>
+  <data name="ResultCreated" xml:space="preserve">
+    <value>Oluşturuldu</value>
+  </data>
+  <data name="ResultOverwritten" xml:space="preserve">
+    <value>Üzerine yazıldı</value>
+  </data>
+  <data name="ResultSkipped" xml:space="preserve">
+    <value>Atlandı</value>
+  </data>
+  <data name="ResultRenamed" xml:space="preserve">
+    <value>Yeniden adlandırıldı</value>
+  </data>
+  <data name="ResultFailed" xml:space="preserve">
+    <value>Başarısız</value>
+  </data>
+  <data name="ResultDirectoryCreated" xml:space="preserve">
+    <value>Klasör oluşturuldu</value>
+  </data>
+  <data name="SourceUnchanged" xml:space="preserve">
+    <value>Değişmedi</value>
+  </data>
+  <data name="SourceModified" xml:space="preserve">
+    <value>Değiştirildi</value>
+  </data>
+  <data name="SourceMissing" xml:space="preserve">
+    <value>Kaynak dosya silindi</value>
+  </data>
+
+  <!-- ============ 主窗口：紧凑暂存区 ============ -->
+  <data name="CompactTitle" xml:space="preserve">
+    <value>Geçici depolama alanı</value>
+  </data>
+  <data name="CompactEmptyTitle" xml:space="preserve">
+    <value>Geçici depolama alanı boş</value>
+  </data>
+  <data name="CompactEmptyHint" xml:space="preserve">
+    <value>Bir şey eklemek için “Ekle” düğmesini kullanın, sonra dışarı sürükleyin</value>
+  </data>
+  <data name="CompactFooter" xml:space="preserve">
+    <value>Herhangi bir klasöre sürükle = oraya kaydet</value>
+  </data>
+
+  <!-- ============ 主窗口：工作台 ============ -->
+  <data name="StashBoxLabel" xml:space="preserve">
+    <value>Geçici depolama kutuları</value>
+  </data>
+  <data name="NewGroupButton" xml:space="preserve">
+    <value>Yeni kutu</value>
+  </data>
+  <data name="WorkbenchEmptyTitle" xml:space="preserve">
+    <value>Çalışma alanında hiçbir şey yok</value>
+  </data>
+  <data name="WorkbenchEmptyHint" xml:space="preserve">
+    <value>Dosyaları veya klasörleri buraya sürükleyin ya da sağ üstteki “Ekle” düğmesini kullanın</value>
+  </data>
+  <data name="ColumnNamePath" xml:space="preserve">
+    <value>Ad / yol</value>
+  </data>
+  <data name="ColumnSize" xml:space="preserve">
+    <value>Boyut</value>
+  </data>
+  <data name="ColumnSourceBranch" xml:space="preserve">
+    <value>Kaynak dal</value>
+  </data>
+  <data name="ColumnSourceState" xml:space="preserve">
+    <value>Kaynak durumu</value>
+  </data>
+  <data name="MenuOpenSource" xml:space="preserve">
+    <value>Kaynak konumu aç</value>
+  </data>
+  <data name="MenuCopySourcePath" xml:space="preserve">
+    <value>Kaynak yolu kopyala</value>
+  </data>
+  <data name="MenuCopyToClipboard" xml:space="preserve">
+    <value>Panoya kopyala</value>
+  </data>
+  <data name="MenuRefreshSnapshot" xml:space="preserve">
+    <value>Anlık görüntüyü yenile</value>
+  </data>
+  <data name="MenuSetRoot" xml:space="preserve">
+    <value>Kök klasörü ayarla</value>
+  </data>
+  <data name="MenuMoveToGroup" xml:space="preserve">
+    <value>Kutuya taşı</value>
+  </data>
+  <data name="WillWriteMany" xml:space="preserve">
+    <value>{0} dosya yazılacak, örneğin</value>
+  </data>
+  <data name="WriteBackLabel" xml:space="preserve">
+    <value>Geri yaz</value>
+  </data>
+  <data name="TargetOriginal" xml:space="preserve">
+    <value>Özgün konum</value>
+  </data>
+  <data name="TargetAnotherRoot" xml:space="preserve">
+    <value>Başka bir kök klasör</value>
+  </data>
+  <data name="TargetSpecifiedPath" xml:space="preserve">
+    <value>Belirtilen yol</value>
+  </data>
+  <data name="BrowseTargetTooltip" xml:space="preserve">
+    <value>Hedef klasörü gözat</value>
+  </data>
+  <data name="StructureLabel" xml:space="preserve">
+    <value>Yapı</value>
+  </data>
+  <data name="ConflictLabel" xml:space="preserve">
+    <value>Çakışmalar</value>
+  </data>
+  <data name="WillWrite" xml:space="preserve">
+    <value>Yazılacak</value>
+  </data>
+  <data name="NothingToWrite" xml:space="preserve">
+    <value>Henüz yazılacak bir şey yok</value>
+  </data>
+
+  <!-- ============ 目标模式 / 结构 / 冲突策略 ============ -->
+  <data name="StructureFullRelative" xml:space="preserve">
+    <value>Tam göreli yol</value>
+  </data>
+  <data name="StructureItemOnly" xml:space="preserve">
+    <value>Yalnızca depolanan öğe</value>
+  </data>
+  <data name="StructureFlatten" xml:space="preserve">
+    <value>Hepsini düzleştir</value>
+  </data>
+  <data name="ConflictAsk" xml:space="preserve">
+    <value>Sor</value>
+  </data>
+
+  <!-- ============ 主 ViewModel 的状态与提示 ============ -->
+  <data name="StatusReady" xml:space="preserve">
+    <value>Hazır</value>
+  </data>
+  <data name="StatusEmpty" xml:space="preserve">
+    <value>Henüz depolanmış bir şey yok</value>
+  </data>
+  <data name="StatusSummary" xml:space="preserve">
+    <value>{0} öğe · {1} dosya · {2}</value>
+  </data>
+  <data name="StatusBusy" xml:space="preserve">
+    <value>İşleniyor…</value>
+  </data>
+  <data name="StatusAdding" xml:space="preserve">
+    <value>Geçici depolamaya ekleniyor ({0}/{1})</value>
+  </data>
+  <data name="StatusAddAborted" xml:space="preserve">
+    <value>Ekleme durduruldu</value>
+  </data>
+  <data name="StatusAborting" xml:space="preserve">
+    <value>Durduruluyor…</value>
+  </data>
+  <data name="StatusRefreshing" xml:space="preserve">
+    <value>Anlık görüntü yenileniyor</value>
+  </data>
+  <data name="StatusSnapshotRefreshed" xml:space="preserve">
+    <value>Anlık görüntü yenilendi</value>
+  </data>
+  <data name="StatusRootUpdated" xml:space="preserve">
+    <value>Kök klasör güncellendi</value>
+  </data>
+  <data name="StatusSourcePathCopied" xml:space="preserve">
+    <value>Kaynak yolu kopyalandı</value>
+  </data>
+  <data name="StatusClipboardFilled" xml:space="preserve">
+    <value>Hedef yol panodan dolduruldu</value>
+  </data>
+  <data name="StatusPreparingExport" xml:space="preserve">
+    <value>Dışarı sürükleme hazırlanıyor…</value>
+  </data>
+  <data name="StatusCopiedToClipboard" xml:space="preserve">
+    <value>Panoya kopyalandı ({0} öğe)</value>
+  </data>
+  <data name="StatusWriting" xml:space="preserve">
+    <value>Yazılıyor ({0}/{1})</value>
+  </data>
+  <data name="StatusLoadFailed" xml:space="preserve">
+    <value>Depolanan öğeler yüklenemedi: {0}</value>
+  </data>
+  <data name="StatusSourceStateFailed" xml:space="preserve">
+    <value>Kaynak durumu okunamadı: {0}</value>
+  </data>
+  <data name="ToastAdded" xml:space="preserve">
+    <value>{0} öğe eklendi</value>
+  </data>
+  <data name="ToastDuplicates" xml:space="preserve">
+    <value>{0} yol zaten geçici depolama alanında (atlandı)</value>
+  </data>
+  <data name="ToastFailedPaths" xml:space="preserve">
+    <value>{0} yol başarısız oldu</value>
+  </data>
+  <data name="ToastWarnings" xml:space="preserve">
+    <value>{0} uyarı</value>
+  </data>
+  <data name="AddToStashTitle" xml:space="preserve">
+    <value>Geçici depolamaya ekle</value>
+  </data>
+  <data name="SkippedTitle" xml:space="preserve">
+    <value>Atlananlar</value>
+  </data>
+  <data name="DefaultGroupName" xml:space="preserve">
+    <value>Varsayılan depolama</value>
+  </data>
+  <data name="NewGroupTitle" xml:space="preserve">
+    <value>Yeni kutu</value>
+  </data>
+  <data name="RenameGroupTitle" xml:space="preserve">
+    <value>Kutuyu yeniden adlandır</value>
+  </data>
+  <data name="DeleteGroupTitle" xml:space="preserve">
+    <value>Kutuyu sil</value>
+  </data>
+  <data name="DeleteGroupConfirm" xml:space="preserve">
+    <value>“{0}” kutusu silinsin mi? Kutudaki depolanan öğeler de silinecek.</value>
+  </data>
+  <data name="NoGroupTitle" xml:space="preserve">
+    <value>Henüz depolama kutusu yok</value>
+  </data>
+  <data name="NoGroupHint" xml:space="preserve">
+    <value>Geçici depolamaya eklemeden önce bir kutu oluşturun.</value>
+  </data>
+  <data name="SetRootFailedTitle" xml:space="preserve">
+    <value>Kök klasör ayarlanamadı</value>
+  </data>
+  <data name="DeleteItemTitle" xml:space="preserve">
+    <value>Kutudan kaldır</value>
+  </data>
+  <data name="DeleteItemConfirm" xml:space="preserve">
+    <value>“{0}” kutudan kaldırılsın mı? Orijinal dosya silinmez; yalnızca depolanan kopya silinir.</value>
+  </data>
+  <data name="NoOtherGroupHint" xml:space="preserve">
+    <value>Taşınabilecek başka kutu yok. Önce bir tane oluşturun.</value>
+  </data>
+  <data name="OpenSourceFailedTitle" xml:space="preserve">
+    <value>Kaynak konumu açılamadı</value>
+  </data>
+  <data name="CopyFailedTitle" xml:space="preserve">
+    <value>Kopyalanamadı</value>
+  </data>
+  <data name="ClipboardBusy" xml:space="preserve">
+    <value>Pano başka bir program tarafından kullanılıyor.</value>
+  </data>
+  <data name="DragExportTarget" xml:space="preserve">
+    <value>{0} öğe dışarı sürüklenecek</value>
+  </data>
+  <data name="NothingToWriteTitle" xml:space="preserve">
+    <value>Yazılacak bir şey yok</value>
+  </data>
+  <data name="NothingToWriteHint" xml:space="preserve">
+    <value>Bu kutuda henüz depolanan öğe yok.</value>
+  </data>
+  <data name="NothingToUndoMessage" xml:space="preserve">
+    <value>Henüz hiçbir yazma işlemi yapılmadı.</value>
+  </data>
+  <data name="NothingToUndoTitle" xml:space="preserve">
+    <value>Geri alınacak işlem yok</value>
+  </data>
+  <data name="UndoDoneMessage" xml:space="preserve">
+    <value>{0} dosya geri yüklendi, {1} dosya silindi.</value>
+  </data>
+
+  <!-- ============ 树行 ============ -->
+  <data name="TreeEmpty" xml:space="preserve">
+    <value>Boş</value>
+  </data>
+  <data name="TreeItemCount" xml:space="preserve">
+    <value>{0} öğe</value>
+  </data>
+  <data name="TreeItemFileCount" xml:space="preserve">
+    <value>{0} öğe · {1} dosya</value>
+  </data>
+
+  <!-- ============ Git 改动对话框 ============ -->
+  <data name="GitStatusTitle" xml:space="preserve">
+    <value>Değiştirilmiş dosyaları seç</value>
+  </data>
+  <data name="GitChangedSummary" xml:space="preserve">
+    <value>{0} değişiklik</value>
+  </data>
+  <data name="GitChangedSummaryWithDeleted" xml:space="preserve">
+    <value>{0} değişiklik, bunlardan {1} tanesi silinmiş (geçici depolamaya eklenemez)</value>
+  </data>
+  <data name="GitNoSelection" xml:space="preserve">
+    <value>Eklenebilecek dosya seçilmedi.</value>
+  </data>
+  <data name="GitAddedMessage" xml:space="preserve">
+    <value>{0} öğe eklendi.</value>
+  </data>
+  <data name="GitDeletedSkipped" xml:space="preserve">
+    <value>{0} silinmiş dosya atlandı (kaynak yol artık mevcut değil).</value>
+  </data>
+
+  <!-- ============ 操作历史 ============ -->
+  <data name="HistoryTitle" xml:space="preserve">
+    <value>İşlem geçmişi</value>
+  </data>
+  <data name="ColumnTime" xml:space="preserve">
+    <value>Zaman</value>
+  </data>
+  <data name="ColumnTarget" xml:space="preserve">
+    <value>Hedef</value>
+  </data>
+  <data name="ColumnSourceItem" xml:space="preserve">
+    <value>Kaynak</value>
+  </data>
+  <data name="ColumnStatus" xml:space="preserve">
+    <value>Durum</value>
+  </data>
+  <data name="ColumnTargetPath" xml:space="preserve">
+    <value>Hedef yol</value>
+  </data>
+  <data name="ColumnResult" xml:space="preserve">
+    <value>Sonuç</value>
+  </data>
+  <data name="ColumnError" xml:space="preserve">
+    <value>Hata</value>
+  </data>
+  <data name="OpenTargetFolderButton" xml:space="preserve">
+    <value>Hedef klasörü aç</value>
+  </data>
+  <data name="UndoConfirmTitle" xml:space="preserve">
+    <value>İşlemi geri al</value>
+  </data>
+  <data name="UndoConfirmMessage" xml:space="preserve">
+    <value>{0} yazma işlemi geri alınsın mı?</value>
+  </data>
+  <data name="UndoConfirmNote" xml:space="preserve">
+    <value>O zamandan sonra değiştirilen dosyalar atlanacak.</value>
+  </data>
+  <data name="TargetFolderMissing" xml:space="preserve">
+    <value>Hedef klasör mevcut değil.</value>
+  </data>
+  <data name="OpenFailedTitle" xml:space="preserve">
+    <value>Açılamadı</value>
+  </data>
+
+  <!-- ============ 写入预览 ============ -->
+  <data name="PreviewTitle" xml:space="preserve">
+    <value>Geri yazma önizlemesi</value>
+  </data>
+  <data name="ColumnAction" xml:space="preserve">
+    <value>Eylem</value>
+  </data>
+  <data name="ColumnWarning" xml:space="preserve">
+    <value>Uyarı</value>
+  </data>
+  <data name="PreviewTargetOriginal" xml:space="preserve">
+    <value>Hedef: özgün konum (her öğe kendi kök klasörüne geri yazılır)</value>
+  </data>
+  <data name="PreviewTargetAnotherRoot" xml:space="preserve">
+    <value>Hedef: başka bir kök klasör {0}</value>
+  </data>
+  <data name="PreviewTargetSpecifiedPath" xml:space="preserve">
+    <value>Hedef: belirtilen yol {0}</value>
+  </data>
+  <data name="PreviewTargetDragExport" xml:space="preserve">
+    <value>Hedef: dışarı sürükle</value>
+  </data>
+  <data name="PreviewSummary" xml:space="preserve">
+    <value>Yeni {0} · Üzerine yaz {1} · Aynı {2} · Tür çakışması {3} · Geçersiz {4}</value>
+  </data>
+  <data name="PreviewWritten" xml:space="preserve">
+    <value>Yazılanlar: {0}</value>
+  </data>
+  <data name="PreviewAborted" xml:space="preserve">
+    <value>Geri yazma durduruldu</value>
+  </data>
+  <data name="PreviewFailed" xml:space="preserve">
+    <value>Geri yazma başarısız: {0}</value>
+  </data>
+  <data name="CompareFailed" xml:space="preserve">
+    <value>Karşılaştırma aracı açılamadı: {0}</value>
+  </data>
+
+  <!-- ============ 写入结果提示 ============ -->
+  <data name="ToastTargetLine" xml:space="preserve">
+    <value>Hedef {0}</value>
+  </data>
+  <data name="ToastTitle" xml:space="preserve">
+    <value>Geri yazma sonucu</value>
+  </data>
+  <data name="ToastSucceeded" xml:space="preserve">
+    <value>Geri yazma tamamlandı</value>
+  </data>
+  <data name="ToastPartiallyFailed" xml:space="preserve">
+    <value>Kısmen yazıldı</value>
+  </data>
+  <data name="ToastCancelled" xml:space="preserve">
+    <value>İptal edildi</value>
+  </data>
+  <data name="ToastRetryElevated" xml:space="preserve">
+    <value>Yönetici olarak yeniden dene</value>
+  </data>
+  <data name="ToastViewDetails" xml:space="preserve">
+    <value>Ayrıntılar</value>
+  </data>
+  <data name="ToastCreated" xml:space="preserve">
+    <value>{0} oluşturuldu</value>
+  </data>
+  <data name="ToastOverwritten" xml:space="preserve">
+    <value>{0} üzerine yazıldı</value>
+  </data>
+  <data name="ToastSkipped" xml:space="preserve">
+    <value>{0} atlandı</value>
+  </data>
+  <data name="ToastFailed" xml:space="preserve">
+    <value>{0} başarısız oldu</value>
+  </data>
+  <data name="ItemSeparator" xml:space="preserve">
+    <value>,</value>
+  </data>
+  <data name="SentenceEnd" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="ClauseSeparator" xml:space="preserve">
+    <value>;</value>
+  </data>
+  <data name="ProgressSeparator" xml:space="preserve">
+    <value> ·</value>
+  </data>
+  <data name="ToastNothingWritten" xml:space="preserve">
+    <value>Hiçbir dosya yazılmadı.</value>
+  </data>
+  <data name="ToastDetailLine" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="ToastNoFailures" xml:space="preserve">
+    <value>Başarısız kayıt yok.</value>
+  </data>
+  <data name="ToastDetailsTitle" xml:space="preserve">
+    <value>Geri yazma ayrıntıları</value>
+  </data>
+  <data name="ToastElevatedFailed" xml:space="preserve">
+    <value>Yetki yükseltilmiş işlem başlatılamadı (UAC istemi iptal edilmiş olabilir).</value>
+  </data>
+
+  <!-- ============ 设置 ============ -->
+  <data name="SettingsTitle" xml:space="preserve">
+    <value>Ayarlar</value>
+  </data>
+  <data name="SectionGeneral" xml:space="preserve">
+    <value>Genel</value>
+  </data>
+  <data name="LanguageLabel" xml:space="preserve">
+    <value>Dil</value>
+  </data>
+  <data name="LanguageSystem" xml:space="preserve">
+    <value>Sistemi izle</value>
+  </data>
+  <data name="LanguageChinese" xml:space="preserve">
+    <value>简体中文</value>
+  </data>
+  <data name="LanguageTraditionalChinese" xml:space="preserve">
+    <value>繁體中文</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="LanguageJapanese" xml:space="preserve">
+    <value>日本語</value>
+  </data>
+  <data name="LanguageKorean" xml:space="preserve">
+    <value>한국어</value>
+  </data>
+  <data name="LanguageSpanish" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="LanguagePortugueseBrazil" xml:space="preserve">
+    <value>Português (Brasil)</value>
+  </data>
+  <data name="LanguageFrench" xml:space="preserve">
+    <value>Français</value>
+  </data>
+  <data name="LanguageGerman" xml:space="preserve">
+    <value>Deutsch</value>
+  </data>
+  <data name="LanguageItalian" xml:space="preserve">
+    <value>Italiano</value>
+  </data>
+  <data name="LanguageRussian" xml:space="preserve">
+    <value>Русский</value>
+  </data>
+  <data name="LanguageArabic" xml:space="preserve">
+    <value>العربية</value>
+  </data>
+  <data name="LanguageHindi" xml:space="preserve">
+    <value>हिन्दी</value>
+  </data>
+  <data name="LanguageIndonesian" xml:space="preserve">
+    <value>Bahasa Indonesia</value>
+  </data>
+  <data name="LanguageThai" xml:space="preserve">
+    <value>ไทย</value>
+  </data>
+  <data name="LanguageTurkish" xml:space="preserve">
+    <value>Türkçe</value>
+  </data>
+  <data name="LanguageVietnamese" xml:space="preserve">
+    <value>Tiếng Việt</value>
+  </data>
+  <data name="LanguageBengali" xml:space="preserve">
+    <value>বাংলা</value>
+  </data>
+  <data name="LanguageRestartFailed" xml:space="preserve">
+    <value>Dil kaydedildi ancak uygulama yeniden başlatılamadı. Bir sonraki açılışta etkin olacak.</value>
+  </data>
+  <data name="DefaultConflictPolicyLabel" xml:space="preserve">
+    <value>Varsayılan çakışma ilkesi</value>
+  </data>
+  <data name="SkipIdenticalLabel" xml:space="preserve">
+    <value>İçeriği aynı olan dosyaları yazma (hedefin değiştirilme zamanı korunur)</value>
+  </data>
+  <data name="BackupBeforeOverwriteLabel" xml:space="preserve">
+    <value>Üzerine yazmadan önce yedek al (kapatırsanız üzerine yazma geri alınamaz)</value>
+  </data>
+  <data name="HistoryRetentionLabel" xml:space="preserve">
+    <value>Geçmişi saklama gün sayısı (0 = kalıcı)</value>
+  </data>
+  <data name="AutoGitAddLabel" xml:space="preserve">
+    <value>Yazdıktan sonra git add çalıştır</value>
+  </data>
+  <data name="WatchBranchLabel" xml:space="preserve">
+    <value>Dal değiştiğinde bildir</value>
+  </data>
+  <data name="RespectGitIgnoreLabel" xml:space="preserve">
+    <value>Yalnızca Git'in yok saymadığı dosyaları depola</value>
+  </data>
+  <data name="SectionExcludes" xml:space="preserve">
+    <value>Dışlama kuralları</value>
+  </data>
+  <data name="ExcludeHint" xml:space="preserve">
+    <value>Her satıra bir joker karakter, örneğin **/node_modules/**</value>
+  </data>
+  <data name="SectionWindowsIntegration" xml:space="preserve">
+    <value>Windows entegrasyonu</value>
+  </data>
+  <data name="ContextMenuLabel" xml:space="preserve">
+    <value>Gezgin sağ tık menüsünde “Geçici depolamaya ekle” seçeneğini göster</value>
+  </data>
+  <data name="StartWithWindowsLabel" xml:space="preserve">
+    <value>Windows ile başlat</value>
+  </data>
+  <data name="CloseToTrayLabel" xml:space="preserve">
+    <value>Pencere kapatıldığında sistem tepsisine küçült</value>
+  </data>
+  <data name="StartMinimizedLabel" xml:space="preserve">
+    <value>Başlangıçta sistem tepsisine küçülerek başlat</value>
+  </data>
+  <data name="HotkeyLabel" xml:space="preserve">
+    <value>Genel kısayol (geçici depolamaya ekle)</value>
+  </data>
+  <data name="SectionStorage" xml:space="preserve">
+    <value>Depolama</value>
+  </data>
+  <data name="RefreshStorageButton" xml:space="preserve">
+    <value>Kullanımı yenile</value>
+  </data>
+  <data name="CleanupStorageButton" xml:space="preserve">
+    <value>Kullanılmayan verileri temizle</value>
+  </data>
+  <data name="ClearHistoryButton" xml:space="preserve">
+    <value>Tüm geçmişi temizle</value>
+  </data>
+  <data name="SettingsSavedMessage" xml:space="preserve">
+    <value>Ayarlar kaydedildi.</value>
+  </data>
+  <data name="StorageUsageLabel" xml:space="preserve">
+    <value>Depolanan içerik: {0}</value>
+  </data>
+  <data name="StorageExportLabel" xml:space="preserve">
+    <value>Dışarı sürükleme geçici dosyaları: {0}</value>
+  </data>
+  <data name="StorageHistoryLabel" xml:space="preserve">
+    <value>Geçmiş: {0} kayıt</value>
+  </data>
+  <data name="CleanupConfirmTitle" xml:space="preserve">
+    <value>Kullanılmayan verileri temizle</value>
+  </data>
+  <data name="CleanupConfirmMessage" xml:space="preserve">
+    <value>Hiçbir depolanan öğenin veya geçmiş kaydının başvurmadığı içerikler silinsin mi?</value>
+  </data>
+  <data name="CleanupDoneMessage" xml:space="preserve">
+    <value>{0} içerik silindi.</value>
+  </data>
+  <data name="ClearHistoryConfirmTitle" xml:space="preserve">
+    <value>Tüm geçmişi temizle</value>
+  </data>
+  <data name="ClearHistoryConfirmMessage" xml:space="preserve">
+    <value>Tüm geçmiş ve yedekler silinecek, geri alma işlevi çalışmayacak. Devam edilsin mi?</value>
+  </data>
+  <data name="ClearHistoryDoneMessage" xml:space="preserve">
+    <value>{0} geçmiş kaydı silindi.</value>
+  </data>
+  <data name="NewPresetButton" xml:space="preserve">
+    <value>Ekle…</value>
+  </data>
+  <data name="NewPresetTitle" xml:space="preserve">
+    <value>Yeni kök klasör ön ayarı</value>
+  </data>
+  <data name="NewPresetDefaultName" xml:space="preserve">
+    <value>Yeni ön ayar</value>
+  </data>
+
+  <!-- ============ 根目录预设 ============ -->
+  <data name="RootPresetsTitle" xml:space="preserve">
+    <value>Kök klasör ön ayarları</value>
+  </data>
+  <data name="ColumnName" xml:space="preserve">
+    <value>Ad</value>
+  </data>
+  <data name="ColumnPath" xml:space="preserve">
+    <value>Yol</value>
+  </data>
+
+  <!-- ============ 对话框 ============ -->
+  <data name="MoveToGroupTitle" xml:space="preserve">
+    <value>Kutuya taşı</value>
+  </data>
+  <data name="ChooseTargetGroup" xml:space="preserve">
+    <value>Bir kutu seç</value>
+  </data>
+  <data name="InputTitle" xml:space="preserve">
+    <value>Girdi</value>
+  </data>
+  <data name="SetRootTitle" xml:space="preserve">
+    <value>Kök klasörü ayarla</value>
+  </data>
+  <data name="SetRootHint" xml:space="preserve">
+    <value>Kök klasörü seçin: depolanan öğelerin göreli yolu buna göre hesaplanır ve özgün konuma geri yazarken de kullanılır.</value>
+  </data>
+  <data name="NewRelativePathLabel" xml:space="preserve">
+    <value>Yeni göreli yol:</value>
+  </data>
+  <data name="EmptyRelativePath" xml:space="preserve">
+    <value>(göreli yol yok)</value>
+  </data>
+
+  <!-- ============ 关于 ============ -->
+  <data name="AboutTitle" xml:space="preserve">
+    <value>StashBay Hakkında</value>
+  </data>
+  <data name="AboutTagline" xml:space="preserve">
+    <value>Bir dosya geçici deposu - şimdi depolayın, dal değişiminden sonra geri yazın</value>
+  </data>
+  <data name="VersionLabel" xml:space="preserve">
+    <value>Sürüm {0}</value>
+  </data>
+  <data name="RuntimeLabel" xml:space="preserve">
+    <value>Çalışma zamanı .NET {0}</value>
+  </data>
+  <data name="GitFound" xml:space="preserve">
+    <value>Git bulundu</value>
+  </data>
+  <data name="GitMissing" xml:space="preserve">
+    <value>Git bulunamadı (Git özellikleri kapalı)</value>
+  </data>
+  <data name="GitUnknown" xml:space="preserve">
+    <value>Git durumu bilinmiyor</value>
+  </data>
+  <data name="DataDirectoryLabel" xml:space="preserve">
+    <value>Veri klasörü {0}</value>
+  </data>
+
+  <!-- ============ 托盘菜单 ============ -->
+  <data name="TrayShowCompact" xml:space="preserve">
+    <value>Geçici depolama alanını göster</value>
+  </data>
+  <data name="TrayOpenWorkbench" xml:space="preserve">
+    <value>Çalışma alanını aç</value>
+  </data>
+  <data name="TrayApplyOriginal" xml:space="preserve">
+    <value>Özgün konumlara uygula</value>
+  </data>
+  <data name="TrayUndoLast" xml:space="preserve">
+    <value>Son işlemi geri al</value>
+  </data>
+  <data name="TrayGitChanges" xml:space="preserve">
+    <value>Git değişikliklerinden depolamaya ekle…</value>
+  </data>
+  <data name="TrayFloatingWindow" xml:space="preserve">
+    <value>Yüzen pencereyi göster</value>
+  </data>
+  <data name="TrayHistory" xml:space="preserve">
+    <value>İşlem geçmişi…</value>
+  </data>
+  <data name="TrayRootPresets" xml:space="preserve">
+    <value>Kök klasör ön ayarları…</value>
+  </data>
+  <data name="TraySettings" xml:space="preserve">
+    <value>Ayarlar…</value>
+  </data>
+  <data name="TrayAbout" xml:space="preserve">
+    <value>StashBay Hakkında…</value>
+  </data>
+  <data name="TrayExit" xml:space="preserve">
+    <value>Çıkış</value>
+  </data>
+  <data name="NoGitItems" xml:space="preserve">
+    <value>Bu kutuda Git deposundan depolanan öğe yok.</value>
+  </data>
+  <data name="BranchSwitchedMessage" xml:space="preserve">
+    <value>{0}, {1} dalına geçti. {2} depolanan öğe özgün konumlarına uygulanabilir. Uygulamak için tıklayın.</value>
+  </data>
+  <data name="UnhandledErrorTitle" xml:space="preserve">
+    <value>StashBay beklenmeyen bir hatayla karşılaştı</value>
+  </data>
+
+  <!-- ============ 文件选择 / 拖出 ============ -->
+  <data name="PickItemsTitle" xml:space="preserve">
+    <value>Dosya ve klasör seç</value>
+  </data>
+  <data name="PickItemsHint" xml:space="preserve">
+    <value>Birden fazla öğe seçmek için Ctrl veya Shift tuşunu kullanın. Bir klasörü açmak için çift tıklayın.</value>
+  </data>
+  <data name="ParentFolder" xml:space="preserve">
+    <value>Üst klasör</value>
+  </data>
+  <data name="ClipboardBusyLong" xml:space="preserve">
+    <value>Pano başka bir program tarafından kullanılıyor. Daha sonra tekrar deneyin.</value>
+  </data>
+  <data name="LoadStashFailed" xml:space="preserve">
+    <value>Geçici depolama alanı yüklenemedi: {0}</value>
+  </data>
+  <data name="DragOutFailed" xml:space="preserve">
+    <value>Dışarı sürükleme başarısız: {0}</value>
+  </data>
+  <data name="AddToStashFailed" xml:space="preserve">
+    <value>Geçici depolamaya eklenemedi: {0}</value>
+  </data>
+  <data name="ThemeLabel" xml:space="preserve">
+    <value>Tema</value>
+  </data>
+  <data name="ThemeSystem" xml:space="preserve">
+    <value>Sistemi izle</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Açık</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Koyu</value>
+  </data>
+  <data name="AddSelectedButton" xml:space="preserve">
+    <value>Seçilenleri ekle</value>
+  </data>
+
+  <data name="ClearAllBoxesButton" xml:space="preserve">
+    <value>Tüm kutuları temizle</value>
+  </data>
+  <data name="ClearAllBoxesTooltip" xml:space="preserve">
+    <value>Tüm geçici depolama kutularını ve öğelerini temizle</value>
+  </data>
+  <data name="ClearAllBoxesTitle" xml:space="preserve">
+    <value>Tüm kutuları temizle</value>
+  </data>
+  <data name="ClearAllBoxesConfirm" xml:space="preserve">
+    <value>Tüm kutular temizlensin mi? İçlerindeki tüm depolanan öğeler silinecek.</value>
+  </data>
+  <data name="ClearAllBoxesDone" xml:space="preserve">
+    <value>Tüm kutular temizlendi.</value>
+  </data>
+  <data name="ClearBoxButton" xml:space="preserve">
+    <value>Geçerli kutuyu temizle</value>
+  </data>
+  <data name="ClearBoxConfirm" xml:space="preserve">
+    <value>“{0}” kutusu temizlensin mi? İçindeki tüm öğeler silinecek.</value>
+  </data>
+  <data name="ClearBoxDone" xml:space="preserve">
+    <value>“{0}” kutusu temizlendi.</value>
+  </data>
+  <data name="DropToStashPrompt" xml:space="preserve">
+    <value>Depolamak için bırakın</value>
+  </data>
+  <data name="DropToStashHint" xml:space="preserve">
+    <value>Otomatik olarak depolamak için dosyaları veya klasörleri bırakın</value>
+  </data>
+  <data name="TrayClearAll" xml:space="preserve">
+    <value>Tüm kutuları temizle</value>
+  </data>
+
+  <data name="RemoveAfterDragExportLabel" xml:space="preserve">
+    <value>Dışarı sürüklendikten sonra geçici depolamadan otomatik kaldır (DropPoint davranışı)</value>
+  </data>
+  <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
+    <value>Hedef klasöre bırakıldığında öğeleri otomatik kaldırır; kapatıldığında kutuda tutulur</value>
+  </data>
+
+  <data name="CollapseButton" xml:space="preserve">
+    <value>Daralt</value>
+  </data>
+  <data name="CollapseButtonTooltip" xml:space="preserve">
+    <value>Kompakt panele daralt (sürükle-bırak için uygun, kısayol: Esc / F11)</value>
+  </data>
+
+  <data name="StatusClipboardPasted" xml:space="preserve">
+    <value>Pano içeriği geçici kasaya eklendi</value>
+  </data>
+  <data name="DragAllButton" xml:space="preserve">
+    <value>Tümünü Sürükle</value>
+  </data>
+  <data name="DragAllTooltip" xml:space="preserve">
+    <value>Tüm depolanan dosyaları tek seferde dışarı aktarmak için bu tutamacı sürükleyin</value>
+  </data>
+  <data name="AutoDismissWhenEmptyLabel" xml:space="preserve">
+    <value>Boşaldığında otomatik gizle</value>
+  </data>
+  <data name="AutoDismissWhenEmptyTooltip" xml:space="preserve">
+    <value>Tüm dosyalar dışarı sürüklendiğinde veya temizlendiğinde pencereyi otomatik gizle</value>
+  </data>
+  <data name="SummonAtCursorLabel" xml:space="preserve">
+    <value>İmleç yakınında aç</value>
+  </data>
+  <data name="SummonAtCursorTooltip" xml:space="preserve">
+    <value>Kısayol tuşuna basıldığında pencereyi doğrudan fare imlecinin konumunda aç</value>
+  </data>
+  <data name="EnableShakeToSummonLabel" xml:space="preserve">
+    <value>Sürüklerken sallayarak çağır</value>
+  </data>
+  <data name="EnableShakeToSummonTooltip" xml:space="preserve">
+    <value>Dosyaları sürüklerken imleci hızlıca sallayarak kasayı imleç konumunda açın</value>
+  </data>
+  <data name="SectionDeveloperOptions" xml:space="preserve">
+    <value>Gelişmiş ve Geliştirici Seçenekleri (Git)</value>
+  </data>
+  <data name="DeveloperOptionsHint" xml:space="preserve">
+    <value>Yalnızca bir Git deposundaki dosyaları geçici olarak depolarken geçerlidir. Genel dosya depolama ve geri yükleme tamamen bağımsız kalır.</value>
+  </data>
+  <data name="HotkeyRegisterFailedTitle" xml:space="preserve">
+    <value>Kısayol Kaydı Başarısız</value>
+  </data>
+  <data name="HotkeyRegisterFailedMessage" xml:space="preserve">
+    <value>"{0}" genel kısayolu kaydedilemedi. Başka bir uygulama tarafından kullanılıyor olabilir.</value>
+  </data>
+  <data name="HotkeyWorkbenchLabel" xml:space="preserve">
+    <value>Genel Kısayol (Çalışma Alanını Aç)</value>
+  </data>
+  <data name="HotkeyPasteLabel" xml:space="preserve">
+    <value>Genel kısayol (pano dosyalarını yapıştır)</value>
+  </data>
+  <data name="HotkeyRecordingHint" xml:space="preserve">
+    <value>Kaydetmek için tıklayın ve kısayola basın. İptal için Esc tuşuna basın.</value>
+  </data>
+  <data name="HotkeyClearButton" xml:space="preserve">
+    <value>Temizle</value>
+  </data>
+  <data name="PinButtonTooltip" xml:space="preserve">
+    <value>Üstte Sabitle</value>
+  </data>
+  <data name="ViewModeTree" xml:space="preserve">
+    <value>Ağaç</value>
+  </data>
+  <data name="ViewModeList" xml:space="preserve">
+    <value>Liste</value>
+  </data>
+  <data name="ViewModeSource" xml:space="preserve">
+    <value>Kaynağa göre</value>
+  </data>
+  <data name="ShelfApply" xml:space="preserve">
+    <value>Geri yaz</value>
+  </data>
+  <data name="ShelfClearAll" xml:space="preserve">
+    <value>Tümünü temizle</value>
+  </data>
+  <data name="ViewModeIcons" xml:space="preserve"><value>Simgeler</value></data>
+</root>

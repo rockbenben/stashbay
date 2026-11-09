@@ -1,0 +1,73 @@
+<Window x:Class="FileStash.App.Views.ResultToast"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:app="clr-namespace:FileStash.App.Resources"
+        Title="{x:Static app:Strings.ToastTitle}"
+        Width="380"
+        SizeToContent="Height"
+        MinHeight="132"
+        MaxHeight="392"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        ShowActivated="False"
+        WindowStartupLocation="Manual"
+        UseLayoutRounding="True">
+
+    <Border Background="{DynamicResource Brush.Surface}"
+            BorderBrush="{DynamicResource Brush.Border}"
+            BorderThickness="1"
+            CornerRadius="{DynamicResource Radius.Panel}"
+            Padding="16">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock x:Name="TitleText"
+                       Grid.Row="0"
+                       TextWrapping="Wrap"
+                       FontWeight="SemiBold"
+                       Text="{x:Static app:Strings.ToastSucceeded}" />
+
+            <Button x:Name="NoticeCloseButton" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Top"
+                    Width="20" Height="20" Padding="0" Style="{StaticResource Button.Ghost}"
+                    Visibility="Collapsed" ToolTip="{x:Static app:Strings.CloseButton}"
+                    AutomationProperties.Name="{x:Static app:Strings.CloseButton}" Click="OnClose">
+                <Path Data="M4 4L16 16M16 4L4 16" Stroke="{DynamicResource Brush.TextSecondary}"
+                      StrokeThickness="1.5" Width="10" Height="10" Stretch="Uniform" />
+            </Button>
+
+            <TextBlock x:Name="SummaryText"
+                       Grid.Row="1"
+                       Margin="0,8,0,0"
+                       Style="{StaticResource Text.Wrap}" />
+
+            <StackPanel x:Name="ActionPanel" Grid.Row="2" Margin="0,10,0,0">
+                <!-- 提权重试单独占一行。它是这四个动作里标签最长的一条（德语实测 235 DIP），
+                     四条并排时整行比这块板还宽，靠右对齐会把最左边那颗顶到窗口左缘外 111 DIP：
+                     看不见，也点不到。 -->
+                <Button x:Name="RetryButton"
+                        Content="{x:Static app:Strings.ToastRetryElevated}"
+                        Margin="0,0,0,6"
+                        Style="{StaticResource Button.Primary.End}"
+                        Visibility="Collapsed"
+                        Click="OnRetry" />
+
+                <StackPanel Style="{StaticResource Actions.End}">
+                    <Button x:Name="DetailsButton" Content="{x:Static app:Strings.ToastViewDetails}" Click="OnDetails" />
+                    <Button x:Name="UndoButton"
+                            Content="{x:Static app:Strings.UndoButton}"
+                            Margin="6,0,0,0"
+                            Style="{StaticResource Button.Primary}"
+                            Click="OnUndo" />
+                    <Button Content="{x:Static app:Strings.CloseButton}" Margin="6,0,0,0" Click="OnClose" />
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

@@ -1,0 +1,984 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ============ 通用 ============ -->
+  <data name="AppName" xml:space="preserve">
+    <value>StashBay</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Tidak diketahui</value>
+  </data>
+  <data name="OkButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Batal</value>
+  </data>
+  <data name="CloseButton" xml:space="preserve">
+    <value>Tutup</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Simpan</value>
+  </data>
+  <data name="RefreshButton" xml:space="preserve">
+    <value>Segarkan</value>
+  </data>
+  <data name="AddButton" xml:space="preserve">
+    <value>Tambah</value>
+  </data>
+  <data name="AbortButton" xml:space="preserve">
+    <value>Hentikan</value>
+  </data>
+  <data name="UndoButton" xml:space="preserve">
+    <value>Urungkan</value>
+  </data>
+  <data name="UndoLastButton" xml:space="preserve">
+    <value>Urungkan Terakhir</value>
+  </data>
+  <data name="UndoNeedsWrite" xml:space="preserve">
+    <value>Hanya operasi tulis yang dapat diurutkan - seret keluar tidak memiliki apa pun yang dapat dipulihkan</value>
+  </data>
+  <data name="UndoThisButton" xml:space="preserve">
+    <value>Urungkan Ini</value>
+  </data>
+  <data name="PreviewButton" xml:space="preserve">
+    <value>Pratinjau</value>
+  </data>
+  <data name="ApplyButton" xml:space="preserve">
+    <value>Tulis Kembali</value>
+  </data>
+  <data name="SettingsButton" xml:space="preserve">
+    <value>Pengaturan</value>
+  </data>
+  <data name="ExpandButton" xml:space="preserve">
+    <value>Perluas</value>
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
+    <value>Hapus</value>
+  </data>
+  <data name="CompareDiffButton" xml:space="preserve">
+    <value>Bandingkan dengan konten target saat ini</value>
+  </data>
+
+  <!-- ============ 枚举显示名 ============ -->
+  <data name="StateNew" xml:space="preserve">
+    <value>Baru</value>
+  </data>
+  <data name="StateOverwrite" xml:space="preserve">
+    <value>Timpa</value>
+  </data>
+  <data name="StateIdentical" xml:space="preserve">
+    <value>Identik</value>
+  </data>
+  <data name="StateTypeConflict" xml:space="preserve">
+    <value>Konflik Tipe</value>
+  </data>
+  <data name="StateInvalid" xml:space="preserve">
+    <value>Tidak Valid</value>
+  </data>
+  <data name="ActionCreate" xml:space="preserve">
+    <value>Buat</value>
+  </data>
+  <data name="ActionOverwrite" xml:space="preserve">
+    <value>Timpa</value>
+  </data>
+  <data name="ActionSkip" xml:space="preserve">
+    <value>Lewati</value>
+  </data>
+  <data name="ActionRename" xml:space="preserve">
+    <value>Ganti Nama</value>
+  </data>
+  <data name="OpRunning" xml:space="preserve">
+    <value>Berjalan</value>
+  </data>
+  <data name="OpSucceeded" xml:space="preserve">
+    <value>Berhasil</value>
+  </data>
+  <data name="OpPartiallyFailed" xml:space="preserve">
+    <value>Tertulis Sebagian</value>
+  </data>
+  <data name="OpFailed" xml:space="preserve">
+    <value>Gagal</value>
+  </data>
+  <data name="OpCancelled" xml:space="preserve">
+    <value>Dibatalkan</value>
+  </data>
+  <data name="OpUndone" xml:space="preserve">
+    <value>Sudah Diurutkan</value>
+  </data>
+  <data name="ResultCreated" xml:space="preserve">
+    <value>Dibuat</value>
+  </data>
+  <data name="ResultOverwritten" xml:space="preserve">
+    <value>Ditimpa</value>
+  </data>
+  <data name="ResultSkipped" xml:space="preserve">
+    <value>Dilewati</value>
+  </data>
+  <data name="ResultRenamed" xml:space="preserve">
+    <value>Diganti Nama</value>
+  </data>
+  <data name="ResultFailed" xml:space="preserve">
+    <value>Gagal</value>
+  </data>
+  <data name="ResultDirectoryCreated" xml:space="preserve">
+    <value>Folder Dibuat</value>
+  </data>
+  <data name="SourceUnchanged" xml:space="preserve">
+    <value>Tidak Berubah</value>
+  </data>
+  <data name="SourceModified" xml:space="preserve">
+    <value>Telah diubah</value>
+  </data>
+  <data name="SourceMissing" xml:space="preserve">
+    <value>File sumber telah dihapus</value>
+  </data>
+
+  <!-- ============ 主窗口：紧凑暂存区 ============ -->
+  <data name="CompactTitle" xml:space="preserve">
+    <value>Area Penyimpanan Sementara</value>
+  </data>
+  <data name="CompactEmptyTitle" xml:space="preserve">
+    <value>Area penyimpanan sementara kosong</value>
+  </data>
+  <data name="CompactEmptyHint" xml:space="preserve">
+    <value>Gunakan “Tambah” untuk memasukkan sesuatu, lalu seret keluar</value>
+  </data>
+  <data name="CompactFooter" xml:space="preserve">
+    <value>Tarik ke folder mana saja = simpan di sana</value>
+  </data>
+
+  <!-- ============ 主窗口：工作台 ============ -->
+  <data name="StashBoxLabel" xml:space="preserve">
+    <value>Kotak Penyimpanan</value>
+  </data>
+  <data name="NewGroupButton" xml:space="preserve">
+    <value>Kotak Baru</value>
+  </data>
+  <data name="WorkbenchEmptyTitle" xml:space="preserve">
+    <value>Belum ada apa-apa di meja kerja</value>
+  </data>
+  <data name="WorkbenchEmptyHint" xml:space="preserve">
+    <value>Letakkan file atau folder di sini, atau gunakan “Tambah” di kanan atas</value>
+  </data>
+  <data name="ColumnNamePath" xml:space="preserve">
+    <value>Nama / Path</value>
+  </data>
+  <data name="ColumnSize" xml:space="preserve">
+    <value>Ukuran</value>
+  </data>
+  <data name="ColumnSourceBranch" xml:space="preserve">
+    <value>Cabang Sumber</value>
+  </data>
+  <data name="ColumnSourceState" xml:space="preserve">
+    <value>Status Sumber</value>
+  </data>
+  <data name="MenuOpenSource" xml:space="preserve">
+    <value>Buka Lokasi Sumber</value>
+  </data>
+  <data name="MenuCopySourcePath" xml:space="preserve">
+    <value>Salin Path Sumber</value>
+  </data>
+  <data name="MenuCopyToClipboard" xml:space="preserve">
+    <value>Salin ke Clipboard</value>
+  </data>
+  <data name="MenuRefreshSnapshot" xml:space="preserve">
+    <value>Segarkan Snapshot</value>
+  </data>
+  <data name="MenuSetRoot" xml:space="preserve">
+    <value>Atur Folder Akar</value>
+  </data>
+  <data name="MenuMoveToGroup" xml:space="preserve">
+    <value>Pindahkan ke Kotak</value>
+  </data>
+  <data name="WillWriteMany" xml:space="preserve">
+    <value>Akan menulis {0} file, misalnya</value>
+  </data>
+  <data name="WriteBackLabel" xml:space="preserve">
+    <value>Tulis Kembali</value>
+  </data>
+  <data name="TargetOriginal" xml:space="preserve">
+    <value>Lokasi Asli</value>
+  </data>
+  <data name="TargetAnotherRoot" xml:space="preserve">
+    <value>Folder Akar Lain</value>
+  </data>
+  <data name="TargetSpecifiedPath" xml:space="preserve">
+    <value>Path yang Ditentukan</value>
+  </data>
+  <data name="BrowseTargetTooltip" xml:space="preserve">
+    <value>Telusuri Folder Target</value>
+  </data>
+  <data name="StructureLabel" xml:space="preserve">
+    <value>Struktur</value>
+  </data>
+  <data name="ConflictLabel" xml:space="preserve">
+    <value>Konflik</value>
+  </data>
+  <data name="WillWrite" xml:space="preserve">
+    <value>Akan menulis</value>
+  </data>
+  <data name="NothingToWrite" xml:space="preserve">
+    <value>Belum ada yang bisa ditulis</value>
+  </data>
+
+  <!-- ============ 目标模式 / 结构 / 冲突策略 ============ -->
+  <data name="StructureFullRelative" xml:space="preserve">
+    <value>Path relatif lengkap</value>
+  </data>
+  <data name="StructureItemOnly" xml:space="preserve">
+    <value>Hanya item tersimpan</value>
+  </data>
+  <data name="StructureFlatten" xml:space="preserve">
+    <value>Ratakan semuanya</value>
+  </data>
+  <data name="ConflictAsk" xml:space="preserve">
+    <value>Tanya</value>
+  </data>
+
+  <!-- ============ 主 ViewModel 的状态与提示 ============ -->
+  <data name="StatusReady" xml:space="preserve">
+    <value>Siap</value>
+  </data>
+  <data name="StatusEmpty" xml:space="preserve">
+    <value>Belum ada yang disimpan</value>
+  </data>
+  <data name="StatusSummary" xml:space="preserve">
+    <value>{0} item · {1} file · {2}</value>
+  </data>
+  <data name="StatusBusy" xml:space="preserve">
+    <value>Memproses…</value>
+  </data>
+  <data name="StatusAdding" xml:space="preserve">
+    <value>Menambahkan ke area penyimpanan sementara ({0}/{1})</value>
+  </data>
+  <data name="StatusAddAborted" xml:space="preserve">
+    <value>Penambahan dihentikan</value>
+  </data>
+  <data name="StatusAborting" xml:space="preserve">
+    <value>Menghentikan…</value>
+  </data>
+  <data name="StatusRefreshing" xml:space="preserve">
+    <value>Menyegarkan snapshot</value>
+  </data>
+  <data name="StatusSnapshotRefreshed" xml:space="preserve">
+    <value>Snapshot disegarkan</value>
+  </data>
+  <data name="StatusRootUpdated" xml:space="preserve">
+    <value>Folder akar diperbarui</value>
+  </data>
+  <data name="StatusSourcePathCopied" xml:space="preserve">
+    <value>Path sumber disalin</value>
+  </data>
+  <data name="StatusClipboardFilled" xml:space="preserve">
+    <value>Path target diisi dari clipboard</value>
+  </data>
+  <data name="StatusPreparingExport" xml:space="preserve">
+    <value>Menyiapkan konten untuk diseret keluar…</value>
+  </data>
+  <data name="StatusCopiedToClipboard" xml:space="preserve">
+    <value>Disalin ke clipboard ({0} item)</value>
+  </data>
+  <data name="StatusWriting" xml:space="preserve">
+    <value>Menulis ({0}/{1})</value>
+  </data>
+  <data name="StatusLoadFailed" xml:space="preserve">
+    <value>Gagal memuat item tersimpan: {0}</value>
+  </data>
+  <data name="StatusSourceStateFailed" xml:space="preserve">
+    <value>Gagal membaca status sumber: {0}</value>
+  </data>
+  <data name="ToastAdded" xml:space="preserve">
+    <value>Ditambahkan {0} item</value>
+  </data>
+  <data name="ToastDuplicates" xml:space="preserve">
+    <value>{0} path sudah ada di area penyimpanan sementara (dilewati)</value>
+  </data>
+  <data name="ToastFailedPaths" xml:space="preserve">
+    <value>{0} path gagal</value>
+  </data>
+  <data name="ToastWarnings" xml:space="preserve">
+    <value>{0} peringatan</value>
+  </data>
+  <data name="AddToStashTitle" xml:space="preserve">
+    <value>Tambahkan ke Area Penyimpanan Sementara</value>
+  </data>
+  <data name="SkippedTitle" xml:space="preserve">
+    <value>Dilewati</value>
+  </data>
+  <data name="DefaultGroupName" xml:space="preserve">
+    <value>Penyimpanan Sementara Default</value>
+  </data>
+  <data name="NewGroupTitle" xml:space="preserve">
+    <value>Kotak Baru</value>
+  </data>
+  <data name="RenameGroupTitle" xml:space="preserve">
+    <value>Ganti Nama Kotak</value>
+  </data>
+  <data name="DeleteGroupTitle" xml:space="preserve">
+    <value>Hapus Kotak</value>
+  </data>
+  <data name="DeleteGroupConfirm" xml:space="preserve">
+    <value>Hapus kotak “{0}”? Item tersimpan di dalamnya juga akan dihapus.</value>
+  </data>
+  <data name="NoGroupTitle" xml:space="preserve">
+    <value>Belum Ada Kotak Penyimpanan</value>
+  </data>
+  <data name="NoGroupHint" xml:space="preserve">
+    <value>Buat kotak dulu sebelum menambahkan ke area penyimpanan sementara.</value>
+  </data>
+  <data name="SetRootFailedTitle" xml:space="preserve">
+    <value>Gagal mengatur folder akar</value>
+  </data>
+  <data name="DeleteItemTitle" xml:space="preserve">
+    <value>Hapus dari Kotak</value>
+  </data>
+  <data name="DeleteItemConfirm" xml:space="preserve">
+    <value>Hapus “{0}” dari kotak? File asli tidak akan dihapus, hanya salinan tersimpan yang dibersihkan.</value>
+  </data>
+  <data name="NoOtherGroupHint" xml:space="preserve">
+    <value>Tidak ada kotak lain untuk dipindahkan. Buat satu terlebih dahulu.</value>
+  </data>
+  <data name="OpenSourceFailedTitle" xml:space="preserve">
+    <value>Gagal membuka lokasi sumber</value>
+  </data>
+  <data name="CopyFailedTitle" xml:space="preserve">
+    <value>Gagal menyalin</value>
+  </data>
+  <data name="ClipboardBusy" xml:space="preserve">
+    <value>Clipboard sedang dipakai program lain.</value>
+  </data>
+  <data name="DragExportTarget" xml:space="preserve">
+    <value>Seret keluar {0} item</value>
+  </data>
+  <data name="NothingToWriteTitle" xml:space="preserve">
+    <value>Tidak ada yang bisa ditulis</value>
+  </data>
+  <data name="NothingToWriteHint" xml:space="preserve">
+    <value>Kotak ini belum memiliki item tersimpan.</value>
+  </data>
+  <data name="NothingToUndoMessage" xml:space="preserve">
+    <value>Belum ada yang ditulis.</value>
+  </data>
+  <data name="NothingToUndoTitle" xml:space="preserve">
+    <value>Tidak ada yang dapat diurutkan</value>
+  </data>
+  <data name="UndoDoneMessage" xml:space="preserve">
+    <value>Dipulihkan {0} file, dihapus {1}.</value>
+  </data>
+
+  <!-- ============ 树行 ============ -->
+  <data name="TreeEmpty" xml:space="preserve">
+    <value>Kosong</value>
+  </data>
+  <data name="TreeItemCount" xml:space="preserve">
+    <value>{0} item</value>
+  </data>
+  <data name="TreeItemFileCount" xml:space="preserve">
+    <value>{0} item · {1} file</value>
+  </data>
+
+  <!-- ============ Git 改动对话框 ============ -->
+  <data name="GitStatusTitle" xml:space="preserve">
+    <value>Pilih file yang berubah</value>
+  </data>
+  <data name="GitChangedSummary" xml:space="preserve">
+    <value>{0} perubahan</value>
+  </data>
+  <data name="GitChangedSummaryWithDeleted" xml:space="preserve">
+    <value>{0} perubahan, {1} di antaranya dihapus (tidak dapat ditambahkan ke area penyimpanan sementara)</value>
+  </data>
+  <data name="GitNoSelection" xml:space="preserve">
+    <value>Tidak ada file yang dipilih.</value>
+  </data>
+  <data name="GitAddedMessage" xml:space="preserve">
+    <value>Ditambahkan {0} item.</value>
+  </data>
+  <data name="GitDeletedSkipped" xml:space="preserve">
+    <value>{0} file yang dihapus dilewati (path sumber tidak ada lagi).</value>
+  </data>
+
+  <!-- ============ 操作历史 ============ -->
+  <data name="HistoryTitle" xml:space="preserve">
+    <value>Riwayat Operasi</value>
+  </data>
+  <data name="ColumnTime" xml:space="preserve">
+    <value>Waktu</value>
+  </data>
+  <data name="ColumnTarget" xml:space="preserve">
+    <value>Target</value>
+  </data>
+  <data name="ColumnSourceItem" xml:space="preserve">
+    <value>Dari</value>
+  </data>
+  <data name="ColumnStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="ColumnTargetPath" xml:space="preserve">
+    <value>Path Target</value>
+  </data>
+  <data name="ColumnResult" xml:space="preserve">
+    <value>Hasil</value>
+  </data>
+  <data name="ColumnError" xml:space="preserve">
+    <value>Kesalahan</value>
+  </data>
+  <data name="OpenTargetFolderButton" xml:space="preserve">
+    <value>Buka Folder Target</value>
+  </data>
+  <data name="UndoConfirmTitle" xml:space="preserve">
+    <value>Urungkan Operasi</value>
+  </data>
+  <data name="UndoConfirmMessage" xml:space="preserve">
+    <value>Urungkan penulisan dari {0}?</value>
+  </data>
+  <data name="UndoConfirmNote" xml:space="preserve">
+    <value>File yang diubah setelah itu akan dilewati.</value>
+  </data>
+  <data name="TargetFolderMissing" xml:space="preserve">
+    <value>Folder target tidak ada.</value>
+  </data>
+  <data name="OpenFailedTitle" xml:space="preserve">
+    <value>Gagal membuka</value>
+  </data>
+
+  <!-- ============ 写入预览 ============ -->
+  <data name="PreviewTitle" xml:space="preserve">
+    <value>Pratinjau Tulis Kembali</value>
+  </data>
+  <data name="ColumnAction" xml:space="preserve">
+    <value>Aksi</value>
+  </data>
+  <data name="ColumnWarning" xml:space="preserve">
+    <value>Peringatan</value>
+  </data>
+  <data name="PreviewTargetOriginal" xml:space="preserve">
+    <value>Target: lokasi asli (setiap item ditulis kembali ke folder akarnya sendiri)</value>
+  </data>
+  <data name="PreviewTargetAnotherRoot" xml:space="preserve">
+    <value>Target: folder akar lain {0}</value>
+  </data>
+  <data name="PreviewTargetSpecifiedPath" xml:space="preserve">
+    <value>Target: path yang ditentukan {0}</value>
+  </data>
+  <data name="PreviewTargetDragExport" xml:space="preserve">
+    <value>Target: seret keluar</value>
+  </data>
+  <data name="PreviewSummary" xml:space="preserve">
+    <value>Baru {0} · Timpa {1} · Sama {2} · Konflik Tipe {3} · Tidak Valid {4}</value>
+  </data>
+  <data name="PreviewWritten" xml:space="preserve">
+    <value>Ditulis: {0}</value>
+  </data>
+  <data name="PreviewAborted" xml:space="preserve">
+    <value>Penulisan dihentikan</value>
+  </data>
+  <data name="PreviewFailed" xml:space="preserve">
+    <value>Gagal menulis: {0}</value>
+  </data>
+  <data name="CompareFailed" xml:space="preserve">
+    <value>Gagal membuka alat perbandingan: {0}</value>
+  </data>
+
+  <!-- ============ 写入结果提示 ============ -->
+  <data name="ToastTargetLine" xml:space="preserve">
+    <value>Target {0}</value>
+  </data>
+  <data name="ToastTitle" xml:space="preserve">
+    <value>Hasil Tulis Kembali</value>
+  </data>
+  <data name="ToastSucceeded" xml:space="preserve">
+    <value>Penulisan selesai</value>
+  </data>
+  <data name="ToastPartiallyFailed" xml:space="preserve">
+    <value>Tertulis Sebagian</value>
+  </data>
+  <data name="ToastCancelled" xml:space="preserve">
+    <value>Dibatalkan</value>
+  </data>
+  <data name="ToastRetryElevated" xml:space="preserve">
+    <value>Coba Lagi sebagai Administrator</value>
+  </data>
+  <data name="ToastViewDetails" xml:space="preserve">
+    <value>Lihat Detail</value>
+  </data>
+  <data name="ToastCreated" xml:space="preserve">
+    <value>Dibuat {0}</value>
+  </data>
+  <data name="ToastOverwritten" xml:space="preserve">
+    <value>Ditimpa {0}</value>
+  </data>
+  <data name="ToastSkipped" xml:space="preserve">
+    <value>Dilewati {0}</value>
+  </data>
+  <data name="ToastFailed" xml:space="preserve">
+    <value>Gagal {0}</value>
+  </data>
+  <data name="ItemSeparator" xml:space="preserve">
+    <value>,</value>
+  </data>
+  <data name="SentenceEnd" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="ClauseSeparator" xml:space="preserve">
+    <value>;</value>
+  </data>
+  <data name="ProgressSeparator" xml:space="preserve">
+    <value> ·</value>
+  </data>
+  <data name="ToastNothingWritten" xml:space="preserve">
+    <value>Tidak ada file yang ditulis.</value>
+  </data>
+  <data name="ToastDetailLine" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="ToastNoFailures" xml:space="preserve">
+    <value>Tidak ada entri yang gagal.</value>
+  </data>
+  <data name="ToastDetailsTitle" xml:space="preserve">
+    <value>Detail Tulis Kembali</value>
+  </data>
+  <data name="ToastElevatedFailed" xml:space="preserve">
+    <value>Tidak dapat memulai proses dengan hak elevasi (prompt UAC mungkin dibatalkan).</value>
+  </data>
+
+  <!-- ============ 设置 ============ -->
+  <data name="SettingsTitle" xml:space="preserve">
+    <value>Pengaturan</value>
+  </data>
+  <data name="SectionGeneral" xml:space="preserve">
+    <value>Umum</value>
+  </data>
+  <data name="LanguageLabel" xml:space="preserve">
+    <value>Bahasa</value>
+  </data>
+  <data name="LanguageSystem" xml:space="preserve">
+    <value>Ikuti sistem</value>
+  </data>
+  <data name="LanguageChinese" xml:space="preserve">
+    <value>简体中文</value>
+  </data>
+  <data name="LanguageTraditionalChinese" xml:space="preserve">
+    <value>繁體中文</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="LanguageJapanese" xml:space="preserve">
+    <value>日本語</value>
+  </data>
+  <data name="LanguageKorean" xml:space="preserve">
+    <value>한국어</value>
+  </data>
+  <data name="LanguageSpanish" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="LanguagePortugueseBrazil" xml:space="preserve">
+    <value>Português (Brasil)</value>
+  </data>
+  <data name="LanguageFrench" xml:space="preserve">
+    <value>Français</value>
+  </data>
+  <data name="LanguageGerman" xml:space="preserve">
+    <value>Deutsch</value>
+  </data>
+  <data name="LanguageItalian" xml:space="preserve">
+    <value>Italiano</value>
+  </data>
+  <data name="LanguageRussian" xml:space="preserve">
+    <value>Русский</value>
+  </data>
+  <data name="LanguageArabic" xml:space="preserve">
+    <value>العربية</value>
+  </data>
+  <data name="LanguageHindi" xml:space="preserve">
+    <value>हिन्दी</value>
+  </data>
+  <data name="LanguageIndonesian" xml:space="preserve">
+    <value>Bahasa Indonesia</value>
+  </data>
+  <data name="LanguageThai" xml:space="preserve">
+    <value>ไทย</value>
+  </data>
+  <data name="LanguageTurkish" xml:space="preserve">
+    <value>Türkçe</value>
+  </data>
+  <data name="LanguageVietnamese" xml:space="preserve">
+    <value>Tiếng Việt</value>
+  </data>
+  <data name="LanguageBengali" xml:space="preserve">
+    <value>বাংলা</value>
+  </data>
+  <data name="LanguageRestartFailed" xml:space="preserve">
+    <value>Bahasa sudah disimpan, tetapi aplikasi tidak dapat dimulai ulang - akan berlaku saat aplikasi dibuka lagi berikutnya.</value>
+  </data>
+  <data name="DefaultConflictPolicyLabel" xml:space="preserve">
+    <value>Kebijakan konflik default</value>
+  </data>
+  <data name="SkipIdenticalLabel" xml:space="preserve">
+    <value>Lewati file dengan konten identik (mempertahankan waktu modifikasi target)</value>
+  </data>
+  <data name="BackupBeforeOverwriteLabel" xml:space="preserve">
+    <value>Cadangkan sebelum menimpa (matikan agar penimpaan tidak dapat diurutkan)</value>
+  </data>
+  <data name="HistoryRetentionLabel" xml:space="preserve">
+    <value>Jumlah hari menyimpan riwayat (0 = selamanya)</value>
+  </data>
+  <data name="AutoGitAddLabel" xml:space="preserve">
+    <value>Jalankan git add setelah menulis</value>
+  </data>
+  <data name="WatchBranchLabel" xml:space="preserve">
+    <value>Beri tahu saat cabang berubah</value>
+  </data>
+  <data name="RespectGitIgnoreLabel" xml:space="preserve">
+    <value>Hanya simpan file yang tidak diabaikan Git</value>
+  </data>
+  <data name="SectionExcludes" xml:space="preserve">
+    <value>Pengecualian</value>
+  </data>
+  <data name="ExcludeHint" xml:space="preserve">
+    <value>Satu glob per baris, misalnya **/node_modules/**</value>
+  </data>
+  <data name="SectionWindowsIntegration" xml:space="preserve">
+    <value>Integrasi Windows</value>
+  </data>
+  <data name="ContextMenuLabel" xml:space="preserve">
+    <value>Tampilkan “Tambahkan ke Area Penyimpanan Sementara” di menu konteks Explorer</value>
+  </data>
+  <data name="StartWithWindowsLabel" xml:space="preserve">
+    <value>Mulai dengan Windows</value>
+  </data>
+  <data name="CloseToTrayLabel" xml:space="preserve">
+    <value>Perkecil ke system tray saat jendela ditutup</value>
+  </data>
+  <data name="StartMinimizedLabel" xml:space="preserve">
+    <value>Mulai dalam kondisi diperkecil ke system tray</value>
+  </data>
+  <data name="HotkeyLabel" xml:space="preserve">
+    <value>Pintasan global (tambahkan ke area penyimpanan sementara)</value>
+  </data>
+  <data name="SectionStorage" xml:space="preserve">
+    <value>Penyimpanan</value>
+  </data>
+  <data name="RefreshStorageButton" xml:space="preserve">
+    <value>Segarkan penggunaan</value>
+  </data>
+  <data name="CleanupStorageButton" xml:space="preserve">
+    <value>Bersihkan data yang tidak terpakai</value>
+  </data>
+  <data name="ClearHistoryButton" xml:space="preserve">
+    <value>Hapus semua riwayat</value>
+  </data>
+  <data name="SettingsSavedMessage" xml:space="preserve">
+    <value>Pengaturan disimpan.</value>
+  </data>
+  <data name="StorageUsageLabel" xml:space="preserve">
+    <value>Konten tersimpan: {0}</value>
+  </data>
+  <data name="StorageExportLabel" xml:space="preserve">
+    <value>File sementara untuk seret keluar: {0}</value>
+  </data>
+  <data name="StorageHistoryLabel" xml:space="preserve">
+    <value>Riwayat: {0} entri</value>
+  </data>
+  <data name="CleanupConfirmTitle" xml:space="preserve">
+    <value>Bersihkan data yang tidak terpakai</value>
+  </data>
+  <data name="CleanupConfirmMessage" xml:space="preserve">
+    <value>Hapus konten yang tidak dirujuk oleh item tersimpan atau entri riwayat?</value>
+  </data>
+  <data name="CleanupDoneMessage" xml:space="preserve">
+    <value>{0} konten dihapus.</value>
+  </data>
+  <data name="ClearHistoryConfirmTitle" xml:space="preserve">
+    <value>Hapus semua riwayat</value>
+  </data>
+  <data name="ClearHistoryConfirmMessage" xml:space="preserve">
+    <value>Semua riwayat dan cadangan akan dihapus, dan fitur urungkan tidak akan berfungsi lagi. Lanjutkan?</value>
+  </data>
+  <data name="ClearHistoryDoneMessage" xml:space="preserve">
+    <value>{0} entri riwayat dihapus.</value>
+  </data>
+  <data name="NewPresetButton" xml:space="preserve">
+    <value>Tambah…</value>
+  </data>
+  <data name="NewPresetTitle" xml:space="preserve">
+    <value>Preset folder akar baru</value>
+  </data>
+  <data name="NewPresetDefaultName" xml:space="preserve">
+    <value>Preset baru</value>
+  </data>
+
+  <!-- ============ 根目录预设 ============ -->
+  <data name="RootPresetsTitle" xml:space="preserve">
+    <value>Preset Folder Akar</value>
+  </data>
+  <data name="ColumnName" xml:space="preserve">
+    <value>Nama</value>
+  </data>
+  <data name="ColumnPath" xml:space="preserve">
+    <value>Path</value>
+  </data>
+
+  <!-- ============ 对话框 ============ -->
+  <data name="MoveToGroupTitle" xml:space="preserve">
+    <value>Pindahkan ke Kotak</value>
+  </data>
+  <data name="ChooseTargetGroup" xml:space="preserve">
+    <value>Pilih Kotak Tujuan</value>
+  </data>
+  <data name="InputTitle" xml:space="preserve">
+    <value>Input</value>
+  </data>
+  <data name="SetRootTitle" xml:space="preserve">
+    <value>Atur Folder Akar</value>
+  </data>
+  <data name="SetRootHint" xml:space="preserve">
+    <value>Pilih folder akar: sub-path item tersimpan dihitung darinya, dan penulisan kembali ke lokasi asli juga memakainya.</value>
+  </data>
+  <data name="NewRelativePathLabel" xml:space="preserve">
+    <value>Sub-path baru:</value>
+  </data>
+  <data name="EmptyRelativePath" xml:space="preserve">
+    <value>(tanpa sub-path)</value>
+  </data>
+
+  <!-- ============ 关于 ============ -->
+  <data name="AboutTitle" xml:space="preserve">
+    <value>Tentang StashBay</value>
+  </data>
+  <data name="AboutTagline" xml:space="preserve">
+    <value>Penyimpanan file — simpan sekarang, tulis kembali setelah berganti cabang</value>
+  </data>
+  <data name="VersionLabel" xml:space="preserve">
+    <value>Versi {0}</value>
+  </data>
+  <data name="RuntimeLabel" xml:space="preserve">
+    <value>Runtime .NET {0}</value>
+  </data>
+  <data name="GitFound" xml:space="preserve">
+    <value>Git ditemukan</value>
+  </data>
+  <data name="GitMissing" xml:space="preserve">
+    <value>Git tidak ditemukan (fitur Git dimatikan)</value>
+  </data>
+  <data name="GitUnknown" xml:space="preserve">
+    <value>Status Git tidak diketahui</value>
+  </data>
+  <data name="DataDirectoryLabel" xml:space="preserve">
+    <value>Folder data {0}</value>
+  </data>
+
+  <!-- ============ 托盘菜单 ============ -->
+  <data name="TrayShowCompact" xml:space="preserve">
+    <value>Tampilkan area penyimpanan sementara</value>
+  </data>
+  <data name="TrayOpenWorkbench" xml:space="preserve">
+    <value>Buka meja kerja</value>
+  </data>
+  <data name="TrayApplyOriginal" xml:space="preserve">
+    <value>Terapkan ke lokasi asli</value>
+  </data>
+  <data name="TrayUndoLast" xml:space="preserve">
+    <value>Urungkan terakhir</value>
+  </data>
+  <data name="TrayGitChanges" xml:space="preserve">
+    <value>Tambahkan dari perubahan Git…</value>
+  </data>
+  <data name="TrayFloatingWindow" xml:space="preserve">
+    <value>Tampilkan jendela mengambang</value>
+  </data>
+  <data name="TrayHistory" xml:space="preserve">
+    <value>Riwayat operasi…</value>
+  </data>
+  <data name="TrayRootPresets" xml:space="preserve">
+    <value>Preset folder akar…</value>
+  </data>
+  <data name="TraySettings" xml:space="preserve">
+    <value>Pengaturan…</value>
+  </data>
+  <data name="TrayAbout" xml:space="preserve">
+    <value>Tentang StashBay…</value>
+  </data>
+  <data name="TrayExit" xml:space="preserve">
+    <value>Keluar</value>
+  </data>
+  <data name="NoGitItems" xml:space="preserve">
+    <value>Kotak ini tidak memiliki item tersimpan dari repositori Git.</value>
+  </data>
+  <data name="BranchSwitchedMessage" xml:space="preserve">
+    <value>{0} sudah beralih ke {1}. {2} item tersimpan dapat diterapkan ke lokasi aslinya - klik untuk menerapkan.</value>
+  </data>
+  <data name="UnhandledErrorTitle" xml:space="preserve">
+    <value>StashBay mengalami kesalahan yang tidak terduga</value>
+  </data>
+
+  <!-- ============ 文件选择 / 拖出 ============ -->
+  <data name="PickItemsTitle" xml:space="preserve">
+    <value>Pilih file dan folder</value>
+  </data>
+  <data name="PickItemsHint" xml:space="preserve">
+    <value>Gunakan Ctrl atau Shift untuk memilih beberapa item. Klik dua kali folder untuk membukanya.</value>
+  </data>
+  <data name="ParentFolder" xml:space="preserve">
+    <value>Folder induk</value>
+  </data>
+  <data name="ClipboardBusyLong" xml:space="preserve">
+    <value>Clipboard sedang dipakai program lain. Coba lagi nanti.</value>
+  </data>
+  <data name="LoadStashFailed" xml:space="preserve">
+    <value>Gagal memuat area penyimpanan sementara: {0}</value>
+  </data>
+  <data name="DragOutFailed" xml:space="preserve">
+    <value>Gagal menyeret keluar: {0}</value>
+  </data>
+  <data name="AddToStashFailed" xml:space="preserve">
+    <value>Gagal menambahkan ke area penyimpanan sementara: {0}</value>
+  </data>
+  <data name="ThemeLabel" xml:space="preserve">
+    <value>Tema</value>
+  </data>
+  <data name="ThemeSystem" xml:space="preserve">
+    <value>Ikuti sistem</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Terang</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Gelap</value>
+  </data>
+  <data name="AddSelectedButton" xml:space="preserve">
+    <value>Tambahkan yang dipilih</value>
+  </data>
+
+  <data name="ClearAllBoxesButton" xml:space="preserve">
+    <value>Bersihkan semua kotak</value>
+  </data>
+  <data name="ClearAllBoxesTooltip" xml:space="preserve">
+    <value>Bersihkan semua kotak penyimpanan dan item</value>
+  </data>
+  <data name="ClearAllBoxesTitle" xml:space="preserve">
+    <value>Bersihkan Semua Kotak</value>
+  </data>
+  <data name="ClearAllBoxesConfirm" xml:space="preserve">
+    <value>Yakin ingin membersihkan semua kotak? Semua item tersimpan akan dihapus.</value>
+  </data>
+  <data name="ClearAllBoxesDone" xml:space="preserve">
+    <value>Semua kotak penyimpanan telah dibersihkan.</value>
+  </data>
+  <data name="ClearBoxButton" xml:space="preserve">
+    <value>Bersihkan kotak saat ini</value>
+  </data>
+  <data name="ClearBoxConfirm" xml:space="preserve">
+    <value>Bersihkan kotak “{0}”? Semua item di dalamnya akan dihapus.</value>
+  </data>
+  <data name="ClearBoxDone" xml:space="preserve">
+    <value>Kotak “{0}” telah dibersihkan.</value>
+  </data>
+  <data name="DropToStashPrompt" xml:space="preserve">
+    <value>Lepaskan untuk menyimpan</value>
+  </data>
+  <data name="DropToStashHint" xml:space="preserve">
+    <value>Lepaskan file atau folder untuk menyimpannya secara otomatis</value>
+  </data>
+  <data name="TrayClearAll" xml:space="preserve">
+    <value>Bersihkan semua kotak</value>
+  </data>
+
+  <data name="RemoveAfterDragExportLabel" xml:space="preserve">
+    <value>Hapus otomatis dari penyimpanan setelah diseret keluar (perilaku DropPoint)</value>
+  </data>
+  <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
+    <value>Menghapus item secara otomatis setelah dijatuhkan ke folder tujuan; jika nonaktif, item tetap disimpan</value>
+  </data>
+
+  <data name="CollapseButton" xml:space="preserve">
+    <value>Ciutkan</value>
+  </data>
+  <data name="CollapseButtonTooltip" xml:space="preserve">
+    <value>Ciutkan ke panel ringkas (mudah untuk seret-lepas, pintasan: Esc / F11)</value>
+  </data>
+
+  <data name="StatusClipboardPasted" xml:space="preserve">
+    <value>Konten papan klip disimpan ke penyimpanan sementara</value>
+  </data>
+  <data name="DragAllButton" xml:space="preserve">
+    <value>Tarik Semua</value>
+  </data>
+  <data name="DragAllTooltip" xml:space="preserve">
+    <value>Tarik pegangan ini untuk mengekspor semua berkas sekaligus ke tujuan luar</value>
+  </data>
+  <data name="AutoDismissWhenEmptyLabel" xml:space="preserve">
+    <value>Sembunyikan otomatis saat kosong</value>
+  </data>
+  <data name="AutoDismissWhenEmptyTooltip" xml:space="preserve">
+    <value>Sembunyikan jendela secara otomatis setelah semua berkas ditarik keluar atau dikosongkan</value>
+  </data>
+  <data name="SummonAtCursorLabel" xml:space="preserve">
+    <value>Panggil dekat kursor</value>
+  </data>
+  <data name="SummonAtCursorTooltip" xml:space="preserve">
+    <value>Buka jendela langsung di posisi kursor mouse saat tombol pintas ditekan</value>
+  </data>
+  <data name="EnableShakeToSummonLabel" xml:space="preserve">
+    <value>Goyangkan kursor saat menarik untuk memanggil</value>
+  </data>
+  <data name="EnableShakeToSummonTooltip" xml:space="preserve">
+    <value>Goyangkan mouse dengan cepat saat menarik berkas untuk membuka rak penyimpanan</value>
+  </data>
+  <data name="SectionDeveloperOptions" xml:space="preserve">
+    <value>Opsi Lanjutan &amp; Pengembang (Git)</value>
+  </data>
+  <data name="DeveloperOptionsHint" xml:space="preserve">
+    <value>Hanya berlaku saat menyimpan sementara file di repositori Git. Penyimpanan sementara dan pemulihan file umum tetap sepenuhnya independen.</value>
+  </data>
+  <data name="HotkeyRegisterFailedTitle" xml:space="preserve">
+    <value>Pendaftaran Tombol Pintas Gagal</value>
+  </data>
+  <data name="HotkeyRegisterFailedMessage" xml:space="preserve">
+    <value>Gagal mendaftarkan tombol pintas global "{0}". Mungkin sudah digunakan oleh aplikasi lain.</value>
+  </data>
+  <data name="HotkeyWorkbenchLabel" xml:space="preserve">
+    <value>Tombol Pintas Global (Buka Meja Kerja)</value>
+  </data>
+  <data name="HotkeyPasteLabel" xml:space="preserve">
+    <value>Pintasan global (tempel file papan klip)</value>
+  </data>
+  <data name="HotkeyRecordingHint" xml:space="preserve">
+    <value>Klik dan tekan tombol pintas untuk merekam. Tekan Esc untuk membatalkan.</value>
+  </data>
+  <data name="HotkeyClearButton" xml:space="preserve">
+    <value>Hapus</value>
+  </data>
+  <data name="PinButtonTooltip" xml:space="preserve">
+    <value>Sematkan di Atas</value>
+  </data>
+  <data name="ViewModeTree" xml:space="preserve">
+    <value>Pohon</value>
+  </data>
+  <data name="ViewModeList" xml:space="preserve">
+    <value>Daftar</value>
+  </data>
+  <data name="ViewModeSource" xml:space="preserve">
+    <value>Per sumber</value>
+  </data>
+  <data name="ShelfApply" xml:space="preserve">
+    <value>Tulis balik</value>
+  </data>
+  <data name="ShelfClearAll" xml:space="preserve">
+    <value>Hapus semua</value>
+  </data>
+  <data name="ViewModeIcons" xml:space="preserve"><value>Ikon</value></data>
+</root>

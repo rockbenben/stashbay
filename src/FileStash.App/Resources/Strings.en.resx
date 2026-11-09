@@ -1,0 +1,984 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ============ Common ============ -->
+  <data name="AppName" xml:space="preserve">
+    <value>StashBay</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="OkButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CloseButton" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="RefreshButton" xml:space="preserve">
+    <value>Refresh</value>
+ </data>
+  <data name="AddButton" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="AbortButton" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="UndoButton" xml:space="preserve">
+    <value>Undo</value>
+  </data>
+  <data name="UndoLastButton" xml:space="preserve">
+    <value>Undo last</value>
+  </data>
+  <data name="UndoNeedsWrite" xml:space="preserve">
+    <value>Only write operations can be undone - a drag-out has nothing to restore</value>
+  </data>
+  <data name="UndoThisButton" xml:space="preserve">
+    <value>Undo this</value>
+  </data>
+  <data name="PreviewButton" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="ApplyButton" xml:space="preserve">
+    <value>Write back</value>
+  </data>
+  <data name="SettingsButton" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="ExpandButton" xml:space="preserve">
+    <value>Expand</value>
+ </data>
+  <data name="DeleteButton" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="CompareDiffButton" xml:space="preserve">
+    <value>Compare with current target content</value>
+  </data>
+
+  <!-- ============ Enum labels ============ -->
+  <data name="StateNew" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="StateOverwrite" xml:space="preserve">
+    <value>Overwrite</value>
+  </data>
+  <data name="StateIdentical" xml:space="preserve">
+    <value>Identical</value>
+  </data>
+  <data name="StateTypeConflict" xml:space="preserve">
+    <value>Type conflict</value>
+  </data>
+  <data name="StateInvalid" xml:space="preserve">
+    <value>Invalid</value>
+  </data>
+  <data name="ActionCreate" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="ActionOverwrite" xml:space="preserve">
+    <value>Overwrite</value>
+  </data>
+  <data name="ActionSkip" xml:space="preserve">
+    <value>Skip</value>
+  </data>
+  <data name="ActionRename" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="OpRunning" xml:space="preserve">
+    <value>Running</value>
+  </data>
+  <data name="OpSucceeded" xml:space="preserve">
+    <value>Succeeded</value>
+  </data>
+  <data name="OpPartiallyFailed" xml:space="preserve">
+    <value>Partially written</value>
+  </data>
+  <data name="OpFailed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="OpCancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="OpUndone" xml:space="preserve">
+    <value>Undone</value>
+  </data>
+  <data name="ResultCreated" xml:space="preserve">
+    <value>Created</value>
+  </data>
+  <data name="ResultOverwritten" xml:space="preserve">
+    <value>Overwritten</value>
+  </data>
+  <data name="ResultSkipped" xml:space="preserve">
+    <value>Skipped</value>
+  </data>
+  <data name="ResultRenamed" xml:space="preserve">
+    <value>Renamed</value>
+  </data>
+  <data name="ResultFailed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="ResultDirectoryCreated" xml:space="preserve">
+    <value>Directory created</value>
+  </data>
+  <data name="SourceUnchanged" xml:space="preserve">
+    <value>Unchanged</value>
+  </data>
+  <data name="SourceModified" xml:space="preserve">
+    <value>Modified</value>
+  </data>
+  <data name="SourceMissing" xml:space="preserve">
+    <value>Source deleted</value>
+  </data>
+
+  <!-- ============ Main window: compact stash ============ -->
+  <data name="CompactTitle" xml:space="preserve">
+    <value>Stash</value>
+  </data>
+  <data name="CompactEmptyTitle" xml:space="preserve">
+    <value>The stash is empty</value>
+  </data>
+  <data name="CompactEmptyHint" xml:space="preserve">
+    <value>Use “Add” to put something in, then drag it out</value>
+  </data>
+  <data name="CompactFooter" xml:space="preserve">
+    <value>Drag to any folder to save it there</value>
+  </data>
+
+  <!-- ============ Main window: workbench ============ -->
+  <data name="StashBoxLabel" xml:space="preserve">
+    <value>Stash boxes</value>
+  </data>
+  <data name="NewGroupButton" xml:space="preserve">
+    <value>New box</value>
+  </data>
+  <data name="WorkbenchEmptyTitle" xml:space="preserve">
+    <value>Nothing on the workbench</value>
+  </data>
+  <data name="WorkbenchEmptyHint" xml:space="preserve">
+    <value>Drop files or folders here, or use “Add” at the top right</value>
+  </data>
+  <data name="ColumnNamePath" xml:space="preserve">
+    <value>Name / path</value>
+  </data>
+  <data name="ColumnSize" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="ColumnSourceBranch" xml:space="preserve">
+    <value>Source branch</value>
+  </data>
+  <data name="ColumnSourceState" xml:space="preserve">
+    <value>Source state</value>
+  </data>
+  <data name="MenuOpenSource" xml:space="preserve">
+    <value>Open source location</value>
+  </data>
+  <data name="MenuCopySourcePath" xml:space="preserve">
+    <value>Copy source path</value>
+  </data>
+  <data name="MenuCopyToClipboard" xml:space="preserve">
+    <value>Copy to clipboard</value>
+  </data>
+  <data name="MenuRefreshSnapshot" xml:space="preserve">
+    <value>Refresh snapshot</value>
+  </data>
+  <data name="MenuSetRoot" xml:space="preserve">
+    <value>Set root</value>
+  </data>
+  <data name="MenuMoveToGroup" xml:space="preserve">
+    <value>Move to box</value>
+  </data>
+  <data name="WillWriteMany" xml:space="preserve">
+    <value>Will write {0} files, e.g.</value>
+  </data>
+  <data name="WriteBackLabel" xml:space="preserve">
+    <value>Write back</value>
+  </data>
+  <data name="TargetOriginal" xml:space="preserve">
+    <value>Original location</value>
+  </data>
+  <data name="TargetAnotherRoot" xml:space="preserve">
+    <value>Another root</value>
+  </data>
+  <data name="TargetSpecifiedPath" xml:space="preserve">
+    <value>Specified path</value>
+  </data>
+  <data name="BrowseTargetTooltip" xml:space="preserve">
+    <value>Browse target folder</value>
+  </data>
+  <data name="StructureLabel" xml:space="preserve">
+    <value>Structure</value>
+  </data>
+  <data name="ConflictLabel" xml:space="preserve">
+    <value>Conflicts</value>
+  </data>
+  <data name="WillWrite" xml:space="preserve">
+    <value>Will write</value>
+  </data>
+  <data name="NothingToWrite" xml:space="preserve">
+    <value>Nothing to write yet</value>
+  </data>
+
+  <!-- ============ Target mode / structure / conflict policy ============ -->
+  <data name="StructureFullRelative" xml:space="preserve">
+    <value>Full relative path</value>
+  </data>
+  <data name="StructureItemOnly" xml:space="preserve">
+    <value>The stashed item only</value>
+  </data>
+  <data name="StructureFlatten" xml:space="preserve">
+    <value>Flatten everything</value>
+  </data>
+  <data name="ConflictAsk" xml:space="preserve">
+    <value>Ask</value>
+  </data>
+
+  <!-- ============ Main view model: status and messages ============ -->
+  <data name="StatusReady" xml:space="preserve">
+    <value>Ready</value>
+  </data>
+  <data name="StatusEmpty" xml:space="preserve">
+    <value>Nothing stashed yet</value>
+  </data>
+  <data name="StatusSummary" xml:space="preserve">
+    <value>{0} items · {1} files · {2}</value>
+  </data>
+  <data name="StatusBusy" xml:space="preserve">
+    <value>Working…</value>
+  </data>
+  <data name="StatusAdding" xml:space="preserve">
+    <value>Adding to stash ({0}/{1})</value>
+  </data>
+  <data name="StatusAddAborted" xml:space="preserve">
+    <value>Adding stopped</value>
+  </data>
+  <data name="StatusAborting" xml:space="preserve">
+    <value>Stopping…</value>
+  </data>
+  <data name="StatusRefreshing" xml:space="preserve">
+    <value>Refreshing the snapshot</value>
+  </data>
+  <data name="StatusSnapshotRefreshed" xml:space="preserve">
+    <value>Snapshot refreshed</value>
+  </data>
+  <data name="StatusRootUpdated" xml:space="preserve">
+    <value>Root updated</value>
+  </data>
+  <data name="StatusSourcePathCopied" xml:space="preserve">
+    <value>Source path copied</value>
+  </data>
+  <data name="StatusClipboardFilled" xml:space="preserve">
+    <value>Filled the target path from the clipboard</value>
+  </data>
+  <data name="StatusPreparingExport" xml:space="preserve">
+    <value>Preparing the drag-out…</value>
+  </data>
+  <data name="StatusCopiedToClipboard" xml:space="preserve">
+    <value>Copied to the clipboard ({0} items)</value>
+  </data>
+  <data name="StatusWriting" xml:space="preserve">
+    <value>Writing ({0}/{1})</value>
+  </data>
+  <data name="StatusLoadFailed" xml:space="preserve">
+    <value>Could not load the stashed items: {0}</value>
+  </data>
+  <data name="StatusSourceStateFailed" xml:space="preserve">
+    <value>Could not read the source state: {0}</value>
+  </data>
+  <data name="ToastAdded" xml:space="preserve">
+    <value>Added {0} items</value>
+  </data>
+  <data name="ToastDuplicates" xml:space="preserve">
+    <value>{0} paths are already in the stash (skipped)</value>
+  </data>
+  <data name="ToastFailedPaths" xml:space="preserve">
+    <value>{0} paths failed</value>
+  </data>
+  <data name="ToastWarnings" xml:space="preserve">
+    <value>{0} warnings</value>
+  </data>
+  <data name="AddToStashTitle" xml:space="preserve">
+    <value>Add to stash</value>
+  </data>
+  <data name="SkippedTitle" xml:space="preserve">
+    <value>Skipped</value>
+  </data>
+  <data name="DefaultGroupName" xml:space="preserve">
+    <value>Default stash</value>
+  </data>
+  <data name="NewGroupTitle" xml:space="preserve">
+    <value>New box</value>
+  </data>
+  <data name="RenameGroupTitle" xml:space="preserve">
+    <value>Rename box</value>
+  </data>
+  <data name="DeleteGroupTitle" xml:space="preserve">
+    <value>Delete box</value>
+  </data>
+  <data name="DeleteGroupConfirm" xml:space="preserve">
+    <value>Delete the box “{0}”? Its stashed items go with it.</value>
+  </data>
+  <data name="NoGroupTitle" xml:space="preserve">
+    <value>No stash boxes</value>
+  </data>
+  <data name="NoGroupHint" xml:space="preserve">
+    <value>Create a box before adding to the stash.</value>
+  </data>
+  <data name="SetRootFailedTitle" xml:space="preserve">
+    <value>Could not set the root</value>
+  </data>
+  <data name="DeleteItemTitle" xml:space="preserve">
+    <value>Remove from box</value>
+  </data>
+  <data name="DeleteItemConfirm" xml:space="preserve">
+    <value>Remove “{0}” from the box? The original file stays where it is; only the stashed copy is deleted.</value>
+  </data>
+  <data name="NoOtherGroupHint" xml:space="preserve">
+    <value>There is no other box to move to. Create one first.</value>
+  </data>
+  <data name="OpenSourceFailedTitle" xml:space="preserve">
+    <value>Could not open the source location</value>
+  </data>
+  <data name="CopyFailedTitle" xml:space="preserve">
+    <value>Copy failed</value>
+  </data>
+  <data name="ClipboardBusy" xml:space="preserve">
+    <value>The clipboard is in use by another program.</value>
+  </data>
+  <data name="DragExportTarget" xml:space="preserve">
+    <value>Drag out {0} items</value>
+  </data>
+  <data name="NothingToWriteTitle" xml:space="preserve">
+    <value>Nothing to write</value>
+  </data>
+  <data name="NothingToWriteHint" xml:space="preserve">
+    <value>This box has no stashed items.</value>
+  </data>
+  <data name="NothingToUndoMessage" xml:space="preserve">
+    <value>Nothing has been written yet.</value>
+  </data>
+  <data name="NothingToUndoTitle" xml:space="preserve">
+    <value>Nothing to undo</value>
+  </data>
+  <data name="UndoDoneMessage" xml:space="preserve">
+    <value>Restored {0} files, deleted {1}.</value>
+  </data>
+
+  <!-- ============ Tree rows ============ -->
+  <data name="TreeEmpty" xml:space="preserve">
+    <value>Empty</value>
+  </data>
+  <data name="TreeItemCount" xml:space="preserve">
+    <value>{0} items</value>
+  </data>
+  <data name="TreeItemFileCount" xml:space="preserve">
+    <value>{0} items · {1} files</value>
+  </data>
+
+  <!-- ============ Git changes dialog ============ -->
+  <data name="GitStatusTitle" xml:space="preserve">
+    <value>Choose changed files</value>
+  </data>
+  <data name="GitChangedSummary" xml:space="preserve">
+    <value>{0} changes</value>
+  </data>
+  <data name="GitChangedSummaryWithDeleted" xml:space="preserve">
+    <value>{0} changes, {1} of them deleted (cannot be added to the stash)</value>
+  </data>
+  <data name="GitNoSelection" xml:space="preserve">
+    <value>No files selected.</value>
+  </data>
+  <data name="GitAddedMessage" xml:space="preserve">
+    <value>Added {0} items.</value>
+  </data>
+  <data name="GitDeletedSkipped" xml:space="preserve">
+    <value>{0} deleted files were skipped (the source path no longer exists).</value>
+  </data>
+
+  <!-- ============ Operation history ============ -->
+  <data name="HistoryTitle" xml:space="preserve">
+    <value>Operation history</value>
+  </data>
+  <data name="ColumnTime" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="ColumnTarget" xml:space="preserve">
+    <value>Target</value>
+  </data>
+  <data name="ColumnSourceItem" xml:space="preserve">
+    <value>From</value>
+  </data>
+  <data name="ColumnStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="ColumnTargetPath" xml:space="preserve">
+    <value>Target path</value>
+  </data>
+  <data name="ColumnResult" xml:space="preserve">
+    <value>Result</value>
+  </data>
+  <data name="ColumnError" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="OpenTargetFolderButton" xml:space="preserve">
+    <value>Open target folder</value>
+  </data>
+  <data name="UndoConfirmTitle" xml:space="preserve">
+    <value>Undo</value>
+  </data>
+  <data name="UndoConfirmMessage" xml:space="preserve">
+    <value>Undo the write from {0}?</value>
+  </data>
+  <data name="UndoConfirmNote" xml:space="preserve">
+    <value>Files that were changed since then will be skipped.</value>
+  </data>
+  <data name="TargetFolderMissing" xml:space="preserve">
+    <value>The target folder does not exist.</value>
+  </data>
+  <data name="OpenFailedTitle" xml:space="preserve">
+    <value>Could not open</value>
+  </data>
+
+  <!-- ============ Write-back preview ============ -->
+  <data name="PreviewTitle" xml:space="preserve">
+    <value>Write-back preview</value>
+  </data>
+  <data name="ColumnAction" xml:space="preserve">
+    <value>Action</value>
+  </data>
+  <data name="ColumnWarning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="PreviewTargetOriginal" xml:space="preserve">
+    <value>Target: original location (each item is written back to its own root)</value>
+  </data>
+  <data name="PreviewTargetAnotherRoot" xml:space="preserve">
+    <value>Target: another root {0}</value>
+  </data>
+  <data name="PreviewTargetSpecifiedPath" xml:space="preserve">
+    <value>Target: specified path {0}</value>
+  </data>
+  <data name="PreviewTargetDragExport" xml:space="preserve">
+    <value>Target: drag-out</value>
+  </data>
+  <data name="PreviewSummary" xml:space="preserve">
+    <value>New {0} · Overwrite {1} · Identical {2} · Type conflict {3} · Invalid {4}</value>
+  </data>
+  <data name="PreviewWritten" xml:space="preserve">
+    <value>Written: {0}</value>
+  </data>
+  <data name="PreviewAborted" xml:space="preserve">
+    <value>Write-back stopped</value>
+  </data>
+  <data name="PreviewFailed" xml:space="preserve">
+    <value>Write-back failed: {0}</value>
+  </data>
+  <data name="CompareFailed" xml:space="preserve">
+    <value>Could not open the compare tool: {0}</value>
+  </data>
+
+  <!-- ============ Write-back result toast ============ -->
+  <data name="ToastTargetLine" xml:space="preserve">
+    <value>Target {0}</value>
+  </data>
+  <data name="ToastTitle" xml:space="preserve">
+    <value>Write-back result</value>
+  </data>
+  <data name="ToastSucceeded" xml:space="preserve">
+    <value>Write-back complete</value>
+  </data>
+  <data name="ToastPartiallyFailed" xml:space="preserve">
+    <value>Partially written</value>
+  </data>
+  <data name="ToastCancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="ToastRetryElevated" xml:space="preserve">
+    <value>Retry as administrator</value>
+  </data>
+  <data name="ToastViewDetails" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="ToastCreated" xml:space="preserve">
+    <value>Created {0}</value>
+  </data>
+  <data name="ToastOverwritten" xml:space="preserve">
+    <value>Overwritten {0}</value>
+  </data>
+  <data name="ToastSkipped" xml:space="preserve">
+    <value>Skipped {0}</value>
+  </data>
+  <data name="ToastFailed" xml:space="preserve">
+    <value>Failed {0}</value>
+  </data>
+  <data name="ItemSeparator" xml:space="preserve">
+    <value>, </value>
+  </data>
+  <data name="SentenceEnd" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="ClauseSeparator" xml:space="preserve">
+    <value>; </value>
+  </data>
+  <data name="ProgressSeparator" xml:space="preserve">
+    <value> · </value>
+  </data>
+  <data name="ToastNothingWritten" xml:space="preserve">
+    <value>No files were written.</value>
+  </data>
+  <data name="ToastDetailLine" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="ToastNoFailures" xml:space="preserve">
+    <value>No failed entries.</value>
+  </data>
+  <data name="ToastDetailsTitle" xml:space="preserve">
+    <value>Write-back details</value>
+  </data>
+  <data name="ToastElevatedFailed" xml:space="preserve">
+    <value>Could not start the elevated process (the UAC prompt may have been cancelled).</value>
+  </data>
+
+  <!-- ============ Settings ============ -->
+  <data name="SettingsTitle" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="SectionGeneral" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="LanguageLabel" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="LanguageSystem" xml:space="preserve">
+    <value>Follow the system</value>
+  </data>
+  <data name="LanguageChinese" xml:space="preserve">
+    <value>简体中文</value>
+  </data>
+  <data name="LanguageTraditionalChinese" xml:space="preserve">
+    <value>繁體中文</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="LanguageJapanese" xml:space="preserve">
+    <value>日本語</value>
+  </data>
+  <data name="LanguageKorean" xml:space="preserve">
+    <value>한국어</value>
+  </data>
+  <data name="LanguageSpanish" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="LanguagePortugueseBrazil" xml:space="preserve">
+    <value>Português (Brasil)</value>
+  </data>
+  <data name="LanguageFrench" xml:space="preserve">
+    <value>Français</value>
+  </data>
+  <data name="LanguageGerman" xml:space="preserve">
+    <value>Deutsch</value>
+  </data>
+  <data name="LanguageItalian" xml:space="preserve">
+    <value>Italiano</value>
+  </data>
+  <data name="LanguageRussian" xml:space="preserve">
+    <value>Русский</value>
+  </data>
+  <data name="LanguageArabic" xml:space="preserve">
+    <value>العربية</value>
+  </data>
+  <data name="LanguageHindi" xml:space="preserve">
+    <value>हिन्दी</value>
+  </data>
+  <data name="LanguageIndonesian" xml:space="preserve">
+    <value>Bahasa Indonesia</value>
+  </data>
+  <data name="LanguageThai" xml:space="preserve">
+    <value>ไทย</value>
+  </data>
+  <data name="LanguageTurkish" xml:space="preserve">
+    <value>Türkçe</value>
+  </data>
+  <data name="LanguageVietnamese" xml:space="preserve">
+    <value>Tiếng Việt</value>
+  </data>
+  <data name="LanguageBengali" xml:space="preserve">
+    <value>বাংলা</value>
+  </data>
+  <data name="LanguageRestartFailed" xml:space="preserve">
+    <value>The language was saved, but the app could not be restarted — it will take effect the next time you launch it.</value>
+  </data>
+  <data name="DefaultConflictPolicyLabel" xml:space="preserve">
+    <value>Default conflict policy</value>
+  </data>
+  <data name="SkipIdenticalLabel" xml:space="preserve">
+    <value>Files with identical content are skipped (keeps the target's modified time)</value>
+  </data>
+  <data name="BackupBeforeOverwriteLabel" xml:space="preserve">
+    <value>Back up before overwriting (turn it off to make overwrites irreversible)</value>
+  </data>
+  <data name="HistoryRetentionLabel" xml:space="preserve">
+    <value>Days to keep history (0 = forever)</value>
+  </data>
+  <data name="AutoGitAddLabel" xml:space="preserve">
+    <value>Git add is run after writing</value>
+  </data>
+  <data name="WatchBranchLabel" xml:space="preserve">
+    <value>Notify when the branch changes</value>
+  </data>
+  <data name="RespectGitIgnoreLabel" xml:space="preserve">
+    <value>Only stash files that Git does not ignore</value>
+  </data>
+  <data name="SectionExcludes" xml:space="preserve">
+    <value>Exclusions</value>
+  </data>
+  <data name="ExcludeHint" xml:space="preserve">
+    <value>One glob per line, for example **/node_modules/**</value>
+  </data>
+  <data name="SectionWindowsIntegration" xml:space="preserve">
+    <value>Windows integration</value>
+  </data>
+  <data name="ContextMenuLabel" xml:space="preserve">
+    <value>“Add to stash” appears in the Explorer context menu</value>
+  </data>
+  <data name="StartWithWindowsLabel" xml:space="preserve">
+    <value>Start with Windows</value>
+  </data>
+  <data name="CloseToTrayLabel" xml:space="preserve">
+    <value>Minimise to the tray when the window is closed</value>
+  </data>
+  <data name="StartMinimizedLabel" xml:space="preserve">
+    <value>Start minimised to the tray</value>
+  </data>
+  <data name="HotkeyLabel" xml:space="preserve">
+    <value>Global shortcut (add to stash)</value>
+  </data>
+  <data name="SectionStorage" xml:space="preserve">
+    <value>Storage</value>
+  </data>
+  <data name="RefreshStorageButton" xml:space="preserve">
+    <value>Refresh usage</value>
+  </data>
+  <data name="CleanupStorageButton" xml:space="preserve">
+    <value>Clean unused data</value>
+  </data>
+  <data name="ClearHistoryButton" xml:space="preserve">
+    <value>Clear all history</value>
+  </data>
+  <data name="SettingsSavedMessage" xml:space="preserve">
+    <value>Settings saved.</value>
+  </data>
+  <data name="StorageUsageLabel" xml:space="preserve">
+    <value>Stashed content: {0}</value>
+  </data>
+  <data name="StorageExportLabel" xml:space="preserve">
+    <value>Drag-out temp files: {0}</value>
+  </data>
+  <data name="StorageHistoryLabel" xml:space="preserve">
+    <value>History: {0} entries</value>
+  </data>
+  <data name="CleanupConfirmTitle" xml:space="preserve">
+    <value>Clean unused data</value>
+  </data>
+  <data name="CleanupConfirmMessage" xml:space="preserve">
+    <value>Delete content that no stashed item or history entry refers to?</value>
+  </data>
+  <data name="CleanupDoneMessage" xml:space="preserve">
+    <value>Deleted {0} items.</value>
+  </data>
+  <data name="ClearHistoryConfirmTitle" xml:space="preserve">
+    <value>Clear all history</value>
+  </data>
+  <data name="ClearHistoryConfirmMessage" xml:space="preserve">
+    <value>All history and backups will be deleted, and undo will stop working. Continue?</value>
+  </data>
+  <data name="ClearHistoryDoneMessage" xml:space="preserve">
+    <value>Deleted {0} history entries.</value>
+  </data>
+  <data name="NewPresetButton" xml:space="preserve">
+    <value>Add…</value>
+  </data>
+  <data name="NewPresetTitle" xml:space="preserve">
+    <value>New root preset</value>
+  </data>
+  <data name="NewPresetDefaultName" xml:space="preserve">
+    <value>New preset</value>
+  </data>
+
+  <!-- ============ Root presets ============ -->
+  <data name="RootPresetsTitle" xml:space="preserve">
+    <value>Root presets</value>
+ </data>
+  <data name="ColumnName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ColumnPath" xml:space="preserve">
+    <value>Path</value>
+  </data>
+
+  <!-- ============ Dialogs ============ -->
+  <data name="MoveToGroupTitle" xml:space="preserve">
+    <value>Move to box</value>
+  </data>
+  <data name="ChooseTargetGroup" xml:space="preserve">
+    <value>Choose a box</value>
+  </data>
+  <data name="InputTitle" xml:space="preserve">
+    <value>Input</value>
+  </data>
+  <data name="SetRootTitle" xml:space="preserve">
+    <value>Set the root</value>
+  </data>
+  <data name="SetRootHint" xml:space="preserve">
+    <value>Choose the root: the sub-path of a stashed item is computed from it, and writing back to the original location uses it too.</value>
+  </data>
+  <data name="NewRelativePathLabel" xml:space="preserve">
+    <value>New relative path: </value>
+  </data>
+  <data name="EmptyRelativePath" xml:space="preserve">
+    <value>(no relative path)</value>
+  </data>
+
+  <!-- ============ About ============ -->
+  <data name="AboutTitle" xml:space="preserve">
+    <value>About StashBay</value>
+  </data>
+  <data name="AboutTagline" xml:space="preserve">
+    <value>A file stash — stash now, write back after a branch switch</value>
+  </data>
+  <data name="VersionLabel" xml:space="preserve">
+    <value>Version {0}</value>
+  </data>
+  <data name="RuntimeLabel" xml:space="preserve">
+    <value>Runtime .NET {0}</value>
+  </data>
+  <data name="GitFound" xml:space="preserve">
+    <value>Git found</value>
+  </data>
+  <data name="GitMissing" xml:space="preserve">
+    <value>Git not found (Git features are turned off)</value>
+  </data>
+  <data name="GitUnknown" xml:space="preserve">
+    <value>Git status unknown</value>
+  </data>
+  <data name="DataDirectoryLabel" xml:space="preserve">
+    <value>Data folder {0}</value>
+  </data>
+
+  <!-- ============ Tray menu ============ -->
+  <data name="TrayShowCompact" xml:space="preserve">
+    <value>Show the stash</value>
+  </data>
+  <data name="TrayOpenWorkbench" xml:space="preserve">
+    <value>Open the workbench</value>
+  </data>
+  <data name="TrayApplyOriginal" xml:space="preserve">
+    <value>Apply to original locations</value>
+  </data>
+  <data name="TrayUndoLast" xml:space="preserve">
+    <value>Undo last</value>
+  </data>
+  <data name="TrayGitChanges" xml:space="preserve">
+    <value>Add from Git changes…</value>
+  </data>
+  <data name="TrayFloatingWindow" xml:space="preserve">
+    <value>Show the floating window</value>
+  </data>
+  <data name="TrayHistory" xml:space="preserve">
+    <value>Operation history…</value>
+ </data>
+  <data name="TrayRootPresets" xml:space="preserve">
+    <value>Root presets…</value>
+  </data>
+  <data name="TraySettings" xml:space="preserve">
+    <value>Settings…</value>
+  </data>
+  <data name="TrayAbout" xml:space="preserve">
+    <value>About StashBay…</value>
+ </data>
+  <data name="TrayExit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="NoGitItems" xml:space="preserve">
+    <value>This box has no stashed items from a Git repository.</value>
+  </data>
+  <data name="BranchSwitchedMessage" xml:space="preserve">
+    <value>{0} switched to {1}. {2} stashed items can be applied to their original locations — click to apply.</value>
+  </data>
+  <data name="UnhandledErrorTitle" xml:space="preserve">
+    <value>StashBay hit an unexpected error</value>
+  </data>
+
+  <!-- ============ File picking / drag-out ============ -->
+  <data name="PickItemsTitle" xml:space="preserve">
+    <value>Select files and folders</value>
+  </data>
+  <data name="PickItemsHint" xml:space="preserve">
+    <value>Use Ctrl or Shift to select multiple items. Double-click a folder to open it.</value>
+  </data>
+  <data name="ParentFolder" xml:space="preserve">
+    <value>Parent folder</value>
+  </data>
+  <data name="ClipboardBusyLong" xml:space="preserve">
+    <value>The clipboard is in use by another program. Try again later.</value>
+  </data>
+  <data name="LoadStashFailed" xml:space="preserve">
+    <value>Could not load the stash: {0}</value>
+  </data>
+  <data name="DragOutFailed" xml:space="preserve">
+    <value>Drag-out failed: {0}</value>
+  </data>
+  <data name="AddToStashFailed" xml:space="preserve">
+    <value>Could not add to the stash: {0}</value>
+  </data>
+  <data name="ThemeLabel" xml:space="preserve">
+    <value>Theme</value>
+  </data>
+  <data name="ThemeSystem" xml:space="preserve">
+    <value>Follow system</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="AddSelectedButton" xml:space="preserve">
+    <value>Add selected</value>
+  </data>
+
+  <data name="ClearAllBoxesButton" xml:space="preserve">
+    <value>Clear all boxes</value>
+  </data>
+  <data name="ClearAllBoxesTooltip" xml:space="preserve">
+    <value>Clear all stash boxes and items</value>
+  </data>
+  <data name="ClearAllBoxesTitle" xml:space="preserve">
+    <value>Clear All Stash Boxes</value>
+  </data>
+  <data name="ClearAllBoxesConfirm" xml:space="preserve">
+    <value>Are you sure you want to clear all stash boxes? All stashed items will be removed.</value>
+  </data>
+  <data name="ClearAllBoxesDone" xml:space="preserve">
+    <value>All stash boxes have been cleared.</value>
+  </data>
+  <data name="ClearBoxButton" xml:space="preserve">
+    <value>Clear box</value>
+  </data>
+  <data name="ClearBoxConfirm" xml:space="preserve">
+    <value>Are you sure you want to clear stash box “{0}”? All stashed items in this box will be removed.</value>
+  </data>
+  <data name="ClearBoxDone" xml:space="preserve">
+    <value>Stash box “{0}” has been cleared.</value>
+  </data>
+  <data name="DropToStashPrompt" xml:space="preserve">
+    <value>Drop to stash</value>
+  </data>
+  <data name="DropToStashHint" xml:space="preserve">
+    <value>Release files or folders to stash them automatically</value>
+  </data>
+  <data name="TrayClearAll" xml:space="preserve">
+    <value>Clear all stash boxes</value>
+  </data>
+
+  <data name="RemoveAfterDragExportLabel" xml:space="preserve">
+    <value>Remove from stash after drag-out (DropPoint behavior)</value>
+  </data>
+  <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
+    <value>Automatically remove items from stash once dropped into a destination; when off, items are kept in stash</value>
+  </data>
+
+  <data name="CollapseButton" xml:space="preserve">
+    <value>Collapse</value>
+  </data>
+  <data name="CollapseButtonTooltip" xml:space="preserve">
+    <value>Collapse to compact shelf (convenient for drag-and-drop, shortcut: Esc / F11)</value>
+  </data>
+
+  <data name="StatusClipboardPasted" xml:space="preserve">
+    <value>Pasted content from clipboard into stash</value>
+  </data>
+  <data name="DragAllButton" xml:space="preserve">
+    <value>Drag All</value>
+  </data>
+  <data name="DragAllTooltip" xml:space="preserve">
+    <value>Drag this handle to export all stashed files at once to an external target</value>
+  </data>
+  <data name="AutoDismissWhenEmptyLabel" xml:space="preserve">
+    <value>Auto-hide when stash is empty</value>
+  </data>
+  <data name="AutoDismissWhenEmptyTooltip" xml:space="preserve">
+    <value>Automatically hide window after all files are dragged out or cleared</value>
+  </data>
+  <data name="SummonAtCursorLabel" xml:space="preserve">
+    <value>Summon near mouse cursor</value>
+  </data>
+  <data name="SummonAtCursorTooltip" xml:space="preserve">
+    <value>Pop up window directly at current mouse cursor when hotkey is pressed</value>
+  </data>
+  <data name="EnableShakeToSummonLabel" xml:space="preserve">
+    <value>Shake cursor while dragging to summon</value>
+  </data>
+  <data name="EnableShakeToSummonTooltip" xml:space="preserve">
+    <value>Shake cursor rapidly while dragging files to expand stash shelf at cursor</value>
+  </data>
+  <data name="SectionDeveloperOptions" xml:space="preserve">
+    <value>Advanced &amp; Developer Options (Git)</value>
+  </data>
+  <data name="DeveloperOptionsHint" xml:space="preserve">
+    <value>Applies only when stashing files within a Git repository. General file stash and restore remains completely independent.</value>
+  </data>
+  <data name="HotkeyRegisterFailedTitle" xml:space="preserve">
+    <value>Hotkey registration failed</value>
+  </data>
+  <data name="HotkeyRegisterFailedMessage" xml:space="preserve">
+    <value>Failed to register global hotkey “{0}”. It may be in use by another application.</value>
+  </data>
+  <data name="HotkeyWorkbenchLabel" xml:space="preserve">
+    <value>Global shortcut (open workbench)</value>
+  </data>
+  <data name="HotkeyPasteLabel" xml:space="preserve">
+    <value>Global hotkey (paste clipboard files)</value>
+  </data>
+  <data name="HotkeyRecordingHint" xml:space="preserve">
+    <value>Click to focus and press keyboard shortcut to record. Press Esc to cancel.</value>
+  </data>
+  <data name="HotkeyClearButton" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="PinButtonTooltip" xml:space="preserve">
+    <value>Pin on top</value>
+  </data>
+  <data name="ViewModeTree" xml:space="preserve">
+    <value>Tree</value>
+  </data>
+  <data name="ViewModeList" xml:space="preserve">
+    <value>List</value>
+  </data>
+  <data name="ViewModeSource" xml:space="preserve">
+    <value>By source</value>
+  </data>
+  <data name="ShelfApply" xml:space="preserve">
+    <value>Write back</value>
+  </data>
+  <data name="ShelfClearAll" xml:space="preserve">
+    <value>Clear all</value>
+  </data>
+  <data name="ViewModeIcons" xml:space="preserve"><value>Icons</value></data>
+</root>

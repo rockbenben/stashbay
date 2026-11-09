@@ -1,0 +1,984 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ============ 通用 ============ -->
+  <data name="AppName" xml:space="preserve">
+    <value>StashBay</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Không xác định</value>
+  </data>
+  <data name="OkButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="CloseButton" xml:space="preserve">
+    <value>Đóng</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Lưu</value>
+  </data>
+  <data name="RefreshButton" xml:space="preserve">
+    <value>Làm mới</value>
+  </data>
+  <data name="AddButton" xml:space="preserve">
+    <value>Thêm</value>
+  </data>
+  <data name="AbortButton" xml:space="preserve">
+    <value>Dừng</value>
+  </data>
+  <data name="UndoButton" xml:space="preserve">
+    <value>Hoàn tác</value>
+  </data>
+  <data name="UndoLastButton" xml:space="preserve">
+    <value>Hoàn tác lần trước</value>
+  </data>
+  <data name="UndoNeedsWrite" xml:space="preserve">
+    <value>Chỉ thao tác ghi mới có thể hoàn tác (kéo ra không có mục nào để khôi phục)</value>
+  </data>
+  <data name="UndoThisButton" xml:space="preserve">
+    <value>Hoàn tác lần này</value>
+  </data>
+  <data name="PreviewButton" xml:space="preserve">
+    <value>Xem trước</value>
+  </data>
+  <data name="ApplyButton" xml:space="preserve">
+    <value>Ghi lại</value>
+  </data>
+  <data name="SettingsButton" xml:space="preserve">
+    <value>Cài đặt</value>
+  </data>
+  <data name="ExpandButton" xml:space="preserve">
+    <value>Mở rộng</value>
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="CompareDiffButton" xml:space="preserve">
+    <value>So sánh với nội dung mục tiêu hiện tại</value>
+  </data>
+
+  <!-- ============ 枚举显示名 ============ -->
+  <data name="StateNew" xml:space="preserve">
+    <value>Mới</value>
+  </data>
+  <data name="StateOverwrite" xml:space="preserve">
+    <value>Ghi đè</value>
+  </data>
+  <data name="StateIdentical" xml:space="preserve">
+    <value>Giống nhau</value>
+  </data>
+  <data name="StateTypeConflict" xml:space="preserve">
+    <value>Xung đột kiểu</value>
+  </data>
+  <data name="StateInvalid" xml:space="preserve">
+    <value>Không hợp lệ</value>
+  </data>
+  <data name="ActionCreate" xml:space="preserve">
+    <value>Tạo</value>
+  </data>
+  <data name="ActionOverwrite" xml:space="preserve">
+    <value>Ghi đè</value>
+  </data>
+  <data name="ActionSkip" xml:space="preserve">
+    <value>Bỏ qua</value>
+  </data>
+  <data name="ActionRename" xml:space="preserve">
+    <value>Đổi tên</value>
+  </data>
+  <data name="OpRunning" xml:space="preserve">
+    <value>Đang chạy</value>
+  </data>
+  <data name="OpSucceeded" xml:space="preserve">
+    <value>Thành công</value>
+  </data>
+  <data name="OpPartiallyFailed" xml:space="preserve">
+    <value>Đã ghi một phần</value>
+  </data>
+  <data name="OpFailed" xml:space="preserve">
+    <value>Thất bại</value>
+  </data>
+  <data name="OpCancelled" xml:space="preserve">
+    <value>Đã hủy</value>
+  </data>
+  <data name="OpUndone" xml:space="preserve">
+    <value>Đã hoàn tác</value>
+  </data>
+  <data name="ResultCreated" xml:space="preserve">
+    <value>Đã tạo</value>
+  </data>
+  <data name="ResultOverwritten" xml:space="preserve">
+    <value>Đã ghi đè</value>
+  </data>
+  <data name="ResultSkipped" xml:space="preserve">
+    <value>Đã bỏ qua</value>
+  </data>
+  <data name="ResultRenamed" xml:space="preserve">
+    <value>Đã đổi tên</value>
+  </data>
+  <data name="ResultFailed" xml:space="preserve">
+    <value>Thất bại</value>
+  </data>
+  <data name="ResultDirectoryCreated" xml:space="preserve">
+    <value>Đã tạo thư mục</value>
+  </data>
+  <data name="SourceUnchanged" xml:space="preserve">
+    <value>Không thay đổi</value>
+  </data>
+  <data name="SourceModified" xml:space="preserve">
+    <value>Đã chỉnh sửa</value>
+  </data>
+  <data name="SourceMissing" xml:space="preserve">
+    <value>Tệp nguồn đã bị xóa</value>
+  </data>
+
+  <!-- ============ 主窗口：紧凑暂存区 ============ -->
+  <data name="CompactTitle" xml:space="preserve">
+    <value>Khu vực tạm trữ</value>
+  </data>
+  <data name="CompactEmptyTitle" xml:space="preserve">
+    <value>Khu vực tạm trữ trống</value>
+  </data>
+  <data name="CompactEmptyHint" xml:space="preserve">
+    <value>Dùng “Thêm” để đưa nội dung vào, sau đó kéo ra</value>
+  </data>
+  <data name="CompactFooter" xml:space="preserve">
+    <value>Kéo vào thư mục bất kỳ = lưu tại đó</value>
+  </data>
+
+  <!-- ============ 主窗口：工作台 ============ -->
+  <data name="StashBoxLabel" xml:space="preserve">
+    <value>Hộp tạm trữ</value>
+  </data>
+  <data name="NewGroupButton" xml:space="preserve">
+    <value>Hộp mới</value>
+  </data>
+  <data name="WorkbenchEmptyTitle" xml:space="preserve">
+    <value>Bàn làm việc vẫn trống</value>
+  </data>
+  <data name="WorkbenchEmptyHint" xml:space="preserve">
+    <value>Kéo tệp hoặc thư mục vào đây, hoặc dùng “Thêm” ở góc trên bên phải</value>
+  </data>
+  <data name="ColumnNamePath" xml:space="preserve">
+    <value>Tên / đường dẫn</value>
+  </data>
+  <data name="ColumnSize" xml:space="preserve">
+    <value>Kích thước</value>
+  </data>
+  <data name="ColumnSourceBranch" xml:space="preserve">
+    <value>Nhánh nguồn</value>
+  </data>
+  <data name="ColumnSourceState" xml:space="preserve">
+    <value>Trạng thái nguồn</value>
+  </data>
+  <data name="MenuOpenSource" xml:space="preserve">
+    <value>Mở vị trí nguồn</value>
+  </data>
+  <data name="MenuCopySourcePath" xml:space="preserve">
+    <value>Sao chép đường dẫn nguồn</value>
+  </data>
+  <data name="MenuCopyToClipboard" xml:space="preserve">
+    <value>Sao chép vào bảng nhớ tạm</value>
+  </data>
+  <data name="MenuRefreshSnapshot" xml:space="preserve">
+    <value>Làm mới ảnh chụp</value>
+  </data>
+  <data name="MenuSetRoot" xml:space="preserve">
+    <value>Đặt thư mục gốc</value>
+  </data>
+  <data name="MenuMoveToGroup" xml:space="preserve">
+    <value>Chuyển sang hộp</value>
+  </data>
+  <data name="WillWriteMany" xml:space="preserve">
+    <value>Sẽ ghi {0} tệp, ví dụ</value>
+  </data>
+  <data name="WriteBackLabel" xml:space="preserve">
+    <value>Ghi lại</value>
+  </data>
+  <data name="TargetOriginal" xml:space="preserve">
+    <value>Vị trí gốc</value>
+  </data>
+  <data name="TargetAnotherRoot" xml:space="preserve">
+    <value>Thư mục gốc khác</value>
+  </data>
+  <data name="TargetSpecifiedPath" xml:space="preserve">
+    <value>Đường dẫn đã chỉ định</value>
+  </data>
+  <data name="BrowseTargetTooltip" xml:space="preserve">
+    <value>Duyệt thư mục đích</value>
+  </data>
+  <data name="StructureLabel" xml:space="preserve">
+    <value>Cấu trúc</value>
+  </data>
+  <data name="ConflictLabel" xml:space="preserve">
+    <value>Xung đột</value>
+  </data>
+  <data name="WillWrite" xml:space="preserve">
+    <value>Sẽ ghi</value>
+  </data>
+  <data name="NothingToWrite" xml:space="preserve">
+    <value>Chưa có nội dung nào để ghi</value>
+  </data>
+
+  <!-- ============ 目标模式 / 结构 / 冲突策略 ============ -->
+  <data name="StructureFullRelative" xml:space="preserve">
+    <value>Đường dẫn con đầy đủ</value>
+  </data>
+  <data name="StructureItemOnly" xml:space="preserve">
+    <value>Chỉ mục đã tạm trữ</value>
+  </data>
+  <data name="StructureFlatten" xml:space="preserve">
+    <value>Làm phẳng tất cả</value>
+  </data>
+  <data name="ConflictAsk" xml:space="preserve">
+    <value>Hỏi</value>
+  </data>
+
+  <!-- ============ 主 ViewModel 的状态与提示 ============ -->
+  <data name="StatusReady" xml:space="preserve">
+    <value>Sẵn sàng</value>
+  </data>
+  <data name="StatusEmpty" xml:space="preserve">
+    <value>Chưa có nội dung tạm trữ</value>
+  </data>
+  <data name="StatusSummary" xml:space="preserve">
+    <value>{0} mục · {1} tệp · {2}</value>
+  </data>
+  <data name="StatusBusy" xml:space="preserve">
+    <value>Đang xử lý…</value>
+  </data>
+  <data name="StatusAdding" xml:space="preserve">
+    <value>Đang thêm vào khu vực tạm trữ ({0}/{1})</value>
+  </data>
+  <data name="StatusAddAborted" xml:space="preserve">
+    <value>Đã dừng thêm</value>
+  </data>
+  <data name="StatusAborting" xml:space="preserve">
+    <value>Đang dừng…</value>
+  </data>
+  <data name="StatusRefreshing" xml:space="preserve">
+    <value>Đang làm mới ảnh chụp</value>
+  </data>
+  <data name="StatusSnapshotRefreshed" xml:space="preserve">
+    <value>Đã làm mới ảnh chụp</value>
+  </data>
+  <data name="StatusRootUpdated" xml:space="preserve">
+    <value>Đã cập nhật thư mục gốc</value>
+  </data>
+  <data name="StatusSourcePathCopied" xml:space="preserve">
+    <value>Đã sao chép đường dẫn nguồn</value>
+  </data>
+  <data name="StatusClipboardFilled" xml:space="preserve">
+    <value>Đã điền đường dẫn đích từ bảng nhớ tạm</value>
+  </data>
+  <data name="StatusPreparingExport" xml:space="preserve">
+    <value>Đang chuẩn bị nội dung kéo ra…</value>
+  </data>
+  <data name="StatusCopiedToClipboard" xml:space="preserve">
+    <value>Đã sao chép vào bảng nhớ tạm ({0} mục)</value>
+  </data>
+  <data name="StatusWriting" xml:space="preserve">
+    <value>Đang ghi ({0}/{1})</value>
+  </data>
+  <data name="StatusLoadFailed" xml:space="preserve">
+    <value>Không thể tải các mục đã tạm trữ: {0}</value>
+  </data>
+  <data name="StatusSourceStateFailed" xml:space="preserve">
+    <value>Không thể đọc trạng thái nguồn: {0}</value>
+  </data>
+  <data name="ToastAdded" xml:space="preserve">
+    <value>Đã thêm {0} mục</value>
+  </data>
+  <data name="ToastDuplicates" xml:space="preserve">
+    <value>{0} đường dẫn đã nằm trong khu vực tạm trữ (bỏ qua)</value>
+  </data>
+  <data name="ToastFailedPaths" xml:space="preserve">
+    <value>{0} đường dẫn thất bại</value>
+  </data>
+  <data name="ToastWarnings" xml:space="preserve">
+    <value>{0} cảnh báo</value>
+  </data>
+  <data name="AddToStashTitle" xml:space="preserve">
+    <value>Thêm vào khu vực tạm trữ</value>
+  </data>
+  <data name="SkippedTitle" xml:space="preserve">
+    <value>Nội dung đã bỏ qua</value>
+  </data>
+  <data name="DefaultGroupName" xml:space="preserve">
+    <value>Tạm trữ mặc định</value>
+  </data>
+  <data name="NewGroupTitle" xml:space="preserve">
+    <value>Hộp mới</value>
+  </data>
+  <data name="RenameGroupTitle" xml:space="preserve">
+    <value>Đổi tên hộp</value>
+  </data>
+  <data name="DeleteGroupTitle" xml:space="preserve">
+    <value>Xóa hộp</value>
+  </data>
+  <data name="DeleteGroupConfirm" xml:space="preserve">
+    <value>Xóa hộp “{0}”? Các mục đã tạm trữ trong hộp cũng sẽ bị xóa.</value>
+  </data>
+  <data name="NoGroupTitle" xml:space="preserve">
+    <value>Chưa có hộp tạm trữ nào</value>
+  </data>
+  <data name="NoGroupHint" xml:space="preserve">
+    <value>Hãy tạo một hộp trước khi thêm vào khu vực tạm trữ.</value>
+  </data>
+  <data name="SetRootFailedTitle" xml:space="preserve">
+    <value>Không thể đặt thư mục gốc</value>
+  </data>
+  <data name="DeleteItemTitle" xml:space="preserve">
+    <value>Xóa khỏi hộp</value>
+  </data>
+  <data name="DeleteItemConfirm" xml:space="preserve">
+    <value>Xóa “{0}” khỏi hộp? Tệp gốc sẽ không bị xóa, chỉ có bản sao tạm trữ bị xóa bỏ.</value>
+  </data>
+  <data name="NoOtherGroupHint" xml:space="preserve">
+    <value>Không có hộp khác để chuyển sang. Hãy tạo một hộp trước.</value>
+  </data>
+  <data name="OpenSourceFailedTitle" xml:space="preserve">
+    <value>Không thể mở vị trí nguồn</value>
+  </data>
+  <data name="CopyFailedTitle" xml:space="preserve">
+    <value>Sao chép thất bại</value>
+  </data>
+  <data name="ClipboardBusy" xml:space="preserve">
+    <value>Bảng nhớ tạm đang bị chương trình khác sử dụng.</value>
+  </data>
+  <data name="DragExportTarget" xml:space="preserve">
+    <value>Kéo ra {0} mục</value>
+  </data>
+  <data name="NothingToWriteTitle" xml:space="preserve">
+    <value>Không có nội dung để ghi</value>
+  </data>
+  <data name="NothingToWriteHint" xml:space="preserve">
+    <value>Hộp hiện chưa có mục nào đã tạm trữ.</value>
+  </data>
+  <data name="NothingToUndoMessage" xml:space="preserve">
+    <value>Chưa có thao tác ghi nào được thực hiện.</value>
+  </data>
+  <data name="NothingToUndoTitle" xml:space="preserve">
+    <value>Không có thao tác nào để hoàn tác</value>
+  </data>
+  <data name="UndoDoneMessage" xml:space="preserve">
+    <value>Đã khôi phục {0} tệp, xóa {1}.</value>
+  </data>
+
+  <!-- ============ 树行 ============ -->
+  <data name="TreeEmpty" xml:space="preserve">
+    <value>Trống</value>
+  </data>
+  <data name="TreeItemCount" xml:space="preserve">
+    <value>{0} mục</value>
+  </data>
+  <data name="TreeItemFileCount" xml:space="preserve">
+    <value>{0} mục · {1} tệp</value>
+  </data>
+
+  <!-- ============ Git 改动对话框 ============ -->
+  <data name="GitStatusTitle" xml:space="preserve">
+    <value>Chọn tệp đã thay đổi</value>
+  </data>
+  <data name="GitChangedSummary" xml:space="preserve">
+    <value>{0} thay đổi</value>
+  </data>
+  <data name="GitChangedSummaryWithDeleted" xml:space="preserve">
+    <value>{0} thay đổi, trong đó {1} đã bị xóa (không thể thêm vào khu vực tạm trữ)</value>
+  </data>
+  <data name="GitNoSelection" xml:space="preserve">
+    <value>Chưa chọn tệp nào để thêm.</value>
+  </data>
+  <data name="GitAddedMessage" xml:space="preserve">
+    <value>Đã thêm {0} mục.</value>
+  </data>
+  <data name="GitDeletedSkipped" xml:space="preserve">
+    <value>{0} tệp đã bị xóa bị bỏ qua (đường dẫn nguồn không còn tồn tại).</value>
+  </data>
+
+  <!-- ============ 操作历史 ============ -->
+  <data name="HistoryTitle" xml:space="preserve">
+    <value>Lịch sử thao tác</value>
+  </data>
+  <data name="ColumnTime" xml:space="preserve">
+    <value>Thời gian</value>
+  </data>
+  <data name="ColumnTarget" xml:space="preserve">
+    <value>Đích</value>
+  </data>
+  <data name="ColumnSourceItem" xml:space="preserve">
+    <value>Từ</value>
+  </data>
+  <data name="ColumnStatus" xml:space="preserve">
+    <value>Trạng thái</value>
+  </data>
+  <data name="ColumnTargetPath" xml:space="preserve">
+    <value>Đường dẫn đích</value>
+  </data>
+  <data name="ColumnResult" xml:space="preserve">
+    <value>Kết quả</value>
+  </data>
+  <data name="ColumnError" xml:space="preserve">
+    <value>Lỗi</value>
+  </data>
+  <data name="OpenTargetFolderButton" xml:space="preserve">
+    <value>Mở thư mục đích</value>
+  </data>
+  <data name="UndoConfirmTitle" xml:space="preserve">
+    <value>Hoàn tác thao tác</value>
+  </data>
+  <data name="UndoConfirmMessage" xml:space="preserve">
+    <value>Hoàn tác lần ghi từ {0}?</value>
+  </data>
+  <data name="UndoConfirmNote" xml:space="preserve">
+    <value>Những tệp đã bị thay đổi sau đó sẽ bị bỏ qua.</value>
+  </data>
+  <data name="TargetFolderMissing" xml:space="preserve">
+    <value>Thư mục đích không tồn tại.</value>
+  </data>
+  <data name="OpenFailedTitle" xml:space="preserve">
+    <value>Không thể mở</value>
+  </data>
+
+  <!-- ============ 写入预览 ============ -->
+  <data name="PreviewTitle" xml:space="preserve">
+    <value>Xem trước khi ghi lại</value>
+  </data>
+  <data name="ColumnAction" xml:space="preserve">
+    <value>Hành động</value>
+  </data>
+  <data name="ColumnWarning" xml:space="preserve">
+    <value>Cảnh báo</value>
+  </data>
+  <data name="PreviewTargetOriginal" xml:space="preserve">
+    <value>Đích: vị trí gốc (mỗi mục được ghi lại vào thư mục gốc của chính nó)</value>
+  </data>
+  <data name="PreviewTargetAnotherRoot" xml:space="preserve">
+    <value>Đích: thư mục gốc khác {0}</value>
+  </data>
+  <data name="PreviewTargetSpecifiedPath" xml:space="preserve">
+    <value>Đích: đường dẫn đã chỉ định {0}</value>
+  </data>
+  <data name="PreviewTargetDragExport" xml:space="preserve">
+    <value>Đích: kéo ra</value>
+  </data>
+  <data name="PreviewSummary" xml:space="preserve">
+    <value>Mới {0} · Ghi đè {1} · Giống nhau {2} · Xung đột kiểu {3} · Không hợp lệ {4}</value>
+  </data>
+  <data name="PreviewWritten" xml:space="preserve">
+    <value>Đã ghi: {0}</value>
+  </data>
+  <data name="PreviewAborted" xml:space="preserve">
+    <value>Đã dừng ghi lại</value>
+  </data>
+  <data name="PreviewFailed" xml:space="preserve">
+    <value>Ghi lại thất bại: {0}</value>
+  </data>
+  <data name="CompareFailed" xml:space="preserve">
+    <value>Không thể mở công cụ so sánh: {0}</value>
+  </data>
+
+  <!-- ============ 写入结果提示 ============ -->
+  <data name="ToastTargetLine" xml:space="preserve">
+    <value>Đích {0}</value>
+  </data>
+  <data name="ToastTitle" xml:space="preserve">
+    <value>Kết quả ghi lại</value>
+  </data>
+  <data name="ToastSucceeded" xml:space="preserve">
+    <value>Ghi lại hoàn tất</value>
+  </data>
+  <data name="ToastPartiallyFailed" xml:space="preserve">
+    <value>Đã ghi một phần</value>
+  </data>
+  <data name="ToastCancelled" xml:space="preserve">
+    <value>Đã hủy</value>
+  </data>
+  <data name="ToastRetryElevated" xml:space="preserve">
+    <value>Thử lại với quyền quản trị</value>
+  </data>
+  <data name="ToastViewDetails" xml:space="preserve">
+    <value>Xem chi tiết</value>
+  </data>
+  <data name="ToastCreated" xml:space="preserve">
+    <value>Đã tạo {0}</value>
+  </data>
+  <data name="ToastOverwritten" xml:space="preserve">
+    <value>Đã ghi đè {0}</value>
+  </data>
+  <data name="ToastSkipped" xml:space="preserve">
+    <value>Đã bỏ qua {0}</value>
+  </data>
+  <data name="ToastFailed" xml:space="preserve">
+    <value>Thất bại {0}</value>
+  </data>
+  <data name="ItemSeparator" xml:space="preserve">
+    <value>, </value>
+  </data>
+  <data name="SentenceEnd" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="ClauseSeparator" xml:space="preserve">
+    <value>; </value>
+  </data>
+  <data name="ProgressSeparator" xml:space="preserve">
+    <value> · </value>
+  </data>
+  <data name="ToastNothingWritten" xml:space="preserve">
+    <value>Không có tệp nào được ghi.</value>
+  </data>
+  <data name="ToastDetailLine" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="ToastNoFailures" xml:space="preserve">
+    <value>Không có mục nào bị lỗi.</value>
+  </data>
+  <data name="ToastDetailsTitle" xml:space="preserve">
+    <value>Chi tiết ghi lại</value>
+  </data>
+  <data name="ToastElevatedFailed" xml:space="preserve">
+    <value>Không thể khởi chạy tiến trình nâng quyền (có thể bạn đã hủy lời nhắc UAC).</value>
+  </data>
+
+  <!-- ============ 设置 ============ -->
+  <data name="SettingsTitle" xml:space="preserve">
+    <value>Cài đặt</value>
+  </data>
+  <data name="SectionGeneral" xml:space="preserve">
+    <value>Chung</value>
+  </data>
+  <data name="LanguageLabel" xml:space="preserve">
+    <value>Ngôn ngữ</value>
+  </data>
+  <data name="LanguageSystem" xml:space="preserve">
+    <value>Theo hệ thống</value>
+  </data>
+  <data name="LanguageChinese" xml:space="preserve">
+    <value>简体中文</value>
+  </data>
+  <data name="LanguageTraditionalChinese" xml:space="preserve">
+    <value>繁體中文</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="LanguageJapanese" xml:space="preserve">
+    <value>日本語</value>
+  </data>
+  <data name="LanguageKorean" xml:space="preserve">
+    <value>한국어</value>
+  </data>
+  <data name="LanguageSpanish" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="LanguagePortugueseBrazil" xml:space="preserve">
+    <value>Português (Brasil)</value>
+  </data>
+  <data name="LanguageFrench" xml:space="preserve">
+    <value>Français</value>
+  </data>
+  <data name="LanguageGerman" xml:space="preserve">
+    <value>Deutsch</value>
+  </data>
+  <data name="LanguageItalian" xml:space="preserve">
+    <value>Italiano</value>
+  </data>
+  <data name="LanguageRussian" xml:space="preserve">
+    <value>Русский</value>
+  </data>
+  <data name="LanguageArabic" xml:space="preserve">
+    <value>العربية</value>
+  </data>
+  <data name="LanguageHindi" xml:space="preserve">
+    <value>हिन्दी</value>
+  </data>
+  <data name="LanguageIndonesian" xml:space="preserve">
+    <value>Bahasa Indonesia</value>
+  </data>
+  <data name="LanguageThai" xml:space="preserve">
+    <value>ไทย</value>
+  </data>
+  <data name="LanguageTurkish" xml:space="preserve">
+    <value>Türkçe</value>
+  </data>
+  <data name="LanguageVietnamese" xml:space="preserve">
+    <value>Tiếng Việt</value>
+  </data>
+  <data name="LanguageBengali" xml:space="preserve">
+    <value>বাংলা</value>
+  </data>
+  <data name="LanguageRestartFailed" xml:space="preserve">
+    <value>Ngôn ngữ đã được lưu, nhưng không thể khởi động lại ứng dụng — hiệu lực sẽ có từ lần khởi động tiếp theo.</value>
+  </data>
+  <data name="DefaultConflictPolicyLabel" xml:space="preserve">
+    <value>Chiến lược xung đột mặc định</value>
+  </data>
+  <data name="SkipIdenticalLabel" xml:space="preserve">
+    <value>Bỏ qua các tệp có nội dung giống nhau (giữ nguyên thời gian sửa đổi của tệp đích)</value>
+  </data>
+  <data name="BackupBeforeOverwriteLabel" xml:space="preserve">
+    <value>Sao lưu trước khi ghi đè (tắt tùy chọn này thì việc ghi đè sẽ không thể hoàn tác)</value>
+  </data>
+  <data name="HistoryRetentionLabel" xml:space="preserve">
+    <value>Số ngày giữ lịch sử (0 = vĩnh viễn)</value>
+  </data>
+  <data name="AutoGitAddLabel" xml:space="preserve">
+    <value>Tự động chạy git add sau khi ghi</value>
+  </data>
+  <data name="WatchBranchLabel" xml:space="preserve">
+    <value>Thông báo khi nhánh thay đổi</value>
+  </data>
+  <data name="RespectGitIgnoreLabel" xml:space="preserve">
+    <value>Chỉ tạm trữ các tệp trong kho mà Git không bỏ qua</value>
+  </data>
+  <data name="SectionExcludes" xml:space="preserve">
+    <value>Quy tắc loại trừ</value>
+  </data>
+  <data name="ExcludeHint" xml:space="preserve">
+    <value>Mỗi dòng một mẫu, ví dụ **/node_modules/**</value>
+  </data>
+  <data name="SectionWindowsIntegration" xml:space="preserve">
+    <value>Tích hợp Windows</value>
+  </data>
+  <data name="ContextMenuLabel" xml:space="preserve">
+    <value>Hiện “Thêm vào khu vực tạm trữ” trong menu ngữ cảnh của Explorer</value>
+  </data>
+  <data name="StartWithWindowsLabel" xml:space="preserve">
+    <value>Khởi động cùng Windows</value>
+  </data>
+  <data name="CloseToTrayLabel" xml:space="preserve">
+    <value>Thu nhỏ xuống khay hệ thống khi đóng cửa sổ</value>
+  </data>
+  <data name="StartMinimizedLabel" xml:space="preserve">
+    <value>Khởi động thu nhỏ trong khay hệ thống</value>
+  </data>
+  <data name="HotkeyLabel" xml:space="preserve">
+    <value>Phím tắt toàn cục (thêm vào khu vực tạm trữ)</value>
+  </data>
+  <data name="SectionStorage" xml:space="preserve">
+    <value>Lưu trữ</value>
+  </data>
+  <data name="RefreshStorageButton" xml:space="preserve">
+    <value>Làm mới mức sử dụng</value>
+  </data>
+  <data name="CleanupStorageButton" xml:space="preserve">
+    <value>Dọn dữ liệu không dùng</value>
+  </data>
+  <data name="ClearHistoryButton" xml:space="preserve">
+    <value>Xóa toàn bộ lịch sử</value>
+  </data>
+  <data name="SettingsSavedMessage" xml:space="preserve">
+    <value>Đã lưu cài đặt.</value>
+  </data>
+  <data name="StorageUsageLabel" xml:space="preserve">
+    <value>Nội dung tạm trữ: {0}</value>
+  </data>
+  <data name="StorageExportLabel" xml:space="preserve">
+    <value>Tệp tạm kéo ra: {0}</value>
+  </data>
+  <data name="StorageHistoryLabel" xml:space="preserve">
+    <value>Lịch sử: {0} mục</value>
+  </data>
+  <data name="CleanupConfirmTitle" xml:space="preserve">
+    <value>Dọn dữ liệu không dùng</value>
+  </data>
+  <data name="CleanupConfirmMessage" xml:space="preserve">
+    <value>Xóa nội dung mà không mục đã tạm trữ hay mục lịch sử nào tham chiếu tới?</value>
+  </data>
+  <data name="CleanupDoneMessage" xml:space="preserve">
+    <value>Đã xóa {0} nội dung.</value>
+  </data>
+  <data name="ClearHistoryConfirmTitle" xml:space="preserve">
+    <value>Xóa toàn bộ lịch sử</value>
+  </data>
+  <data name="ClearHistoryConfirmMessage" xml:space="preserve">
+    <value>Toàn bộ lịch sử và bản sao lưu sẽ bị xóa, chức năng hoàn tác cũng sẽ ngừng hoạt động. Tiếp tục?</value>
+  </data>
+  <data name="ClearHistoryDoneMessage" xml:space="preserve">
+    <value>Đã xóa {0} mục lịch sử.</value>
+  </data>
+  <data name="NewPresetButton" xml:space="preserve">
+    <value>Thêm…</value>
+  </data>
+  <data name="NewPresetTitle" xml:space="preserve">
+    <value>Thêm cài đặt trước thư mục gốc</value>
+  </data>
+  <data name="NewPresetDefaultName" xml:space="preserve">
+    <value>Cài đặt trước mới</value>
+  </data>
+
+  <!-- ============ 根目录预设 ============ -->
+  <data name="RootPresetsTitle" xml:space="preserve">
+    <value>Cài đặt trước thư mục gốc</value>
+  </data>
+  <data name="ColumnName" xml:space="preserve">
+    <value>Tên</value>
+  </data>
+  <data name="ColumnPath" xml:space="preserve">
+    <value>Đường dẫn</value>
+  </data>
+
+  <!-- ============ 对话框 ============ -->
+  <data name="MoveToGroupTitle" xml:space="preserve">
+    <value>Chuyển sang hộp</value>
+  </data>
+  <data name="ChooseTargetGroup" xml:space="preserve">
+    <value>Chọn hộp đích</value>
+  </data>
+  <data name="InputTitle" xml:space="preserve">
+    <value>Nhập</value>
+  </data>
+  <data name="SetRootTitle" xml:space="preserve">
+    <value>Đặt thư mục gốc</value>
+  </data>
+  <data name="SetRootHint" xml:space="preserve">
+    <value>Chọn thư mục gốc: đường dẫn con của mục đã tạm trữ được tính từ đó, và khi ghi lại về vị trí gốc cũng dùng nó.</value>
+  </data>
+  <data name="NewRelativePathLabel" xml:space="preserve">
+    <value>Đường dẫn con mới:</value>
+  </data>
+  <data name="EmptyRelativePath" xml:space="preserve">
+    <value>(không có đường dẫn con)</value>
+  </data>
+
+  <!-- ============ 关于 ============ -->
+  <data name="AboutTitle" xml:space="preserve">
+    <value>Giới thiệu StashBay</value>
+  </data>
+  <data name="AboutTagline" xml:space="preserve">
+    <value>Hộp tạm trữ tệp — tạm trữ ngay, ghi lại sau khi chuyển nhánh</value>
+  </data>
+  <data name="VersionLabel" xml:space="preserve">
+    <value>Phiên bản {0}</value>
+  </data>
+  <data name="RuntimeLabel" xml:space="preserve">
+    <value>Môi trường chạy .NET {0}</value>
+  </data>
+  <data name="GitFound" xml:space="preserve">
+    <value>Đã tìm thấy Git</value>
+  </data>
+  <data name="GitMissing" xml:space="preserve">
+    <value>Không phát hiện Git (các tính năng Git sẽ tự động tắt)</value>
+  </data>
+  <data name="GitUnknown" xml:space="preserve">
+    <value>Không rõ trạng thái Git</value>
+  </data>
+  <data name="DataDirectoryLabel" xml:space="preserve">
+    <value>Thư mục dữ liệu {0}</value>
+  </data>
+
+  <!-- ============ 托盘菜单 ============ -->
+  <data name="TrayShowCompact" xml:space="preserve">
+    <value>Hiện khu vực tạm trữ</value>
+  </data>
+  <data name="TrayOpenWorkbench" xml:space="preserve">
+    <value>Mở bàn làm việc</value>
+  </data>
+  <data name="TrayApplyOriginal" xml:space="preserve">
+    <value>Áp dụng vào vị trí gốc</value>
+  </data>
+  <data name="TrayUndoLast" xml:space="preserve">
+    <value>Hoàn tác lần trước</value>
+  </data>
+  <data name="TrayGitChanges" xml:space="preserve">
+    <value>Thêm từ các thay đổi của Git…</value>
+  </data>
+  <data name="TrayFloatingWindow" xml:space="preserve">
+    <value>Hiện cửa sổ nổi</value>
+  </data>
+  <data name="TrayHistory" xml:space="preserve">
+    <value>Lịch sử thao tác…</value>
+  </data>
+  <data name="TrayRootPresets" xml:space="preserve">
+    <value>Cài đặt trước thư mục gốc…</value>
+  </data>
+  <data name="TraySettings" xml:space="preserve">
+    <value>Cài đặt…</value>
+  </data>
+  <data name="TrayAbout" xml:space="preserve">
+    <value>Giới thiệu StashBay…</value>
+  </data>
+  <data name="TrayExit" xml:space="preserve">
+    <value>Thoát</value>
+  </data>
+  <data name="NoGitItems" xml:space="preserve">
+    <value>Hộp này không có mục nào thuộc kho lưu trữ Git.</value>
+  </data>
+  <data name="BranchSwitchedMessage" xml:space="preserve">
+    <value>Đã phát hiện {0} chuyển sang {1}, có {2} mục đã tạm trữ có thể áp dụng vào vị trí gốc. Nhấp để áp dụng.</value>
+  </data>
+  <data name="UnhandledErrorTitle" xml:space="preserve">
+    <value>StashBay gặp lỗi không mong muốn</value>
+  </data>
+
+  <!-- ============ 文件选择 / 拖出 ============ -->
+  <data name="PickItemsTitle" xml:space="preserve">
+    <value>Chọn tệp và thư mục</value>
+  </data>
+  <data name="PickItemsHint" xml:space="preserve">
+    <value>Giữ Ctrl hoặc Shift để chọn nhiều mục. Nhấp đúp vào thư mục để mở.</value>
+  </data>
+  <data name="ParentFolder" xml:space="preserve">
+    <value>Thư mục cha</value>
+  </data>
+  <data name="ClipboardBusyLong" xml:space="preserve">
+    <value>Bảng nhớ tạm đang bị chương trình khác sử dụng, vui lòng thử lại sau.</value>
+  </data>
+  <data name="LoadStashFailed" xml:space="preserve">
+    <value>Không thể tải khu vực tạm trữ: {0}</value>
+  </data>
+  <data name="DragOutFailed" xml:space="preserve">
+    <value>Kéo ra thất bại: {0}</value>
+  </data>
+  <data name="AddToStashFailed" xml:space="preserve">
+    <value>Không thể thêm vào khu vực tạm trữ: {0}</value>
+  </data>
+  <data name="ThemeLabel" xml:space="preserve">
+    <value>Chủ đề</value>
+  </data>
+  <data name="ThemeSystem" xml:space="preserve">
+    <value>Theo hệ thống</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Sáng</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Tối</value>
+  </data>
+  <data name="AddSelectedButton" xml:space="preserve">
+    <value>Thêm mục đã chọn</value>
+  </data>
+
+  <data name="ClearAllBoxesButton" xml:space="preserve">
+    <value>Xóa tất cả các hộp</value>
+  </data>
+  <data name="ClearAllBoxesTooltip" xml:space="preserve">
+    <value>Xóa tất cả các hộp và mục tạm trữ</value>
+  </data>
+  <data name="ClearAllBoxesTitle" xml:space="preserve">
+    <value>Xóa tất cả các hộp tạm trữ</value>
+  </data>
+  <data name="ClearAllBoxesConfirm" xml:space="preserve">
+    <value>Bạn có chắc muốn xóa tất cả các hộp? Mọi mục tạm trữ sẽ bị xóa.</value>
+  </data>
+  <data name="ClearAllBoxesDone" xml:space="preserve">
+    <value>Đã xóa tất cả các hộp tạm trữ.</value>
+  </data>
+  <data name="ClearBoxButton" xml:space="preserve">
+    <value>Xóa sạch hộp hiện tại</value>
+  </data>
+  <data name="ClearBoxConfirm" xml:space="preserve">
+    <value>Xóa sạch hộp “{0}”? Mọi mục trong hộp sẽ bị xóa.</value>
+  </data>
+  <data name="ClearBoxDone" xml:space="preserve">
+    <value>Đã xóa sạch hộp “{0}”.</value>
+  </data>
+  <data name="DropToStashPrompt" xml:space="preserve">
+    <value>Thả để tạm trữ</value>
+  </data>
+  <data name="DropToStashHint" xml:space="preserve">
+    <value>Thả tệp hoặc thư mục để tự động đưa vào khu vực tạm trữ</value>
+  </data>
+  <data name="TrayClearAll" xml:space="preserve">
+    <value>Xóa tất cả các hộp</value>
+  </data>
+
+  <data name="RemoveAfterDragExportLabel" xml:space="preserve">
+    <value>Tự động xóa khỏi khu vực tạm trữ sau khi kéo ra ngoài (hành vi DropPoint)</value>
+  </data>
+  <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
+    <value>Tự động xóa các mục sau khi thả vào thư mục đích; nếu tắt, các mục sẽ được giữ lại</value>
+  </data>
+
+  <data name="CollapseButton" xml:space="preserve">
+    <value>Thu gọn</value>
+  </data>
+  <data name="CollapseButtonTooltip" xml:space="preserve">
+    <value>Thu gọn vào bảng điều khiển nhỏ gọn (tiện cho kéo-thả, phím tắt: Esc / F11)</value>
+  </data>
+
+  <data name="StatusClipboardPasted" xml:space="preserve">
+    <value>Đã tạm lưu nội dung từ khay nhớ tạm</value>
+  </data>
+  <data name="DragAllButton" xml:space="preserve">
+    <value>Kéo tất cả</value>
+  </data>
+  <data name="DragAllTooltip" xml:space="preserve">
+    <value>Kéo tay cầm này để xuất toàn bộ tệp tạm lưu ra ngoài cùng một lúc</value>
+  </data>
+  <data name="AutoDismissWhenEmptyLabel" xml:space="preserve">
+    <value>Tự động ẩn khi trống</value>
+  </data>
+  <data name="AutoDismissWhenEmptyTooltip" xml:space="preserve">
+    <value>Tự động ẩn cửa sổ sau khi tất cả tệp được kéo ra hoặc làm trống</value>
+  </data>
+  <data name="SummonAtCursorLabel" xml:space="preserve">
+    <value>Mở gần con trỏ chuột</value>
+  </data>
+  <data name="SummonAtCursorTooltip" xml:space="preserve">
+    <value>Hiện cửa sổ ngay tại vị trí con trỏ chuột khi bấm phím tắt</value>
+  </data>
+  <data name="EnableShakeToSummonLabel" xml:space="preserve">
+    <value>Lắc khi kéo để gọi</value>
+  </data>
+  <data name="EnableShakeToSummonTooltip" xml:space="preserve">
+    <value>Lắc nhẹ chuột qua lại khi đang kéo tệp để mở ngăn chứa tạm tại con trỏ</value>
+  </data>
+  <data name="SectionDeveloperOptions" xml:space="preserve">
+    <value>Tùy chọn nâng cao &amp; dành cho nhà phát triển (Git)</value>
+  </data>
+  <data name="DeveloperOptionsHint" xml:space="preserve">
+    <value>Chỉ áp dụng khi lưu tạm tệp trong kho lưu trữ Git. Lưu tạm và khôi phục tệp thông thường hoàn toàn độc lập.</value>
+  </data>
+  <data name="HotkeyRegisterFailedTitle" xml:space="preserve">
+    <value>Đăng ký phím tắt thất bại</value>
+  </data>
+  <data name="HotkeyRegisterFailedMessage" xml:space="preserve">
+    <value>Không thể đăng ký phím tắt toàn cục "{0}". Có thể phím này đang được ứng dụng khác sử dụng.</value>
+  </data>
+  <data name="HotkeyWorkbenchLabel" xml:space="preserve">
+    <value>Phím tắt toàn cục (Mở bàn làm việc)</value>
+  </data>
+  <data name="HotkeyPasteLabel" xml:space="preserve">
+    <value>Phím tắt toàn cục (dán tệp từ bộ nhớ tạm)</value>
+  </data>
+  <data name="HotkeyRecordingHint" xml:space="preserve">
+    <value>Nhấp và nhấn tổ hợp phím để ghi lại. Nhấn Esc để hủy.</value>
+  </data>
+  <data name="HotkeyClearButton" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="PinButtonTooltip" xml:space="preserve">
+    <value>Ghim lên trên cùng</value>
+  </data>
+  <data name="ViewModeTree" xml:space="preserve">
+    <value>Cây</value>
+  </data>
+  <data name="ViewModeList" xml:space="preserve">
+    <value>Danh sách</value>
+  </data>
+  <data name="ViewModeSource" xml:space="preserve">
+    <value>Theo nguồn</value>
+  </data>
+  <data name="ShelfApply" xml:space="preserve">
+    <value>Ghi lại</value>
+  </data>
+  <data name="ShelfClearAll" xml:space="preserve">
+    <value>Xóa tất cả</value>
+  </data>
+  <data name="ViewModeIcons" xml:space="preserve"><value>Biểu tượng</value></data>
+</root>

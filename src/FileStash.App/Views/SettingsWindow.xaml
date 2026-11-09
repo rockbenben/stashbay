@@ -1,0 +1,259 @@
+<Window x:Class="FileStash.App.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:app="clr-namespace:FileStash.App.Resources"
+        xmlns:ctrl="clr-namespace:FileStash.App.Controls"
+        Title="{x:Static app:Strings.SettingsTitle}"
+        Icon="pack://application:,,,/Resources/app.ico"
+        Width="620"
+        Height="640"
+        MinWidth="480"
+        MinHeight="320"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource Brush.Surface}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                      Background="Transparent" ctrl:WheelScroll.IsEnabled="True">
+            <StackPanel Margin="16,16,16,12">
+                <TextBlock Style="{StaticResource Text.Title}" Text="{x:Static app:Strings.SectionGeneral}" />
+
+                <Grid Margin="0,10,0,0">
+                    <Grid.ColumnDefinitions>
+                        <!-- 标签列跟着最长的标签走：写死 140 在德语下会把
+                             「Standard-Konfliktstrategie」直接压进下拉框。 -->
+                        <ColumnDefinition Width="Auto" MinWidth="140" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static app:Strings.LanguageLabel}" VerticalAlignment="Center" />
+                    <ComboBox Grid.Row="0" Grid.Column="1"
+                              Width="140"
+                              ItemsSource="{Binding Languages}"
+                              Style="{StaticResource ComboBox.Start}"
+                              DisplayMemberPath="Label"
+                              SelectedValuePath="Value"
+                              SelectedValue="{Binding Settings.Language, Mode=TwoWay}" />
+
+                    <!-- 外观紧跟语言：两个都是"这台机器想要什么样子"。
+                         宽度用 MinWidth 而不是写死 140 —— 德语「Dem System folgen」比中文长出一倍，
+                         写死会把选项裁成半截。 -->
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static app:Strings.ThemeLabel}" VerticalAlignment="Center" />
+                    <ComboBox Grid.Row="1" Grid.Column="1"
+                              MinWidth="140"
+                              ItemsSource="{Binding Themes}"
+                              Style="{StaticResource ComboBox.Start}"
+                              DisplayMemberPath="Label"
+                              SelectedValuePath="Value"
+                              SelectedValue="{Binding Settings.Theme, Mode=TwoWay}" />
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static app:Strings.DefaultConflictPolicyLabel}" VerticalAlignment="Center" />
+                    <ComboBox Grid.Row="2" Grid.Column="1"
+                              Width="140"
+                              ItemsSource="{Binding Policies}"
+                              Style="{StaticResource ComboBox.Start}"
+                              DisplayMemberPath="Label"
+                              SelectedValuePath="Value"
+                              SelectedValue="{Binding Settings.DefaultConflictPolicy, Mode=TwoWay}" />
+
+                    <CheckBox Grid.Row="3" Grid.Column="1" Margin="0,8,0,0"
+                              Content="{x:Static app:Strings.SkipIdenticalLabel}"
+                              IsChecked="{Binding Settings.SkipIdentical}" />
+
+                    <CheckBox Grid.Row="4" Grid.Column="1" Margin="0,8,0,0"
+                              Content="{x:Static app:Strings.BackupBeforeOverwriteLabel}"
+                              IsChecked="{Binding Settings.BackupBeforeOverwrite}" />
+
+                    <StackPanel Grid.Row="5" Grid.Column="1" Margin="0,8,0,0">
+                        <CheckBox
+                              Content="{x:Static app:Strings.RemoveAfterDragExportLabel}"
+                              ToolTip="{x:Static app:Strings.RemoveAfterDragExportTooltip}"
+                              IsChecked="{Binding Settings.RemoveAfterDragExport}" />
+                        <CheckBox Margin="0,6,0,0"
+                                  Content="{x:Static app:Strings.AutoDismissWhenEmptyLabel}"
+                                  ToolTip="{x:Static app:Strings.AutoDismissWhenEmptyTooltip}"
+                                  IsChecked="{Binding Settings.AutoDismissWhenEmpty}" />
+                        <CheckBox Margin="0,6,0,0"
+                                  Content="{x:Static app:Strings.SummonAtCursorLabel}"
+                                  ToolTip="{x:Static app:Strings.SummonAtCursorTooltip}"
+                                  IsChecked="{Binding Settings.SummonAtCursor}" />
+                        <CheckBox Margin="0,6,0,0"
+                                  Content="{x:Static app:Strings.EnableShakeToSummonLabel}"
+                                  ToolTip="{x:Static app:Strings.EnableShakeToSummonTooltip}"
+                                  IsChecked="{Binding Settings.EnableShakeToSummon}" />
+                    </StackPanel>
+
+                    <!-- 说明文字占 *、输入框占 Auto：写成横向 StackPanel 时说明文字按无限宽测量，
+                         法语/意大利语/俄语实测把 60 DIP 的输入框整颗顶出窗口右缘（最多 41 DIP）。 -->
+                    <Grid Grid.Row="6" Grid.Column="1" Margin="0,8,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="{x:Static app:Strings.HistoryRetentionLabel}"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1" Width="60" Margin="10,0,0,0"
+                                 Text="{Binding Settings.HistoryRetentionDays, Mode=TwoWay}" />
+                    </Grid>
+                </Grid>
+
+
+
+                <TextBlock Margin="0,20,0,0" Style="{StaticResource Text.Title}" Text="{x:Static app:Strings.SectionExcludes}" />
+
+                <TextBlock Margin="0,10,0,0" Style="{StaticResource Text.Caption}"
+                           Text="{x:Static app:Strings.ExcludeHint}" />
+
+                <TextBox Height="80"
+                         Margin="0,6,0,0"
+                         AcceptsReturn="True"
+                         VerticalScrollBarVisibility="Auto"
+                         Text="{Binding ExcludeGlobsText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                <TextBlock Margin="0,20,0,0" Style="{StaticResource Text.Title}" Text="{x:Static app:Strings.SectionWindowsIntegration}" />
+
+                <CheckBox Margin="0,10,0,0"
+                          Content="{x:Static app:Strings.ContextMenuLabel}"
+                          IsChecked="{Binding Settings.ContextMenuEnabled}" />
+
+                <CheckBox Margin="0,8,0,0"
+                          Content="{x:Static app:Strings.StartWithWindowsLabel}"
+                          IsChecked="{Binding Settings.StartWithWindows}" />
+
+                <CheckBox Margin="0,8,0,0"
+                          Content="{x:Static app:Strings.CloseToTrayLabel}"
+                          IsChecked="{Binding Settings.CloseToTray}" />
+
+                <CheckBox Margin="0,8,0,0"
+                          Content="{x:Static app:Strings.StartMinimizedLabel}"
+                          IsChecked="{Binding Settings.MinimizeToTray}" />
+
+                <!-- 全局快捷键 1：呼出搁架 / 加入暂存 -->
+                <Grid Margin="0,12,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               Text="{x:Static app:Strings.HotkeyLabel}"
+                               TextWrapping="Wrap"
+                               VerticalAlignment="Center" />
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
+                        <ctrl:HotkeyBox x:Name="HotkeyAddBox" Width="120"
+                                        Text="{Binding Settings.GlobalHotkeyAdd, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <Button Content="{x:Static app:Strings.HotkeyClearButton}"
+                                Style="{StaticResource Button.Ghost}"
+                                Margin="4,0,0,0"
+                                Padding="8,2"
+                                Click="OnClearHotkeyAddClick" />
+                    </StackPanel>
+                </Grid>
+
+                <!-- 全局快捷键 2：打开完整工作台 -->
+                <Grid Margin="0,8,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               Text="{x:Static app:Strings.HotkeyWorkbenchLabel}"
+                               TextWrapping="Wrap"
+                               VerticalAlignment="Center" />
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
+                        <ctrl:HotkeyBox x:Name="HotkeyWorkbenchBox" Width="120"
+                                        Text="{Binding Settings.GlobalHotkeyWorkbench, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <Button Content="{x:Static app:Strings.HotkeyClearButton}"
+                                Style="{StaticResource Button.Ghost}"
+                                Margin="4,0,0,0"
+                                Padding="8,2"
+                                Click="OnClearHotkeyWorkbenchClick" />
+                    </StackPanel>
+                </Grid>
+
+                <!-- 全局快捷键 3：剪贴板内容存入暂存 -->
+                <Grid Margin="0,8,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               Text="{x:Static app:Strings.HotkeyPasteLabel}"
+                               TextWrapping="Wrap"
+                               VerticalAlignment="Center" />
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
+                        <ctrl:HotkeyBox x:Name="HotkeyPasteBox" Width="120"
+                                        Text="{Binding Settings.GlobalHotkeyPaste, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <Button Content="{x:Static app:Strings.HotkeyClearButton}"
+                                Style="{StaticResource Button.Ghost}"
+                                Margin="4,0,0,0"
+                                Padding="8,2"
+                                Click="OnClearHotkeyPasteClick" />
+                    </StackPanel>
+                </Grid>
+
+                <TextBlock Margin="0,4,0,0"
+                           Style="{StaticResource Text.Caption}"
+                           Foreground="{DynamicResource Brush.TextTertiary}"
+                           Text="{x:Static app:Strings.HotkeyRecordingHint}" />
+
+                <TextBlock Margin="0,20,0,0" Style="{StaticResource Text.Title}" Text="{x:Static app:Strings.SectionStorage}" />
+
+                <TextBlock Margin="0,10,0,0" Style="{StaticResource Text.Caption}" Text="{Binding StorageText}" />
+                <TextBlock Margin="0,4,0,0" Style="{StaticResource Text.Caption}" Text="{Binding ExportText}" />
+                <TextBlock Margin="0,4,0,0" Style="{StaticResource Text.Caption}" Text="{Binding HistoryText}" />
+
+                <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                    <Button Content="{x:Static app:Strings.RefreshStorageButton}" Command="{Binding RefreshStorageCommand}" />
+                    <Button Content="{x:Static app:Strings.CleanupStorageButton}"
+                            Margin="6,0,0,0"
+                            Command="{Binding CleanupUnreferencedCommand}" />
+                    <Button Content="{x:Static app:Strings.ClearHistoryButton}"
+                            Margin="6,0,0,0"
+                            Command="{Binding ClearHistoryCommand}" />
+                </StackPanel>
+
+                <TextBlock Margin="0,20,0,0" Style="{StaticResource Text.Title}" Text="{x:Static app:Strings.SectionDeveloperOptions}" />
+
+                <TextBlock Margin="0,6,0,0" Style="{StaticResource Text.Caption}"
+                           Text="{x:Static app:Strings.DeveloperOptionsHint}"
+                           TextWrapping="Wrap" />
+
+                <CheckBox Margin="0,10,0,0"
+                          Content="{x:Static app:Strings.AutoGitAddLabel}"
+                          IsChecked="{Binding Settings.AutoGitAddAfterApply}" />
+
+                <CheckBox Margin="0,8,0,0"
+                          Content="{x:Static app:Strings.WatchBranchLabel}"
+                          IsChecked="{Binding Settings.WatchGitBranchSwitch}" />
+
+                <CheckBox Margin="0,8,0,0"
+                          Content="{x:Static app:Strings.RespectGitIgnoreLabel}"
+                          IsChecked="{Binding Settings.RespectGitIgnore}" />
+            </StackPanel>
+        </ScrollViewer>
+
+        <Border Grid.Row="1" Style="{StaticResource ActionBar}">
+            <StackPanel Style="{StaticResource Actions.End}">
+                <Button Content="{x:Static app:Strings.SaveButton}" Style="{StaticResource Button.Primary}" Click="OnSave" />
+                <Button Content="{x:Static app:Strings.CancelButton}" Margin="8,0,0,0" IsCancel="True" Click="OnCancel" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

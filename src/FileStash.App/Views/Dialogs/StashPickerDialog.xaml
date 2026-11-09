@@ -1,0 +1,52 @@
+<Window x:Class="FileStash.App.Views.Dialogs.StashPickerDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:app="clr-namespace:FileStash.App.Resources"
+        xmlns:ctrl="clr-namespace:FileStash.App.Controls"
+        Title="{x:Static app:Strings.PickItemsTitle}"
+        Width="640" Height="460" MinWidth="320" MinHeight="240"
+        ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource Brush.Surface}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <DockPanel Margin="16,16,16,0">
+            <Button x:Name="UpButton" Content="↑" FontSize="{DynamicResource Font.Size.Title}"
+                    Margin="0,0,6,0" ToolTip="{x:Static app:Strings.ParentFolder}"
+                    AutomationProperties.Name="{x:Static app:Strings.ParentFolder}" Click="OnUp" />
+            <TextBox x:Name="Address" AutomationProperties.Name="{x:Static app:Strings.ColumnPath}"
+                     KeyDown="OnAddressKeyDown" TextChanged="OnAddressChanged" />
+        </DockPanel>
+        <Border Grid.Row="1" Margin="16,10,16,0" Padding="4"
+                BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1"
+                CornerRadius="{DynamicResource Radius.Control}">
+            <ListBox x:Name="Entries" SelectionMode="Extended"
+                     ctrl:WheelScroll.IsEnabled="True"
+                     AutomationProperties.Name="{x:Static app:Strings.PickItemsTitle}"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="OnSelectionChanged"
+                     MouseDoubleClick="OnEntryDoubleClick">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel Margin="6,3">
+                            <Image Width="16" Height="16" Margin="0,0,8,0" Source="{Binding Icon}" />
+                            <TextBlock VerticalAlignment="Center" Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                        </DockPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+        <TextBlock x:Name="Hint" Grid.Row="2" Margin="16,8,16,12" TextWrapping="Wrap"
+                   Style="{StaticResource Text.Caption}" Text="{x:Static app:Strings.PickItemsHint}" />
+        <Border Grid.Row="3" Style="{StaticResource ActionBar}">
+            <StackPanel Style="{StaticResource Actions.End}">
+                <Button x:Name="AddSelection" IsEnabled="False" IsDefault="True"
+                        Content="{x:Static app:Strings.AddSelectedButton}" Style="{StaticResource Button.Primary}" Click="OnAdd" />
+                <Button Content="{x:Static app:Strings.CancelButton}" Margin="8,0,0,0" IsCancel="True" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

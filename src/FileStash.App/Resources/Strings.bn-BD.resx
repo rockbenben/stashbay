@@ -1,0 +1,984 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ============ 通用 ============ -->
+  <data name="AppName" xml:space="preserve">
+    <value>StashBay</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>অজানা</value>
+  </data>
+  <data name="OkButton" xml:space="preserve">
+    <value>ঠিক আছে</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>বাতিল</value>
+  </data>
+  <data name="CloseButton" xml:space="preserve">
+    <value>বন্ধ</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>সংরক্ষণ</value>
+  </data>
+  <data name="RefreshButton" xml:space="preserve">
+    <value>রিফ্রেশ</value>
+  </data>
+  <data name="AddButton" xml:space="preserve">
+    <value>যোগ করুন</value>
+  </data>
+  <data name="AbortButton" xml:space="preserve">
+    <value>থামান</value>
+  </data>
+  <data name="UndoButton" xml:space="preserve">
+    <value>পূর্বাবস্থায় ফেরানো</value>
+  </data>
+  <data name="UndoLastButton" xml:space="preserve">
+    <value>শেষটি পূর্বাবস্থায় ফেরানো</value>
+  </data>
+  <data name="UndoNeedsWrite" xml:space="preserve">
+    <value>শুধু লেখার কাজ পূর্বাবস্থায় ফেরানো যায় — টেনে বের করলে ফেরানোর কিছু থাকে না</value>
+  </data>
+  <data name="UndoThisButton" xml:space="preserve">
+    <value>এটি পূর্বাবস্থায় ফেরানো</value>
+  </data>
+  <data name="PreviewButton" xml:space="preserve">
+    <value>প্রিভিউ</value>
+  </data>
+  <data name="ApplyButton" xml:space="preserve">
+    <value>পুনরায় লেখা</value>
+  </data>
+  <data name="SettingsButton" xml:space="preserve">
+    <value>সেটিংস</value>
+  </data>
+  <data name="ExpandButton" xml:space="preserve">
+    <value>বিস্তার করুন</value>
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
+    <value>মুছুন</value>
+  </data>
+  <data name="CompareDiffButton" xml:space="preserve">
+    <value>বর্তমান লক্ষ্য বিষয়বস্তুর সাথে তুলনা করুন</value>
+  </data>
+
+  <!-- ============ 枚举显示名 ============ -->
+  <data name="StateNew" xml:space="preserve">
+    <value>নতুন</value>
+  </data>
+  <data name="StateOverwrite" xml:space="preserve">
+    <value>ওভাররাইট</value>
+  </data>
+  <data name="StateIdentical" xml:space="preserve">
+    <value>অভিন্ন</value>
+  </data>
+  <data name="StateTypeConflict" xml:space="preserve">
+    <value>ধরনের দ্বন্দ্ব</value>
+  </data>
+  <data name="StateInvalid" xml:space="preserve">
+    <value>অবৈধ</value>
+  </data>
+  <data name="ActionCreate" xml:space="preserve">
+    <value>তৈরি করুন</value>
+  </data>
+  <data name="ActionOverwrite" xml:space="preserve">
+    <value>ওভাররাইট</value>
+  </data>
+  <data name="ActionSkip" xml:space="preserve">
+    <value>এড়িয়ে যান</value>
+  </data>
+  <data name="ActionRename" xml:space="preserve">
+    <value>নাম পরিবর্তন</value>
+  </data>
+  <data name="OpRunning" xml:space="preserve">
+    <value>চলছে</value>
+  </data>
+  <data name="OpSucceeded" xml:space="preserve">
+    <value>সফল</value>
+  </data>
+  <data name="OpPartiallyFailed" xml:space="preserve">
+    <value>আংশিক লেখা হয়েছে</value>
+  </data>
+  <data name="OpFailed" xml:space="preserve">
+    <value>ব্যর্থ</value>
+  </data>
+  <data name="OpCancelled" xml:space="preserve">
+    <value>বাতিল হয়েছে</value>
+  </data>
+  <data name="OpUndone" xml:space="preserve">
+    <value>পূর্বাবস্থায় ফেরানো হয়েছে</value>
+  </data>
+  <data name="ResultCreated" xml:space="preserve">
+    <value>তৈরি হয়েছে</value>
+  </data>
+  <data name="ResultOverwritten" xml:space="preserve">
+    <value>ওভাররাইট হয়েছে</value>
+  </data>
+  <data name="ResultSkipped" xml:space="preserve">
+    <value>এড়িয়ে যাওয়া হয়েছে</value>
+  </data>
+  <data name="ResultRenamed" xml:space="preserve">
+    <value>নাম পরিবর্তিত হয়েছে</value>
+  </data>
+  <data name="ResultFailed" xml:space="preserve">
+    <value>ব্যর্থ</value>
+  </data>
+  <data name="ResultDirectoryCreated" xml:space="preserve">
+    <value>ফোল্ডার তৈরি হয়েছে</value>
+  </data>
+  <data name="SourceUnchanged" xml:space="preserve">
+    <value>অপরিবর্তিত</value>
+  </data>
+  <data name="SourceModified" xml:space="preserve">
+    <value>পরিবর্তিত</value>
+  </data>
+  <data name="SourceMissing" xml:space="preserve">
+    <value>উৎস ফাইল মুছে ফেলা হয়েছে</value>
+  </data>
+
+  <!-- ============ 主窗口：紧凑暂存区 ============ -->
+  <data name="CompactTitle" xml:space="preserve">
+    <value>অস্থায়ী সংরক্ষণ এলাকা</value>
+  </data>
+  <data name="CompactEmptyTitle" xml:space="preserve">
+    <value>অস্থায়ী সংরক্ষণ এলাকা ফাঁকা</value>
+  </data>
+  <data name="CompactEmptyHint" xml:space="preserve">
+    <value>“যোগ করুন” চেপে কিছু রাখুন, তারপর সরাসরি টেনে বের করুন</value>
+  </data>
+  <data name="CompactFooter" xml:space="preserve">
+    <value>যেকোনো ফোল্ডারে টানুন = সেখানে সংরক্ষণ করুন</value>
+  </data>
+
+  <!-- ============ 主窗口：工作台 ============ -->
+  <data name="StashBoxLabel" xml:space="preserve">
+    <value>অস্থায়ী সংরক্ষণ বাক্স</value>
+  </data>
+  <data name="NewGroupButton" xml:space="preserve">
+    <value>নতুন বাক্স</value>
+  </data>
+  <data name="WorkbenchEmptyTitle" xml:space="preserve">
+    <value>ওয়ার্কবেঞ্চে কিছু নেই</value>
+  </data>
+  <data name="WorkbenchEmptyHint" xml:space="preserve">
+    <value>ফাইল বা ফোল্ডার এখানে টেনে আনুন, অথবা উপরে ডানে “যোগ করুন” ব্যবহার করুন</value>
+  </data>
+  <data name="ColumnNamePath" xml:space="preserve">
+    <value>নাম / পথ</value>
+  </data>
+  <data name="ColumnSize" xml:space="preserve">
+    <value>আকার</value>
+  </data>
+  <data name="ColumnSourceBranch" xml:space="preserve">
+    <value>উৎস ব্রাঞ্চ</value>
+  </data>
+  <data name="ColumnSourceState" xml:space="preserve">
+    <value>উৎসের অবস্থা</value>
+  </data>
+  <data name="MenuOpenSource" xml:space="preserve">
+    <value>উৎসের অবস্থান খুলুন</value>
+  </data>
+  <data name="MenuCopySourcePath" xml:space="preserve">
+    <value>উৎসের পথ কপি করুন</value>
+  </data>
+  <data name="MenuCopyToClipboard" xml:space="preserve">
+    <value>ক্লিপবোর্ডে কপি করুন</value>
+  </data>
+  <data name="MenuRefreshSnapshot" xml:space="preserve">
+    <value>স্ন্যাপশট রিফ্রেশ করুন</value>
+  </data>
+  <data name="MenuSetRoot" xml:space="preserve">
+    <value>রুট সেট করুন</value>
+  </data>
+  <data name="MenuMoveToGroup" xml:space="preserve">
+    <value>বাক্সে সরান</value>
+  </data>
+  <data name="WillWriteMany" xml:space="preserve">
+    <value>{0} টি ফাইল লেখা হবে, যেমন</value>
+  </data>
+  <data name="WriteBackLabel" xml:space="preserve">
+    <value>পুনরায় লেখা</value>
+  </data>
+  <data name="TargetOriginal" xml:space="preserve">
+    <value>মূল অবস্থান</value>
+  </data>
+  <data name="TargetAnotherRoot" xml:space="preserve">
+    <value>অন্য রুট</value>
+  </data>
+  <data name="TargetSpecifiedPath" xml:space="preserve">
+    <value>নির্দিষ্ট পথ</value>
+  </data>
+  <data name="BrowseTargetTooltip" xml:space="preserve">
+    <value>লক্ষ্য ফোল্ডার ব্রাউজ করুন</value>
+  </data>
+  <data name="StructureLabel" xml:space="preserve">
+    <value>কাঠামো</value>
+  </data>
+  <data name="ConflictLabel" xml:space="preserve">
+    <value>দ্বন্দ্ব</value>
+  </data>
+  <data name="WillWrite" xml:space="preserve">
+    <value>লেখা হবে</value>
+  </data>
+  <data name="NothingToWrite" xml:space="preserve">
+    <value>লেখার মতো কিছু এখনো নেই</value>
+  </data>
+
+  <!-- ============ 目标模式 / 结构 / 冲突策略 ============ -->
+  <data name="StructureFullRelative" xml:space="preserve">
+    <value>সম্পূর্ণ আপেক্ষিক পথ</value>
+  </data>
+  <data name="StructureItemOnly" xml:space="preserve">
+    <value>শুধু অস্থায়ী সংরক্ষিত উপাদানটি</value>
+  </data>
+  <data name="StructureFlatten" xml:space="preserve">
+    <value>সব ফ্ল্যাট করুন</value>
+  </data>
+  <data name="ConflictAsk" xml:space="preserve">
+    <value>জিজ্ঞাসা করুন</value>
+  </data>
+
+  <!-- ============ 主 ViewModel 的状态与提示 ============ -->
+  <data name="StatusReady" xml:space="preserve">
+    <value>প্রস্তুত</value>
+  </data>
+  <data name="StatusEmpty" xml:space="preserve">
+    <value>এখনো কিছু অস্থায়ী সংরক্ষণ করা হয়নি</value>
+  </data>
+  <data name="StatusSummary" xml:space="preserve">
+    <value>{0} টি উপাদান · {1} টি ফাইল · {2}</value>
+  </data>
+  <data name="StatusBusy" xml:space="preserve">
+    <value>চলছে…</value>
+  </data>
+  <data name="StatusAdding" xml:space="preserve">
+    <value>অস্থায়ী সংরক্ষণে যোগ করা হচ্ছে ({0}/{1})</value>
+  </data>
+  <data name="StatusAddAborted" xml:space="preserve">
+    <value>যোগ করা বন্ধ করা হয়েছে</value>
+  </data>
+  <data name="StatusAborting" xml:space="preserve">
+    <value>বন্ধ করা হচ্ছে…</value>
+  </data>
+  <data name="StatusRefreshing" xml:space="preserve">
+    <value>স্ন্যাপশট রিফ্রেশ হচ্ছে</value>
+  </data>
+  <data name="StatusSnapshotRefreshed" xml:space="preserve">
+    <value>স্ন্যাপশট রিফ্রেশ হয়েছে</value>
+  </data>
+  <data name="StatusRootUpdated" xml:space="preserve">
+    <value>রুট হালনাগাদ হয়েছে</value>
+  </data>
+  <data name="StatusSourcePathCopied" xml:space="preserve">
+    <value>উৎসের পথ কপি হয়েছে</value>
+  </data>
+  <data name="StatusClipboardFilled" xml:space="preserve">
+    <value>ক্লিপবোর্ডের ফোল্ডার লক্ষ্য পথে বসিয়ে দেওয়া হয়েছে</value>
+  </data>
+  <data name="StatusPreparingExport" xml:space="preserve">
+    <value>টেনে বের করার বিষয়বস্তু প্রস্তুত হচ্ছে…</value>
+  </data>
+  <data name="StatusCopiedToClipboard" xml:space="preserve">
+    <value>ক্লিপবোর্ডে কপি হয়েছে ({0} টি উপাদান)</value>
+  </data>
+  <data name="StatusWriting" xml:space="preserve">
+    <value>লেখা হচ্ছে ({0}/{1})</value>
+  </data>
+  <data name="StatusLoadFailed" xml:space="preserve">
+    <value>অস্থায়ী সংরক্ষিত উপাদান লোড করতে ব্যর্থ: {0}</value>
+  </data>
+  <data name="StatusSourceStateFailed" xml:space="preserve">
+    <value>উৎসের অবস্থা পড়তে ব্যর্থ: {0}</value>
+  </data>
+  <data name="ToastAdded" xml:space="preserve">
+    <value>{0} টি উপাদান যোগ হয়েছে</value>
+  </data>
+  <data name="ToastDuplicates" xml:space="preserve">
+    <value>{0} টি পথ ইতিমধ্যেই অস্থায়ী সংরক্ষণ এলাকায় আছে (এড়িয়ে যাওয়া হয়েছে)</value>
+  </data>
+  <data name="ToastFailedPaths" xml:space="preserve">
+    <value>{0} টি পথ ব্যর্থ</value>
+  </data>
+  <data name="ToastWarnings" xml:space="preserve">
+    <value>{0} টি সতর্কতা</value>
+  </data>
+  <data name="AddToStashTitle" xml:space="preserve">
+    <value>অস্থায়ী সংরক্ষণে যোগ করুন</value>
+  </data>
+  <data name="SkippedTitle" xml:space="preserve">
+    <value>এড়িয়ে যাওয়া</value>
+  </data>
+  <data name="DefaultGroupName" xml:space="preserve">
+    <value>ডিফল্ট অস্থায়ী সংরক্ষণ</value>
+  </data>
+  <data name="NewGroupTitle" xml:space="preserve">
+    <value>নতুন বাক্স</value>
+  </data>
+  <data name="RenameGroupTitle" xml:space="preserve">
+    <value>বাক্সের নাম পরিবর্তন করুন</value>
+  </data>
+  <data name="DeleteGroupTitle" xml:space="preserve">
+    <value>বাক্স মুছুন</value>
+  </data>
+  <data name="DeleteGroupConfirm" xml:space="preserve">
+    <value>“{0}” বাক্সটি মুছবেন? বাক্সের সব অস্থায়ী সংরক্ষিত উপাদানও মুছে যাবে।</value>
+  </data>
+  <data name="NoGroupTitle" xml:space="preserve">
+    <value>এখনো কোনো সংরক্ষণ বাক্স নেই</value>
+  </data>
+  <data name="NoGroupHint" xml:space="preserve">
+    <value>আগে একটি বাক্স তৈরি করুন, তারপর অস্থায়ী সংরক্ষণে যোগ করুন।</value>
+  </data>
+  <data name="SetRootFailedTitle" xml:space="preserve">
+    <value>রুট সেট করতে ব্যর্থ</value>
+  </data>
+  <data name="DeleteItemTitle" xml:space="preserve">
+    <value>বাক্স থেকে সরান</value>
+  </data>
+  <data name="DeleteItemConfirm" xml:space="preserve">
+    <value>“{0}” বাক্স থেকে সরিয়ে ফেলবেন? মূল ফাইলটি মুছে যাবে না, কেবল অস্থায়ী সংরক্ষিত কপিটি মুছে ফেলা হবে।</value>
+  </data>
+  <data name="NoOtherGroupHint" xml:space="preserve">
+    <value>অন্য কোনো বাক্সে সরানো যাচ্ছে না। আগে একটি তৈরি করুন।</value>
+  </data>
+  <data name="OpenSourceFailedTitle" xml:space="preserve">
+    <value>উৎসের অবস্থান খুলতে ব্যর্থ</value>
+  </data>
+  <data name="CopyFailedTitle" xml:space="preserve">
+    <value>কপি করতে ব্যর্থ</value>
+  </data>
+  <data name="ClipboardBusy" xml:space="preserve">
+    <value>ক্লিপবোর্ড অন্য একটি প্রোগ্রাম ব্যবহার করছে।</value>
+  </data>
+  <data name="DragExportTarget" xml:space="preserve">
+    <value>{0} টি উপাদান টেনে বের করুন</value>
+  </data>
+  <data name="NothingToWriteTitle" xml:space="preserve">
+    <value>লেখার মতো কিছু নেই</value>
+  </data>
+  <data name="NothingToWriteHint" xml:space="preserve">
+    <value>এই বাক্সে এখনো কোনো অস্থায়ী সংরক্ষিত উপাদান নেই।</value>
+  </data>
+  <data name="NothingToUndoMessage" xml:space="preserve">
+    <value>এখনো কোনো লেখা করা হয়নি।</value>
+  </data>
+  <data name="NothingToUndoTitle" xml:space="preserve">
+    <value>পূর্বাবস্থায় ফেরানোর কোনো কাজ নেই</value>
+  </data>
+  <data name="UndoDoneMessage" xml:space="preserve">
+    <value>{0} টি ফাইল ফেরানো হয়েছে, {1} টি মুছে ফেলা হয়েছে।</value>
+  </data>
+
+  <!-- ============ 树行 ============ -->
+  <data name="TreeEmpty" xml:space="preserve">
+    <value>ফাঁকা</value>
+  </data>
+  <data name="TreeItemCount" xml:space="preserve">
+    <value>{0} টি উপাদান</value>
+  </data>
+  <data name="TreeItemFileCount" xml:space="preserve">
+    <value>{0} টি উপাদান · {1} টি ফাইল</value>
+  </data>
+
+  <!-- ============ Git 改动对话框 ============ -->
+  <data name="GitStatusTitle" xml:space="preserve">
+    <value>পরিবর্তিত ফাইল বাছুন</value>
+  </data>
+  <data name="GitChangedSummary" xml:space="preserve">
+    <value>{0} টি পরিবর্তন</value>
+  </data>
+  <data name="GitChangedSummaryWithDeleted" xml:space="preserve">
+    <value>{0} টি পরিবর্তন, এর মধ্যে {1} টি মুছে ফেলা হয়েছে (অস্থায়ী সংরক্ষণে যোগ করা যাবে না)</value>
+  </data>
+  <data name="GitNoSelection" xml:space="preserve">
+    <value>যোগ করার মতো কোনো ফাইল বাছাই করা হয়নি।</value>
+  </data>
+  <data name="GitAddedMessage" xml:space="preserve">
+    <value>{0} টি উপাদান যোগ হয়েছে।</value>
+  </data>
+  <data name="GitDeletedSkipped" xml:space="preserve">
+    <value>{0} টি মুছে ফেলা ফাইল এড়িয়ে যাওয়া হয়েছে (উৎসের পথ আর নেই)।</value>
+  </data>
+
+  <!-- ============ 操作历史 ============ -->
+  <data name="HistoryTitle" xml:space="preserve">
+    <value>কাজের ইতিহাস</value>
+  </data>
+  <data name="ColumnTime" xml:space="preserve">
+    <value>সময়</value>
+  </data>
+  <data name="ColumnTarget" xml:space="preserve">
+    <value>লক্ষ্য</value>
+  </data>
+  <data name="ColumnSourceItem" xml:space="preserve">
+    <value>উৎস</value>
+  </data>
+  <data name="ColumnStatus" xml:space="preserve">
+    <value>অবস্থা</value>
+  </data>
+  <data name="ColumnTargetPath" xml:space="preserve">
+    <value>লক্ষ্য পথ</value>
+  </data>
+  <data name="ColumnResult" xml:space="preserve">
+    <value>ফলাফল</value>
+  </data>
+  <data name="ColumnError" xml:space="preserve">
+    <value>ত্রুটি</value>
+  </data>
+  <data name="OpenTargetFolderButton" xml:space="preserve">
+    <value>লক্ষ্য ফোল্ডার খুলুন</value>
+  </data>
+  <data name="UndoConfirmTitle" xml:space="preserve">
+    <value>পূর্বাবস্থায় ফেরানো</value>
+  </data>
+  <data name="UndoConfirmMessage" xml:space="preserve">
+    <value>{0} থেকে এই লেখাটি পূর্বাবস্থায় ফেরাবেন?</value>
+  </data>
+  <data name="UndoConfirmNote" xml:space="preserve">
+    <value>লক্ষ্য ফাইলটির পরে আবার পরিবর্তন হলে সেই অংশটি এড়িয়ে যাওয়া হবে।</value>
+  </data>
+  <data name="TargetFolderMissing" xml:space="preserve">
+    <value>লক্ষ্য ফোল্ডারটি নেই।</value>
+  </data>
+  <data name="OpenFailedTitle" xml:space="preserve">
+    <value>খোলা যায়নি</value>
+  </data>
+
+  <!-- ============ 写入预览 ============ -->
+  <data name="PreviewTitle" xml:space="preserve">
+    <value>লেখার প্রিভিউ</value>
+  </data>
+  <data name="ColumnAction" xml:space="preserve">
+    <value>কাজ</value>
+  </data>
+  <data name="ColumnWarning" xml:space="preserve">
+    <value>সতর্কতা</value>
+  </data>
+  <data name="PreviewTargetOriginal" xml:space="preserve">
+    <value>লক্ষ্য: মূল অবস্থান (প্রতিটি অস্থায়ী সংরক্ষিত উপাদান নিজের রুট অনুযায়ী লেখা হয়)</value>
+  </data>
+  <data name="PreviewTargetAnotherRoot" xml:space="preserve">
+    <value>লক্ষ্য: অন্য রুট {0}</value>
+  </data>
+  <data name="PreviewTargetSpecifiedPath" xml:space="preserve">
+    <value>লক্ষ্য: নির্দিষ্ট পথ {0}</value>
+  </data>
+  <data name="PreviewTargetDragExport" xml:space="preserve">
+    <value>লক্ষ্য: টেনে বের করা</value>
+  </data>
+  <data name="PreviewSummary" xml:space="preserve">
+    <value>নতুন {0} · ওভাররাইট {1} · একই {2} · ধরনের সংঘাত {3} · অবৈধ {4}</value>
+  </data>
+  <data name="PreviewWritten" xml:space="preserve">
+    <value>লেখা হয়েছে: {0}</value>
+  </data>
+  <data name="PreviewAborted" xml:space="preserve">
+    <value>লেখা বন্ধ করা হয়েছে</value>
+  </data>
+  <data name="PreviewFailed" xml:space="preserve">
+    <value>লেখা ব্যর্থ: {0}</value>
+  </data>
+  <data name="CompareFailed" xml:space="preserve">
+    <value>তুলনার টুল খুলতে ব্যর্থ: {0}</value>
+  </data>
+
+  <!-- ============ 写入结果提示 ============ -->
+  <data name="ToastTargetLine" xml:space="preserve">
+    <value>লক্ষ্য {0}</value>
+  </data>
+  <data name="ToastTitle" xml:space="preserve">
+    <value>লেখার ফলাফল</value>
+  </data>
+  <data name="ToastSucceeded" xml:space="preserve">
+    <value>লেখা সম্পন্ন হয়েছে</value>
+  </data>
+  <data name="ToastPartiallyFailed" xml:space="preserve">
+    <value>আংশিক লেখা হয়েছে</value>
+  </data>
+  <data name="ToastCancelled" xml:space="preserve">
+    <value>বাতিল হয়েছে</value>
+  </data>
+  <data name="ToastRetryElevated" xml:space="preserve">
+    <value>প্রশাসক হিসেবে আবার চেষ্টা করুন</value>
+  </data>
+  <data name="ToastViewDetails" xml:space="preserve">
+    <value>বিস্তারিত</value>
+  </data>
+  <data name="ToastCreated" xml:space="preserve">
+    <value>{0} তৈরি হয়েছে</value>
+  </data>
+  <data name="ToastOverwritten" xml:space="preserve">
+    <value>{0} ওভাররাইট হয়েছে</value>
+  </data>
+  <data name="ToastSkipped" xml:space="preserve">
+    <value>{0} এড়িয়ে যাওয়া হয়েছে</value>
+  </data>
+  <data name="ToastFailed" xml:space="preserve">
+    <value>{0} ব্যর্থ</value>
+  </data>
+  <data name="ItemSeparator" xml:space="preserve">
+    <value>, </value>
+  </data>
+  <data name="SentenceEnd" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="ClauseSeparator" xml:space="preserve">
+    <value>; </value>
+  </data>
+  <data name="ProgressSeparator" xml:space="preserve">
+    <value> · </value>
+  </data>
+  <data name="ToastNothingWritten" xml:space="preserve">
+    <value>কোনো ফাইল লেখা হয়নি।</value>
+  </data>
+  <data name="ToastDetailLine" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="ToastNoFailures" xml:space="preserve">
+    <value>কোনো ব্যর্থ এন্ট্রি নেই।</value>
+  </data>
+  <data name="ToastDetailsTitle" xml:space="preserve">
+    <value>লেখার বিস্তারিত</value>
+  </data>
+  <data name="ToastElevatedFailed" xml:space="preserve">
+    <value>উচ্চতর অনুমতিসহ প্রক্রিয়া শুরু করা যায়নি (UAC প্রম্পট বাতিল করা হয়ে থাকতে পারে)।</value>
+  </data>
+
+  <!-- ============ 设置 ============ -->
+  <data name="SettingsTitle" xml:space="preserve">
+    <value>সেটিংস</value>
+  </data>
+  <data name="SectionGeneral" xml:space="preserve">
+    <value>সাধারণ</value>
+  </data>
+  <data name="LanguageLabel" xml:space="preserve">
+    <value>ভাষা</value>
+  </data>
+  <data name="LanguageSystem" xml:space="preserve">
+    <value>সিস্টেম অনুসরণ করুন</value>
+  </data>
+  <data name="LanguageChinese" xml:space="preserve">
+    <value>简体中文</value>
+  </data>
+  <data name="LanguageTraditionalChinese" xml:space="preserve">
+    <value>繁體中文</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="LanguageJapanese" xml:space="preserve">
+    <value>日本語</value>
+  </data>
+  <data name="LanguageKorean" xml:space="preserve">
+    <value>한국어</value>
+  </data>
+  <data name="LanguageSpanish" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="LanguagePortugueseBrazil" xml:space="preserve">
+    <value>Português (Brasil)</value>
+  </data>
+  <data name="LanguageFrench" xml:space="preserve">
+    <value>Français</value>
+  </data>
+  <data name="LanguageGerman" xml:space="preserve">
+    <value>Deutsch</value>
+  </data>
+  <data name="LanguageItalian" xml:space="preserve">
+    <value>Italiano</value>
+  </data>
+  <data name="LanguageRussian" xml:space="preserve">
+    <value>Русский</value>
+  </data>
+  <data name="LanguageArabic" xml:space="preserve">
+    <value>العربية</value>
+  </data>
+  <data name="LanguageHindi" xml:space="preserve">
+    <value>हिन्दी</value>
+  </data>
+  <data name="LanguageIndonesian" xml:space="preserve">
+    <value>Bahasa Indonesia</value>
+  </data>
+  <data name="LanguageThai" xml:space="preserve">
+    <value>ไทย</value>
+  </data>
+  <data name="LanguageTurkish" xml:space="preserve">
+    <value>Türkçe</value>
+  </data>
+  <data name="LanguageVietnamese" xml:space="preserve">
+    <value>Tiếng Việt</value>
+  </data>
+  <data name="LanguageBengali" xml:space="preserve">
+    <value>বাংলা</value>
+  </data>
+  <data name="LanguageRestartFailed" xml:space="preserve">
+    <value>ভাষা সংরক্ষিত হয়েছে, তবে অ্যাপটি আবার চালু করা যায়নি — পরের বার চালু করলে তা কার্যকর হবে।</value>
+  </data>
+  <data name="DefaultConflictPolicyLabel" xml:space="preserve">
+    <value>ডিফল্ট দ্বন্দ্ব নীতি</value>
+  </data>
+  <data name="SkipIdenticalLabel" xml:space="preserve">
+    <value>অভিন্ন বিষয়বস্তুর ফাইল ডিস্কে লেখা হয় না (লক্ষ্যের পরিবর্তনের সময় অপরিবর্তিত থাকে)</value>
+  </data>
+  <data name="BackupBeforeOverwriteLabel" xml:space="preserve">
+    <value>ওভাররাইটের আগে ব্যাকআপ নিন (বন্ধ রাখলে ওভাররাইট আর পূর্বাবস্থায় ফেরানো যাবে না)</value>
+  </data>
+  <data name="HistoryRetentionLabel" xml:space="preserve">
+    <value>ইতিহাস সংরক্ষণের দিন সংখ্যা (0 = স্থায়ী)</value>
+  </data>
+  <data name="AutoGitAddLabel" xml:space="preserve">
+    <value>লেখার পরে স্বয়ংক্রিয়ভাবে git add চালান</value>
+  </data>
+  <data name="WatchBranchLabel" xml:space="preserve">
+    <value>ব্রাঞ্চ বদলালে জানান</value>
+  </data>
+  <data name="RespectGitIgnoreLabel" xml:space="preserve">
+    <value>রিপোজিটরির ভেতরের ফোল্ডারে Git যা উপেক্ষা করে না, কেবল সেই ফাইলগুলোই অস্থায়ী সংরক্ষণ করুন</value>
+  </data>
+  <data name="SectionExcludes" xml:space="preserve">
+    <value>বাদ দেওয়ার নিয়ম</value>
+  </data>
+  <data name="ExcludeHint" xml:space="preserve">
+    <value>প্রতি লাইনে একটি গ্লোব, যেমন **/node_modules/**</value>
+  </data>
+  <data name="SectionWindowsIntegration" xml:space="preserve">
+    <value>Windows ইন্টিগ্রেশন</value>
+  </data>
+  <data name="ContextMenuLabel" xml:space="preserve">
+    <value>এক্সপ্লোরারের রাইট-ক্লিক মেনুতে “অস্থায়ী সংরক্ষণে যোগ করুন” দেখান</value>
+  </data>
+  <data name="StartWithWindowsLabel" xml:space="preserve">
+    <value>উইন্ডোজের সাথে চালু হোক</value>
+  </data>
+  <data name="CloseToTrayLabel" xml:space="preserve">
+    <value>উইন্ডো বন্ধ করলে ট্রেতে সংক্ষিপ্ত করুন</value>
+  </data>
+  <data name="StartMinimizedLabel" xml:space="preserve">
+    <value>চালু হওয়ার সময় ট্রেতে সংক্ষিপ্ত করুন</value>
+  </data>
+  <data name="HotkeyLabel" xml:space="preserve">
+    <value>গ্লোবাল শর্টকাট (অস্থায়ী সংরক্ষণে যোগ করুন)</value>
+  </data>
+  <data name="SectionStorage" xml:space="preserve">
+    <value>স্টোরেজ</value>
+  </data>
+  <data name="RefreshStorageButton" xml:space="preserve">
+    <value>ব্যবহারের হিসাব রিফ্রেশ করুন</value>
+  </data>
+  <data name="CleanupStorageButton" xml:space="preserve">
+    <value>অপ্রয়োজনীয় তথ্য পরিষ্কার করুন</value>
+  </data>
+  <data name="ClearHistoryButton" xml:space="preserve">
+    <value>সব ইতিহাস মুছুন</value>
+  </data>
+  <data name="SettingsSavedMessage" xml:space="preserve">
+    <value>সেটিংস সংরক্ষিত হয়েছে।</value>
+  </data>
+  <data name="StorageUsageLabel" xml:space="preserve">
+    <value>অস্থায়ী সংরক্ষিত বিষয়বস্তু: {0}</value>
+  </data>
+  <data name="StorageExportLabel" xml:space="preserve">
+    <value>টেনে বের করার অস্থায়ী ফাইল: {0}</value>
+  </data>
+  <data name="StorageHistoryLabel" xml:space="preserve">
+    <value>ইতিহাস: {0} টি এন্ট্রি</value>
+  </data>
+  <data name="CleanupConfirmTitle" xml:space="preserve">
+    <value>অপ্রয়োজনীয় তথ্য পরিষ্কার করুন</value>
+  </data>
+  <data name="CleanupConfirmMessage" xml:space="preserve">
+    <value>অস্থায়ী সংরক্ষিত উপাদান বা ইতিহাস দ্বারা উল্লেখ না করা বিষয়বস্তু মুছবেন?</value>
+  </data>
+  <data name="CleanupDoneMessage" xml:space="preserve">
+    <value>{0} টি বিষয়বস্তু মুছে ফেলা হয়েছে।</value>
+  </data>
+  <data name="ClearHistoryConfirmTitle" xml:space="preserve">
+    <value>সব ইতিহাস মুছুন</value>
+  </data>
+  <data name="ClearHistoryConfirmMessage" xml:space="preserve">
+    <value>সব ইতিহাস ও ব্যাকআপ মুছে যাবে, পূর্বাবস্থায় ফেরানোর কাজ আর চলবে না। চালিয়ে যাবেন?</value>
+  </data>
+  <data name="ClearHistoryDoneMessage" xml:space="preserve">
+    <value>{0} টি ইতিহাস মুছে ফেলা হয়েছে।</value>
+  </data>
+  <data name="NewPresetButton" xml:space="preserve">
+    <value>যোগ করুন…</value>
+  </data>
+  <data name="NewPresetTitle" xml:space="preserve">
+    <value>নতুন রুট প্রিসেট</value>
+  </data>
+  <data name="NewPresetDefaultName" xml:space="preserve">
+    <value>নতুন প্রিসেট</value>
+  </data>
+
+  <!-- ============ 根目录预设 ============ -->
+  <data name="RootPresetsTitle" xml:space="preserve">
+    <value>রুট প্রিসেট</value>
+  </data>
+  <data name="ColumnName" xml:space="preserve">
+    <value>নাম</value>
+  </data>
+  <data name="ColumnPath" xml:space="preserve">
+    <value>পথ</value>
+  </data>
+
+  <!-- ============ 对话框 ============ -->
+  <data name="MoveToGroupTitle" xml:space="preserve">
+    <value>বাক্সে সরান</value>
+  </data>
+  <data name="ChooseTargetGroup" xml:space="preserve">
+    <value>লক্ষ্য বাক্স বাছুন</value>
+  </data>
+  <data name="InputTitle" xml:space="preserve">
+    <value>ইনপুট</value>
+  </data>
+  <data name="SetRootTitle" xml:space="preserve">
+    <value>রুট সেট করুন</value>
+  </data>
+  <data name="SetRootHint" xml:space="preserve">
+    <value>রুট বাছুন: অস্থায়ী সংরক্ষিত উপাদানের আপেক্ষিক পথ এটি থেকেই হিসাব হয়, মূল অবস্থানে পুনরায় লেখার সময়ও এটি ব্যবহার হয়।</value>
+  </data>
+  <data name="NewRelativePathLabel" xml:space="preserve">
+    <value>নতুন আপেক্ষিক পথ:</value>
+  </data>
+  <data name="EmptyRelativePath" xml:space="preserve">
+    <value>(আপেক্ষিক পথ ফাঁকা)</value>
+  </data>
+
+  <!-- ============ 关于 ============ -->
+  <data name="AboutTitle" xml:space="preserve">
+    <value>StashBay সম্পর্কে</value>
+  </data>
+  <data name="AboutTagline" xml:space="preserve">
+    <value>একটি ফাইল স্ট্যাশ — সংরক্ষণ করুন, ব্রাঞ্চ বদলানোর পর এক ক্লিকেই পুনরায় লিখুন</value>
+  </data>
+  <data name="VersionLabel" xml:space="preserve">
+    <value>সংস্করণ {0}</value>
+  </data>
+  <data name="RuntimeLabel" xml:space="preserve">
+    <value>রানটাইম .NET {0}</value>
+  </data>
+  <data name="GitFound" xml:space="preserve">
+    <value>Git পাওয়া গেছে</value>
+  </data>
+  <data name="GitMissing" xml:space="preserve">
+    <value>Git পাওয়া যায়নি (Git-সংক্রান্ত সব সুবিধা স্বয়ংক্রিয়ভাবে বন্ধ হয়ে যাবে)</value>
+  </data>
+  <data name="GitUnknown" xml:space="preserve">
+    <value>Git-এর অবস্থা অজানা</value>
+  </data>
+  <data name="DataDirectoryLabel" xml:space="preserve">
+    <value>ডেটা ফোল্ডার {0}</value>
+  </data>
+
+  <!-- ============ 托盘菜单 ============ -->
+  <data name="TrayShowCompact" xml:space="preserve">
+    <value>অস্থায়ী সংরক্ষণ এলাকা দেখান</value>
+  </data>
+  <data name="TrayOpenWorkbench" xml:space="preserve">
+    <value>ওয়ার্কবেঞ্চ খুলুন</value>
+  </data>
+  <data name="TrayApplyOriginal" xml:space="preserve">
+    <value>মূল অবস্থানে প্রয়োগ করুন</value>
+  </data>
+  <data name="TrayUndoLast" xml:space="preserve">
+    <value>শেষটি পূর্বাবস্থায় ফেরানো</value>
+  </data>
+  <data name="TrayGitChanges" xml:space="preserve">
+    <value>Git পরিবর্তন থেকে অস্থায়ী সংরক্ষণে যোগ করুন…</value>
+  </data>
+  <data name="TrayFloatingWindow" xml:space="preserve">
+    <value>ভাসমান উইন্ডো দেখান</value>
+  </data>
+  <data name="TrayHistory" xml:space="preserve">
+    <value>কাজের ইতিহাস…</value>
+  </data>
+  <data name="TrayRootPresets" xml:space="preserve">
+    <value>রুট প্রিসেট…</value>
+  </data>
+  <data name="TraySettings" xml:space="preserve">
+    <value>সেটিংস…</value>
+  </data>
+  <data name="TrayAbout" xml:space="preserve">
+    <value>StashBay সম্পর্কে…</value>
+  </data>
+  <data name="TrayExit" xml:space="preserve">
+    <value>প্রস্থান</value>
+  </data>
+  <data name="NoGitItems" xml:space="preserve">
+    <value>এই বাক্সে Git রিপোজিটরি থেকে কোনো অস্থায়ী সংরক্ষিত উপাদান নেই।</value>
+  </data>
+  <data name="BranchSwitchedMessage" xml:space="preserve">
+    <value>{0} থেকে {1}-এ সুইচ হয়েছে। {2} টি অস্থায়ী সংরক্ষিত উপাদান মূল অবস্থানে প্রয়োগ করা যায়। প্রয়োগ করতে ক্লিক করুন।</value>
+  </data>
+  <data name="UnhandledErrorTitle" xml:space="preserve">
+    <value>StashBay-এ অপ্রত্যাশিত ত্রুট ঘটেছে</value>
+  </data>
+
+  <!-- ============ 文件选择 / 拖出 ============ -->
+  <data name="PickItemsTitle" xml:space="preserve">
+    <value>ফাইল ও ফোল্ডার বেছে নিন</value>
+  </data>
+  <data name="PickItemsHint" xml:space="preserve">
+    <value>একাধিক আইটেম বাছতে Ctrl বা Shift চেপে ধরুন। ফোল্ডার খুলতে সেটিতে ডাবল-ক্লিক করুন।</value>
+  </data>
+  <data name="ParentFolder" xml:space="preserve">
+    <value>মূল ফোল্ডার</value>
+  </data>
+  <data name="ClipboardBusyLong" xml:space="preserve">
+    <value>ক্লিপবোর্ড অন্য একটি প্রোগ্রাম ব্যবহার করছে। একটু পরে আবার চেষ্টা করুন।</value>
+  </data>
+  <data name="LoadStashFailed" xml:space="preserve">
+    <value>অস্থায়ী সংরক্ষণ এলাকা লোড করতে ব্যর্থ: {0}</value>
+  </data>
+  <data name="DragOutFailed" xml:space="preserve">
+    <value>টেনে বের করতে ব্যর্থ: {0}</value>
+  </data>
+  <data name="AddToStashFailed" xml:space="preserve">
+    <value>অস্থায়ী সংরক্ষণে যোগ করতে ব্যর্থ: {0}</value>
+  </data>
+  <data name="ThemeLabel" xml:space="preserve">
+    <value>থিম</value>
+  </data>
+  <data name="ThemeSystem" xml:space="preserve">
+    <value>সিস্টেম অনুসরণ করুন</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>হালকা</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>গাঢ়</value>
+  </data>
+  <data name="AddSelectedButton" xml:space="preserve">
+    <value>নির্বাচিত যোগ করুন</value>
+  </data>
+
+  <data name="ClearAllBoxesButton" xml:space="preserve">
+    <value>সব বাক্স মুছুন</value>
+  </data>
+  <data name="ClearAllBoxesTooltip" xml:space="preserve">
+    <value>সমস্ত অস্থায়ী বাক্স এবং উপাদান সাফ করুন</value>
+  </data>
+  <data name="ClearAllBoxesTitle" xml:space="preserve">
+    <value>সমস্ত বাক্স সাফ করুন</value>
+  </data>
+  <data name="ClearAllBoxesConfirm" xml:space="preserve">
+    <value>আপনি কি সত্যিই সমস্ত বাক্স সাফ করতে চান? সমস্ত উপাদান মুছে যাবে।</value>
+  </data>
+  <data name="ClearAllBoxesDone" xml:space="preserve">
+    <value>সমস্ত অস্থায়ী বাক্স সাফ করা হয়েছে।</value>
+  </data>
+  <data name="ClearBoxButton" xml:space="preserve">
+    <value>বর্তমান বাক্স খালি করুন</value>
+  </data>
+  <data name="ClearBoxConfirm" xml:space="preserve">
+    <value>“{0}” বাক্সটি খালি করবেন? ভেতরের সব উপাদান মুছে যাবে।</value>
+  </data>
+  <data name="ClearBoxDone" xml:space="preserve">
+    <value>“{0}” বাক্সটি খালি করা হয়েছে।</value>
+  </data>
+  <data name="DropToStashPrompt" xml:space="preserve">
+    <value>সংরক্ষণের জন্য ছেড়ে দিন</value>
+  </data>
+  <data name="DropToStashHint" xml:space="preserve">
+    <value>ফাইল বা ফোল্ডারগুলি স্বয়ংক্রিয়ভাবে সংরক্ষণে যুক্ত করতে ছেড়ে দিন</value>
+  </data>
+  <data name="TrayClearAll" xml:space="preserve">
+    <value>সব বাক্স মুছুন</value>
+  </data>
+
+  <data name="RemoveAfterDragExportLabel" xml:space="preserve">
+    <value>টেনে বের করার পরে স্ট্যাশ থেকে স্বয়ংক্রিয়ভাবে মুছুন (DropPoint আচরণ)</value>
+  </data>
+  <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
+    <value>গন্তব্য ফোল্ডারে ফেলার পর উপাদানগুলি স্বয়ংক্রিয়ভাবে মুছে ফেলা হয়; বন্ধ থাকলে উপাদানগুলি থেকে যায়</value>
+  </data>
+
+  <data name="CollapseButton" xml:space="preserve">
+    <value>সঙ্কুচিত করুন</value>
+  </data>
+  <data name="CollapseButtonTooltip" xml:space="preserve">
+    <value>কম্প্যাক্ট প্যানেলে সঙ্কুচিত করুন (টেনে আনার জন্য সুবিধাজনক, শর্টকাট: Esc / F11)</value>
+  </data>
+
+  <data name="StatusClipboardPasted" xml:space="preserve">
+    <value>ক্লিপবোর্ডের বিষয়বস্তু সাময়িক বাক্সে যুক্ত হয়েছে</value>
+  </data>
+  <data name="DragAllButton" xml:space="preserve">
+    <value>সব টানুন</value>
+  </data>
+  <data name="DragAllTooltip" xml:space="preserve">
+    <value>একসাথে সব সাময়িক ফাইল বাইরে পাঠাতে এই হ্যান্ডেলটি ধরে টানুন</value>
+  </data>
+  <data name="AutoDismissWhenEmptyLabel" xml:space="preserve">
+    <value>খালি হলে স্বয়ংক্রিয় লুকান</value>
+  </data>
+  <data name="AutoDismissWhenEmptyTooltip" xml:space="preserve">
+    <value>সব ফাইল বাইরে টানা বা খালি করা হলে উইন্ডোটি স্বয়ংক্রিয়ভাবে আড়াল করুন</value>
+  </data>
+  <data name="SummonAtCursorLabel" xml:space="preserve">
+    <value>কার্সারের কাছাকাছি খুলুন</value>
+  </data>
+  <data name="SummonAtCursorTooltip" xml:space="preserve">
+    <value>হটকি চাপলে সরাসরি মাউস কার্সারের অবস্থানে উইন্ডো প্রদর্শন করুন</value>
+  </data>
+  <data name="EnableShakeToSummonLabel" xml:space="preserve">
+    <value>টানার সময় কাঁপিয়ে খুলুন</value>
+  </data>
+  <data name="EnableShakeToSummonTooltip" xml:space="preserve">
+    <value>ফাইল টানার সময় মাউস দ্রুত নাড়াচাড়া করে কার্সারের কাছে শেলফ খুলুন</value>
+  </data>
+  <data name="SectionDeveloperOptions" xml:space="preserve">
+    <value>উন্নত এবং বিকাশকারী বিকল্পগুলি (Git)</value>
+  </data>
+  <data name="DeveloperOptionsHint" xml:space="preserve">
+    <value>কেবলমাত্র যখন Git সংগ্রহস্থলের ফাইল স্ট্যাশ করা হয় তখন প্রযোজ্য। সাধারণ ফাইল স্ট্যাশ এবং পুনরুদ্ধার সম্পূর্ণ স্বাধীন থাকে।</value>
+  </data>
+  <data name="HotkeyRegisterFailedTitle" xml:space="preserve">
+    <value>হটকি নিবন্ধন ব্যর্থ হয়েছে</value>
+  </data>
+  <data name="HotkeyRegisterFailedMessage" xml:space="preserve">
+    <value>গ্লোবাল হটকি "{0}" নিবন্ধন করতে ব্যর্থ হয়েছে। এটি অন্য কোনো অ্যাপ্লিকেশন দ্বারা ব্যবহৃত হতে পারে।</value>
+  </data>
+  <data name="HotkeyWorkbenchLabel" xml:space="preserve">
+    <value>গ্লোবাল হটকি (ওয়ার্কবেঞ্চ খুলুন)</value>
+  </data>
+  <data name="HotkeyPasteLabel" xml:space="preserve">
+    <value>গ্লোবাল হটকি (ক্লিপবোর্ডের ফাইল পেস্ট)</value>
+  </data>
+  <data name="HotkeyRecordingHint" xml:space="preserve">
+    <value>রেকর্ড করতে ক্লিক করে শর্টকাট চাপুন। বাতিল করতে Esc চাপুন।</value>
+  </data>
+  <data name="HotkeyClearButton" xml:space="preserve">
+    <value>পরিষ্কার করুন</value>
+  </data>
+  <data name="PinButtonTooltip" xml:space="preserve">
+    <value>উপরে পিন করুন</value>
+  </data>
+  <data name="ViewModeTree" xml:space="preserve">
+    <value>ট্রি</value>
+  </data>
+  <data name="ViewModeList" xml:space="preserve">
+    <value>তালিকা</value>
+  </data>
+  <data name="ViewModeSource" xml:space="preserve">
+    <value>উৎস অনুযায়ী</value>
+  </data>
+  <data name="ShelfApply" xml:space="preserve">
+    <value>ফিরে লিখুন</value>
+  </data>
+  <data name="ShelfClearAll" xml:space="preserve">
+    <value>সব মুছুন</value>
+  </data>
+  <data name="ViewModeIcons" xml:space="preserve"><value>আইকন</value></data>
+</root>

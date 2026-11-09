@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <!-- 决定产物叫 StashBay.exe 而不是 FileStash.App.exe -->
+    <AssemblyName>StashBay</AssemblyName>
+    <RootNamespace>FileStash.App</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Resources\app.ico</ApplicationIcon>
+    <!--
+      刻意不放 RuntimeIdentifier / SelfContained / PublishSingleFile：
+      放进 csproj 会让每次 dotnet build 都走 RID 专属单文件路径，
+      而且自包含工程不能被别的工程引用（测试工程一引用就报 NETSDK1151）。
+      这些属性全部放在 Properties/PublishProfiles/*.pubxml。
+    -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FileStash.Core\FileStash.Core.csproj" />
+    <ProjectReference Include="..\FileStash.Infrastructure\FileStash.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      托盘图标。WPF SDK 的默认 Resource 通配不覆盖 .ico，必须显式声明，
+      否则 pack URI 找不到资源（症状是托盘里没有图标，而托盘本身在）。
+    -->
+    <Resource Include="Resources\app.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="H.NotifyIcon.Wpf" Version="2.4.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.14" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="10.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+  </ItemGroup>
+
+</Project>

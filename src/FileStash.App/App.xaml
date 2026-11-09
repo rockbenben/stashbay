@@ -1,0 +1,19 @@
+﻿<Application x:Class="FileStash.App.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             ShutdownMode="OnExplicitShutdown">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--
+                    顺序有意义：Light 是完整定义，Dark 只含覆盖键，
+                    由 ThemeService 在运行时决定是否把 Dark 插到 Light 之后。
+                -->
+                <ResourceDictionary Source="Resources/Themes/Light.xaml" />
+                <ResourceDictionary Source="Resources/Controls.xaml" />
+                <!-- 托盘图标：资源字典里的 TaskbarIcon 永远不进可视树，必须手动 ForceCreate -->
+                <ResourceDictionary Source="Resources/Tray.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

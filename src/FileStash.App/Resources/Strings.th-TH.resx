@@ -1,0 +1,984 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ============ 通用 ============ -->
+  <data name="AppName" xml:space="preserve">
+    <value>StashBay</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>ไม่ทราบ</value>
+  </data>
+  <data name="OkButton" xml:space="preserve">
+    <value>ตกลง</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>ยกเลิก</value>
+  </data>
+  <data name="CloseButton" xml:space="preserve">
+    <value>ปิด</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>บันทึก</value>
+  </data>
+  <data name="RefreshButton" xml:space="preserve">
+    <value>รีเฟรช</value>
+  </data>
+  <data name="AddButton" xml:space="preserve">
+    <value>เพิ่ม</value>
+  </data>
+  <data name="AbortButton" xml:space="preserve">
+    <value>หยุด</value>
+  </data>
+  <data name="UndoButton" xml:space="preserve">
+    <value>เลิกทำ</value>
+  </data>
+  <data name="UndoLastButton" xml:space="preserve">
+    <value>เลิกทำครั้งล่าสุด</value>
+  </data>
+  <data name="UndoNeedsWrite" xml:space="preserve">
+    <value>เลิกทำได้เฉพาะการเขียนเท่านั้น การลากออกไม่มีอะไรให้คืน</value>
+  </data>
+  <data name="UndoThisButton" xml:space="preserve">
+    <value>เลิกทำครั้งนี้</value>
+  </data>
+  <data name="PreviewButton" xml:space="preserve">
+    <value>ตัวอย่าง</value>
+  </data>
+  <data name="ApplyButton" xml:space="preserve">
+    <value>เขียนกลับ</value>
+  </data>
+  <data name="SettingsButton" xml:space="preserve">
+    <value>การตั้งค่า</value>
+  </data>
+  <data name="ExpandButton" xml:space="preserve">
+    <value>ขยาย</value>
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
+    <value>ลบ</value>
+  </data>
+  <data name="CompareDiffButton" xml:space="preserve">
+    <value>เปรียบเทียบกับเนื้อหาเป้าหมายปัจจุบัน</value>
+  </data>
+
+  <!-- ============ 枚举显示名 ============ -->
+  <data name="StateNew" xml:space="preserve">
+    <value>ใหม่</value>
+  </data>
+  <data name="StateOverwrite" xml:space="preserve">
+    <value>เขียนทับ</value>
+  </data>
+  <data name="StateIdentical" xml:space="preserve">
+    <value>เหมือนกัน</value>
+  </data>
+  <data name="StateTypeConflict" xml:space="preserve">
+    <value>ข้อขัดแย้งประเภท</value>
+  </data>
+  <data name="StateInvalid" xml:space="preserve">
+    <value>ไม่ถูกต้อง</value>
+  </data>
+  <data name="ActionCreate" xml:space="preserve">
+    <value>สร้าง</value>
+  </data>
+  <data name="ActionOverwrite" xml:space="preserve">
+    <value>เขียนทับ</value>
+  </data>
+  <data name="ActionSkip" xml:space="preserve">
+    <value>ข้าม</value>
+  </data>
+  <data name="ActionRename" xml:space="preserve">
+    <value>เปลี่ยนชื่อ</value>
+  </data>
+  <data name="OpRunning" xml:space="preserve">
+    <value>กำลังทำงาน</value>
+  </data>
+  <data name="OpSucceeded" xml:space="preserve">
+    <value>สำเร็จ</value>
+  </data>
+  <data name="OpPartiallyFailed" xml:space="preserve">
+    <value>เขียนสำเร็จบางส่วน</value>
+  </data>
+  <data name="OpFailed" xml:space="preserve">
+    <value>ล้มเหลว</value>
+  </data>
+  <data name="OpCancelled" xml:space="preserve">
+    <value>ยกเลิกแล้ว</value>
+  </data>
+  <data name="OpUndone" xml:space="preserve">
+    <value>เลิกทำแล้ว</value>
+  </data>
+  <data name="ResultCreated" xml:space="preserve">
+    <value>สร้างแล้ว</value>
+  </data>
+  <data name="ResultOverwritten" xml:space="preserve">
+    <value>เขียนทับแล้ว</value>
+  </data>
+  <data name="ResultSkipped" xml:space="preserve">
+    <value>ข้ามแล้ว</value>
+  </data>
+  <data name="ResultRenamed" xml:space="preserve">
+    <value>เปลี่ยนชื่อแล้ว</value>
+  </data>
+  <data name="ResultFailed" xml:space="preserve">
+    <value>ล้มเหลว</value>
+  </data>
+  <data name="ResultDirectoryCreated" xml:space="preserve">
+    <value>สร้างโฟลเดอร์แล้ว</value>
+  </data>
+  <data name="SourceUnchanged" xml:space="preserve">
+    <value>ไม่เปลี่ยนแปลง</value>
+  </data>
+  <data name="SourceModified" xml:space="preserve">
+    <value>แก้ไขแล้ว</value>
+  </data>
+  <data name="SourceMissing" xml:space="preserve">
+    <value>ไฟล์ต้นฉบับถูกลบแล้ว</value>
+  </data>
+
+  <!-- ============ 主窗口：紧凑暂存区 ============ -->
+  <data name="CompactTitle" xml:space="preserve">
+    <value>พื้นที่จัดเก็บชั่วคราว</value>
+  </data>
+  <data name="CompactEmptyTitle" xml:space="preserve">
+    <value>พื้นที่จัดเก็บชั่วคราวว่างเปล่า</value>
+  </data>
+  <data name="CompactEmptyHint" xml:space="preserve">
+    <value>ใช้ «เพิ่ม» เพื่อใส่ของเข้ามา แล้วลากออกได้เลย</value>
+  </data>
+  <data name="CompactFooter" xml:space="preserve">
+    <value>ลากไปที่โฟลเดอร์ใดก็ได้ = บันทึกไว้ที่นั่น</value>
+  </data>
+
+  <!-- ============ 主窗口：工作台 ============ -->
+  <data name="StashBoxLabel" xml:space="preserve">
+    <value>กล่องจัดเก็บชั่วคราว</value>
+  </data>
+  <data name="NewGroupButton" xml:space="preserve">
+    <value>กล่องใหม่</value>
+  </data>
+  <data name="WorkbenchEmptyTitle" xml:space="preserve">
+    <value>โต๊ะทำงานยังว่างเปล่า</value>
+  </data>
+  <data name="WorkbenchEmptyHint" xml:space="preserve">
+    <value>ลากไฟล์หรือโฟลเดอร์เข้ามาที่นี่ หรือใช้ «เพิ่ม» ที่มุมขวาบน</value>
+  </data>
+  <data name="ColumnNamePath" xml:space="preserve">
+    <value>ชื่อ / พาธ</value>
+  </data>
+  <data name="ColumnSize" xml:space="preserve">
+    <value>ขนาด</value>
+  </data>
+  <data name="ColumnSourceBranch" xml:space="preserve">
+    <value>สาขาต้นทาง</value>
+  </data>
+  <data name="ColumnSourceState" xml:space="preserve">
+    <value>สถานะแหล่งที่มา</value>
+  </data>
+  <data name="MenuOpenSource" xml:space="preserve">
+    <value>เปิดตำแหน่งแหล่งที่มา</value>
+  </data>
+  <data name="MenuCopySourcePath" xml:space="preserve">
+    <value>คัดลอกพาธแหล่งที่มา</value>
+  </data>
+  <data name="MenuCopyToClipboard" xml:space="preserve">
+    <value>คัดลอกไปยังคลิปบอร์ด</value>
+  </data>
+  <data name="MenuRefreshSnapshot" xml:space="preserve">
+    <value>รีเฟรชสแนปช็อต</value>
+  </data>
+  <data name="MenuSetRoot" xml:space="preserve">
+    <value>ตั้งค่าโฟลเดอร์ราก</value>
+  </data>
+  <data name="MenuMoveToGroup" xml:space="preserve">
+    <value>ย้ายไปยังกล่อง</value>
+  </data>
+  <data name="WillWriteMany" xml:space="preserve">
+    <value>จะเขียน {0} ไฟล์ เช่น</value>
+  </data>
+  <data name="WriteBackLabel" xml:space="preserve">
+    <value>เขียนกลับ</value>
+  </data>
+  <data name="TargetOriginal" xml:space="preserve">
+    <value>ตำแหน่งเดิม</value>
+  </data>
+  <data name="TargetAnotherRoot" xml:space="preserve">
+    <value>โฟลเดอร์รากอื่น</value>
+  </data>
+  <data name="TargetSpecifiedPath" xml:space="preserve">
+    <value>พาธที่ระบุ</value>
+  </data>
+  <data name="BrowseTargetTooltip" xml:space="preserve">
+    <value>เลือกโฟลเดอร์เป้าหมาย</value>
+  </data>
+  <data name="StructureLabel" xml:space="preserve">
+    <value>โครงสร้าง</value>
+  </data>
+  <data name="ConflictLabel" xml:space="preserve">
+    <value>ข้อขัดแย้ง</value>
+  </data>
+  <data name="WillWrite" xml:space="preserve">
+    <value>จะเขียน</value>
+  </data>
+  <data name="NothingToWrite" xml:space="preserve">
+    <value>ยังไม่มีอะไรให้เขียน</value>
+  </data>
+
+  <!-- ============ 目标模式 / 结构 / 冲突策略 ============ -->
+  <data name="StructureFullRelative" xml:space="preserve">
+    <value>พาธย่อยแบบเต็ม</value>
+  </data>
+  <data name="StructureItemOnly" xml:space="preserve">
+    <value>เฉพาะรายการชั่วคราว</value>
+  </data>
+  <data name="StructureFlatten" xml:space="preserve">
+    <value>แผนแบนทั้งหมด</value>
+  </data>
+  <data name="ConflictAsk" xml:space="preserve">
+    <value>ถาม</value>
+  </data>
+
+  <!-- ============ 主 ViewModel 的状态与提示 ============ -->
+  <data name="StatusReady" xml:space="preserve">
+    <value>พร้อม</value>
+  </data>
+  <data name="StatusEmpty" xml:space="preserve">
+    <value>ยังไม่มีอะไรในพื้นที่จัดเก็บชั่วคราว</value>
+  </data>
+  <data name="StatusSummary" xml:space="preserve">
+    <value>{0} รายการ · {1} ไฟล์ · {2}</value>
+  </data>
+  <data name="StatusBusy" xml:space="preserve">
+    <value>กำลังประมวลผล…</value>
+  </data>
+  <data name="StatusAdding" xml:space="preserve">
+    <value>กำลังเพิ่มเข้าพื้นที่จัดเก็บชั่วคราว ({0}/{1})</value>
+  </data>
+  <data name="StatusAddAborted" xml:space="preserve">
+    <value>หยุดการเพิ่มแล้ว</value>
+  </data>
+  <data name="StatusAborting" xml:space="preserve">
+    <value>กำลังหยุด…</value>
+  </data>
+  <data name="StatusRefreshing" xml:space="preserve">
+    <value>กำลังรีเฟรชสแนปช็อต</value>
+  </data>
+  <data name="StatusSnapshotRefreshed" xml:space="preserve">
+    <value>รีเฟรชสแนปช็อตแล้ว</value>
+  </data>
+  <data name="StatusRootUpdated" xml:space="preserve">
+    <value>อัปเดตโฟลเดอร์รากแล้ว</value>
+  </data>
+  <data name="StatusSourcePathCopied" xml:space="preserve">
+    <value>คัดลอกพาธแหล่งที่มาแล้ว</value>
+  </data>
+  <data name="StatusClipboardFilled" xml:space="preserve">
+    <value>เติมพาธเป้าหมายจากคลิปบอร์ดแล้ว</value>
+  </data>
+  <data name="StatusPreparingExport" xml:space="preserve">
+    <value>กำลังเตรียมข้อมูลสำหรับลากออก…</value>
+  </data>
+  <data name="StatusCopiedToClipboard" xml:space="preserve">
+    <value>คัดลอกไปยังคลิปบอร์ดแล้ว ({0} รายการ)</value>
+  </data>
+  <data name="StatusWriting" xml:space="preserve">
+    <value>กำลังเขียน ({0}/{1})</value>
+  </data>
+  <data name="StatusLoadFailed" xml:space="preserve">
+    <value>โหลดรายการชั่วคราวไม่สำเร็จ: {0}</value>
+  </data>
+  <data name="StatusSourceStateFailed" xml:space="preserve">
+    <value>อ่านสถานะแหล่งที่มาไม่สำเร็จ: {0}</value>
+  </data>
+  <data name="ToastAdded" xml:space="preserve">
+    <value>เพิ่มแล้ว {0} รายการ</value>
+  </data>
+  <data name="ToastDuplicates" xml:space="preserve">
+    <value>{0} พาธอยู่ในพื้นที่จัดเก็บชั่วคราวแล้ว (ข้าม)</value>
+  </data>
+  <data name="ToastFailedPaths" xml:space="preserve">
+    <value>{0} พาทล้มเหลว</value>
+  </data>
+  <data name="ToastWarnings" xml:space="preserve">
+    <value>{0} คำเตือน</value>
+  </data>
+  <data name="AddToStashTitle" xml:space="preserve">
+    <value>เพิ่มเข้าพื้นที่จัดเก็บชั่วคราว</value>
+  </data>
+  <data name="SkippedTitle" xml:space="preserve">
+    <value>ข้ามแล้ว</value>
+  </data>
+  <data name="DefaultGroupName" xml:space="preserve">
+    <value>พื้นที่จัดเก็บชั่วคราวเริ่มต้น</value>
+  </data>
+  <data name="NewGroupTitle" xml:space="preserve">
+    <value>กล่องใหม่</value>
+  </data>
+  <data name="RenameGroupTitle" xml:space="preserve">
+    <value>เปลี่ยนชื่อกล่อง</value>
+  </data>
+  <data name="DeleteGroupTitle" xml:space="preserve">
+    <value>ลบกล่อง</value>
+  </data>
+  <data name="DeleteGroupConfirm" xml:space="preserve">
+    <value>ลบกล่อง «{0}» ใช่ไหม รายการชั่วคราวในกล่องจะถูกลบด้วย</value>
+  </data>
+  <data name="NoGroupTitle" xml:space="preserve">
+    <value>ยังไม่มีกล่องจัดเก็บชั่วคราว</value>
+  </data>
+  <data name="NoGroupHint" xml:space="preserve">
+    <value>สร้างกล่องก่อน แล้วค่อยเพิ่มเข้าพื้นที่จัดเก็บชั่วคราว</value>
+  </data>
+  <data name="SetRootFailedTitle" xml:space="preserve">
+    <value>ตั้งค่าโฟลเดอร์รากไม่สำเร็จ</value>
+  </data>
+  <data name="DeleteItemTitle" xml:space="preserve">
+    <value>นำออกจากกล่อง</value>
+  </data>
+  <data name="DeleteItemConfirm" xml:space="preserve">
+    <value>นำ «{0}» ออกจากกล่องใช่ไหม ไฟล์ต้นฉบับจะไม่ถูกลบ จะล้างเฉพาะสำเนาชั่วคราวเท่านั้น</value>
+  </data>
+  <data name="NoOtherGroupHint" xml:space="preserve">
+    <value>ไม่มีกล่องอื่นให้ย้ายไป สร้างกล่องก่อน</value>
+  </data>
+  <data name="OpenSourceFailedTitle" xml:space="preserve">
+    <value>เปิดตำแหน่งแหล่งที่มาไม่สำเร็จ</value>
+  </data>
+  <data name="CopyFailedTitle" xml:space="preserve">
+    <value>คัดลอกไม่สำเร็จ</value>
+  </data>
+  <data name="ClipboardBusy" xml:space="preserve">
+    <value>คลิปบอร์ดถูกโปรแกรมอื่นใช้งานอยู่</value>
+  </data>
+  <data name="DragExportTarget" xml:space="preserve">
+    <value>ลากออก {0} รายการ</value>
+  </data>
+  <data name="NothingToWriteTitle" xml:space="preserve">
+    <value>ไม่มีอะไรให้เขียน</value>
+  </data>
+  <data name="NothingToWriteHint" xml:space="preserve">
+    <value>กล่องนี้ยังไม่มีรายการชั่วคราว</value>
+  </data>
+  <data name="NothingToUndoMessage" xml:space="preserve">
+    <value>ยังไม่เคยเขียนอะไรเลย</value>
+  </data>
+  <data name="NothingToUndoTitle" xml:space="preserve">
+    <value>ไม่มีอะไรให้เลิกทำ</value>
+  </data>
+  <data name="UndoDoneMessage" xml:space="preserve">
+    <value>คืนแล้ว {0} ไฟล์ ลบ {1} ไฟล์</value>
+  </data>
+
+  <!-- ============ 树行 ============ -->
+  <data name="TreeEmpty" xml:space="preserve">
+    <value>ว่างเปล่า</value>
+  </data>
+  <data name="TreeItemCount" xml:space="preserve">
+    <value>{0} รายการ</value>
+  </data>
+  <data name="TreeItemFileCount" xml:space="preserve">
+    <value>{0} รายการ · {1} ไฟล์</value>
+  </data>
+
+  <!-- ============ Git 改动对话框 ============ -->
+  <data name="GitStatusTitle" xml:space="preserve">
+    <value>เลือกไฟล์ที่เปลี่ยนแปลง</value>
+  </data>
+  <data name="GitChangedSummary" xml:space="preserve">
+    <value>{0} รายการที่เปลี่ยนแปลง</value>
+  </data>
+  <data name="GitChangedSummaryWithDeleted" xml:space="preserve">
+    <value>{0} รายการที่เปลี่ยนแปลง โดย {1} รายการถูกลบแล้ว (เพิ่มเข้าพื้นที่จัดเก็บชั่วคราวไม่ได้)</value>
+  </data>
+  <data name="GitNoSelection" xml:space="preserve">
+    <value>ไม่ได้เลือกไฟล์ที่จะเพิ่มเข้าพื้นที่จัดเก็บชั่วคราว</value>
+  </data>
+  <data name="GitAddedMessage" xml:space="preserve">
+    <value>เพิ่มแล้ว {0} รายการ</value>
+  </data>
+  <data name="GitDeletedSkipped" xml:space="preserve">
+    <value>ข้ามไฟล์ที่ถูกลบแล้ว {0} ไฟล์ (ไม่มีพาธแหล่งที่มาอยู่แล้ว)</value>
+  </data>
+
+  <!-- ============ 操作历史 ============ -->
+  <data name="HistoryTitle" xml:space="preserve">
+    <value>ประวัติการทำงาน</value>
+  </data>
+  <data name="ColumnTime" xml:space="preserve">
+    <value>เวลา</value>
+  </data>
+  <data name="ColumnTarget" xml:space="preserve">
+    <value>เป้าหมาย</value>
+  </data>
+  <data name="ColumnSourceItem" xml:space="preserve">
+    <value>จาก</value>
+  </data>
+  <data name="ColumnStatus" xml:space="preserve">
+    <value>สถานะ</value>
+  </data>
+  <data name="ColumnTargetPath" xml:space="preserve">
+    <value>พาธเป้าหมาย</value>
+  </data>
+  <data name="ColumnResult" xml:space="preserve">
+    <value>ผลลัพธ์</value>
+  </data>
+  <data name="ColumnError" xml:space="preserve">
+    <value>ข้อผิดพลาด</value>
+  </data>
+  <data name="OpenTargetFolderButton" xml:space="preserve">
+    <value>เปิดโฟลเดอร์เป้าหมาย</value>
+  </data>
+  <data name="UndoConfirmTitle" xml:space="preserve">
+    <value>เลิกทำ</value>
+  </data>
+  <data name="UndoConfirmMessage" xml:space="preserve">
+    <value>เลิกทำการเขียนจาก {0} ใช่ไหม</value>
+  </data>
+  <data name="UndoConfirmNote" xml:space="preserve">
+    <value>ไฟล์ที่ถูกแก้ไขหลังจากนั้นจะถูกข้าม</value>
+  </data>
+  <data name="TargetFolderMissing" xml:space="preserve">
+    <value>ไม่มีโฟลเดอร์เป้าหมาย</value>
+  </data>
+  <data name="OpenFailedTitle" xml:space="preserve">
+    <value>เปิดไม่สำเร็จ</value>
+  </data>
+
+  <!-- ============ 写入预览 ============ -->
+  <data name="PreviewTitle" xml:space="preserve">
+    <value>ตัวอย่างการเขียนกลับ</value>
+  </data>
+  <data name="ColumnAction" xml:space="preserve">
+    <value>การกระทำ</value>
+  </data>
+  <data name="ColumnWarning" xml:space="preserve">
+    <value>คำเตือน</value>
+  </data>
+  <data name="PreviewTargetOriginal" xml:space="preserve">
+    <value>เป้าหมาย: ตำแหน่งเดิม (แต่ละรายการถูกเขียนกลับไปยังโฟลเดอร์รากของตัวเอง)</value>
+  </data>
+  <data name="PreviewTargetAnotherRoot" xml:space="preserve">
+    <value>เป้าหมาย: โฟลเดอร์รากอื่น {0}</value>
+  </data>
+  <data name="PreviewTargetSpecifiedPath" xml:space="preserve">
+    <value>เป้าหมาย: พาธที่ระบุ {0}</value>
+  </data>
+  <data name="PreviewTargetDragExport" xml:space="preserve">
+    <value>เป้าหมาย: ลากออก</value>
+  </data>
+  <data name="PreviewSummary" xml:space="preserve">
+    <value>ใหม่ {0} · เขียนทับ {1} · เหมือนกัน {2} · ชนิดขัดแย้ง {3} · ไม่ถูกต้อง {4}</value>
+  </data>
+  <data name="PreviewWritten" xml:space="preserve">
+    <value>เขียนแล้ว: {0}</value>
+  </data>
+  <data name="PreviewAborted" xml:space="preserve">
+    <value>หยุดการเขียนกลับแล้ว</value>
+  </data>
+  <data name="PreviewFailed" xml:space="preserve">
+    <value>เขียนกลับไม่สำเร็จ: {0}</value>
+  </data>
+  <data name="CompareFailed" xml:space="preserve">
+    <value>เปิดเครื่องมือเปรียบเทียบไม่สำเร็จ: {0}</value>
+  </data>
+
+  <!-- ============ 写入结果提示 ============ -->
+  <data name="ToastTargetLine" xml:space="preserve">
+    <value>เป้าหมาย {0}</value>
+  </data>
+  <data name="ToastTitle" xml:space="preserve">
+    <value>ผลการเขียนกลับ</value>
+  </data>
+  <data name="ToastSucceeded" xml:space="preserve">
+    <value>เขียนกลับเสร็จแล้ว</value>
+  </data>
+  <data name="ToastPartiallyFailed" xml:space="preserve">
+    <value>เขียนสำเร็จบางส่วน</value>
+  </data>
+  <data name="ToastCancelled" xml:space="preserve">
+    <value>ยกเลิกแล้ว</value>
+  </data>
+  <data name="ToastRetryElevated" xml:space="preserve">
+    <value>ลองใหม่ในฐานะผู้ดูแลระบบ</value>
+  </data>
+  <data name="ToastViewDetails" xml:space="preserve">
+    <value>ดูรายละเอียด</value>
+  </data>
+  <data name="ToastCreated" xml:space="preserve">
+    <value>สร้าง {0}</value>
+  </data>
+  <data name="ToastOverwritten" xml:space="preserve">
+    <value>เขียนทับ {0}</value>
+  </data>
+  <data name="ToastSkipped" xml:space="preserve">
+    <value>ข้าม {0}</value>
+  </data>
+  <data name="ToastFailed" xml:space="preserve">
+    <value>ล้มเหลว {0}</value>
+  </data>
+  <data name="ItemSeparator" xml:space="preserve">
+    <value>, </value>
+  </data>
+  <data name="SentenceEnd" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="ClauseSeparator" xml:space="preserve">
+    <value>; </value>
+  </data>
+  <data name="ProgressSeparator" xml:space="preserve">
+    <value> · </value>
+  </data>
+  <data name="ToastNothingWritten" xml:space="preserve">
+    <value>ไม่มีไฟล์ใดถูกเขียน</value>
+  </data>
+  <data name="ToastDetailLine" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="ToastNoFailures" xml:space="preserve">
+    <value>ไม่มีรายการที่ล้มเหลว</value>
+  </data>
+  <data name="ToastDetailsTitle" xml:space="preserve">
+    <value>รายละเอียดการเขียนกลับ</value>
+  </data>
+  <data name="ToastElevatedFailed" xml:space="preserve">
+    <value>ไม่สามารถเริ่มกระบวนการที่ยกระดับสิทธิ์ได้ (อาจเลือกยกเลิกข้อความ UAC)</value>
+  </data>
+
+  <!-- ============ 设置 ============ -->
+  <data name="SettingsTitle" xml:space="preserve">
+    <value>การตั้งค่า</value>
+  </data>
+  <data name="SectionGeneral" xml:space="preserve">
+    <value>ทั่วไป</value>
+  </data>
+  <data name="LanguageLabel" xml:space="preserve">
+    <value>ภาษา</value>
+  </data>
+  <data name="LanguageSystem" xml:space="preserve">
+    <value>ตามระบบ</value>
+  </data>
+  <data name="LanguageChinese" xml:space="preserve">
+    <value>简体中文</value>
+  </data>
+  <data name="LanguageTraditionalChinese" xml:space="preserve">
+    <value>繁體中文</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="LanguageJapanese" xml:space="preserve">
+    <value>日本語</value>
+  </data>
+  <data name="LanguageKorean" xml:space="preserve">
+    <value>한국어</value>
+  </data>
+  <data name="LanguageSpanish" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="LanguagePortugueseBrazil" xml:space="preserve">
+    <value>Português (Brasil)</value>
+  </data>
+  <data name="LanguageFrench" xml:space="preserve">
+    <value>Français</value>
+  </data>
+  <data name="LanguageGerman" xml:space="preserve">
+    <value>Deutsch</value>
+  </data>
+  <data name="LanguageItalian" xml:space="preserve">
+    <value>Italiano</value>
+  </data>
+  <data name="LanguageRussian" xml:space="preserve">
+    <value>Русский</value>
+  </data>
+  <data name="LanguageArabic" xml:space="preserve">
+    <value>العربية</value>
+  </data>
+  <data name="LanguageHindi" xml:space="preserve">
+    <value>हिन्दी</value>
+  </data>
+  <data name="LanguageIndonesian" xml:space="preserve">
+    <value>Bahasa Indonesia</value>
+  </data>
+  <data name="LanguageThai" xml:space="preserve">
+    <value>ไทย</value>
+  </data>
+  <data name="LanguageTurkish" xml:space="preserve">
+    <value>Türkçe</value>
+  </data>
+  <data name="LanguageVietnamese" xml:space="preserve">
+    <value>Tiếng Việt</value>
+  </data>
+  <data name="LanguageBengali" xml:space="preserve">
+    <value>বাংলা</value>
+  </data>
+  <data name="LanguageRestartFailed" xml:space="preserve">
+    <value>บันทึกภาษาแล้ว แต่เริ่มแอปใหม่ไม่ได้ จะมีผลในการเปิดครั้งถัดไป</value>
+  </data>
+  <data name="DefaultConflictPolicyLabel" xml:space="preserve">
+    <value>นโยบายข้อขัดแย้งเริ่มต้น</value>
+  </data>
+  <data name="SkipIdenticalLabel" xml:space="preserve">
+    <value>ไม่เขียนไฟล์ที่มีเนื้อหาเหมือนกัน (คงเวลาแก้ไขของเป้าหมายไว้)</value>
+  </data>
+  <data name="BackupBeforeOverwriteLabel" xml:space="preserve">
+    <value>สำรองข้อมูลก่อนเขียนทับ (ปิดแล้วการเขียนทับจะเลิกทำไม่ได้)</value>
+  </data>
+  <data name="HistoryRetentionLabel" xml:space="preserve">
+    <value>จำนวนวันที่เก็บประวัติ (0 = ถาวร)</value>
+  </data>
+  <data name="AutoGitAddLabel" xml:space="preserve">
+    <value>รัน git add อัตโนมัติหลังเขียน</value>
+  </data>
+  <data name="WatchBranchLabel" xml:space="preserve">
+    <value>แจ้งเตือนเมื่อสาขาเปลี่ยน</value>
+  </data>
+  <data name="RespectGitIgnoreLabel" xml:space="preserve">
+    <value>จัดเก็บชั่วคราวเฉพาะไฟล์ในโฟลเดอร์ที่ Git ไม่ได้ละเลย</value>
+  </data>
+  <data name="SectionExcludes" xml:space="preserve">
+    <value>กฎการยกเว้น</value>
+  </data>
+  <data name="ExcludeHint" xml:space="preserve">
+    <value>หนึ่งแพตเติร์นต่อบรรทัด เช่น **/node_modules/**</value>
+  </data>
+  <data name="SectionWindowsIntegration" xml:space="preserve">
+    <value>การผสานรวมกับ Windows</value>
+  </data>
+  <data name="ContextMenuLabel" xml:space="preserve">
+    <value>แสดง «เพิ่มเข้าพื้นที่จัดเก็บชั่วคราว» ในเมนูคลิกขวาของ File Explorer</value>
+  </data>
+  <data name="StartWithWindowsLabel" xml:space="preserve">
+    <value>เริ่มพร้อม Windows</value>
+  </data>
+  <data name="CloseToTrayLabel" xml:space="preserve">
+    <value>ย่อไปที่ถาดระบบเมื่อปิดหน้าต่าง</value>
+  </data>
+  <data name="StartMinimizedLabel" xml:space="preserve">
+    <value>เริ่มแบบย่อเล็กในถาดระบบ</value>
+  </data>
+  <data name="HotkeyLabel" xml:space="preserve">
+    <value>แป้นลัดทั้งระบบ (เพิ่มเข้าพื้นที่จัดเก็บชั่วคราว)</value>
+  </data>
+  <data name="SectionStorage" xml:space="preserve">
+    <value>พื้นที่เก็บข้อมูล</value>
+  </data>
+  <data name="RefreshStorageButton" xml:space="preserve">
+    <value>รีเฟรชพื้นที่ที่ใช้งาน</value>
+  </data>
+  <data name="CleanupStorageButton" xml:space="preserve">
+    <value>ล้างข้อมูลที่ไม่ถูกอ้างอิง</value>
+  </data>
+  <data name="ClearHistoryButton" xml:space="preserve">
+    <value>ล้างประวัติทั้งหมด</value>
+  </data>
+  <data name="SettingsSavedMessage" xml:space="preserve">
+    <value>บันทึกการตั้งค่าแล้ว</value>
+  </data>
+  <data name="StorageUsageLabel" xml:space="preserve">
+    <value>เนื้อหาที่จัดเก็บชั่วคราว: {0}</value>
+  </data>
+  <data name="StorageExportLabel" xml:space="preserve">
+    <value>ไฟล์ชั่วคราวสำหรับลากออก: {0}</value>
+  </data>
+  <data name="StorageHistoryLabel" xml:space="preserve">
+    <value>ประวัติ: {0} รายการ</value>
+  </data>
+  <data name="CleanupConfirmTitle" xml:space="preserve">
+    <value>ล้างข้อมูลที่ไม่ถูกอ้างอิง</value>
+  </data>
+  <data name="CleanupConfirmMessage" xml:space="preserve">
+    <value>ลบเนื้อหาที่ไม่มีรายการชั่วคราวหรือรายการประวัติอ้างอิงใช่ไหม</value>
+  </data>
+  <data name="CleanupDoneMessage" xml:space="preserve">
+    <value>ลบแล้ว {0} รายการ</value>
+  </data>
+  <data name="ClearHistoryConfirmTitle" xml:space="preserve">
+    <value>ล้างประวัติทั้งหมด</value>
+  </data>
+  <data name="ClearHistoryConfirmMessage" xml:space="preserve">
+    <value>ประวัติและข้อมูลสำรองทั้งหมดจะถูกลบ และฟังก์ชันเลิกทำจะใช้ไม่ได้ต่อไป ต้องการดำเนินการต่อใช่ไหม</value>
+  </data>
+  <data name="ClearHistoryDoneMessage" xml:space="preserve">
+    <value>ลบแล้ว {0} รายการประวัติ</value>
+  </data>
+  <data name="NewPresetButton" xml:space="preserve">
+    <value>เพิ่ม…</value>
+  </data>
+  <data name="NewPresetTitle" xml:space="preserve">
+    <value>เพิ่มค่าตั้งล่วงหน้าของโฟลเดอร์ราก</value>
+  </data>
+  <data name="NewPresetDefaultName" xml:space="preserve">
+    <value>ค่าตั้งล่วงหน้าใหม่</value>
+  </data>
+
+  <!-- ============ 根目录预设 ============ -->
+  <data name="RootPresetsTitle" xml:space="preserve">
+    <value>ค่าตั้งล่วงหน้าของโฟลเดอร์ราก</value>
+  </data>
+  <data name="ColumnName" xml:space="preserve">
+    <value>ชื่อ</value>
+  </data>
+  <data name="ColumnPath" xml:space="preserve">
+    <value>พาธ</value>
+  </data>
+
+  <!-- ============ 对话框 ============ -->
+  <data name="MoveToGroupTitle" xml:space="preserve">
+    <value>ย้ายไปยังกล่อง</value>
+  </data>
+  <data name="ChooseTargetGroup" xml:space="preserve">
+    <value>เลือกกล่องเป้าหมาย</value>
+  </data>
+  <data name="InputTitle" xml:space="preserve">
+    <value>ป้อนข้อมูล</value>
+  </data>
+  <data name="SetRootTitle" xml:space="preserve">
+    <value>ตั้งค่าโฟลเดอร์ราก</value>
+  </data>
+  <data name="SetRootHint" xml:space="preserve">
+    <value>เลือกโฟลเดอร์ราก: พาธย่อยของรายการชั่วคราวจะคำนวณจากโฟลเดอร์นี้ และการเขียนกลับไปยังตำแหน่งเดิมก็จะใช้โฟลเดอร์นี้เช่นกัน</value>
+  </data>
+  <data name="NewRelativePathLabel" xml:space="preserve">
+    <value>พาธย่อยใหม่:</value>
+  </data>
+  <data name="EmptyRelativePath" xml:space="preserve">
+    <value>(ไม่มีพาธย่อย)</value>
+  </data>
+
+  <!-- ============ 关于 ============ -->
+  <data name="AboutTitle" xml:space="preserve">
+    <value>เกี่ยวกับ StashBay</value>
+  </data>
+  <data name="AboutTagline" xml:space="preserve">
+    <value>กล่องจัดเก็บไฟล์ — จัดเก็บไว้ตอนนี้ เขียนกลับด้วยคลิกเดียวหลังสลับสาขา</value>
+  </data>
+  <data name="VersionLabel" xml:space="preserve">
+    <value>เวอร์ชัน {0}</value>
+  </data>
+  <data name="RuntimeLabel" xml:space="preserve">
+    <value>รันไทม์ .NET {0}</value>
+  </data>
+  <data name="GitFound" xml:space="preserve">
+    <value>พบ Git แล้ว</value>
+  </data>
+  <data name="GitMissing" xml:space="preserve">
+    <value>ไม่พบ Git (ฟีเจอร์ที่เกี่ยวกับ Git จะถูกปิดใช้งาน)</value>
+  </data>
+  <data name="GitUnknown" xml:space="preserve">
+    <value>ไม่ทราบสถานะของ Git</value>
+  </data>
+  <data name="DataDirectoryLabel" xml:space="preserve">
+    <value>โฟลเดอร์ข้อมูล {0}</value>
+  </data>
+
+  <!-- ============ 托盘菜单 ============ -->
+  <data name="TrayShowCompact" xml:space="preserve">
+    <value>แสดงพื้นที่จัดเก็บชั่วคราว</value>
+  </data>
+  <data name="TrayOpenWorkbench" xml:space="preserve">
+    <value>เปิดโต๊ะทำงาน</value>
+  </data>
+  <data name="TrayApplyOriginal" xml:space="preserve">
+    <value>ใช้กับตำแหน่งเดิม</value>
+  </data>
+  <data name="TrayUndoLast" xml:space="preserve">
+    <value>เลิกทำครั้งล่าสุด</value>
+  </data>
+  <data name="TrayGitChanges" xml:space="preserve">
+    <value>เพิ่มจากรายการที่ Git เปลี่ยนแปลง…</value>
+  </data>
+  <data name="TrayFloatingWindow" xml:space="preserve">
+    <value>แสดงหน้าต่างลอย</value>
+  </data>
+  <data name="TrayHistory" xml:space="preserve">
+    <value>ประวัติการทำงาน…</value>
+  </data>
+  <data name="TrayRootPresets" xml:space="preserve">
+    <value>ค่าตั้งล่วงหน้าของโฟลเดอร์ราก…</value>
+  </data>
+  <data name="TraySettings" xml:space="preserve">
+    <value>การตั้งค่า…</value>
+  </data>
+  <data name="TrayAbout" xml:space="preserve">
+    <value>เกี่ยวกับ StashBay…</value>
+  </data>
+  <data name="TrayExit" xml:space="preserve">
+    <value>ออก</value>
+  </data>
+  <data name="NoGitItems" xml:space="preserve">
+    <value>กล่องนี้ไม่มีรายการชั่วคราวที่มาจากที่เก็บข้อมูล Git</value>
+  </data>
+  <data name="BranchSwitchedMessage" xml:space="preserve">
+    <value>{0} สลับไปเป็น {1} แล้ว มีรายการชั่วคราว {2} รายการที่ใช้กับตำแหน่งเดิมได้ คลิกเพื่อใช้</value>
+  </data>
+  <data name="UnhandledErrorTitle" xml:space="preserve">
+    <value>StashBay พบข้อผิดพลาดที่ไม่คาดคิด</value>
+  </data>
+
+  <!-- ============ 文件选择 / 拖出 ============ -->
+  <data name="PickItemsTitle" xml:space="preserve">
+    <value>เลือกไฟล์และโฟลเดอร์</value>
+  </data>
+  <data name="PickItemsHint" xml:space="preserve">
+    <value>กด Ctrl หรือ Shift เพื่อเลือกหลายรายการ ดับเบิลคลิกโฟลเดอร์เพื่อเปิด</value>
+  </data>
+  <data name="ParentFolder" xml:space="preserve">
+    <value>โฟลเดอร์แม่</value>
+  </data>
+  <data name="ClipboardBusyLong" xml:space="preserve">
+    <value>คลิปบอร์ดถูกโปรแกรมอื่นใช้งานอยู่ โปรดลองใหม่อีกครั้ง</value>
+  </data>
+  <data name="LoadStashFailed" xml:space="preserve">
+    <value>โหลดพื้นที่จัดเก็บชั่วคราวไม่สำเร็จ: {0}</value>
+  </data>
+  <data name="DragOutFailed" xml:space="preserve">
+    <value>ลากออกไม่สำเร็จ: {0}</value>
+  </data>
+  <data name="AddToStashFailed" xml:space="preserve">
+    <value>เพิ่มเข้าพื้นที่จัดเก็บชั่วคราวไม่สำเร็จ: {0}</value>
+  </data>
+  <data name="ThemeLabel" xml:space="preserve">
+    <value>ธีม</value>
+  </data>
+  <data name="ThemeSystem" xml:space="preserve">
+    <value>ตามระบบ</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>สว่าง</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>มืด</value>
+  </data>
+  <data name="AddSelectedButton" xml:space="preserve">
+    <value>เพิ่มที่เลือก</value>
+  </data>
+
+  <data name="ClearAllBoxesButton" xml:space="preserve">
+    <value>ล้างกล่องทั้งหมด</value>
+  </data>
+  <data name="ClearAllBoxesTooltip" xml:space="preserve">
+    <value>ล้างกล่องและรายการจัดเก็บชั่วคราวทั้งหมด</value>
+  </data>
+  <data name="ClearAllBoxesTitle" xml:space="preserve">
+    <value>ล้างกล่องทั้งหมด</value>
+  </data>
+  <data name="ClearAllBoxesConfirm" xml:space="preserve">
+    <value>แน่ใจหรือไม่ว่าต้องการล้างกล่องทั้งหมด รายการชั่วคราวทั้งหมดจะถูกลบ</value>
+  </data>
+  <data name="ClearAllBoxesDone" xml:space="preserve">
+    <value>ล้างกล่องทั้งหมดเรียบร้อยแล้ว</value>
+  </data>
+  <data name="ClearBoxButton" xml:space="preserve">
+    <value>ล้างกล่องปัจจุบัน</value>
+  </data>
+  <data name="ClearBoxConfirm" xml:space="preserve">
+    <value>ล้างกล่อง «{0}» ใช่ไหม รายการทั้งหมดในกล่องจะถูกลบ</value>
+  </data>
+  <data name="ClearBoxDone" xml:space="preserve">
+    <value>ล้างกล่อง «{0}» เรียบร้อยแล้ว</value>
+  </data>
+  <data name="DropToStashPrompt" xml:space="preserve">
+    <value>ปล่อยเพื่อจัดเก็บ</value>
+  </data>
+  <data name="DropToStashHint" xml:space="preserve">
+    <value>ปล่อยไฟล์หรือโฟลเดอร์เพื่อจัดเก็บลงในพื้นที่ชั่วคราวโดยอัตโนมัติ</value>
+  </data>
+  <data name="TrayClearAll" xml:space="preserve">
+    <value>ล้างกล่องทั้งหมด</value>
+  </data>
+
+  <data name="RemoveAfterDragExportLabel" xml:space="preserve">
+    <value>ลบออกจากพื้นที่จัดเก็บชั่วคราวโดยอัตโนมัติหลังจากลากออก (พฤติกรรม DropPoint)</value>
+  </data>
+  <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
+    <value>ลบรายการโดยอัตโนมัติเมื่อวางลงในโฟลเดอร์ปลายทาง หากปิด รายการจะยังคงอยู่ในกล่อง</value>
+  </data>
+
+  <data name="CollapseButton" xml:space="preserve">
+    <value>ยุบ</value>
+  </data>
+  <data name="CollapseButtonTooltip" xml:space="preserve">
+    <value>ยุบเป็นแผงขนาดกะทัดรัด (สะดวกสำหรับการลากและวาง ทางลัด: Esc / F11)</value>
+  </data>
+
+  <data name="StatusClipboardPasted" xml:space="preserve">
+    <value>พักข้อมูลจากคลิปบอร์ดลงในกล่องพักแล้ว</value>
+  </data>
+  <data name="DragAllButton" xml:space="preserve">
+    <value>ลากทั้งหมด</value>
+  </data>
+  <data name="DragAllTooltip" xml:space="preserve">
+    <value>ลากที่จับนี้เพื่อส่งออกไฟล์ที่พักไว้ทั้งหมดพร้อมกันในครั้งเดียว</value>
+  </data>
+  <data name="AutoDismissWhenEmptyLabel" xml:space="preserve">
+    <value>ซ่อนอัตโนมัติเมื่อว่างเปล่า</value>
+  </data>
+  <data name="AutoDismissWhenEmptyTooltip" xml:space="preserve">
+    <value>ซ่อนหน้าต่างโดยอัตโนมัติเมื่อลากไฟล์ออกหมดหรือล้างข้อมูลแล้ว</value>
+  </data>
+  <data name="SummonAtCursorLabel" xml:space="preserve">
+    <value>เรียกใช้ใกล้เคอร์เซอร์</value>
+  </data>
+  <data name="SummonAtCursorTooltip" xml:space="preserve">
+    <value>เปิดหน้าต่างที่ตำแหน่งเคอร์เซอร์ของเมาส์ทันทีเมื่อกดปุ่มลัด</value>
+  </data>
+  <data name="EnableShakeToSummonLabel" xml:space="preserve">
+    <value>เขย่าขณะลากเพื่อเรียกใช้</value>
+  </data>
+  <data name="EnableShakeToSummonTooltip" xml:space="preserve">
+    <value>สะบัดเมาส์ไปมาอย่างรวดเร็วขณะลากไฟล์เพื่อเปิดชั้นวางพักไฟล์</value>
+  </data>
+  <data name="SectionDeveloperOptions" xml:space="preserve">
+    <value>ตัวเลือกขั้นสูงและสำหรับนักพัฒนา (Git)</value>
+  </data>
+  <data name="DeveloperOptionsHint" xml:space="preserve">
+    <value>มีผลเฉพาะเมื่อพักไฟล์ภายในที่เก็บ Git เท่านั้น การพักและกู้คืนไฟล์ทั่วไปจะทำงานอย่างอิสระโดยสมบูรณ์</value>
+  </data>
+  <data name="HotkeyRegisterFailedTitle" xml:space="preserve">
+    <value>การลงทะเบียนปุ่มลัดล้มเหลว</value>
+  </data>
+  <data name="HotkeyRegisterFailedMessage" xml:space="preserve">
+    <value>ไม่สามารถลงทะเบียนปุ่มลัดส่วนกลาง "{0}" ได้ อาจถูกใช้งานโดยโปรแกรมอื่นอยู่</value>
+  </data>
+  <data name="HotkeyWorkbenchLabel" xml:space="preserve">
+    <value>ปุ่มลัดส่วนกลาง (เปิดโต๊ะทำงาน)</value>
+  </data>
+  <data name="HotkeyPasteLabel" xml:space="preserve">
+    <value>ปุ่มลัดส่วนกลาง (วางไฟล์จากคลิปบอร์ด)</value>
+  </data>
+  <data name="HotkeyRecordingHint" xml:space="preserve">
+    <value>คลิกและกดปุ่มลัดเพื่อบันทึก กด Esc เพื่อยกเลิก</value>
+  </data>
+  <data name="HotkeyClearButton" xml:space="preserve">
+    <value>ล้าง</value>
+  </data>
+  <data name="PinButtonTooltip" xml:space="preserve">
+    <value>ตรึงไว้ด้านบนเสมอ</value>
+  </data>
+  <data name="ViewModeTree" xml:space="preserve">
+    <value>ต้นไม้</value>
+  </data>
+  <data name="ViewModeList" xml:space="preserve">
+    <value>รายการ</value>
+  </data>
+  <data name="ViewModeSource" xml:space="preserve">
+    <value>ตามแหล่ง</value>
+  </data>
+  <data name="ShelfApply" xml:space="preserve">
+    <value>เขียนกลับ</value>
+  </data>
+  <data name="ShelfClearAll" xml:space="preserve">
+    <value>ล้างทั้งหมด</value>
+  </data>
+  <data name="ViewModeIcons" xml:space="preserve"><value>ไอคอน</value></data>
+</root>

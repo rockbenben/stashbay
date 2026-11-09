@@ -1,0 +1,984 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ============ 通用 ============ -->
+  <data name="AppName" xml:space="preserve">
+    <value>StashBay</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>未知</value>
+  </data>
+  <data name="OkButton" xml:space="preserve">
+    <value>确定</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="CloseButton" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="RefreshButton" xml:space="preserve">
+    <value>刷新</value>
+  </data>
+  <data name="AddButton" xml:space="preserve">
+    <value>添加</value>
+  </data>
+  <data name="AbortButton" xml:space="preserve">
+    <value>中止</value>
+  </data>
+  <data name="UndoButton" xml:space="preserve">
+    <value>撤销</value>
+  </data>
+  <data name="UndoLastButton" xml:space="preserve">
+    <value>撤销上次</value>
+  </data>
+  <data name="UndoNeedsWrite" xml:space="preserve">
+    <value>只有写入类操作能撤销（拖出没有可撤销的条目）</value>
+  </data>
+  <data name="UndoThisButton" xml:space="preserve">
+    <value>撤销这次</value>
+  </data>
+  <data name="PreviewButton" xml:space="preserve">
+    <value>预览</value>
+  </data>
+  <data name="ApplyButton" xml:space="preserve">
+    <value>写回</value>
+  </data>
+  <data name="SettingsButton" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="ExpandButton" xml:space="preserve">
+    <value>展开</value>
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="CompareDiffButton" xml:space="preserve">
+    <value>对比目标现有内容</value>
+  </data>
+
+  <!-- ============ 枚举显示名 ============ -->
+  <data name="StateNew" xml:space="preserve">
+    <value>新增</value>
+  </data>
+  <data name="StateOverwrite" xml:space="preserve">
+    <value>覆盖</value>
+  </data>
+  <data name="StateIdentical" xml:space="preserve">
+    <value>相同</value>
+  </data>
+  <data name="StateTypeConflict" xml:space="preserve">
+    <value>类型冲突</value>
+  </data>
+  <data name="StateInvalid" xml:space="preserve">
+    <value>无效</value>
+  </data>
+  <data name="ActionCreate" xml:space="preserve">
+    <value>创建</value>
+  </data>
+  <data name="ActionOverwrite" xml:space="preserve">
+    <value>覆盖</value>
+  </data>
+  <data name="ActionSkip" xml:space="preserve">
+    <value>跳过</value>
+  </data>
+  <data name="ActionRename" xml:space="preserve">
+    <value>重命名</value>
+  </data>
+  <data name="OpRunning" xml:space="preserve">
+    <value>进行中</value>
+  </data>
+  <data name="OpSucceeded" xml:space="preserve">
+    <value>成功</value>
+  </data>
+  <data name="OpPartiallyFailed" xml:space="preserve">
+    <value>部分写入失败</value>
+  </data>
+  <data name="OpFailed" xml:space="preserve">
+    <value>失败</value>
+  </data>
+  <data name="OpCancelled" xml:space="preserve">
+    <value>已取消</value>
+  </data>
+  <data name="OpUndone" xml:space="preserve">
+    <value>已撤销</value>
+  </data>
+  <data name="ResultCreated" xml:space="preserve">
+    <value>已创建</value>
+  </data>
+  <data name="ResultOverwritten" xml:space="preserve">
+    <value>已覆盖</value>
+  </data>
+  <data name="ResultSkipped" xml:space="preserve">
+    <value>已跳过</value>
+  </data>
+  <data name="ResultRenamed" xml:space="preserve">
+    <value>已重命名</value>
+  </data>
+  <data name="ResultFailed" xml:space="preserve">
+    <value>失败</value>
+  </data>
+  <data name="ResultDirectoryCreated" xml:space="preserve">
+    <value>已建目录</value>
+  </data>
+  <data name="SourceUnchanged" xml:space="preserve">
+    <value>未变化</value>
+  </data>
+  <data name="SourceModified" xml:space="preserve">
+    <value>已改动</value>
+  </data>
+  <data name="SourceMissing" xml:space="preserve">
+    <value>源文件已删除</value>
+  </data>
+
+  <!-- ============ 主窗口：紧凑暂存区 ============ -->
+  <data name="CompactTitle" xml:space="preserve">
+    <value>暂存区</value>
+  </data>
+  <data name="CompactEmptyTitle" xml:space="preserve">
+    <value>暂存区是空的</value>
+  </data>
+  <data name="CompactEmptyHint" xml:space="preserve">
+    <value>点「添加」放进来，之后直接拖出去</value>
+  </data>
+  <data name="CompactFooter" xml:space="preserve">
+    <value>拖到任意文件夹 = 存到那里</value>
+  </data>
+
+  <!-- ============ 主窗口：工作台 ============ -->
+  <data name="StashBoxLabel" xml:space="preserve">
+    <value>暂存箱</value>
+  </data>
+  <data name="NewGroupButton" xml:space="preserve">
+    <value>新建箱</value>
+  </data>
+  <data name="WorkbenchEmptyTitle" xml:space="preserve">
+    <value>台面上还是空的</value>
+  </data>
+  <data name="WorkbenchEmptyHint" xml:space="preserve">
+    <value>把文件或文件夹拖进来，或用右上角的「添加」</value>
+  </data>
+  <data name="ColumnNamePath" xml:space="preserve">
+    <value>名称 / 路径</value>
+  </data>
+  <data name="ColumnSize" xml:space="preserve">
+    <value>大小</value>
+  </data>
+  <data name="ColumnSourceBranch" xml:space="preserve">
+    <value>来源分支</value>
+  </data>
+  <data name="ColumnSourceState" xml:space="preserve">
+    <value>源状态</value>
+  </data>
+  <data name="MenuOpenSource" xml:space="preserve">
+    <value>打开源位置</value>
+  </data>
+  <data name="MenuCopySourcePath" xml:space="preserve">
+    <value>复制源路径</value>
+  </data>
+  <data name="MenuCopyToClipboard" xml:space="preserve">
+    <value>复制到剪贴板</value>
+  </data>
+  <data name="MenuRefreshSnapshot" xml:space="preserve">
+    <value>刷新快照</value>
+  </data>
+  <data name="MenuSetRoot" xml:space="preserve">
+    <value>设置根目录</value>
+  </data>
+  <data name="MenuMoveToGroup" xml:space="preserve">
+    <value>移动到箱</value>
+  </data>
+  <data name="WillWriteMany" xml:space="preserve">
+    <value>将写入 {0} 个文件，例如</value>
+  </data>
+  <data name="WriteBackLabel" xml:space="preserve">
+    <value>写回</value>
+  </data>
+  <data name="TargetOriginal" xml:space="preserve">
+    <value>原位置</value>
+  </data>
+  <data name="TargetAnotherRoot" xml:space="preserve">
+    <value>其他根目录</value>
+  </data>
+  <data name="TargetSpecifiedPath" xml:space="preserve">
+    <value>指定路径</value>
+  </data>
+  <data name="BrowseTargetTooltip" xml:space="preserve">
+    <value>浏览目标目录</value>
+  </data>
+  <data name="StructureLabel" xml:space="preserve">
+    <value>结构</value>
+  </data>
+  <data name="ConflictLabel" xml:space="preserve">
+    <value>冲突</value>
+  </data>
+  <data name="WillWrite" xml:space="preserve">
+    <value>将写入</value>
+  </data>
+  <data name="NothingToWrite" xml:space="preserve">
+    <value>还没有可写入的内容</value>
+  </data>
+
+  <!-- ============ 目标模式 / 结构 / 冲突策略 ============ -->
+  <data name="StructureFullRelative" xml:space="preserve">
+    <value>完整子路径</value>
+  </data>
+  <data name="StructureItemOnly" xml:space="preserve">
+    <value>仅暂存项自身</value>
+  </data>
+  <data name="StructureFlatten" xml:space="preserve">
+    <value>全部平铺</value>
+  </data>
+  <data name="ConflictAsk" xml:space="preserve">
+    <value>询问</value>
+  </data>
+
+  <!-- ============ 主 ViewModel 的状态与提示 ============ -->
+  <data name="StatusReady" xml:space="preserve">
+    <value>就绪</value>
+  </data>
+  <data name="StatusEmpty" xml:space="preserve">
+    <value>还没有暂存内容</value>
+  </data>
+  <data name="StatusSummary" xml:space="preserve">
+    <value>{0} 项 · {1} 文件 · {2}</value>
+  </data>
+  <data name="StatusBusy" xml:space="preserve">
+    <value>处理中…</value>
+  </data>
+  <data name="StatusAdding" xml:space="preserve">
+    <value>正在加入暂存（{0}/{1}）</value>
+  </data>
+  <data name="StatusAddAborted" xml:space="preserve">
+    <value>已中止加入</value>
+  </data>
+  <data name="StatusAborting" xml:space="preserve">
+    <value>正在中止…</value>
+  </data>
+  <data name="StatusRefreshing" xml:space="preserve">
+    <value>正在刷新快照</value>
+  </data>
+  <data name="StatusSnapshotRefreshed" xml:space="preserve">
+    <value>快照已刷新</value>
+  </data>
+  <data name="StatusRootUpdated" xml:space="preserve">
+    <value>根目录已更新</value>
+  </data>
+  <data name="StatusSourcePathCopied" xml:space="preserve">
+    <value>已复制源路径</value>
+  </data>
+  <data name="StatusClipboardFilled" xml:space="preserve">
+    <value>已把剪贴板里的目录填入目标路径</value>
+  </data>
+  <data name="StatusPreparingExport" xml:space="preserve">
+    <value>正在准备拖出的内容…</value>
+  </data>
+  <data name="StatusCopiedToClipboard" xml:space="preserve">
+    <value>已复制到剪贴板（{0} 项）</value>
+  </data>
+  <data name="StatusWriting" xml:space="preserve">
+    <value>正在写入（{0}/{1}）</value>
+  </data>
+  <data name="StatusLoadFailed" xml:space="preserve">
+    <value>加载暂存项失败：{0}</value>
+  </data>
+  <data name="StatusSourceStateFailed" xml:space="preserve">
+    <value>读取源状态失败：{0}</value>
+  </data>
+  <data name="ToastAdded" xml:space="preserve">
+    <value>已加入 {0} 项</value>
+  </data>
+  <data name="ToastDuplicates" xml:space="preserve">
+    <value>{0} 个路径已在暂存区（跳过）</value>
+  </data>
+  <data name="ToastFailedPaths" xml:space="preserve">
+    <value>{0} 个路径失败</value>
+  </data>
+  <data name="ToastWarnings" xml:space="preserve">
+    <value>{0} 条提示</value>
+  </data>
+  <data name="AddToStashTitle" xml:space="preserve">
+    <value>加入暂存</value>
+  </data>
+  <data name="SkippedTitle" xml:space="preserve">
+    <value>跳过的内容</value>
+  </data>
+  <data name="DefaultGroupName" xml:space="preserve">
+    <value>默认暂存</value>
+  </data>
+  <data name="NewGroupTitle" xml:space="preserve">
+    <value>新建箱</value>
+  </data>
+  <data name="RenameGroupTitle" xml:space="preserve">
+    <value>重命名箱</value>
+  </data>
+  <data name="DeleteGroupTitle" xml:space="preserve">
+    <value>删除箱</value>
+  </data>
+  <data name="DeleteGroupConfirm" xml:space="preserve">
+    <value>确定删除箱「{0}」？箱里的暂存项会一并删除。</value>
+  </data>
+  <data name="NoGroupTitle" xml:space="preserve">
+    <value>还没有暂存箱</value>
+  </data>
+  <data name="NoGroupHint" xml:space="preserve">
+    <value>先新建一个箱再加入暂存。</value>
+  </data>
+  <data name="SetRootFailedTitle" xml:space="preserve">
+    <value>设置根目录失败</value>
+  </data>
+  <data name="DeleteItemTitle" xml:space="preserve">
+    <value>从箱里移除</value>
+  </data>
+  <data name="DeleteItemConfirm" xml:space="preserve">
+    <value>把「{0}」从箱里移除？源文件不会被删除，暂存的副本会清掉。</value>
+  </data>
+  <data name="NoOtherGroupHint" xml:space="preserve">
+    <value>没有别的箱可移，先新建一个。</value>
+  </data>
+  <data name="OpenSourceFailedTitle" xml:space="preserve">
+    <value>打开源位置失败</value>
+  </data>
+  <data name="CopyFailedTitle" xml:space="preserve">
+    <value>复制失败</value>
+  </data>
+  <data name="ClipboardBusy" xml:space="preserve">
+    <value>剪贴板被其它程序占用了。</value>
+  </data>
+  <data name="DragExportTarget" xml:space="preserve">
+    <value>拖出 {0} 项</value>
+  </data>
+  <data name="NothingToWriteTitle" xml:space="preserve">
+    <value>没有可写入的内容</value>
+  </data>
+  <data name="NothingToWriteHint" xml:space="preserve">
+    <value>这个箱里还没有暂存项。</value>
+  </data>
+  <data name="NothingToUndoMessage" xml:space="preserve">
+    <value>还没有执行过写入。</value>
+  </data>
+  <data name="NothingToUndoTitle" xml:space="preserve">
+    <value>没有可撤销的操作</value>
+  </data>
+  <data name="UndoDoneMessage" xml:space="preserve">
+    <value>已还原 {0} 个文件，删除 {1} 个。</value>
+  </data>
+
+  <!-- ============ 树行 ============ -->
+  <data name="TreeEmpty" xml:space="preserve">
+    <value>空</value>
+  </data>
+  <data name="TreeItemCount" xml:space="preserve">
+    <value>{0} 项</value>
+  </data>
+  <data name="TreeItemFileCount" xml:space="preserve">
+    <value>{0} 项 · {1} 文件</value>
+  </data>
+
+  <!-- ============ Git 改动对话框 ============ -->
+  <data name="GitStatusTitle" xml:space="preserve">
+    <value>选择改动文件</value>
+  </data>
+  <data name="GitChangedSummary" xml:space="preserve">
+    <value>{0} 项改动</value>
+  </data>
+  <data name="GitChangedSummaryWithDeleted" xml:space="preserve">
+    <value>{0} 项改动，其中 {1} 项已删除（不能加入暂存）</value>
+  </data>
+  <data name="GitNoSelection" xml:space="preserve">
+    <value>没有选中可加入的文件。</value>
+  </data>
+  <data name="GitAddedMessage" xml:space="preserve">
+    <value>已加入 {0} 项。</value>
+  </data>
+  <data name="GitDeletedSkipped" xml:space="preserve">
+    <value>{0} 个已删除的文件被跳过（源路径已不存在）。</value>
+  </data>
+
+  <!-- ============ 操作历史 ============ -->
+  <data name="HistoryTitle" xml:space="preserve">
+    <value>操作历史</value>
+  </data>
+  <data name="ColumnTime" xml:space="preserve">
+    <value>时间</value>
+  </data>
+  <data name="ColumnTarget" xml:space="preserve">
+    <value>目标</value>
+  </data>
+  <data name="ColumnSourceItem" xml:space="preserve">
+    <value>来自</value>
+  </data>
+  <data name="ColumnStatus" xml:space="preserve">
+    <value>状态</value>
+  </data>
+  <data name="ColumnTargetPath" xml:space="preserve">
+    <value>目标路径</value>
+  </data>
+  <data name="ColumnResult" xml:space="preserve">
+    <value>结果</value>
+  </data>
+  <data name="ColumnError" xml:space="preserve">
+    <value>错误</value>
+  </data>
+  <data name="OpenTargetFolderButton" xml:space="preserve">
+    <value>打开目标文件夹</value>
+  </data>
+  <data name="UndoConfirmTitle" xml:space="preserve">
+    <value>撤销操作</value>
+  </data>
+  <data name="UndoConfirmMessage" xml:space="preserve">
+    <value>确定撤销 {0} 的这次写入？</value>
+  </data>
+  <data name="UndoConfirmNote" xml:space="preserve">
+    <value>如果目标文件之后又被改过，那部分会被跳过。</value>
+  </data>
+  <data name="TargetFolderMissing" xml:space="preserve">
+    <value>目标目录不存在。</value>
+  </data>
+  <data name="OpenFailedTitle" xml:space="preserve">
+    <value>打开失败</value>
+  </data>
+
+  <!-- ============ 写入预览 ============ -->
+  <data name="PreviewTitle" xml:space="preserve">
+    <value>写入预览</value>
+  </data>
+  <data name="ColumnAction" xml:space="preserve">
+    <value>动作</value>
+  </data>
+  <data name="ColumnWarning" xml:space="preserve">
+    <value>警告</value>
+  </data>
+  <data name="PreviewTargetOriginal" xml:space="preserve">
+    <value>目标：原位置（各暂存项按自己的根写回）</value>
+  </data>
+  <data name="PreviewTargetAnotherRoot" xml:space="preserve">
+    <value>目标：其他根目录 {0}</value>
+  </data>
+  <data name="PreviewTargetSpecifiedPath" xml:space="preserve">
+    <value>目标：指定路径 {0}</value>
+  </data>
+  <data name="PreviewTargetDragExport" xml:space="preserve">
+    <value>目标：拖出</value>
+  </data>
+  <data name="PreviewSummary" xml:space="preserve">
+    <value>新增 {0}　覆盖 {1}　相同 {2}　类型冲突 {3}　无效 {4}</value>
+  </data>
+  <data name="PreviewWritten" xml:space="preserve">
+    <value>已写入：{0}</value>
+  </data>
+  <data name="PreviewAborted" xml:space="preserve">
+    <value>已中止写入</value>
+  </data>
+  <data name="PreviewFailed" xml:space="preserve">
+    <value>写入失败：{0}</value>
+  </data>
+  <data name="CompareFailed" xml:space="preserve">
+    <value>打开对比工具失败：{0}</value>
+  </data>
+
+  <!-- ============ 写入结果提示 ============ -->
+  <data name="ToastTargetLine" xml:space="preserve">
+    <value>目标 {0}</value>
+  </data>
+  <data name="ToastTitle" xml:space="preserve">
+    <value>写入结果</value>
+  </data>
+  <data name="ToastSucceeded" xml:space="preserve">
+    <value>写入完成</value>
+  </data>
+  <data name="ToastPartiallyFailed" xml:space="preserve">
+    <value>部分写入失败</value>
+  </data>
+  <data name="ToastCancelled" xml:space="preserve">
+    <value>已取消</value>
+  </data>
+  <data name="ToastRetryElevated" xml:space="preserve">
+    <value>以管理员身份重试</value>
+  </data>
+  <data name="ToastViewDetails" xml:space="preserve">
+    <value>查看详情</value>
+  </data>
+  <data name="ToastCreated" xml:space="preserve">
+    <value>创建 {0}</value>
+  </data>
+  <data name="ToastOverwritten" xml:space="preserve">
+    <value>覆盖 {0}</value>
+  </data>
+  <data name="ToastSkipped" xml:space="preserve">
+    <value>跳过 {0}</value>
+  </data>
+  <data name="ToastFailed" xml:space="preserve">
+    <value>失败 {0}</value>
+  </data>
+  <data name="ItemSeparator" xml:space="preserve">
+    <value>、</value>
+  </data>
+  <data name="SentenceEnd" xml:space="preserve">
+    <value>。</value>
+  </data>
+  <data name="ClauseSeparator" xml:space="preserve">
+    <value>；</value>
+  </data>
+  <data name="ProgressSeparator" xml:space="preserve">
+    <value> · </value>
+  </data>
+  <data name="ToastNothingWritten" xml:space="preserve">
+    <value>没有写入任何文件。</value>
+  </data>
+  <data name="ToastDetailLine" xml:space="preserve">
+    <value>{0}：{1}</value>
+  </data>
+  <data name="ToastNoFailures" xml:space="preserve">
+    <value>没有失败的条目。</value>
+  </data>
+  <data name="ToastDetailsTitle" xml:space="preserve">
+    <value>写入详情</value>
+  </data>
+  <data name="ToastElevatedFailed" xml:space="preserve">
+    <value>没能启动提权进程（可能取消了 UAC 提示）。</value>
+  </data>
+
+  <!-- ============ 设置 ============ -->
+  <data name="SettingsTitle" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="SectionGeneral" xml:space="preserve">
+    <value>常规</value>
+  </data>
+  <data name="LanguageLabel" xml:space="preserve">
+    <value>语言</value>
+  </data>
+  <data name="LanguageSystem" xml:space="preserve">
+    <value>跟随系统</value>
+  </data>
+  <data name="LanguageChinese" xml:space="preserve">
+    <value>简体中文</value>
+  </data>
+  <data name="LanguageTraditionalChinese" xml:space="preserve">
+    <value>繁體中文</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="LanguageJapanese" xml:space="preserve">
+    <value>日本語</value>
+  </data>
+  <data name="LanguageKorean" xml:space="preserve">
+    <value>한국어</value>
+  </data>
+  <data name="LanguageSpanish" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="LanguagePortugueseBrazil" xml:space="preserve">
+    <value>Português (Brasil)</value>
+  </data>
+  <data name="LanguageFrench" xml:space="preserve">
+    <value>Français</value>
+  </data>
+  <data name="LanguageGerman" xml:space="preserve">
+    <value>Deutsch</value>
+  </data>
+  <data name="LanguageItalian" xml:space="preserve">
+    <value>Italiano</value>
+  </data>
+  <data name="LanguageRussian" xml:space="preserve">
+    <value>Русский</value>
+  </data>
+  <data name="LanguageArabic" xml:space="preserve">
+    <value>العربية</value>
+  </data>
+  <data name="LanguageHindi" xml:space="preserve">
+    <value>हिन्दी</value>
+  </data>
+  <data name="LanguageIndonesian" xml:space="preserve">
+    <value>Bahasa Indonesia</value>
+  </data>
+  <data name="LanguageThai" xml:space="preserve">
+    <value>ไทย</value>
+  </data>
+  <data name="LanguageTurkish" xml:space="preserve">
+    <value>Türkçe</value>
+  </data>
+  <data name="LanguageVietnamese" xml:space="preserve">
+    <value>Tiếng Việt</value>
+  </data>
+  <data name="LanguageBengali" xml:space="preserve">
+    <value>বাংলা</value>
+  </data>
+  <data name="LanguageRestartFailed" xml:space="preserve">
+    <value>语言已经保存，但没能重启应用 —— 下次启动时才会生效。</value>
+  </data>
+  <data name="DefaultConflictPolicyLabel" xml:space="preserve">
+    <value>默认冲突策略</value>
+  </data>
+  <data name="SkipIdenticalLabel" xml:space="preserve">
+    <value>内容相同的文件不写盘（保持目标修改时间）</value>
+  </data>
+  <data name="BackupBeforeOverwriteLabel" xml:space="preserve">
+    <value>覆盖前先备份（关掉之后覆盖就不可撤销）</value>
+  </data>
+  <data name="HistoryRetentionLabel" xml:space="preserve">
+    <value>历史保留天数（0 = 永久）</value>
+  </data>
+  <data name="AutoGitAddLabel" xml:space="preserve">
+    <value>写入后自动 git add</value>
+  </data>
+  <data name="WatchBranchLabel" xml:space="preserve">
+    <value>监听分支切换并提示</value>
+  </data>
+  <data name="RespectGitIgnoreLabel" xml:space="preserve">
+    <value>仓库内文件夹只暂存未被忽略的文件</value>
+  </data>
+  <data name="SectionExcludes" xml:space="preserve">
+    <value>排除规则</value>
+  </data>
+  <data name="ExcludeHint" xml:space="preserve">
+    <value>一行一个通配符，例如 **/node_modules/**</value>
+  </data>
+  <data name="SectionWindowsIntegration" xml:space="preserve">
+    <value>Windows 集成</value>
+  </data>
+  <data name="ContextMenuLabel" xml:space="preserve">
+    <value>在资源管理器右键菜单里显示「加入暂存」</value>
+  </data>
+  <data name="StartWithWindowsLabel" xml:space="preserve">
+    <value>开机自启</value>
+  </data>
+  <data name="CloseToTrayLabel" xml:space="preserve">
+    <value>关闭窗口时最小化到托盘</value>
+  </data>
+  <data name="StartMinimizedLabel" xml:space="preserve">
+    <value>启动时最小化到托盘</value>
+  </data>
+  <data name="HotkeyLabel" xml:space="preserve">
+    <value>全局快捷键（加入暂存）</value>
+  </data>
+  <data name="SectionStorage" xml:space="preserve">
+    <value>存储</value>
+  </data>
+  <data name="RefreshStorageButton" xml:space="preserve">
+    <value>刷新占用</value>
+  </data>
+  <data name="CleanupStorageButton" xml:space="preserve">
+    <value>清理未引用数据</value>
+  </data>
+  <data name="ClearHistoryButton" xml:space="preserve">
+    <value>清空所有历史</value>
+  </data>
+  <data name="SettingsSavedMessage" xml:space="preserve">
+    <value>设置已保存。</value>
+  </data>
+  <data name="StorageUsageLabel" xml:space="preserve">
+    <value>暂存内容：{0}</value>
+  </data>
+  <data name="StorageExportLabel" xml:space="preserve">
+    <value>拖出临时文件：{0}</value>
+  </data>
+  <data name="StorageHistoryLabel" xml:space="preserve">
+    <value>历史记录：{0} 条</value>
+  </data>
+  <data name="CleanupConfirmTitle" xml:space="preserve">
+    <value>清理未引用数据</value>
+  </data>
+  <data name="CleanupConfirmMessage" xml:space="preserve">
+    <value>删除没有被暂存项或历史引用的内容？</value>
+  </data>
+  <data name="CleanupDoneMessage" xml:space="preserve">
+    <value>已删除 {0} 份内容。</value>
+  </data>
+  <data name="ClearHistoryConfirmTitle" xml:space="preserve">
+    <value>清空所有历史</value>
+  </data>
+  <data name="ClearHistoryConfirmMessage" xml:space="preserve">
+    <value>所有历史记录与备份都会被删除，撤销功能随之失效。确定继续？</value>
+  </data>
+  <data name="ClearHistoryDoneMessage" xml:space="preserve">
+    <value>已删除 {0} 条历史。</value>
+  </data>
+  <data name="NewPresetButton" xml:space="preserve">
+    <value>新增…</value>
+  </data>
+  <data name="NewPresetTitle" xml:space="preserve">
+    <value>新增根目录预设</value>
+  </data>
+  <data name="NewPresetDefaultName" xml:space="preserve">
+    <value>新的预设</value>
+  </data>
+
+  <!-- ============ 根目录预设 ============ -->
+  <data name="RootPresetsTitle" xml:space="preserve">
+    <value>根目录预设</value>
+  </data>
+  <data name="ColumnName" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="ColumnPath" xml:space="preserve">
+    <value>路径</value>
+  </data>
+
+  <!-- ============ 对话框 ============ -->
+  <data name="MoveToGroupTitle" xml:space="preserve">
+    <value>移动到箱</value>
+  </data>
+  <data name="ChooseTargetGroup" xml:space="preserve">
+    <value>选择目标箱</value>
+  </data>
+  <data name="InputTitle" xml:space="preserve">
+    <value>输入</value>
+  </data>
+  <data name="SetRootTitle" xml:space="preserve">
+    <value>设置根目录</value>
+  </data>
+  <data name="SetRootHint" xml:space="preserve">
+    <value>选择根目录：暂存项的子路径按它计算，写回原位置时也会按它还原。</value>
+  </data>
+  <data name="NewRelativePathLabel" xml:space="preserve">
+    <value>新的子路径：</value>
+  </data>
+  <data name="EmptyRelativePath" xml:space="preserve">
+    <value>（子路径为空）</value>
+  </data>
+
+  <!-- ============ 关于 ============ -->
+  <data name="AboutTitle" xml:space="preserve">
+    <value>关于 StashBay</value>
+  </data>
+  <data name="AboutTagline" xml:space="preserve">
+    <value>文件暂存箱 — 暂存、切换分支后一键写回</value>
+  </data>
+  <data name="VersionLabel" xml:space="preserve">
+    <value>版本 {0}</value>
+  </data>
+  <data name="RuntimeLabel" xml:space="preserve">
+    <value>运行时 .NET {0}</value>
+  </data>
+  <data name="GitFound" xml:space="preserve">
+    <value>已找到 Git</value>
+  </data>
+  <data name="GitMissing" xml:space="preserve">
+    <value>未检测到 Git（Git 相关功能会自动关闭）</value>
+  </data>
+  <data name="GitUnknown" xml:space="preserve">
+    <value>Git 状态未知</value>
+  </data>
+  <data name="DataDirectoryLabel" xml:space="preserve">
+    <value>数据目录 {0}</value>
+  </data>
+
+  <!-- ============ 托盘菜单 ============ -->
+  <data name="TrayShowCompact" xml:space="preserve">
+    <value>唤出暂存区</value>
+  </data>
+  <data name="TrayOpenWorkbench" xml:space="preserve">
+    <value>打开工作台</value>
+  </data>
+  <data name="TrayApplyOriginal" xml:space="preserve">
+    <value>应用到原位置</value>
+  </data>
+  <data name="TrayUndoLast" xml:space="preserve">
+    <value>撤销上次</value>
+  </data>
+  <data name="TrayGitChanges" xml:space="preserve">
+    <value>从 Git 改动加入暂存…</value>
+  </data>
+  <data name="TrayFloatingWindow" xml:space="preserve">
+    <value>显示悬浮窗</value>
+  </data>
+  <data name="TrayHistory" xml:space="preserve">
+    <value>操作历史…</value>
+  </data>
+  <data name="TrayRootPresets" xml:space="preserve">
+    <value>根目录预设…</value>
+  </data>
+  <data name="TraySettings" xml:space="preserve">
+    <value>设置…</value>
+  </data>
+  <data name="TrayAbout" xml:space="preserve">
+    <value>关于 StashBay…</value>
+  </data>
+  <data name="TrayExit" xml:space="preserve">
+    <value>退出</value>
+  </data>
+  <data name="NoGitItems" xml:space="preserve">
+    <value>这个箱里没有属于 Git 仓库的暂存项。</value>
+  </data>
+  <data name="BranchSwitchedMessage" xml:space="preserve">
+    <value>检测到 {0} 已切换到 {1}，有 {2} 个暂存项可应用到原位置。点击即可应用。</value>
+  </data>
+  <data name="UnhandledErrorTitle" xml:space="preserve">
+    <value>StashBay 发生未处理的错误</value>
+  </data>
+
+  <!-- ============ 文件选择 / 拖出 ============ -->
+  <data name="PickItemsTitle" xml:space="preserve">
+    <value>选择文件和文件夹</value>
+  </data>
+  <data name="PickItemsHint" xml:space="preserve">
+    <value>按住 Ctrl 或 Shift 可多选，双击文件夹可进入。</value>
+  </data>
+  <data name="ParentFolder" xml:space="preserve">
+    <value>上一级文件夹</value>
+  </data>
+  <data name="ClipboardBusyLong" xml:space="preserve">
+    <value>剪贴板被其它程序占用了，请稍后再试。</value>
+  </data>
+  <data name="LoadStashFailed" xml:space="preserve">
+    <value>加载暂存区失败：{0}</value>
+  </data>
+  <data name="DragOutFailed" xml:space="preserve">
+    <value>拖出失败：{0}</value>
+  </data>
+  <data name="AddToStashFailed" xml:space="preserve">
+    <value>加入暂存失败：{0}</value>
+  </data>
+  <data name="ThemeLabel" xml:space="preserve">
+    <value>主题</value>
+  </data>
+  <data name="ThemeSystem" xml:space="preserve">
+    <value>跟随系统</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>浅色</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>深色</value>
+  </data>
+  <data name="AddSelectedButton" xml:space="preserve">
+    <value>加入所选</value>
+  </data>
+
+  <data name="ClearAllBoxesButton" xml:space="preserve">
+    <value>清空所有箱</value>
+  </data>
+  <data name="ClearAllBoxesTooltip" xml:space="preserve">
+    <value>清除所有暂存箱与暂存项</value>
+  </data>
+  <data name="ClearAllBoxesTitle" xml:space="preserve">
+    <value>清空所有暂存箱</value>
+  </data>
+  <data name="ClearAllBoxesConfirm" xml:space="preserve">
+    <value>确定清空所有暂存箱？所有箱内的暂存项都会被移除。</value>
+  </data>
+  <data name="ClearAllBoxesDone" xml:space="preserve">
+    <value>已清空所有暂存箱。</value>
+  </data>
+  <data name="ClearBoxButton" xml:space="preserve">
+    <value>清空当前箱</value>
+  </data>
+  <data name="ClearBoxConfirm" xml:space="preserve">
+    <value>确定清空暂存箱“{0}”？箱内的暂存项都会被移除。</value>
+  </data>
+  <data name="ClearBoxDone" xml:space="preserve">
+    <value>已清空暂存箱“{0}”。</value>
+  </data>
+  <data name="DropToStashPrompt" xml:space="preserve">
+    <value>松开以暂存</value>
+  </data>
+  <data name="DropToStashHint" xml:space="preserve">
+    <value>释放文件或文件夹自动加入暂存区</value>
+  </data>
+  <data name="TrayClearAll" xml:space="preserve">
+    <value>清空所有暂存箱</value>
+  </data>
+
+  <data name="RemoveAfterDragExportLabel" xml:space="preserve">
+    <value>拖出后从暂存中自动移除（参考 DropPoint 行为）</value>
+  </data>
+  <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
+    <value>拖到外部目标文件夹释放后自动移出暂存区，默认开启；关闭后拖出仍保留在暂存箱中</value>
+  </data>
+
+  <data name="CollapseButton" xml:space="preserve">
+    <value>缩回</value>
+  </data>
+  <data name="CollapseButtonTooltip" xml:space="preserve">
+    <value>缩回紧凑小面板（方便拖放暂存，快捷键：Esc / F11）</value>
+  </data>
+
+  <data name="StatusClipboardPasted" xml:space="preserve">
+    <value>已从剪贴板暂存内容</value>
+  </data>
+  <data name="DragAllButton" xml:space="preserve">
+    <value>全部拖出</value>
+  </data>
+  <data name="DragAllTooltip" xml:space="preserve">
+    <value>按住拖动手柄，一次性将所有暂存文件拖出到外部目标</value>
+  </data>
+  <data name="AutoDismissWhenEmptyLabel" xml:space="preserve">
+    <value>空箱后自动隐藏</value>
+  </data>
+  <data name="AutoDismissWhenEmptyTooltip" xml:space="preserve">
+    <value>所有文件拖出或清空后，自动隐藏暂存窗口</value>
+  </data>
+  <data name="SummonAtCursorLabel" xml:space="preserve">
+    <value>快捷键唤出时贴近光标</value>
+  </data>
+  <data name="SummonAtCursorTooltip" xml:space="preserve">
+    <value>按下唤醒快捷键时，窗口直接在鼠标当前位置弹出</value>
+  </data>
+  <data name="EnableShakeToSummonLabel" xml:space="preserve">
+    <value>拖拽晃动唤出</value>
+  </data>
+  <data name="EnableShakeToSummonTooltip" xml:space="preserve">
+    <value>拖拽文件时快速左右晃动光标即可在当前位置展开暂存箱</value>
+  </data>
+  <data name="SectionDeveloperOptions" xml:space="preserve">
+    <value>高级与开发者选项（Git 协同）</value>
+  </data>
+  <data name="DeveloperOptionsHint" xml:space="preserve">
+    <value>仅在 Git 仓库内暂存文件时生效；普通文件暂存与覆盖恢复保持纯粹独立。</value>
+  </data>
+  <data name="HotkeyRegisterFailedTitle" xml:space="preserve">
+    <value>快捷键注册失败</value>
+  </data>
+  <data name="HotkeyRegisterFailedMessage" xml:space="preserve">
+    <value>全局快捷键“{0}”注册失败，可能已被其他程序占用</value>
+  </data>
+  <data name="HotkeyWorkbenchLabel" xml:space="preserve">
+    <value>全局快捷键（打开完整工作台）</value>
+  </data>
+  <data name="HotkeyPasteLabel" xml:space="preserve">
+    <value>全局快捷键（粘贴剪贴板文件）</value>
+  </data>
+  <data name="HotkeyRecordingHint" xml:space="preserve">
+    <value>点击输入框直接按下键盘按键即可录制，按 Esc 取消</value>
+  </data>
+  <data name="HotkeyClearButton" xml:space="preserve">
+    <value>清空</value>
+  </data>
+  <data name="PinButtonTooltip" xml:space="preserve">
+    <value>窗口置顶锁定</value>
+  </data>
+  <data name="ViewModeTree" xml:space="preserve">
+    <value>树</value>
+  </data>
+  <data name="ViewModeList" xml:space="preserve">
+    <value>列表</value>
+  </data>
+  <data name="ViewModeSource" xml:space="preserve">
+    <value>按来源</value>
+  </data>
+  <data name="ShelfApply" xml:space="preserve">
+    <value>原路写回</value>
+  </data>
+  <data name="ShelfClearAll" xml:space="preserve">
+    <value>清空全部</value>
+  </data>
+  <data name="ViewModeIcons" xml:space="preserve"><value>图标</value></data>
+</root>
