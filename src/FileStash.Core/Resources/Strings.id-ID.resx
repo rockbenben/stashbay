@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ============ 分支提示 ============ -->
+  <data name="BranchChangedText" xml:space="preserve">
+    <value>Cabang saat ini {0} ← cabang sumber {1}</value>
+  </data>
+  <data name="StillOnSourceBranchText" xml:space="preserve">
+    <value>Masih di cabang sumber {0}</value>
+  </data>
+
+  <!-- ============ Git 状态 ============ -->
+  <data name="GitStatusUntracked" xml:space="preserve">
+    <value>Tidak dilacak</value>
+  </data>
+  <data name="GitStatusModified" xml:space="preserve">
+    <value>Diubah</value>
+  </data>
+  <data name="GitStatusAdded" xml:space="preserve">
+    <value>Ditambahkan</value>
+  </data>
+  <data name="GitStatusDeleted" xml:space="preserve">
+    <value>Dihapus</value>
+  </data>
+  <data name="GitStatusRenamed" xml:space="preserve">
+    <value>Diganti Nama</value>
+  </data>
+  <data name="GitStatusCopied" xml:space="preserve">
+    <value>Disalin</value>
+  </data>
+
+  <!-- ============ 枚举目录时的告警 ============ -->
+  <data name="DirUnreadableWarning" xml:space="preserve">
+    <value>Folder tidak dapat dibaca, dilewati: {0} ({1})</value>
+  </data>
+  <data name="SymlinkSkippedWarning" xml:space="preserve">
+    <value>Symlink dilewati: {0}</value>
+  </data>
+  <data name="FileUnreadableWarning" xml:space="preserve">
+    <value>File tidak dapat dibaca, dilewati: {0} ({1})</value>
+  </data>
+  <data name="JunctionSkippedWarning" xml:space="preserve">
+    <value>Junction folder / symlink dilewati: {0}</value>
+  </data>
+
+  <!-- ============ 写入时的错误 ============ -->
+  <data name="NoParentDirectory" xml:space="preserve">
+    <value>Path target tidak memiliki folder induk</value>
+  </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>Dibatalkan</value>
+  </data>
+  <data name="NoPermission" xml:space="preserve">
+    <value>Akses ditolak</value>
+  </data>
+  <data name="LockedByProcess" xml:space="preserve">
+    <value>Dipakai oleh {0}</value>
+  </data>
+  <data name="ListSeparator" xml:space="preserve">
+    <value>,</value>
+  </data>
+
+  <!-- ============ 撤销 ============ -->
+  <data name="OperationNotFound" xml:space="preserve">
+    <value>Operasi tidak ditemukan</value>
+  </data>
+  <data name="DirNotEmpty" xml:space="preserve">
+    <value>Folder masih berisi konten, jadi tidak dihapus: {0}</value>
+  </data>
+  <data name="DeleteDirFailed" xml:space="preserve">
+    <value>Gagal menghapus folder: {0} ({1})</value>
+  </data>
+  <data name="FileModifiedNotDeleted" xml:space="preserve">
+    <value>File diubah setelahnya, jadi tidak dihapus: {0}</value>
+  </data>
+  <data name="DeleteFileFailed" xml:space="preserve">
+    <value>Gagal menghapus file: {0} ({1})</value>
+  </data>
+  <data name="NoBackup" xml:space="preserve">
+    <value>Tidak dicadangkan, jadi tidak dapat diurutkan</value>
+  </data>
+  <data name="TargetMissing" xml:space="preserve">
+    <value>Target sudah tidak ada: {0}</value>
+  </data>
+  <data name="FileModifiedNotRestored" xml:space="preserve">
+    <value>File diubah setelahnya, jadi tidak dipulihkan: {0}</value>
+  </data>
+  <data name="BackupExpired" xml:space="preserve">
+    <value>Cadangan sudah kedaluwarsa, jadi tidak dapat diurutkan: {0}</value>
+  </data>
+  <data name="RestoreFailed" xml:space="preserve">
+    <value>Gagal memulihkan: {0} ({1})</value>
+  </data>
+
+  <!-- ============ 写入目标描述 ============ -->
+  <data name="TargetOriginalLocation" xml:space="preserve">
+    <value>Lokasi Asli</value>
+  </data>
+  <data name="TargetDragExport" xml:space="preserve">
+    <value>Seret Keluar</value>
+  </data>
+
+  <!-- ============ 计划里的告警 ============ -->
+  <data name="TargetIsFileNameWarning" xml:space="preserve">
+    <value>Menggunakan nama file sebagai target hanya berfungsi dengan satu file</value>
+  </data>
+  <data name="UncommittedChangesWarning" xml:space="preserve">
+    <value>Target memiliki perubahan yang belum di-commit; akan dicadangkan sebelum ditimpa</value>
+  </data>
+  <data name="RenameTargetWarning" xml:space="preserve">
+    <value>Diganti nama menjadi {0}</value>
+  </data>
+  <data name="TargetReadOnly" xml:space="preserve">
+    <value>Target hanya baca</value>
+  </data>
+  <data name="DuplicateTargetWarning" xml:space="preserve">
+    <value>Target sama dengan entri sebelumnya</value>
+  </data>
+
+  <!-- ============ blob ============ -->
+  <data name="InvalidSha256" xml:space="preserve">
+    <value>Bukan SHA-256 yang valid: {0}</value>
+  </data>
+  <data name="BlobNotFound" xml:space="preserve">
+    <value>Blob tidak ada: {0}</value>
+  </data>
+
+  <!-- ============ 暂存组与路径 ============ -->
+  <data name="NewGroupName" xml:space="preserve">
+    <value>Kotak Baru</value>
+  </data>
+  <data name="PathNotFound" xml:space="preserve">
+    <value>{0} (path tidak ditemukan)</value>
+  </data>
+  <data name="PathWithError" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="NotAncestorRoot" xml:space="preserve">
+    <value>Folder akar {0} bukan leluhur dari {1}</value>
+  </data>
+  <data name="PathEmpty" xml:space="preserve">
+    <value>Path kosong</value>
+  </data>
+  <data name="PathNotUnderRoot" xml:space="preserve">
+    <value>Path {0} tidak berada di bawah {1}</value>
+  </data>
+
+  <!-- ============ 占用进程与资源管理器集成 ============ -->
+  <data name="UnknownProcess" xml:space="preserve">
+    <value>Proses tidak diketahui</value>
+  </data>
+  <data name="ShellMenuAddToStash" xml:space="preserve">
+    <value>Tambahkan ke Area Penyimpanan Sementara</value>
+  </data>
+  <data name="ShellMenuApplyToFolder" xml:space="preserve">
+    <value>Terapkan area penyimpanan sementara ke folder ini</value>
+  </data>
+  <data name="ShellMenuApplyHere" xml:space="preserve">
+    <value>Terapkan area penyimpanan sementara di sini</value>
+  </data>
+  <data name="ShellShortcutName" xml:space="preserve">
+    <value>StashBay.lnk</value>
+  </data>
+  <data name="ShellLegacyShortcutName" xml:space="preserve">
+    <value>FileStash 暂存.lnk</value>
+  </data>
+  <data name="ShellShortcutDescription" xml:space="preserve">
+    <value>Tambahkan file yang dipilih ke area penyimpanan sementara StashBay</value>
+  </data>
+  <data name="WriteFailedDetail" xml:space="preserve">
+    <value>Gagal menulis: {0}</value>
+  </data>
+</root>

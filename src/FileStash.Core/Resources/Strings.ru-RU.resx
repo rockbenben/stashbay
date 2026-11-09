@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ============ 分支提示 ============ -->
+  <data name="BranchChangedText" xml:space="preserve">
+    <value>Текущая ветвь {0} ← исходная ветвь {1}</value>
+  </data>
+  <data name="StillOnSourceBranchText" xml:space="preserve">
+    <value>Вы по-прежнему на исходной ветви {0}</value>
+  </data>
+
+  <!-- ============ Git 状态 ============ -->
+  <data name="GitStatusUntracked" xml:space="preserve">
+    <value>Не отслеживается</value>
+  </data>
+  <data name="GitStatusModified" xml:space="preserve">
+    <value>Изменён</value>
+  </data>
+  <data name="GitStatusAdded" xml:space="preserve">
+    <value>Добавлен</value>
+  </data>
+  <data name="GitStatusDeleted" xml:space="preserve">
+    <value>Удалён</value>
+  </data>
+  <data name="GitStatusRenamed" xml:space="preserve">
+    <value>Переименован</value>
+  </data>
+  <data name="GitStatusCopied" xml:space="preserve">
+    <value>Скопирован</value>
+  </data>
+
+  <!-- ============ 枚举目录时的告警 ============ -->
+  <data name="DirUnreadableWarning" xml:space="preserve">
+    <value>Не удалось прочитать папку, пропущено: {0} ({1})</value>
+  </data>
+  <data name="SymlinkSkippedWarning" xml:space="preserve">
+    <value>Пропущена символическая ссылка: {0}</value>
+  </data>
+  <data name="FileUnreadableWarning" xml:space="preserve">
+    <value>Не удалось прочитать файл, пропущено: {0} ({1})</value>
+  </data>
+  <data name="JunctionSkippedWarning" xml:space="preserve">
+    <value>Пропущена точка соединения папок / символическая ссылка: {0}</value>
+  </data>
+
+  <!-- ============ 写入时的错误 ============ -->
+  <data name="NoParentDirectory" xml:space="preserve">
+    <value>У целевого пути нет родительской папки</value>
+  </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>Отменено</value>
+  </data>
+  <data name="NoPermission" xml:space="preserve">
+    <value>Доступ запрещён</value>
+  </data>
+  <data name="LockedByProcess" xml:space="preserve">
+    <value>Занято процессом {0}</value>
+  </data>
+  <data name="ListSeparator" xml:space="preserve">
+    <value>, </value>
+  </data>
+
+  <!-- ============ 撤销 ============ -->
+  <data name="OperationNotFound" xml:space="preserve">
+    <value>Операция не найдена</value>
+  </data>
+  <data name="DirNotEmpty" xml:space="preserve">
+    <value>В папке осталось содержимое, поэтому она не удалена: {0}</value>
+  </data>
+  <data name="DeleteDirFailed" xml:space="preserve">
+    <value>Не удалось удалить папку: {0} ({1})</value>
+  </data>
+  <data name="FileModifiedNotDeleted" xml:space="preserve">
+    <value>Файл был изменён позже, поэтому не удалён: {0}</value>
+  </data>
+  <data name="DeleteFileFailed" xml:space="preserve">
+    <value>Не удалось удалить файл: {0} ({1})</value>
+  </data>
+  <data name="NoBackup" xml:space="preserve">
+    <value>Без резервной копии, отменить нельзя</value>
+  </data>
+  <data name="TargetMissing" xml:space="preserve">
+    <value>Цель больше не существует: {0}</value>
+  </data>
+  <data name="FileModifiedNotRestored" xml:space="preserve">
+    <value>Файл был изменён позже, поэтому не восстановлен: {0}</value>
+  </data>
+  <data name="BackupExpired" xml:space="preserve">
+    <value>Срок действия резервной копии истёк, отменить нельзя: {0}</value>
+  </data>
+  <data name="RestoreFailed" xml:space="preserve">
+    <value>Не удалось восстановить: {0} ({1})</value>
+  </data>
+
+  <!-- ============ 写入目标描述 ============ -->
+  <data name="TargetOriginalLocation" xml:space="preserve">
+    <value>Исходное расположение</value>
+  </data>
+  <data name="TargetDragExport" xml:space="preserve">
+    <value>Вытаскивание</value>
+  </data>
+
+  <!-- ============ 计划里的告警 ============ -->
+  <data name="TargetIsFileNameWarning" xml:space="preserve">
+    <value>Использовать имя файла как цель можно только для одного файла</value>
+  </data>
+  <data name="UncommittedChangesWarning" xml:space="preserve">
+    <value>В цели есть незакоммиченные изменения; перед перезаписью будет создана резервная копия</value>
+  </data>
+  <data name="RenameTargetWarning" xml:space="preserve">
+    <value>Переименовано в {0}</value>
+  </data>
+  <data name="TargetReadOnly" xml:space="preserve">
+    <value>Цель доступна только для чтения</value>
+  </data>
+  <data name="DuplicateTargetWarning" xml:space="preserve">
+    <value>Цель совпадает с более ранней записью</value>
+  </data>
+
+  <!-- ============ blob ============ -->
+  <data name="InvalidSha256" xml:space="preserve">
+    <value>Недопустимый SHA-256: {0}</value>
+  </data>
+  <data name="BlobNotFound" xml:space="preserve">
+    <value>Blob не найден: {0}</value>
+  </data>
+
+  <!-- ============ 暂存组与路径 ============ -->
+  <data name="NewGroupName" xml:space="preserve">
+    <value>Новый ящик</value>
+  </data>
+  <data name="PathNotFound" xml:space="preserve">
+    <value>{0} (путь не найден)</value>
+  </data>
+  <data name="PathWithError" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="NotAncestorRoot" xml:space="preserve">
+    <value>Корневая папка {0} не является предком {1}</value>
+  </data>
+  <data name="PathEmpty" xml:space="preserve">
+    <value>Путь не может быть пустым</value>
+  </data>
+  <data name="PathNotUnderRoot" xml:space="preserve">
+    <value>Путь {0} не находится в {1}</value>
+  </data>
+
+  <!-- ============ 占用进程与资源管理器集成 ============ -->
+  <data name="UnknownProcess" xml:space="preserve">
+    <value>Неизвестный процесс</value>
+  </data>
+  <data name="ShellMenuAddToStash" xml:space="preserve">
+    <value>Добавить в область хранения</value>
+  </data>
+  <data name="ShellMenuApplyToFolder" xml:space="preserve">
+    <value>Применить область хранения к этой папке</value>
+  </data>
+  <data name="ShellMenuApplyHere" xml:space="preserve">
+    <value>Применить область хранения здесь</value>
+  </data>
+  <data name="ShellShortcutName" xml:space="preserve">
+    <value>StashBay.lnk</value>
+  </data>
+  <data name="ShellLegacyShortcutName" xml:space="preserve">
+    <value>FileStash 暂存.lnk</value>
+  </data>
+  <data name="ShellShortcutDescription" xml:space="preserve">
+    <value>Добавить выбранные файлы в область хранения StashBay</value>
+  </data>
+  <data name="WriteFailedDetail" xml:space="preserve">
+    <value>Не удалось записать: {0}</value>
+  </data>
+</root>

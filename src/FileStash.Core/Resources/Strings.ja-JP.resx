@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ============ 分支提示 ============ -->
+  <data name="BranchChangedText" xml:space="preserve">
+    <value>現在のブランチ {0} ← 元のブランチ {1}</value>
+  </data>
+  <data name="StillOnSourceBranchText" xml:space="preserve">
+    <value>まだ元のブランチ {0} にいます</value>
+  </data>
+
+  <!-- ============ Git 状态 ============ -->
+  <data name="GitStatusUntracked" xml:space="preserve">
+    <value>未追跡</value>
+  </data>
+  <data name="GitStatusModified" xml:space="preserve">
+    <value>変更済み</value>
+  </data>
+  <data name="GitStatusAdded" xml:space="preserve">
+    <value>追加済み</value>
+  </data>
+  <data name="GitStatusDeleted" xml:space="preserve">
+    <value>削除済み</value>
+  </data>
+  <data name="GitStatusRenamed" xml:space="preserve">
+    <value>名前を変更済み</value>
+  </data>
+  <data name="GitStatusCopied" xml:space="preserve">
+    <value>コピー済み</value>
+  </data>
+
+  <!-- ============ 枚举目录时的告警 ============ -->
+  <data name="DirUnreadableWarning" xml:space="preserve">
+    <value>フォルダーを読み取れませんでした。スキップしました：{0}（{1}）</value>
+  </data>
+  <data name="SymlinkSkippedWarning" xml:space="preserve">
+    <value>シンボリックリンクをスキップしました：{0}</value>
+  </data>
+  <data name="FileUnreadableWarning" xml:space="preserve">
+    <value>ファイルを読み取れませんでした。スキップしました：{0}（{1}）</value>
+  </data>
+  <data name="JunctionSkippedWarning" xml:space="preserve">
+    <value>ディレクトリジャンクション / シンボリックリンクをスキップしました：{0}</value>
+  </data>
+
+  <!-- ============ 写入时的错误 ============ -->
+  <data name="NoParentDirectory" xml:space="preserve">
+    <value>対象の親フォルダーがありません</value>
+  </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>キャンセルしました</value>
+  </data>
+  <data name="NoPermission" xml:space="preserve">
+    <value>アクセスが拒否されました</value>
+  </data>
+  <data name="LockedByProcess" xml:space="preserve">
+    <value>{0} が使用中です</value>
+  </data>
+  <data name="ListSeparator" xml:space="preserve">
+    <value>、</value>
+  </data>
+
+  <!-- ============ 撤销 ============ -->
+  <data name="OperationNotFound" xml:space="preserve">
+    <value>操作が見つかりません</value>
+  </data>
+  <data name="DirNotEmpty" xml:space="preserve">
+    <value>フォルダー内に内容が残っているため削除しませんでした：{0}</value>
+  </data>
+  <data name="DeleteDirFailed" xml:space="preserve">
+    <value>フォルダーを削除できませんでした：{0}（{1}）</value>
+  </data>
+  <data name="FileModifiedNotDeleted" xml:space="preserve">
+    <value>後でファイルが変更されたため削除しませんでした：{0}</value>
+  </data>
+  <data name="DeleteFileFailed" xml:space="preserve">
+    <value>ファイルを削除できませんでした：{0}（{1}）</value>
+  </data>
+  <data name="NoBackup" xml:space="preserve">
+    <value>バックアップがないため元に戻せません</value>
+  </data>
+  <data name="TargetMissing" xml:space="preserve">
+    <value>対象は既に存在しません：{0}</value>
+  </data>
+  <data name="FileModifiedNotRestored" xml:space="preserve">
+    <value>後でファイルが変更されたため復元しませんでした：{0}</value>
+  </data>
+  <data name="BackupExpired" xml:space="preserve">
+    <value>バックアップの有効期限が切れているため元に戻せません：{0}</value>
+  </data>
+  <data name="RestoreFailed" xml:space="preserve">
+    <value>復元に失敗しました：{0}（{1}）</value>
+  </data>
+
+  <!-- ============ 写入目标描述 ============ -->
+  <data name="TargetOriginalLocation" xml:space="preserve">
+    <value>元の場所</value>
+  </data>
+  <data name="TargetDragExport" xml:space="preserve">
+    <value>ドラッグで書き出す</value>
+  </data>
+
+  <!-- ============ 计划里的告警 ============ -->
+  <data name="TargetIsFileNameWarning" xml:space="preserve">
+    <value>ファイル名をそのまま対象にするのは、ファイルが 1 つの場合のみ利用できます</value>
+  </data>
+  <data name="UncommittedChangesWarning" xml:space="preserve">
+    <value>対象には未コミットの変更があります。上書きする前にバックアップします</value>
+  </data>
+  <data name="RenameTargetWarning" xml:space="preserve">
+    <value>{0} に名前を変更しました</value>
+  </data>
+  <data name="TargetReadOnly" xml:space="preserve">
+    <value>対象は読み取り専用です</value>
+  </data>
+  <data name="DuplicateTargetWarning" xml:space="preserve">
+    <value>前の項目と同じ対象です</value>
+  </data>
+
+  <!-- ============ blob ============ -->
+  <data name="InvalidSha256" xml:space="preserve">
+    <value>有効な SHA-256 ではありません：{0}</value>
+  </data>
+  <data name="BlobNotFound" xml:space="preserve">
+    <value>blob が存在しません：{0}</value>
+  </data>
+
+  <!-- ============ 暂存组与路径 ============ -->
+  <data name="NewGroupName" xml:space="preserve">
+    <value>新規ボックス</value>
+  </data>
+  <data name="PathNotFound" xml:space="preserve">
+    <value>{0}（パスが見つかりません）</value>
+  </data>
+  <data name="PathWithError" xml:space="preserve">
+    <value>{0}（{1}）</value>
+  </data>
+  <data name="NotAncestorRoot" xml:space="preserve">
+    <value>ルートフォルダー {0} は {1} の祖先フォルダーではありません</value>
+  </data>
+  <data name="PathEmpty" xml:space="preserve">
+    <value>パスが空です</value>
+  </data>
+  <data name="PathNotUnderRoot" xml:space="preserve">
+    <value>パス {0} は {1} の配下ではありません</value>
+  </data>
+
+  <!-- ============ 占用进程与资源管理器集成 ============ -->
+  <data name="UnknownProcess" xml:space="preserve">
+    <value>不明なプロセス</value>
+  </data>
+  <data name="ShellMenuAddToStash" xml:space="preserve">
+    <value>一時保管に追加</value>
+  </data>
+  <data name="ShellMenuApplyToFolder" xml:space="preserve">
+    <value>このフォルダーに一時保管を適用</value>
+  </data>
+  <data name="ShellMenuApplyHere" xml:space="preserve">
+    <value>ここに一時保管を適用</value>
+  </data>
+  <data name="ShellShortcutName" xml:space="preserve">
+    <value>StashBay.lnk</value>
+  </data>
+  <data name="ShellLegacyShortcutName" xml:space="preserve">
+    <value>FileStash 暂存.lnk</value>
+  </data>
+  <data name="ShellShortcutDescription" xml:space="preserve">
+    <value>選択したファイルを StashBay の一時保管エリアに追加します</value>
+  </data>
+  <data name="WriteFailedDetail" xml:space="preserve">
+    <value>書き込みに失敗しました：{0}</value>
+  </data>
+</root>

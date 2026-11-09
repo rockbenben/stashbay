@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ============ 分支提示 ============ -->
+  <data name="BranchChangedText" xml:space="preserve">
+    <value>Rama actual {0} ← rama de origen {1}</value>
+  </data>
+  <data name="StillOnSourceBranchText" xml:space="preserve">
+    <value>Sigue en la rama de origen {0}</value>
+  </data>
+
+  <!-- ============ Git 状态 ============ -->
+  <data name="GitStatusUntracked" xml:space="preserve">
+    <value>Sin seguimiento</value>
+  </data>
+  <data name="GitStatusModified" xml:space="preserve">
+    <value>Modificado</value>
+  </data>
+  <data name="GitStatusAdded" xml:space="preserve">
+    <value>Añadido</value>
+  </data>
+  <data name="GitStatusDeleted" xml:space="preserve">
+    <value>Eliminado</value>
+  </data>
+  <data name="GitStatusRenamed" xml:space="preserve">
+    <value>Renombrado</value>
+  </data>
+  <data name="GitStatusCopied" xml:space="preserve">
+    <value>Copiado</value>
+  </data>
+
+  <!-- ============ 枚举目录时的告警 ============ -->
+  <data name="DirUnreadableWarning" xml:space="preserve">
+    <value>No se pudo leer la carpeta, se ha omitido: {0} ({1})</value>
+  </data>
+  <data name="SymlinkSkippedWarning" xml:space="preserve">
+    <value>Enlace simbólico omitido: {0}</value>
+  </data>
+  <data name="FileUnreadableWarning" xml:space="preserve">
+    <value>No se pudo leer el archivo, se ha omitido: {0} ({1})</value>
+  </data>
+  <data name="JunctionSkippedWarning" xml:space="preserve">
+    <value>Junción de directorios / enlace simbólico omitido: {0}</value>
+  </data>
+
+  <!-- ============ 写入时的错误 ============ -->
+  <data name="NoParentDirectory" xml:space="preserve">
+    <value>La ruta de destino no tiene directorio principal</value>
+  </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>Cancelado</value>
+  </data>
+  <data name="NoPermission" xml:space="preserve">
+    <value>Acceso denegado</value>
+  </data>
+  <data name="LockedByProcess" xml:space="preserve">
+    <value>En uso por {0}</value>
+  </data>
+  <data name="ListSeparator" xml:space="preserve">
+    <value>, </value>
+  </data>
+
+  <!-- ============ 撤销 ============ -->
+  <data name="OperationNotFound" xml:space="preserve">
+    <value>Operación no encontrada</value>
+  </data>
+  <data name="DirNotEmpty" xml:space="preserve">
+    <value>La carpeta todavía tiene contenido, por lo que no se ha eliminado: {0}</value>
+  </data>
+  <data name="DeleteDirFailed" xml:space="preserve">
+    <value>No se pudo eliminar la carpeta: {0} ({1})</value>
+  </data>
+  <data name="FileModifiedNotDeleted" xml:space="preserve">
+    <value>El archivo se ha modificado después, por lo que no se ha eliminado: {0}</value>
+  </data>
+  <data name="DeleteFileFailed" xml:space="preserve">
+    <value>No se pudo eliminar el archivo: {0} ({1})</value>
+  </data>
+  <data name="NoBackup" xml:space="preserve">
+    <value>Sin copia de seguridad, no se puede deshacer</value>
+  </data>
+  <data name="TargetMissing" xml:space="preserve">
+    <value>El destino ya no existe: {0}</value>
+  </data>
+  <data name="FileModifiedNotRestored" xml:space="preserve">
+    <value>El archivo se ha modificado después, por lo que no se ha restaurado: {0}</value>
+  </data>
+  <data name="BackupExpired" xml:space="preserve">
+    <value>La copia de seguridad ha caducado, por lo que no se puede deshacer: {0}</value>
+  </data>
+  <data name="RestoreFailed" xml:space="preserve">
+    <value>Error al restaurar: {0} ({1})</value>
+  </data>
+
+  <!-- ============ 写入目标描述 ============ -->
+  <data name="TargetOriginalLocation" xml:space="preserve">
+    <value>Ubicación original</value>
+  </data>
+  <data name="TargetDragExport" xml:space="preserve">
+    <value>Arrastrar para guardar</value>
+  </data>
+
+  <!-- ============ 计划里的告警 ============ -->
+  <data name="TargetIsFileNameWarning" xml:space="preserve">
+    <value>Usar el nombre del archivo como destino solo funciona con un único archivo</value>
+  </data>
+  <data name="UncommittedChangesWarning" xml:space="preserve">
+    <value>El destino tiene cambios sin confirmar; se hará una copia de seguridad antes de sobrescribir</value>
+  </data>
+  <data name="RenameTargetWarning" xml:space="preserve">
+    <value>Renombrado a {0}</value>
+  </data>
+  <data name="TargetReadOnly" xml:space="preserve">
+    <value>El destino es de solo lectura</value>
+  </data>
+  <data name="DuplicateTargetWarning" xml:space="preserve">
+    <value>Mismo destino que una entrada anterior</value>
+  </data>
+
+  <!-- ============ blob ============ -->
+  <data name="InvalidSha256" xml:space="preserve">
+    <value>SHA-256 no válido: {0}</value>
+  </data>
+  <data name="BlobNotFound" xml:space="preserve">
+    <value>El blob no existe: {0}</value>
+  </data>
+
+  <!-- ============ 暂存组与路径 ============ -->
+  <data name="NewGroupName" xml:space="preserve">
+    <value>Nueva caja</value>
+  </data>
+  <data name="PathNotFound" xml:space="preserve">
+    <value>{0} (la ruta no existe)</value>
+  </data>
+  <data name="PathWithError" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="NotAncestorRoot" xml:space="preserve">
+    <value>La raíz {0} no es un directorio antecesor de {1}</value>
+  </data>
+  <data name="PathEmpty" xml:space="preserve">
+    <value>La ruta no puede estar vacía</value>
+  </data>
+  <data name="PathNotUnderRoot" xml:space="preserve">
+    <value>La ruta {0} no está dentro de {1}</value>
+  </data>
+
+  <!-- ============ 占用进程与资源管理器集成 ============ -->
+  <data name="UnknownProcess" xml:space="preserve">
+    <value>Proceso desconocido</value>
+  </data>
+  <data name="ShellMenuAddToStash" xml:space="preserve">
+    <value>Añadir al almacenamiento temporal</value>
+  </data>
+  <data name="ShellMenuApplyToFolder" xml:space="preserve">
+    <value>Aplicar el almacenamiento temporal a esta carpeta</value>
+  </data>
+  <data name="ShellMenuApplyHere" xml:space="preserve">
+    <value>Aplicar el almacenamiento temporal aquí</value>
+  </data>
+  <data name="ShellShortcutName" xml:space="preserve">
+    <value>StashBay.lnk</value>
+  </data>
+  <data name="ShellLegacyShortcutName" xml:space="preserve">
+    <value>FileStash 暂存.lnk</value>
+  </data>
+  <data name="ShellShortcutDescription" xml:space="preserve">
+    <value>Añadir los archivos seleccionados al almacenamiento temporal de StashBay</value>
+  </data>
+  <data name="WriteFailedDetail" xml:space="preserve">
+    <value>Error al escribir: {0}</value>
+  </data>
+</root>

@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>FileStash.Core</RootNamespace>
+    <!--
+      纯 net10.0：不出现任何 System.Windows 开头的类型。
+      热键虚拟键码用 uint 表示即可，Win32 P/Invoke 本身不需要 -windows。
+    -->
+  </PropertyGroup>
+
+</Project>

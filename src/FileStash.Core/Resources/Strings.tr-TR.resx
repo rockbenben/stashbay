@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ============ 分支提示 ============ -->
+  <data name="BranchChangedText" xml:space="preserve">
+    <value>Geçerli dal {0} ← kaynak dal {1}</value>
+  </data>
+  <data name="StillOnSourceBranchText" xml:space="preserve">
+    <value>Hâlâ kaynak dal {0} üzerinde</value>
+  </data>
+
+  <!-- ============ Git 状态 ============ -->
+  <data name="GitStatusUntracked" xml:space="preserve">
+    <value>İzlenmiyor</value>
+  </data>
+  <data name="GitStatusModified" xml:space="preserve">
+    <value>Değiştirildi</value>
+  </data>
+  <data name="GitStatusAdded" xml:space="preserve">
+    <value>Eklendi</value>
+  </data>
+  <data name="GitStatusDeleted" xml:space="preserve">
+    <value>Silindi</value>
+  </data>
+  <data name="GitStatusRenamed" xml:space="preserve">
+    <value>Yeniden adlandırıldı</value>
+  </data>
+  <data name="GitStatusCopied" xml:space="preserve">
+    <value>Kopyalandı</value>
+  </data>
+
+  <!-- ============ 枚举目录时的告警 ============ -->
+  <data name="DirUnreadableWarning" xml:space="preserve">
+    <value>Klasör okunamadı, atlandı: {0} ({1})</value>
+  </data>
+  <data name="SymlinkSkippedWarning" xml:space="preserve">
+    <value>Simge bağı atlandı: {0}</value>
+  </data>
+  <data name="FileUnreadableWarning" xml:space="preserve">
+    <value>Dosya okunamadı, atlandı: {0} ({1})</value>
+  </data>
+  <data name="JunctionSkippedWarning" xml:space="preserve">
+    <value>Klasör birleştirmesi / simge bağı atlandı: {0}</value>
+  </data>
+
+  <!-- ============ 写入时的错误 ============ -->
+  <data name="NoParentDirectory" xml:space="preserve">
+    <value>Hedef yolun üst klasörü yok</value>
+  </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>İptal edildi</value>
+  </data>
+  <data name="NoPermission" xml:space="preserve">
+    <value>Erişim reddedildi</value>
+  </data>
+  <data name="LockedByProcess" xml:space="preserve">
+    <value>{0} tarafından kullanılıyor</value>
+  </data>
+  <data name="ListSeparator" xml:space="preserve">
+    <value>,</value>
+  </data>
+
+  <!-- ============ 撤销 ============ -->
+  <data name="OperationNotFound" xml:space="preserve">
+    <value>İşlem bulunamadı</value>
+  </data>
+  <data name="DirNotEmpty" xml:space="preserve">
+    <value>Klasörde hâlâ içerik var, silinmedi: {0}</value>
+  </data>
+  <data name="DeleteDirFailed" xml:space="preserve">
+    <value>Klasör silinemedi: {0} ({1})</value>
+  </data>
+  <data name="FileModifiedNotDeleted" xml:space="preserve">
+    <value>Dosya sonradan değiştirildiği için silinmedi: {0}</value>
+  </data>
+  <data name="DeleteFileFailed" xml:space="preserve">
+    <value>Dosya silinemedi: {0} ({1})</value>
+  </data>
+  <data name="NoBackup" xml:space="preserve">
+    <value>Yedeklenmedi, geri alınamaz</value>
+  </data>
+  <data name="TargetMissing" xml:space="preserve">
+    <value>Hedef artık mevcut değil: {0}</value>
+  </data>
+  <data name="FileModifiedNotRestored" xml:space="preserve">
+    <value>Dosya sonradan değiştirildiği için geri yüklenmedi: {0}</value>
+  </data>
+  <data name="BackupExpired" xml:space="preserve">
+    <value>Yedekin süresi doldu, geri alınamaz: {0}</value>
+  </data>
+  <data name="RestoreFailed" xml:space="preserve">
+    <value>Geri yükleme başarısız: {0} ({1})</value>
+  </data>
+
+  <!-- ============ 写入目标描述 ============ -->
+  <data name="TargetOriginalLocation" xml:space="preserve">
+    <value>Özgün konum</value>
+  </data>
+  <data name="TargetDragExport" xml:space="preserve">
+    <value>Dışarı sürükle</value>
+  </data>
+
+  <!-- ============ 计划里的告警 ============ -->
+  <data name="TargetIsFileNameWarning" xml:space="preserve">
+    <value>Hedef olarak dosya adını kullanmak yalnızca tek dosyada çalışır</value>
+  </data>
+  <data name="UncommittedChangesWarning" xml:space="preserve">
+    <value>Hedefte kaydedilmemiş değişiklikler var, üzerine yazılmadan önce yedeklenecek</value>
+  </data>
+  <data name="RenameTargetWarning" xml:space="preserve">
+    <value>{0} olarak yeniden adlandırıldı</value>
+  </data>
+  <data name="TargetReadOnly" xml:space="preserve">
+    <value>Hedef salt okunur</value>
+  </data>
+  <data name="DuplicateTargetWarning" xml:space="preserve">
+    <value>Önceki kayıtla aynı hedef</value>
+  </data>
+
+  <!-- ============ blob ============ -->
+  <data name="InvalidSha256" xml:space="preserve">
+    <value>Geçerli bir SHA-256 değil: {0}</value>
+  </data>
+  <data name="BlobNotFound" xml:space="preserve">
+    <value>Blob mevcut değil: {0}</value>
+  </data>
+
+  <!-- ============ 暂存组与路径 ============ -->
+  <data name="NewGroupName" xml:space="preserve">
+    <value>Yeni kutu</value>
+  </data>
+  <data name="PathNotFound" xml:space="preserve">
+    <value>{0} (yol bulunamadı)</value>
+  </data>
+  <data name="PathWithError" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="NotAncestorRoot" xml:space="preserve">
+    <value>{0} kök klasörü, {1} için üst dizin değil</value>
+  </data>
+  <data name="PathEmpty" xml:space="preserve">
+    <value>Yol boş olamaz</value>
+  </data>
+  <data name="PathNotUnderRoot" xml:space="preserve">
+    <value>{0} yolu {1} altında değil</value>
+  </data>
+
+  <!-- ============ 占用进程与资源管理器集成 ============ -->
+  <data name="UnknownProcess" xml:space="preserve">
+    <value>Bilinmeyen işlem</value>
+  </data>
+  <data name="ShellMenuAddToStash" xml:space="preserve">
+    <value>Geçici depolamaya ekle</value>
+  </data>
+  <data name="ShellMenuApplyToFolder" xml:space="preserve">
+    <value>Geçici depolamayı bu klasöre uygula</value>
+  </data>
+  <data name="ShellMenuApplyHere" xml:space="preserve">
+    <value>Geçici depolamayı buraya uygula</value>
+  </data>
+  <data name="ShellShortcutName" xml:space="preserve">
+    <value>StashBay.lnk</value>
+  </data>
+  <data name="ShellLegacyShortcutName" xml:space="preserve">
+    <value>FileStash 暂存.lnk</value>
+  </data>
+  <data name="ShellShortcutDescription" xml:space="preserve">
+    <value>Seçili dosyaları StashBay geçici depolama alanına ekle</value>
+  </data>
+  <data name="WriteFailedDetail" xml:space="preserve">
+    <value>Yazma başarısız: {0}</value>
+  </data>
+</root>

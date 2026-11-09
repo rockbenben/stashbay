@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ============ 分支提示 ============ -->
+  <data name="BranchChangedText" xml:space="preserve">
+    <value>الفرع الحالي {0} (مبدَّل من فرع المصدر {1})</value>
+  </data>
+  <data name="StillOnSourceBranchText" xml:space="preserve">
+    <value>ما زلت في فرع المصدر {0}</value>
+  </data>
+
+  <!-- ============ Git 状态 ============ -->
+  <data name="GitStatusUntracked" xml:space="preserve">
+    <value>غير متتبَّع</value>
+  </data>
+  <data name="GitStatusModified" xml:space="preserve">
+    <value>معدَّل</value>
+  </data>
+  <data name="GitStatusAdded" xml:space="preserve">
+    <value>مضاف</value>
+  </data>
+  <data name="GitStatusDeleted" xml:space="preserve">
+    <value>محذوف</value>
+  </data>
+  <data name="GitStatusRenamed" xml:space="preserve">
+    <value>أُعيدت تسميته</value>
+  </data>
+  <data name="GitStatusCopied" xml:space="preserve">
+    <value>منسوخ</value>
+  </data>
+
+  <!-- ============ 枚举目录时的告警 ============ -->
+  <data name="DirUnreadableWarning" xml:space="preserve">
+    <value>تعذّرت قراءة المجلد، وتم تخطّيه: {0} ({1})</value>
+  </data>
+  <data name="SymlinkSkippedWarning" xml:space="preserve">
+    <value>تم تخطّي الرابط الرمزي: {0}</value>
+  </data>
+  <data name="FileUnreadableWarning" xml:space="preserve">
+    <value>تعذّرت قراءة الملف، وتم تخطّيه: {0} ({1})</value>
+  </data>
+  <data name="JunctionSkippedWarning" xml:space="preserve">
+    <value>تم تخطّي وصلة المجلد / الرابط الرمزي: {0}</value>
+  </data>
+
+  <!-- ============ 写入时的错误 ============ -->
+  <data name="NoParentDirectory" xml:space="preserve">
+    <value>لا يوجد مجلد أب للمسار الهدف</value>
+  </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>أُلغي</value>
+  </data>
+  <data name="NoPermission" xml:space="preserve">
+    <value>تم رفض الوصول</value>
+  </data>
+  <data name="LockedByProcess" xml:space="preserve">
+    <value>مستخدم من قِبل {0}</value>
+  </data>
+  <data name="ListSeparator" xml:space="preserve">
+    <value>، </value>
+  </data>
+
+  <!-- ============ 撤销 ============ -->
+  <data name="OperationNotFound" xml:space="preserve">
+    <value>تعذّر العثور على العملية</value>
+  </data>
+  <data name="DirNotEmpty" xml:space="preserve">
+    <value>لا يزال المجلد يحتوي على محتوى، لذلك لم يُحذف: {0}</value>
+  </data>
+  <data name="DeleteDirFailed" xml:space="preserve">
+    <value>تعذّر حذف المجلد: {0} ({1})</value>
+  </data>
+  <data name="FileModifiedNotDeleted" xml:space="preserve">
+    <value>غُيِّر الملف بعد ذلك، لذلك لم يُحذف: {0}</value>
+  </data>
+  <data name="DeleteFileFailed" xml:space="preserve">
+    <value>تعذّر حذف الملف: {0} ({1})</value>
+  </data>
+  <data name="NoBackup" xml:space="preserve">
+    <value>لا توجد نسخة احتياطية، لذلك لا يمكن التراجع</value>
+  </data>
+  <data name="TargetMissing" xml:space="preserve">
+    <value>لم يعد الهدف موجودًا: {0}</value>
+  </data>
+  <data name="FileModifiedNotRestored" xml:space="preserve">
+    <value>غُيِّر الملف بعد ذلك، لذلك لم تُستعَد: {0}</value>
+  </data>
+  <data name="BackupExpired" xml:space="preserve">
+    <value>انتهت صلاحية النسخة الاحتياطية، لذلك لا يمكن التراجع: {0}</value>
+  </data>
+  <data name="RestoreFailed" xml:space="preserve">
+    <value>فشل الاستعادة: {0} ({1})</value>
+  </data>
+
+  <!-- ============ 写入目标描述 ============ -->
+  <data name="TargetOriginalLocation" xml:space="preserve">
+    <value>الموقع الأصلي</value>
+  </data>
+  <data name="TargetDragExport" xml:space="preserve">
+    <value>السحب والإفلات</value>
+  </data>
+
+  <!-- ============ 计划里的告警 ============ -->
+  <data name="TargetIsFileNameWarning" xml:space="preserve">
+    <value>استخدام اسم الملف كهدف يعمل فقط مع ملف واحد</value>
+  </data>
+  <data name="UncommittedChangesWarning" xml:space="preserve">
+    <value>الهدف يحتوي على تغييرات غير مُودعة، وسيؤخذ منه نسخة احتياطية قبل الاستبدال</value>
+  </data>
+  <data name="RenameTargetWarning" xml:space="preserve">
+    <value>أُعيدت تسميته إلى {0}</value>
+  </data>
+  <data name="TargetReadOnly" xml:space="preserve">
+    <value>الهدف للقراءة فقط</value>
+  </data>
+  <data name="DuplicateTargetWarning" xml:space="preserve">
+    <value>نفس هدف أحد المدخلات السابقة</value>
+  </data>
+
+  <!-- ============ blob ============ -->
+  <data name="InvalidSha256" xml:space="preserve">
+    <value>ليس SHA-256 صالحًا: {0}</value>
+  </data>
+  <data name="BlobNotFound" xml:space="preserve">
+    <value>blob غير موجود: {0}</value>
+  </data>
+
+  <!-- ============ 暂存组与路径 ============ -->
+  <data name="NewGroupName" xml:space="preserve">
+    <value>صندوق جديد</value>
+  </data>
+  <data name="PathNotFound" xml:space="preserve">
+    <value>{0} (المسار غير موجود)</value>
+  </data>
+  <data name="PathWithError" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="NotAncestorRoot" xml:space="preserve">
+    <value>المجلد الجذر {0} ليس سلفًا لـ {1}</value>
+  </data>
+  <data name="PathEmpty" xml:space="preserve">
+    <value>لا يمكن ترك المسار فارغًا</value>
+  </data>
+  <data name="PathNotUnderRoot" xml:space="preserve">
+    <value>المسار {0} ليس ضمن {1}</value>
+  </data>
+
+  <!-- ============ 占用进程与资源管理器集成 ============ -->
+  <data name="UnknownProcess" xml:space="preserve">
+    <value>عملية غير معروفة</value>
+  </data>
+  <data name="ShellMenuAddToStash" xml:space="preserve">
+    <value>الإضافة إلى التخزين المؤقت</value>
+  </data>
+  <data name="ShellMenuApplyToFolder" xml:space="preserve">
+    <value>تطبيق التخزين المؤقت على هذا المجلد</value>
+  </data>
+  <data name="ShellMenuApplyHere" xml:space="preserve">
+    <value>تطبيق التخزين المؤقت هنا</value>
+  </data>
+  <data name="ShellShortcutName" xml:space="preserve">
+    <value>StashBay.lnk</value>
+  </data>
+  <data name="ShellLegacyShortcutName" xml:space="preserve">
+    <value>FileStash 暂存.lnk</value>
+  </data>
+  <data name="ShellShortcutDescription" xml:space="preserve">
+    <value>إضافة الملفات المحددة إلى منطقة التخزين المؤقت في StashBay</value>
+  </data>
+  <data name="WriteFailedDetail" xml:space="preserve">
+    <value>تعذّرت الكتابة: {0}</value>
+  </data>
+</root>

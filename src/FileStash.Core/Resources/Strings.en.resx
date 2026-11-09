@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ============ Branch hints ============ -->
+  <data name="BranchChangedText" xml:space="preserve">
+    <value>Current branch {0} ← source branch {1}</value>
+  </data>
+  <data name="StillOnSourceBranchText" xml:space="preserve">
+    <value>Still on the source branch {0}</value>
+  </data>
+
+  <!-- ============ Git status ============ -->
+  <data name="GitStatusUntracked" xml:space="preserve">
+    <value>Untracked</value>
+  </data>
+  <data name="GitStatusModified" xml:space="preserve">
+    <value>Modified</value>
+  </data>
+  <data name="GitStatusAdded" xml:space="preserve">
+    <value>Added</value>
+  </data>
+  <data name="GitStatusDeleted" xml:space="preserve">
+    <value>Deleted</value>
+  </data>
+  <data name="GitStatusRenamed" xml:space="preserve">
+    <value>Renamed</value>
+  </data>
+  <data name="GitStatusCopied" xml:space="preserve">
+    <value>Copied</value>
+  </data>
+
+  <!-- ============ Warnings while enumerating ============ -->
+  <data name="DirUnreadableWarning" xml:space="preserve">
+    <value>Could not read the folder, skipped: {0} ({1})</value>
+  </data>
+  <data name="SymlinkSkippedWarning" xml:space="preserve">
+    <value>Skipped symlink: {0}</value>
+  </data>
+  <data name="FileUnreadableWarning" xml:space="preserve">
+    <value>Could not read the file, skipped: {0} ({1})</value>
+  </data>
+  <data name="JunctionSkippedWarning" xml:space="preserve">
+    <value>Skipped directory junction / symlink: {0}</value>
+  </data>
+
+  <!-- ============ Errors while writing ============ -->
+  <data name="NoParentDirectory" xml:space="preserve">
+    <value>The target path has no parent directory</value>
+  </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="NoPermission" xml:space="preserve">
+    <value>Access denied</value>
+  </data>
+  <data name="LockedByProcess" xml:space="preserve">
+    <value>In use by {0}</value>
+  </data>
+  <data name="ListSeparator" xml:space="preserve">
+    <value>, </value>
+  </data>
+
+  <!-- ============ Undo ============ -->
+  <data name="OperationNotFound" xml:space="preserve">
+    <value>Operation not found</value>
+  </data>
+  <data name="DirNotEmpty" xml:space="preserve">
+    <value>The folder still has content, so it was not deleted: {0}</value>
+  </data>
+  <data name="DeleteDirFailed" xml:space="preserve">
+    <value>Could not delete the folder: {0} ({1})</value>
+  </data>
+  <data name="FileModifiedNotDeleted" xml:space="preserve">
+    <value>The file was changed afterwards, so it was not deleted: {0}</value>
+  </data>
+  <data name="DeleteFileFailed" xml:space="preserve">
+    <value>Could not delete the file: {0} ({1})</value>
+  </data>
+  <data name="NoBackup" xml:space="preserve">
+    <value>Not backed up, so it cannot be undone</value>
+  </data>
+  <data name="TargetMissing" xml:space="preserve">
+    <value>The target no longer exists: {0}</value>
+  </data>
+  <data name="FileModifiedNotRestored" xml:space="preserve">
+    <value>The file was changed afterwards, so it was not restored: {0}</value>
+  </data>
+  <data name="BackupExpired" xml:space="preserve">
+    <value>The backup has expired, so it cannot be undone: {0}</value>
+  </data>
+  <data name="RestoreFailed" xml:space="preserve">
+    <value>Restore failed: {0} ({1})</value>
+  </data>
+
+  <!-- ============ Write target descriptions ============ -->
+  <data name="TargetOriginalLocation" xml:space="preserve">
+    <value>Original location</value>
+  </data>
+  <data name="TargetDragExport" xml:space="preserve">
+    <value>Drag-out</value>
+  </data>
+
+  <!-- ============ Warnings in the plan ============ -->
+  <data name="TargetIsFileNameWarning" xml:space="preserve">
+    <value>Using the file name as the target only works with a single file</value>
+  </data>
+  <data name="UncommittedChangesWarning" xml:space="preserve">
+    <value>The target has uncommitted changes; it will be backed up before overwriting</value>
+  </data>
+  <data name="RenameTargetWarning" xml:space="preserve">
+    <value>Renamed to {0}</value>
+  </data>
+  <data name="TargetReadOnly" xml:space="preserve">
+    <value>The target is read-only</value>
+  </data>
+  <data name="DuplicateTargetWarning" xml:space="preserve">
+    <value>Same target as an earlier entry</value>
+  </data>
+
+  <!-- ============ Blobs ============ -->
+  <data name="InvalidSha256" xml:space="preserve">
+    <value>Not a valid SHA-256: {0}</value>
+  </data>
+  <data name="BlobNotFound" xml:space="preserve">
+    <value>The blob does not exist: {0}</value>
+  </data>
+
+  <!-- ============ Stash groups and paths ============ -->
+  <data name="NewGroupName" xml:space="preserve">
+    <value>New box</value>
+  </data>
+  <data name="PathNotFound" xml:space="preserve">
+    <value>{0} (path not found)</value>
+  </data>
+  <data name="PathWithError" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="NotAncestorRoot" xml:space="preserve">
+    <value>The root {0} is not an ancestor of {1}</value>
+  </data>
+  <data name="PathEmpty" xml:space="preserve">
+    <value>The path is empty</value>
+  </data>
+  <data name="PathNotUnderRoot" xml:space="preserve">
+    <value>The path {0} is not under {1}</value>
+  </data>
+
+  <!-- ============ Locking process and Explorer integration ============ -->
+  <data name="UnknownProcess" xml:space="preserve">
+    <value>Unknown process</value>
+  </data>
+  <data name="ShellMenuAddToStash" xml:space="preserve">
+    <value>Add to stash</value>
+  </data>
+  <data name="ShellMenuApplyToFolder" xml:space="preserve">
+    <value>Apply the stash to this folder</value>
+  </data>
+  <data name="ShellMenuApplyHere" xml:space="preserve">
+    <value>Apply the stash here</value>
+  </data>
+  <data name="ShellShortcutName" xml:space="preserve">
+    <value>StashBay.lnk</value>
+  </data>
+  <data name="ShellLegacyShortcutName" xml:space="preserve">
+    <value>FileStash 暂存.lnk</value>
+  </data>
+  <data name="ShellShortcutDescription" xml:space="preserve">
+    <value>Add the selected files to the StashBay stash</value>
+  </data>
+  <data name="WriteFailedDetail" xml:space="preserve">
+    <value>Write failed: {0}</value>
+  </data>
+</root>

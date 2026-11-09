@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ============ 分支提示 ============ -->
+  <data name="BranchChangedText" xml:space="preserve">
+    <value>สาขาปัจจุบัน {0} ← สาขาต้นทาง {1}</value>
+  </data>
+  <data name="StillOnSourceBranchText" xml:space="preserve">
+    <value>ยังอยู่ที่สาขาต้นทาง {0}</value>
+  </data>
+
+  <!-- ============ Git 状态 ============ -->
+  <data name="GitStatusUntracked" xml:space="preserve">
+    <value>ไม่ได้ติดตาม</value>
+  </data>
+  <data name="GitStatusModified" xml:space="preserve">
+    <value>แก้ไขแล้ว</value>
+  </data>
+  <data name="GitStatusAdded" xml:space="preserve">
+    <value>เพิ่มแล้ว</value>
+  </data>
+  <data name="GitStatusDeleted" xml:space="preserve">
+    <value>ลบแล้ว</value>
+  </data>
+  <data name="GitStatusRenamed" xml:space="preserve">
+    <value>เปลี่ยนชื่อแล้ว</value>
+  </data>
+  <data name="GitStatusCopied" xml:space="preserve">
+    <value>คัดลอกแล้ว</value>
+  </data>
+
+  <!-- ============ 枚举目录时的告警 ============ -->
+  <data name="DirUnreadableWarning" xml:space="preserve">
+    <value>อ่านโฟลเดอร์ไม่ได้ ข้ามไป: {0} ({1})</value>
+  </data>
+  <data name="SymlinkSkippedWarning" xml:space="preserve">
+    <value>ข้ามลิงก์สัญลักษณ์: {0}</value>
+  </data>
+  <data name="FileUnreadableWarning" xml:space="preserve">
+    <value>อ่านไฟล์ไม่ได้ ข้ามไป: {0} ({1})</value>
+  </data>
+  <data name="JunctionSkippedWarning" xml:space="preserve">
+    <value>ข้ามจุดเชื่อมต่อโฟลเดอร์ / ลิงก์สัญลักษณ์: {0}</value>
+  </data>
+
+  <!-- ============ 写入时的错误 ============ -->
+  <data name="NoParentDirectory" xml:space="preserve">
+    <value>พาธเป้าหมายไม่มีโฟลเดอร์หลัก</value>
+  </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>ยกเลิกแล้ว</value>
+  </data>
+  <data name="NoPermission" xml:space="preserve">
+    <value>ไม่มีสิทธิ์เข้าถึง</value>
+  </data>
+  <data name="LockedByProcess" xml:space="preserve">
+    <value>ถูก {0} ใช้งานอยู่</value>
+  </data>
+  <data name="ListSeparator" xml:space="preserve">
+    <value>, </value>
+  </data>
+
+  <!-- ============ 撤销 ============ -->
+  <data name="OperationNotFound" xml:space="preserve">
+    <value>ไม่พบการทำงาน</value>
+  </data>
+  <data name="DirNotEmpty" xml:space="preserve">
+    <value>โฟลเดอร์ยังมีเนื้อหาอยู่ จึงไม่ได้ลบ: {0}</value>
+  </data>
+  <data name="DeleteDirFailed" xml:space="preserve">
+    <value>ลบโฟลเดอร์ไม่สำเร็จ: {0} ({1})</value>
+  </data>
+  <data name="FileModifiedNotDeleted" xml:space="preserve">
+    <value>ไฟล์ถูกแก้ไขหลังจากนั้น จึงไม่ได้ลบ: {0}</value>
+  </data>
+  <data name="DeleteFileFailed" xml:space="preserve">
+    <value>ลบไฟล์ไม่สำเร็จ: {0} ({1})</value>
+  </data>
+  <data name="NoBackup" xml:space="preserve">
+    <value>ไม่มีข้อมูลสำรอง จึงเลิกทำไม่ได้</value>
+  </data>
+  <data name="TargetMissing" xml:space="preserve">
+    <value>เป้าหมายไม่มีอยู่แล้ว: {0}</value>
+  </data>
+  <data name="FileModifiedNotRestored" xml:space="preserve">
+    <value>ไฟล์ถูกแก้ไขหลังจากนั้น จึงไม่ได้คืน: {0}</value>
+  </data>
+  <data name="BackupExpired" xml:space="preserve">
+    <value>ข้อมูลสำรองหมดอายุ จึงเลิกทำไม่ได้: {0}</value>
+  </data>
+  <data name="RestoreFailed" xml:space="preserve">
+    <value>คืนไม่สำเร็จ: {0} ({1})</value>
+  </data>
+
+  <!-- ============ 写入目标描述 ============ -->
+  <data name="TargetOriginalLocation" xml:space="preserve">
+    <value>ตำแหน่งเดิม</value>
+  </data>
+  <data name="TargetDragExport" xml:space="preserve">
+    <value>ลากออก</value>
+  </data>
+
+  <!-- ============ 计划里的告警 ============ -->
+  <data name="TargetIsFileNameWarning" xml:space="preserve">
+    <value>ใช้ชื่อไฟล์เป็นเป้าหมายได้เฉพาะกรณีไฟล์ไฟล์เดียว</value>
+  </data>
+  <data name="UncommittedChangesWarning" xml:space="preserve">
+    <value>เป้าหมายมีการแก้ไขที่ยังไม่ได้ commit จะสำรองข้อมูลก่อนเขียนทับ</value>
+  </data>
+  <data name="RenameTargetWarning" xml:space="preserve">
+    <value>เปลี่ยนชื่อเป็น {0}</value>
+  </data>
+  <data name="TargetReadOnly" xml:space="preserve">
+    <value>เป้าหมายเป็นแบบอ่านอย่างเดียว</value>
+  </data>
+  <data name="DuplicateTargetWarning" xml:space="preserve">
+    <value>เป้าหมายเดียวกับรายการก่อนหน้า</value>
+  </data>
+
+  <!-- ============ blob ============ -->
+  <data name="InvalidSha256" xml:space="preserve">
+    <value>ไม่ใช่ SHA-256 ที่ถูกต้อง: {0}</value>
+  </data>
+  <data name="BlobNotFound" xml:space="preserve">
+    <value>ไม่พบ blob: {0}</value>
+  </data>
+
+  <!-- ============ 暂存组与路径 ============ -->
+  <data name="NewGroupName" xml:space="preserve">
+    <value>กล่องใหม่</value>
+  </data>
+  <data name="PathNotFound" xml:space="preserve">
+    <value>{0} (ไม่พบพาธ)</value>
+  </data>
+  <data name="PathWithError" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="NotAncestorRoot" xml:space="preserve">
+    <value>โฟลเดอร์ราก {0} ไม่ใช่โฟลเดอร์บรรพบุรุษของ {1}</value>
+  </data>
+  <data name="PathEmpty" xml:space="preserve">
+    <value>พาธต้องไม่ว่างเปล่า</value>
+  </data>
+  <data name="PathNotUnderRoot" xml:space="preserve">
+    <value>พาธ {0} ไม่ได้อยู่ใต้ {1}</value>
+  </data>
+
+  <!-- ============ 占用进程与资源管理器集成 ============ -->
+  <data name="UnknownProcess" xml:space="preserve">
+    <value>ไม่ทราบกระบวนการ</value>
+  </data>
+  <data name="ShellMenuAddToStash" xml:space="preserve">
+    <value>เพิ่มเข้าพื้นที่จัดเก็บชั่วคราว</value>
+  </data>
+  <data name="ShellMenuApplyToFolder" xml:space="preserve">
+    <value>ใช้พื้นที่จัดเก็บชั่วคราวกับโฟลเดอร์นี้</value>
+  </data>
+  <data name="ShellMenuApplyHere" xml:space="preserve">
+    <value>ใช้พื้นที่จัดเก็บชั่วคราวที่นี่</value>
+  </data>
+  <data name="ShellShortcutName" xml:space="preserve">
+    <value>StashBay.lnk</value>
+  </data>
+  <data name="ShellLegacyShortcutName" xml:space="preserve">
+    <value>FileStash 暂存.lnk</value>
+  </data>
+  <data name="ShellShortcutDescription" xml:space="preserve">
+    <value>เพิ่มไฟล์ที่เลือกเข้าพื้นที่จัดเก็บชั่วคราวของ StashBay</value>
+  </data>
+  <data name="WriteFailedDetail" xml:space="preserve">
+    <value>เขียนไม่สำเร็จ: {0}</value>
+  </data>
+</root>

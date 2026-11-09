@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ============ 分支提示 ============ -->
+  <data name="BranchChangedText" xml:space="preserve">
+    <value>বর্তমান ব্রাঞ্চ {0} ← উৎস ব্রাঞ্চ {1}</value>
+  </data>
+  <data name="StillOnSourceBranchText" xml:space="preserve">
+    <value>এখনো উৎস ব্রাঞ্চ {0}-এ আছেন</value>
+  </data>
+
+  <!-- ============ Git 状态 ============ -->
+  <data name="GitStatusUntracked" xml:space="preserve">
+    <value>অট্র্যাকড</value>
+  </data>
+  <data name="GitStatusModified" xml:space="preserve">
+    <value>পরিবর্তিত</value>
+  </data>
+  <data name="GitStatusAdded" xml:space="preserve">
+    <value>যোগ হয়েছে</value>
+  </data>
+  <data name="GitStatusDeleted" xml:space="preserve">
+    <value>মুছে ফেলা হয়েছে</value>
+  </data>
+  <data name="GitStatusRenamed" xml:space="preserve">
+    <value>নাম পরিবর্তিত হয়েছে</value>
+  </data>
+  <data name="GitStatusCopied" xml:space="preserve">
+    <value>কপি হয়েছে</value>
+  </data>
+
+  <!-- ============ 枚举目录时的告警 ============ -->
+  <data name="DirUnreadableWarning" xml:space="preserve">
+    <value>ফোল্ডার পড়া যায়নি, এড়িয়ে যাওয়া হয়েছে: {0} ({1})</value>
+  </data>
+  <data name="SymlinkSkippedWarning" xml:space="preserve">
+    <value>সিমলিংক এড়িয়ে যাওয়া হয়েছে: {0}</value>
+  </data>
+  <data name="FileUnreadableWarning" xml:space="preserve">
+    <value>ফাইল পড়া যায়নি, এড়িয়ে যাওয়া হয়েছে: {0} ({1})</value>
+  </data>
+  <data name="JunctionSkippedWarning" xml:space="preserve">
+    <value>ডিরেক্টরি জাংশন / সিমলিংক এড়িয়ে যাওয়া হয়েছে: {0}</value>
+  </data>
+
+  <!-- ============ 写入时的错误 ============ -->
+  <data name="NoParentDirectory" xml:space="preserve">
+    <value>লক্ষ্য পথের কোনো প্যারেন্ট ডিরেক্টরি নেই</value>
+  </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>বাতিল হয়েছে</value>
+  </data>
+  <data name="NoPermission" xml:space="preserve">
+    <value>অনুমতি নেই</value>
+  </data>
+  <data name="LockedByProcess" xml:space="preserve">
+    <value>{0} ব্যবহার করছে</value>
+  </data>
+  <data name="ListSeparator" xml:space="preserve">
+    <value>, </value>
+  </data>
+
+  <!-- ============ 撤销 ============ -->
+  <data name="OperationNotFound" xml:space="preserve">
+    <value>এই কাজটি পাওয়া যায়নি</value>
+  </data>
+  <data name="DirNotEmpty" xml:space="preserve">
+    <value>ফোল্ডারে এখনো বিষয়বস্তু আছে, মুছা হয়নি: {0}</value>
+  </data>
+  <data name="DeleteDirFailed" xml:space="preserve">
+    <value>ফোল্ডার মুছতে ব্যর্থ: {0} ({1})</value>
+  </data>
+  <data name="FileModifiedNotDeleted" xml:space="preserve">
+    <value>ফাইলটির পরে আবার পরিবর্তন হয়েছে, মুছা হয়নি: {0}</value>
+  </data>
+  <data name="DeleteFileFailed" xml:space="preserve">
+    <value>ফাইল মুছতে ব্যর্থ: {0} ({1})</value>
+  </data>
+  <data name="NoBackup" xml:space="preserve">
+    <value>ব্যাকআপ নেই, তাই পূর্বাবস্থায় ফেরানো যাবে না</value>
+  </data>
+  <data name="TargetMissing" xml:space="preserve">
+    <value>লক্ষ্য আর নেই: {0}</value>
+  </data>
+  <data name="FileModifiedNotRestored" xml:space="preserve">
+    <value>ফাইলটির পরে আবার পরিবর্তন হয়েছে, ফেরানো হয়নি: {0}</value>
+  </data>
+  <data name="BackupExpired" xml:space="preserve">
+    <value>ব্যাকআপের মেয়াদ শেষ, তাই পূর্বাবস্থায় ফেরানো যাবে না: {0}</value>
+  </data>
+  <data name="RestoreFailed" xml:space="preserve">
+    <value>ফেরাতে ব্যর্থ: {0} ({1})</value>
+  </data>
+
+  <!-- ============ 写入目标描述 ============ -->
+  <data name="TargetOriginalLocation" xml:space="preserve">
+    <value>মূল অবস্থান</value>
+  </data>
+  <data name="TargetDragExport" xml:space="preserve">
+    <value>টেনে বের করা</value>
+  </data>
+
+  <!-- ============ 计划里的告警 ============ -->
+  <data name="TargetIsFileNameWarning" xml:space="preserve">
+    <value>লক্ষ্য হিসেবে ফাইলের নাম ব্যবহার করা কেবল একটি ফাইলের ক্ষেত্রে কাজ করে</value>
+  </data>
+  <data name="UncommittedChangesWarning" xml:space="preserve">
+    <value>লক্ষ্যে কমিট না করা পরিবর্তন আছে, ওভাররাইটের আগে ব্যাকআপ নেওয়া হবে</value>
+  </data>
+  <data name="RenameTargetWarning" xml:space="preserve">
+    <value>{0} নামে পরিবর্তন করা হয়েছে</value>
+  </data>
+  <data name="TargetReadOnly" xml:space="preserve">
+    <value>লক্ষ্য শুধু পড়ার জন্য</value>
+  </data>
+  <data name="DuplicateTargetWarning" xml:space="preserve">
+    <value>পূর্বের এন্ট্রির সাথে লক্ষ্য একই</value>
+  </data>
+
+  <!-- ============ blob ============ -->
+  <data name="InvalidSha256" xml:space="preserve">
+    <value>বৈধ SHA-256 নয়: {0}</value>
+  </data>
+  <data name="BlobNotFound" xml:space="preserve">
+    <value>blob নেই: {0}</value>
+  </data>
+
+  <!-- ============ 暂存组与路径 ============ -->
+  <data name="NewGroupName" xml:space="preserve">
+    <value>নতুন বাক্স</value>
+  </data>
+  <data name="PathNotFound" xml:space="preserve">
+    <value>{0} (পথ নেই)</value>
+  </data>
+  <data name="PathWithError" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="NotAncestorRoot" xml:space="preserve">
+    <value>রুট {0} {1}-এর অ্যানসেস্টর নয়</value>
+  </data>
+  <data name="PathEmpty" xml:space="preserve">
+    <value>পথ ফাঁকা রাখা যাবে না</value>
+  </data>
+  <data name="PathNotUnderRoot" xml:space="preserve">
+    <value>পথ {0} {1}-এর নিচে নেই</value>
+  </data>
+
+  <!-- ============ 占用进程与资源管理器集成 ============ -->
+  <data name="UnknownProcess" xml:space="preserve">
+    <value>অজানা প্রসেস</value>
+  </data>
+  <data name="ShellMenuAddToStash" xml:space="preserve">
+    <value>অস্থায়ী সংরক্ষণে যোগ করুন</value>
+  </data>
+  <data name="ShellMenuApplyToFolder" xml:space="preserve">
+    <value>অস্থায়ী সংরক্ষণ এই ফোল্ডারে প্রয়োগ করুন</value>
+  </data>
+  <data name="ShellMenuApplyHere" xml:space="preserve">
+    <value>অস্থায়ী সংরক্ষণ এখানে প্রয়োগ করুন</value>
+  </data>
+  <data name="ShellShortcutName" xml:space="preserve">
+    <value>StashBay.lnk</value>
+  </data>
+  <data name="ShellLegacyShortcutName" xml:space="preserve">
+    <value>FileStash 暂存.lnk</value>
+  </data>
+  <data name="ShellShortcutDescription" xml:space="preserve">
+    <value>নির্বাচিত ফাইলগুলো StashBay-এর অস্থায়ী সংরক্ষণ এলাকায় যোগ করুন</value>
+  </data>
+  <data name="WriteFailedDetail" xml:space="preserve">
+    <value>লেখা ব্যর্থ: {0}</value>
+  </data>
+</root>

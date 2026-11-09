@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ============ 分支提示 ============ -->
+  <data name="BranchChangedText" xml:space="preserve">
+    <value>当前分支 {0} ← 来源分支 {1}</value>
+  </data>
+  <data name="StillOnSourceBranchText" xml:space="preserve">
+    <value>当前仍在来源分支 {0}</value>
+  </data>
+
+  <!-- ============ Git 状态 ============ -->
+  <data name="GitStatusUntracked" xml:space="preserve">
+    <value>未跟踪</value>
+  </data>
+  <data name="GitStatusModified" xml:space="preserve">
+    <value>已修改</value>
+  </data>
+  <data name="GitStatusAdded" xml:space="preserve">
+    <value>已新增</value>
+  </data>
+  <data name="GitStatusDeleted" xml:space="preserve">
+    <value>已删除</value>
+  </data>
+  <data name="GitStatusRenamed" xml:space="preserve">
+    <value>已重命名</value>
+  </data>
+  <data name="GitStatusCopied" xml:space="preserve">
+    <value>已复制</value>
+  </data>
+
+  <!-- ============ 枚举目录时的告警 ============ -->
+  <data name="DirUnreadableWarning" xml:space="preserve">
+    <value>读不了目录，已跳过：{0}（{1}）</value>
+  </data>
+  <data name="SymlinkSkippedWarning" xml:space="preserve">
+    <value>已跳过符号链接：{0}</value>
+  </data>
+  <data name="FileUnreadableWarning" xml:space="preserve">
+    <value>读不了文件，已跳过：{0}（{1}）</value>
+  </data>
+  <data name="JunctionSkippedWarning" xml:space="preserve">
+    <value>已跳过目录联接 / 符号链接：{0}</value>
+  </data>
+
+  <!-- ============ 写入时的错误 ============ -->
+  <data name="NoParentDirectory" xml:space="preserve">
+    <value>目标路径没有父目录</value>
+  </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>已取消</value>
+  </data>
+  <data name="NoPermission" xml:space="preserve">
+    <value>无权限</value>
+  </data>
+  <data name="LockedByProcess" xml:space="preserve">
+    <value>被 {0} 占用</value>
+  </data>
+  <data name="ListSeparator" xml:space="preserve">
+    <value>、</value>
+  </data>
+
+  <!-- ============ 撤销 ============ -->
+  <data name="OperationNotFound" xml:space="preserve">
+    <value>找不到该操作</value>
+  </data>
+  <data name="DirNotEmpty" xml:space="preserve">
+    <value>目录里还有内容，没有删除：{0}</value>
+  </data>
+  <data name="DeleteDirFailed" xml:space="preserve">
+    <value>删除目录失败：{0}（{1}）</value>
+  </data>
+  <data name="FileModifiedNotDeleted" xml:space="preserve">
+    <value>文件之后又被修改，没有删除：{0}</value>
+  </data>
+  <data name="DeleteFileFailed" xml:space="preserve">
+    <value>删除文件失败：{0}（{1}）</value>
+  </data>
+  <data name="NoBackup" xml:space="preserve">
+    <value>未备份，不可撤销</value>
+  </data>
+  <data name="TargetMissing" xml:space="preserve">
+    <value>目标已不存在：{0}</value>
+  </data>
+  <data name="FileModifiedNotRestored" xml:space="preserve">
+    <value>文件之后又被修改，没有还原：{0}</value>
+  </data>
+  <data name="BackupExpired" xml:space="preserve">
+    <value>备份已过期，无法撤销：{0}</value>
+  </data>
+  <data name="RestoreFailed" xml:space="preserve">
+    <value>还原失败：{0}（{1}）</value>
+  </data>
+
+  <!-- ============ 写入目标描述 ============ -->
+  <data name="TargetOriginalLocation" xml:space="preserve">
+    <value>原位置</value>
+  </data>
+  <data name="TargetDragExport" xml:space="preserve">
+    <value>拖出</value>
+  </data>
+
+  <!-- ============ 计划里的告警 ============ -->
+  <data name="TargetIsFileNameWarning" xml:space="preserve">
+    <value>目标即文件名只在单文件时可用</value>
+  </data>
+  <data name="UncommittedChangesWarning" xml:space="preserve">
+    <value>目标有未提交改动，覆盖前会备份</value>
+  </data>
+  <data name="RenameTargetWarning" xml:space="preserve">
+    <value>重命名为 {0}</value>
+  </data>
+  <data name="TargetReadOnly" xml:space="preserve">
+    <value>目标只读</value>
+  </data>
+  <data name="DuplicateTargetWarning" xml:space="preserve">
+    <value>与前面的条目目标相同</value>
+  </data>
+
+  <!-- ============ blob ============ -->
+  <data name="InvalidSha256" xml:space="preserve">
+    <value>不是合法的 SHA-256：{0}</value>
+  </data>
+  <data name="BlobNotFound" xml:space="preserve">
+    <value>blob 不存在：{0}</value>
+  </data>
+
+  <!-- ============ 暂存组与路径 ============ -->
+  <data name="NewGroupName" xml:space="preserve">
+    <value>新建箱</value>
+  </data>
+  <data name="PathNotFound" xml:space="preserve">
+    <value>{0}（路径不存在）</value>
+  </data>
+  <data name="PathWithError" xml:space="preserve">
+    <value>{0}（{1}）</value>
+  </data>
+  <data name="NotAncestorRoot" xml:space="preserve">
+    <value>根目录 {0} 不是 {1} 的祖先目录</value>
+  </data>
+  <data name="PathEmpty" xml:space="preserve">
+    <value>路径不能为空</value>
+  </data>
+  <data name="PathNotUnderRoot" xml:space="preserve">
+    <value>路径 {0} 不在 {1} 之下</value>
+  </data>
+
+  <!-- ============ 占用进程与资源管理器集成 ============ -->
+  <data name="UnknownProcess" xml:space="preserve">
+    <value>未知进程</value>
+  </data>
+  <data name="ShellMenuAddToStash" xml:space="preserve">
+    <value>加入暂存</value>
+  </data>
+  <data name="ShellMenuApplyToFolder" xml:space="preserve">
+    <value>将暂存应用到此文件夹</value>
+  </data>
+  <data name="ShellMenuApplyHere" xml:space="preserve">
+    <value>将暂存应用到此处</value>
+  </data>
+  <data name="ShellShortcutName" xml:space="preserve">
+    <value>StashBay.lnk</value>
+  </data>
+  <data name="ShellLegacyShortcutName" xml:space="preserve">
+    <value>FileStash 暂存.lnk</value>
+  </data>
+  <data name="ShellShortcutDescription" xml:space="preserve">
+    <value>把选中的文件加入 StashBay 暂存区</value>
+  </data>
+  <data name="WriteFailedDetail" xml:space="preserve">
+    <value>写入失败：{0}</value>
+  </data>
+</root>
