@@ -1,0 +1,49 @@
+<Project>
+
+  <!--
+    公共属性的唯一来源。
+    注意：TargetFramework 不在这里 —— Core 是 net10.0、App/Infrastructure 是 net10.0-windows，
+    由各工程自己声明。其余公共项集中在这里，避免在 4 个工程里重复。
+  -->
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Deterministic>true</Deterministic>
+    <NeutralLanguage>zh-Hans</NeutralLanguage>
+    <Product>StashBay</Product>
+    <Company>StashBay</Company>
+  </PropertyGroup>
+
+  <!--
+    版本号来自 git tag，不写死在 csproj。
+    VersionFallback 是下面那个 target 的 Condition 判据，必须先定义，否则 target 永不触发。
+  -->
+  <PropertyGroup>
+    <VersionFallback>0.0.1</VersionFallback>
+    <Version>$(VersionFallback)</Version>
+  </PropertyGroup>
+
+  <Target Name="VersionFromGitTag"
+          BeforeTargets="GetAssemblyVersion"
+          Condition="'$(Version)' == '$(VersionFallback)'">
+    <!-- IgnoreExitCode 而不是 ContinueOnError：后者只是把失败降级成警告，仍然每次构建刷两条 MSB3073 -->
+    <!-- stderr 重定向到 nul：仓库还没有 tag 时 git 会报 "No names found"，那是常态不是错误。
+         本项目只支持 Windows（Exec 走 cmd.exe）；跨平台时改成 2>/dev/null -->
+    <Exec Command="git describe --tags --abbrev=0 2>nul"
+          ConsoleToMSBuild="true"
+          IgnoreExitCode="true"
+          StandardOutputImportance="low">
+      <Output TaskParameter="ConsoleOutput" PropertyName="_GitTag" />
+      <Output TaskParameter="ExitCode" PropertyName="_GitTagExit" />
+    </Exec>
+    <PropertyGroup Condition="'$(_GitTagExit)' == '0'">
+      <_VersionRaw>$(_GitTag.Trim())</_VersionRaw>
+      <!-- git describe 输出可能带 v 前缀（v1.2.3），MSBuild 的 Version 不接受它 -->
+      <_VersionRaw Condition="$([System.String]::Copy('$(_VersionRaw)').StartsWith('v'))">$([System.String]::Copy('$(_VersionRaw)').Substring(1))</_VersionRaw>
+      <Version>$(_VersionRaw)</Version>
+    </PropertyGroup>
+  </Target>
+
+</Project>
