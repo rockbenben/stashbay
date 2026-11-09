@@ -1,0 +1,250 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  STASHBAY_NO_SHELL_INTEGRATION: '1'
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref_type != 'tag' }}
+
+jobs:
+  test:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.403'
+
+      - name: Verify SDK
+        run: dotnet --version
+
+      - name: Test (Core)
+        run: dotnet test tests/FileStash.Core.Tests -c Release --nologo -- --minimum-expected-tests 1
+
+      - name: Build (App)
+        run: dotnet build src/FileStash.App -c Release --nologo
+
+      - name: Smoke (validate windows and XAML)
+        shell: pwsh
+        run: |
+          $env:STASHBAY_HOME = Join-Path $env:RUNNER_TEMP 'stashbay-smoke'
+          $exe = Get-ChildItem src/FileStash.App/bin/Release -Recurse -Filter StashBay.exe | Select-Object -First 1
+          if (-not $exe) { Write-Error 'StashBay.exe not found'; exit 1 }
+          $marker = Join-Path ([System.IO.Path]::GetTempPath()) 'filestash-smoke.txt'
+          Remove-Item $marker -ErrorAction SilentlyContinue
+          $p = Start-Process $exe.FullName -ArgumentList '--smoke' -PassThru -WindowStyle Hidden
+          if (-not $p.WaitForExit(90000)) {
+            $p.Kill()
+            throw 'Smoke timed out'
+          }
+          $ok = (Test-Path $marker) -and ((Get-Content $marker -Raw).Trim() -eq 'OK')
+          if (-not $ok) { Get-Content $marker -Raw -ErrorAction SilentlyContinue; exit 1 }
+          if ($p.ExitCode -and $p.ExitCode -ne 0) { exit 1 }
+
+  release:
+    if: github.ref_type == 'tag'
+    needs: test
+    runs-on: windows-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    env:
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.403'
+
+      - name: Verify SDK
+        run: dotnet --version
+
+      - name: Check tag
+        shell: pwsh
+        run: |
+          if ($env:TAG -notmatch '^v\d+\.\d+\.\d+$') { Write-Error "tag '$env:TAG' is not vX.Y.Z"; exit 1 }
+
+      - name: Install Inno Setup 6
+        shell: pwsh
+        run: |
+          $installer = Join-Path $env:RUNNER_TEMP 'innosetup-6.7.4.exe'
+          Invoke-WebRequest 'https://github.com/jrsoftware/issrc/releases/download/is-6_7_4/innosetup-6.7.4.exe' -OutFile $installer
+          $compilerDirectory = Join-Path $env:RUNNER_TEMP 'InnoSetup6'
+          $p = Start-Process $installer -ArgumentList @('/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', '/CURRENTUSER', ('/DIR="' + $compilerDirectory + '"')) -Wait -PassThru -WindowStyle Hidden
+          if ($p.ExitCode -ne 0) { throw "Inno Setup installation failed ($($p.ExitCode))" }
+          $compilerDirectory >> $env:GITHUB_PATH
+
+      - name: Publish (x64 + arm64, both forms)
+        shell: pwsh
+        run: |
+          $v = $env:TAG.Substring(1)
+          foreach ($p in 'win-x64', 'win-x64-needs-dotnet10', 'win-arm64', 'win-arm64-needs-dotnet10') {
+            $directory = $p -replace '^win-', 'publish-'
+            dotnet publish src/FileStash.App -c Release -p:PublishProfile=$p -p:Version=$v -o "artifacts/$directory" --nologo
+            if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          }
+
+      - name: Azure login (for signing)
+        if: vars.AZURE_CLIENT_ID != ''
+        uses: azure/login@v3
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Smoke published x64 packages
+        shell: pwsh
+        run: |
+          $env:STASHBAY_HOME = Join-Path $env:RUNNER_TEMP 'stashbay-release-smoke'
+          $marker = Join-Path $env:TEMP 'filestash-smoke.txt'
+          foreach ($form in '', '-needs-dotnet10') {
+            Remove-Item -LiteralPath $marker -ErrorAction SilentlyContinue
+            $exe = Join-Path $PWD "artifacts/publish-x64$form/StashBay.exe"
+            $p = Start-Process $exe -ArgumentList '--smoke' -PassThru -WindowStyle Hidden
+            if (-not $p.WaitForExit(90000)) {
+              $p.Kill()
+              throw "Published smoke timed out ($form)"
+            }
+            if (-not (Test-Path $marker) -or (Get-Content $marker -Raw).Trim() -ne 'OK') {
+              throw "Published smoke failed ($form)"
+            }
+          }
+
+      - name: Sign exe (Azure Artifact Signing)
+        if: vars.AZURE_CLIENT_ID != ''
+        uses: azure/artifact-signing-action@v2
+        with:
+          endpoint: ${{ vars.ARTIFACT_SIGNING_ENDPOINT }}
+          signing-account-name: ${{ vars.ARTIFACT_SIGNING_ACCOUNT }}
+          certificate-profile-name: ${{ vars.ARTIFACT_SIGNING_PROFILE }}
+          files: |
+            ${{ github.workspace }}\artifacts\publish-x64\StashBay.exe
+            ${{ github.workspace }}\artifacts\publish-x64-needs-dotnet10\StashBay.exe
+            ${{ github.workspace }}\artifacts\publish-arm64\StashBay.exe
+            ${{ github.workspace }}\artifacts\publish-arm64-needs-dotnet10\StashBay.exe
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
+
+      - name: Build Installer (Inno Setup 6)
+        shell: pwsh
+        run: |
+          $v = $env:TAG.Substring(1)
+          $iss = "tools/installer/FileStash.iss"
+          New-Item -ItemType Directory -Force -Path artifacts | Out-Null
+          iscc "/DAppVersion=$v" $iss
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+
+      - name: Package + SHA256
+        shell: pwsh
+        run: |
+          $v = $env:TAG.Substring(1)
+          $pub = 'artifacts'
+          $assets = @()
+
+          # 1. 官方安装包
+          $installer = "artifacts/StashBay-$v-setup.exe"
+          if (Test-Path $installer) {
+            $destInstaller = "StashBay-$env:TAG-setup.exe"
+            Copy-Item $installer $destInstaller
+            $assets += $destInstaller
+          } else {
+            Write-Error "Installer $installer not found"
+            exit 1
+          }
+
+          # 2. 便携与框架依赖压缩包
+          foreach ($arch in 'x64', 'arm64') {
+            foreach ($form in '', '-needs-dotnet10') {
+              $zip = "StashBay-$env:TAG-win-$arch$form.zip"
+              Compress-Archive -Path "$pub/publish-$arch$form/StashBay.exe" -DestinationPath $zip -Force
+              $assets += $zip
+            }
+          }
+
+          # 校验和清单必须 LF 换行
+          $lines = Get-FileHash $assets -Algorithm SHA256 |
+            ForEach-Object { "{0}  {1}" -f $_.Hash.ToLower(), (Split-Path $_.Path -Leaf) }
+          [System.IO.File]::WriteAllText("$PWD/SHA256SUMS.txt", ($lines -join "`n") + "`n")
+
+      - uses: actions/attest@v4
+        with:
+          subject-checksums: SHA256SUMS.txt
+
+      - name: Upload to draft release
+        uses: softprops/action-gh-release@v3
+        with:
+          draft: true
+          fail_on_unmatched_files: true
+          files: |
+            StashBay-${{ github.ref_name }}-setup.exe
+            StashBay-${{ github.ref_name }}-win-x64.zip
+            StashBay-${{ github.ref_name }}-win-x64-needs-dotnet10.zip
+            StashBay-${{ github.ref_name }}-win-arm64.zip
+            StashBay-${{ github.ref_name }}-win-arm64-needs-dotnet10.zip
+            SHA256SUMS.txt
+          body: |
+            **Which package? / 下载哪个？**
+
+            - `StashBay-…-setup.exe` — Official installer (recommended for most users); no admin rights required, desktop shortcut & clean uninstallation. / 官方免提权安装包（推荐普通用户，自动创建桌面快捷方式与完整卸载）。
+            - `StashBay-…-win-x64.zip` — Portable edition with .NET runtime included; unzip and run. / 自包含便携版（含运行环境），解压即用。
+            - `StashBay-…-win-arm64.zip` — Same portable edition for Windows on Arm (Snapdragon / Surface Pro). / ARM 版 Windows 便携版。
+            - `StashBay-…-win-x64-needs-dotnet10.zip` — Compact edition (needs .NET 10 Desktop Runtime). / 框架依赖精简版，需已装 .NET 10 桌面运行时。
+
+            Verify / 校验：`sha256sum -c SHA256SUMS.txt` or `gh attestation verify <file> -R ${{ github.repository }}`
+          generate_release_notes: true
+
+  publish:
+    needs: release
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ github.ref_name }}
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Verify draft assets
+        run: |
+          gh release download "$TAG" --dir dl
+          cd dl
+          printf '%s\n' \
+            "StashBay-$TAG-setup.exe" \
+            "StashBay-$TAG-win-x64.zip" \
+            "StashBay-$TAG-win-x64-needs-dotnet10.zip" \
+            "StashBay-$TAG-win-arm64.zip" \
+            "StashBay-$TAG-win-arm64-needs-dotnet10.zip" | sort > ../expected-assets.txt
+          find . -maxdepth 1 -type f ! -name SHA256SUMS.txt -printf '%f\n' | sort > ../actual-assets.txt
+          diff -u ../expected-assets.txt ../actual-assets.txt
+          cut -c67- SHA256SUMS.txt | sort > ../checksummed-assets.txt
+          diff -u ../expected-assets.txt ../checksummed-assets.txt
+          sha256sum -c SHA256SUMS.txt
+
+      - name: Publish and mark latest
+        run: |
+          gh release edit "$TAG" --draft=false --latest
+          latest=$(gh api "repos/$GH_REPO/releases/latest" --jq .tag_name)
+          test "$latest" = "$TAG" || { echo "::error::releases/latest is $latest, expected $TAG"; exit 1; }
