@@ -8,7 +8,7 @@ namespace FileStash.Core.Services;
 /// <summary>
 /// 执行写入计划。备份 → 原子写入 → 记录历史；可撤销。
 /// </summary>
-public sealed class ApplyExecutor : IApplyExecutor
+public sealed partial class ApplyExecutor : IApplyExecutor
 {
     /// <summary>
     /// 全局写锁：所有 Apply / Undo 串行化，避免两个操作同时写同一目标路径。
@@ -50,6 +50,7 @@ public sealed class ApplyExecutor : IApplyExecutor
 
         try
         {
+            await using var processLock = await StorageWriteLease.AcquireAsync(_blobStore, ct);
             return await ExecuteCoreAsync(plan, progress, ct);
         }
         finally
@@ -84,16 +85,50 @@ public sealed class ApplyExecutor : IApplyExecutor
         var total = plan.Entries.Count;
         var done = 0;
 
+        var destinations = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var planned in plan.Entries)
         {
+            if (planned.Action != PlannedAction.Skip && !destinations.Add(Path.GetFullPath(planned.TargetPath)))
+                planned.State = PlannedState.Invalid;
+        }
+        var journal = plan.Entries.Select(planned => new OperationEntry
+        {
+            OperationId = operation.Id,
+            TargetPath = planned.TargetPath,
+            IntendedAction = planned.State is PlannedState.Invalid or PlannedState.TypeConflict
+                ? PlannedAction.Skip : planned.Action,
+            Action = planned.Action == PlannedAction.Skip || planned.State is PlannedState.Invalid or PlannedState.TypeConflict
+                ? EntryResult.Skipped : EntryResult.Failed,
+            NewSha256 = planned.Source.Sha256,
+            PreviousSha256 = planned.ExpectedTargetSha256,
+            Error = planned.Action == PlannedAction.Skip ? null : Strings.RecoveryNotCommitted,
+        }).ToList();
+        await _operationEntries.AddManyAsync(journal, ct);
+
+        for (var index = 0; index < plan.Entries.Count; index++)
+        {
+            var planned = plan.Entries[index];
             if (ct.IsCancellationRequested)
             {
                 cancelled = true;
                 break;
             }
 
-            var result = await ExecuteEntryAsync(operation.Id, planned, entries, ct);
+            (OperationEntry Entry, bool Failed) result;
+            try
+            {
+                result = await ExecuteEntryAsync(operation.Id, planned, entries, ct, journal[index]);
+            }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
+            {
+                cancelled = true;
+                break;
+            }
             entries.Add(result.Entry);
+            if (result.Entry.Id == 0)
+                await _operationEntries.AddManyAsync([result.Entry], CancellationToken.None);
+            else
+                await _operationEntries.UpdateAsync(result.Entry, CancellationToken.None);
 
             switch (result.Entry.Action)
             {
@@ -118,7 +153,7 @@ public sealed class ApplyExecutor : IApplyExecutor
 
         // 记账必须完成：即使被取消，已经写下去的东西也要留下记录（否则撤不回来）。
         // 所以这里用 CancellationToken.None，不跟着取消走。
-        await _operationEntries.AddManyAsync(entries, CancellationToken.None);
+        await _operationEntries.AddManyAsync(entries.Where(entry => entry.Id == 0).ToList(), CancellationToken.None);
 
         operation.FinishedAt = DateTimeOffset.UtcNow;
         operation.Status = cancelled
@@ -175,9 +210,9 @@ public sealed class ApplyExecutor : IApplyExecutor
         string operationId,
         PlannedEntry planned,
         List<OperationEntry> entries,
-        CancellationToken ct)
+        CancellationToken ct, OperationEntry? existing = null)
     {
-        var entry = new OperationEntry
+        var entry = existing ?? new OperationEntry
         {
             OperationId = operationId,
             TargetPath = planned.TargetPath,
@@ -189,10 +224,23 @@ public sealed class ApplyExecutor : IApplyExecutor
                 _ => EntryResult.Skipped,
             },
             NewSha256 = planned.Source.Sha256,
+            IntendedAction = planned.Action,
         };
 
-        if (planned.Action == PlannedAction.Skip)
+        entry.Action = planned.Action switch
         {
+            PlannedAction.Create => EntryResult.Created,
+            PlannedAction.Overwrite => EntryResult.Overwritten,
+            PlannedAction.Rename => EntryResult.Renamed,
+            _ => EntryResult.Skipped,
+        };
+        entry.Error = null;
+        var committedAction = entry.Action;
+        if (planned.Action == PlannedAction.Skip
+            || planned.State is PlannedState.Invalid or PlannedState.TypeConflict
+            || (planned.Action == PlannedAction.Overwrite && planned.State == PlannedState.New))
+        {
+            entry.Action = EntryResult.Skipped;
             return (entry, false);
         }
 
@@ -224,30 +272,56 @@ public sealed class ApplyExecutor : IApplyExecutor
 
         try
         {
+            using var targetGuard = _writer.GuardTarget(planned.TargetPath);
+            if (planned.Action == PlannedAction.Overwrite && !File.Exists(planned.TargetPath))
+                throw new FileNotFoundException(Strings.Format(Strings.TargetMissing, planned.TargetPath));
+            if (planned.Action == PlannedAction.Overwrite && planned.ExpectedTargetSha256 is not null
+                && !string.Equals(await HashUtil.ComputeFileSha256Async(planned.TargetPath, ct),
+                    planned.ExpectedTargetSha256, StringComparison.OrdinalIgnoreCase))
+                throw new IOException(Strings.UncommittedChangesWarning);
+
             // 父目录（新建的要记进历史，撤销时删掉）
             EnsureDirectory(directory, entries, operationId);
+            using var completedTargetGuard = _writer.GuardTarget(planned.TargetPath);
+
+            await _operationEntries.AddManyAsync(entries.Where(created => created.Id == 0).ToList(), CancellationToken.None);
 
             // 覆盖前先备份
             if (planned.Action == PlannedAction.Overwrite
-                && _settings.Current.BackupBeforeOverwrite
+                && (_settings.Current.BackupBeforeOverwrite || planned.RequireBackup)
                 && File.Exists(planned.TargetPath))
             {
                 var (backupSha, _) = await _blobStore.PutFileAsync(planned.TargetPath, ct);
                 entry.BackupSha256 = backupSha;
             }
 
-            // 原子写入
-            var temporaryPath = Path.Combine(directory, $".{Path.GetFileName(planned.TargetPath)}.fstmp~");
-
-            await _blobStore.CopyBlobToAsync(planned.Source.Sha256, temporaryPath, ct);
-
+            var temporaryPath = CreateTemporaryPath(directory);
             try
             {
-                await WriteWithReadOnlyHandlingAsync(temporaryPath, planned.TargetPath, ct);
+                await _blobStore.CopyBlobToAsync(planned.Source.Sha256, temporaryPath, ct);
+                if (!string.Equals(await HashUtil.ComputeFileSha256Async(temporaryPath, ct),
+                        planned.Source.Sha256, StringComparison.OrdinalIgnoreCase))
+                    throw new IOException(Strings.BlobIntegrityFailed);
+
+                entry.WitnessPath = temporaryPath;
+                entry.WitnessIdentity = _writer.GetIdentity(temporaryPath);
+                entry.PreviousSha256 = File.Exists(planned.TargetPath)
+                    ? await HashUtil.ComputeFileSha256Async(planned.TargetPath, ct) : null;
+                entry.Pending = true;
+                entry.Action = EntryResult.Skipped;
+                if (entry.Id == 0)
+                    await _operationEntries.AddManyAsync([entry], CancellationToken.None);
+                else
+                    await _operationEntries.UpdateAsync(entry, CancellationToken.None);
+
+                if (planned.Action == PlannedAction.Overwrite)
+                    await WriteWithReadOnlyHandlingAsync(temporaryPath, planned.TargetPath, ct);
+                else if (!await _writer.CreateAsync(temporaryPath, planned.TargetPath, ct))
+                    throw new IOException(Strings.WriteFailedDetail);
             }
             finally
             {
-                TryDelete(temporaryPath);
+                if (!entry.Pending) TryDelete(temporaryPath);
             }
         }
         catch (OperationCanceledException)
@@ -263,6 +337,8 @@ public sealed class ApplyExecutor : IApplyExecutor
             return (entry, true);
         }
 
+        entry.Pending = false;
+        entry.Action = committedAction;
         return (entry, false);
     }
 
@@ -384,71 +460,16 @@ public sealed class ApplyExecutor : IApplyExecutor
     /// 重试一次操作里失败的条目（"以管理员身份重试失败项"走这里）。
     /// </summary>
     /// <returns>成功重写的条目数。</returns>
-    public async Task<int> RetryFailedAsync(string operationId, CancellationToken ct)
+    public async Task<int> RetryFailedAsync(string operationId, CancellationToken ct) =>
+        await RetryApprovedAsync(operationId, await PrepareRetryAsync(operationId, ct), ct);
+
+    public async Task<UndoResult> UndoAsync(string operationId, CancellationToken ct)
     {
         await WriteLock.WaitAsync(ct);
 
         try
         {
-            var entries = await _operationEntries.GetByOperationAsync(operationId, ct);
-            var failed = entries
-                .Where(entry => entry.Action == EntryResult.Failed && entry.NewSha256 is not null)
-                .ToList();
-
-            var succeeded = 0;
-
-            foreach (var entry in failed)
-            {
-                ct.ThrowIfCancellationRequested();
-
-                try
-                {
-                    var directory = Path.GetDirectoryName(entry.TargetPath);
-
-                    if (!string.IsNullOrEmpty(directory))
-                    {
-                        Directory.CreateDirectory(directory);
-                    }
-
-                    var temporaryPath = entry.TargetPath + ".fstmp~";
-                    await _blobStore.CopyBlobToAsync(entry.NewSha256!, temporaryPath, ct);
-
-                    try
-                    {
-                        await WriteWithReadOnlyHandlingAsync(temporaryPath, entry.TargetPath, ct);
-                    }
-                    finally
-                    {
-                        TryDelete(temporaryPath);
-                    }
-
-                    entry.Action = EntryResult.Created;
-                    entry.Error = null;
-
-                    await _operationEntries.UpdateAsync(entry, ct);
-
-                    succeeded++;
-                }
-                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
-                {
-                    entry.Error = await DescribeFailureAsync(entry.TargetPath, ex);
-                    await _operationEntries.UpdateAsync(entry, ct);
-                }
-            }
-
-            return succeeded;
-        }
-        finally
-        {
-            WriteLock.Release();
-        }
-    }
-
-    public async Task<UndoResult> UndoAsync(string operationId, CancellationToken ct)    {
-        await WriteLock.WaitAsync(ct);
-
-        try
-        {
+            await using var processLock = await StorageWriteLease.AcquireAsync(_blobStore, ct);
             return await UndoCoreAsync(operationId, ct);
         }
         finally
@@ -459,6 +480,7 @@ public sealed class ApplyExecutor : IApplyExecutor
 
     private async Task<UndoResult> UndoCoreAsync(string operationId, CancellationToken ct)
     {
+        await RecoverOperationCoreAsync(operationId, ct);
         var operation = await _operations.GetAsync(operationId, ct);
 
         if (operation is null)
@@ -471,10 +493,23 @@ public sealed class ApplyExecutor : IApplyExecutor
         var counters = new UndoCounters();
 
         // 逆序处理：先删文件，再删目录
-        foreach (var entry in entries.Reverse())
+        var undoOrder = entries.Where(entry => entry.Action != EntryResult.DirectoryCreated).Reverse()
+            .Concat(entries.Where(entry => entry.Action == EntryResult.DirectoryCreated)
+                .OrderByDescending(entry => entry.TargetPath.Length));
+        foreach (var entry in undoOrder)
         {
             ct.ThrowIfCancellationRequested();
 
+            if (entry.Undone) continue;
+            if (entry.Pending || entry.UndoPending)
+            {
+                counters.Failed++;
+                counters.Messages.Add(Strings.RecoveryNeedsReview);
+                continue;
+            }
+            entry.UndoPending = true;
+            await _operationEntries.UpdateAsync(entry, CancellationToken.None);
+            var issuesBefore = counters.Failed + counters.Skipped;
             switch (entry.Action)
             {
                 case EntryResult.DirectoryCreated:
@@ -490,9 +525,13 @@ public sealed class ApplyExecutor : IApplyExecutor
                     await UndoOverwrittenAsync(entry, counters, ct);
                     break;
             }
+            entry.Undone = counters.Failed + counters.Skipped == issuesBefore;
+            entry.UndoPending = !entry.Undone;
+            entry.Error = entry.Undone ? null : Strings.RecoveryNeedsReview;
+            await _operationEntries.UpdateAsync(entry, CancellationToken.None);
         }
 
-        operation.Status = OperationStatus.Undone;
+        operation.Status = counters.Failed + counters.Skipped > 0 ? OperationStatus.PartiallyFailed : OperationStatus.Undone;
         operation.FinishedAt = DateTimeOffset.UtcNow;
 
         await _operations.UpdateAsync(operation, ct);
@@ -549,9 +588,9 @@ public sealed class ApplyExecutor : IApplyExecutor
 
     private async Task UndoCreatedAsync(OperationEntry entry, UndoCounters counters, CancellationToken ct)
     {
+        using var targetGuard = _writer.GuardTarget(entry.TargetPath);
         if (!File.Exists(entry.TargetPath))
         {
-            counters.Skipped++;
             return;
         }
 
@@ -576,6 +615,7 @@ public sealed class ApplyExecutor : IApplyExecutor
 
     private async Task UndoOverwrittenAsync(OperationEntry entry, UndoCounters counters, CancellationToken ct)
     {
+        using var targetGuard = _writer.GuardTarget(entry.TargetPath);
         if (entry.BackupSha256 is null)
         {
             counters.Skipped++;
@@ -612,14 +652,15 @@ public sealed class ApplyExecutor : IApplyExecutor
             return;
         }
 
-        var temporaryPath = Path.Combine(directory, $".{Path.GetFileName(entry.TargetPath)}.undo~");
+        var temporaryPath = CreateTemporaryPath(directory);
 
         try
         {
-            await _blobStore.CopyBlobToAsync(entry.BackupSha256, temporaryPath, ct);
-
             try
             {
+                await _blobStore.CopyBlobToAsync(entry.BackupSha256, temporaryPath, ct);
+                if (await HashUtil.ComputeFileSha256Async(temporaryPath, ct) != entry.BackupSha256)
+                    throw new IOException(Strings.BlobIntegrityFailed);
                 await WriteWithReadOnlyHandlingAsync(temporaryPath, entry.TargetPath, ct);
             }
             finally
@@ -637,9 +678,10 @@ public sealed class ApplyExecutor : IApplyExecutor
     }
 
     /// <summary>目标文件当前内容是否仍然是本次写入的内容。</summary>
-    private static async Task<bool> IsUnchangedAsync(OperationEntry entry, CancellationToken ct)
+    private async Task<bool> IsUnchangedAsync(OperationEntry entry, CancellationToken ct)
     {
-        if (entry.NewSha256 is null)
+        if (entry.NewSha256 is null
+            || (entry.WitnessIdentity is not null && _writer.GetIdentity(entry.TargetPath) != entry.WitnessIdentity))
         {
             return false;
         }
@@ -660,6 +702,13 @@ public sealed class ApplyExecutor : IApplyExecutor
         TargetMode.DragExport => Strings.TargetDragExport,
         _ => target.Mode.ToString(),
     };
+
+    private static string CreateTemporaryPath(string directory)
+    {
+        var path = Path.Combine(directory, $".{Guid.NewGuid():N}.fstmp~");
+        using var file = new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.None);
+        return path;
+    }
 
     private static void TryDelete(string path)
     {

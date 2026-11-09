@@ -981,4 +981,8 @@
     <value>Hapus semua</value>
   </data>
   <data name="ViewModeIcons" xml:space="preserve"><value>Ikon</value></data>
+  <data name="KeepCurrentButton" xml:space="preserve"><value>Pertahankan berkas saat ini</value></data>
+  <data name="KeepCurrentConfirm" xml:space="preserve"><value>Pertahankan berkas saat ini dan akhiri pemulihan entri ini?
+{0}</value></data>
+  <data name="ElevatedRetryConfirm" xml:space="preserve"><value>Konfirmasikan jalur lengkap, tindakan, dan hash. Hanya entri gagal ini yang akan dicoba lagi.</value></data>
 </root>

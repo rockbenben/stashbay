@@ -473,12 +473,7 @@ public partial class MainWindow : Window
                 return;
             }
 
-            var data = new DataObject();
-            var collection = new System.Collections.Specialized.StringCollection();
-            collection.AddRange([.. paths]);
-
-            data.SetFileDropList(collection);
-            data.SetData("PreferredDropEffect", DragDropEffects.Copy);
+            var data = DataPayloadHelper.CreateFileDropData(paths);
 
             var result = DragDrop.DoDragDrop(source, data, DragDropEffects.Copy);
 
@@ -705,17 +700,14 @@ public partial class MainWindow : Window
 
         try
         {
-            var paths = await ViewModel.MaterializeAllForDragAsync();
+            var exportedItems = ViewModel.Items.ToList();
+            var paths = await ViewModel.MaterializeForDragAsync(exportedItems.Select(item => item.Item).ToList());
             if (paths.Count == 0)
             {
                 return;
             }
 
-            var collection = new System.Collections.Specialized.StringCollection();
-            collection.AddRange(paths.ToArray());
-
-            var data = new DataObject(DataFormats.FileDrop, collection);
-            data.SetData("PreferredDropEffect", DragDropEffects.Copy);
+            var data = DataPayloadHelper.CreateFileDropData(paths);
 
             var result = DragDrop.DoDragDrop(source, data, DragDropEffects.Copy);
             await ViewModel.RecordDragExportAsync(paths);
@@ -724,7 +716,8 @@ public partial class MainWindow : Window
             {
                 if (_settings.Current.RemoveAfterDragExport)
                 {
-                    await ViewModel.ClearAllDirectCommand.ExecuteAsync(null);
+                    foreach (var item in exportedItems)
+                        await ViewModel.RemoveItemDirectCommand.ExecuteAsync(item);
                     CheckAutoDismiss();
                 }
             }
@@ -743,6 +736,7 @@ public partial class MainWindow : Window
             var anim = new System.Windows.Media.Animation.DoubleAnimation(1.0, 0.0, TimeSpan.FromMilliseconds(160));
             anim.Completed += (_, _) =>
             {
+                BeginAnimation(OpacityProperty, null);
                 Opacity = 1.0;
                 Hide();
             };

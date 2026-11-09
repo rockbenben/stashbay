@@ -9,7 +9,6 @@ public static class ApplyActions
 {
     public static readonly IReadOnlyList<EnumOption<PlannedAction>> Items =
     [
-        new(PlannedAction.Create, Strings.ActionCreate),
         new(PlannedAction.Overwrite, Strings.ActionOverwrite),
         new(PlannedAction.Skip, Strings.ActionSkip),
         new(PlannedAction.Rename, Strings.ActionRename),

@@ -981,4 +981,8 @@
     <value>Svuota tutto</value>
   </data>
   <data name="ViewModeIcons" xml:space="preserve"><value>Icone</value></data>
+  <data name="KeepCurrentButton" xml:space="preserve"><value>Mantieni file attuale</value></data>
+  <data name="KeepCurrentConfirm" xml:space="preserve"><value>Mantenere il file attuale e terminare il recupero di questa voce?
+{0}</value></data>
+  <data name="ElevatedRetryConfirm" xml:space="preserve"><value>Confermare percorsi completi, azioni e hash. Verranno ritentate solo queste voci non riuscite.</value></data>
 </root>

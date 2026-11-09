@@ -182,4 +182,8 @@
   <data name="WriteFailedDetail" xml:space="preserve">
     <value>Не удалось записать: {0}</value>
   </data>
+  <data name="BlobIntegrityFailed" xml:space="preserve"><value>Не удалось проверить целостность снимка.</value></data>
+  <data name="RecoveryNeedsReview" xml:space="preserve"><value>Проверьте результат и целевой файл, затем выберите сохранение текущего файла.</value></data>
+  <data name="RecoveryNotCommitted" xml:space="preserve"><value>Запись не завершена. Проверьте перед повтором.</value></data>
+  <data name="RetryAuthorizationChanged" xml:space="preserve"><value>Файл или область повтора изменились. Проверьте снова.</value></data>
 </root>

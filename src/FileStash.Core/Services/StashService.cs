@@ -70,6 +70,7 @@ public sealed class StashService : IStashService
         IProgress<ProgressInfo>? progress,
         CancellationToken ct)
     {
+        await using var storageLease = await StorageWriteLease.AcquireAsync(_blobStore, ct);
         var added = new List<StashItem>();
         var duplicates = new List<string>();
         var warnings = new List<string>();
@@ -149,22 +150,7 @@ public sealed class StashService : IStashService
         var processed = 0;
 
         // 仓库内文件夹可以只暂存未被忽略的文件（respectGitIgnore）
-        var candidates = enumerated.Entries;
-
-        if (_settings.Current.RespectGitIgnore && rootSource is not null)
-        {
-            var ignored = await _git.FilterIgnoredAsync(
-                rootSource,
-                enumerated.Entries.Where(entry => !entry.IsDirectory).Select(entry => entry.RelativePath).ToList(),
-                ct);
-
-            if (ignored.Count > 0)
-            {
-                candidates = enumerated.Entries
-                    .Where(entry => entry.IsDirectory || !ignored.Contains(entry.RelativePath))
-                    .ToList();
-            }
-        }
+        var candidates = await FilterCandidatesAsync(enumerated.Entries, rootSource, ct);
 
         foreach (var entry in candidates)
         {
@@ -213,6 +199,9 @@ public sealed class StashService : IStashService
             progress?.Report(new ProgressInfo(processed, enumerated.Entries.Count, entry.FullPath));
         }
 
+        if (!isDirectory && entries.Count == 0)
+            return null;
+
         var now = DateTimeOffset.UtcNow;
 
         var item = new StashItem
@@ -234,14 +223,12 @@ public sealed class StashService : IStashService
             SnapshotAt = now,
         };
 
-        await _items.AddAsync(item, ct);
-
         foreach (var entry in entries)
         {
             entry.ItemId = item.Id;
         }
 
-        await _entries.AddManyAsync(entries, ct);
+        await _items.SaveSnapshotAsync(item, entries, create: true, ct);
 
         return item;
     }
@@ -271,6 +258,7 @@ public sealed class StashService : IStashService
         IProgress<ProgressInfo>? progress,
         CancellationToken ct)
     {
+        await using var storageLease = await StorageWriteLease.AcquireAsync(_blobStore, ct);
         var items = await _items.GetByIdsAsync(itemIds, ct);
 
         var done = 0;
@@ -310,7 +298,9 @@ public sealed class StashService : IStashService
             var fileCount = 0;
             long totalSize = 0;
 
-            foreach (var entry in enumerated.Entries)
+            warnings.AddRange(enumerated.Warnings);
+            var candidates = await FilterCandidatesAsync(enumerated.Entries, item.GitRepoRoot, ct);
+            foreach (var entry in candidates)
             {
                 ct.ThrowIfCancellationRequested();
 
@@ -352,9 +342,8 @@ public sealed class StashService : IStashService
                 }
             }
 
-            // 旧的条目先删掉再写新的（blob 留待"清理未引用数据"）
-            await _entries.DeleteByItemAsync(item.Id, ct);
-            await _entries.AddManyAsync(entries, ct);
+            if (warnings.Count > 0)
+                throw new IOException(string.Join(Environment.NewLine, warnings));
 
             item.FileCount = fileCount;
             item.TotalSize = totalSize;
@@ -366,7 +355,7 @@ public sealed class StashService : IStashService
                 item.GitCommit = await _git.GetHeadCommitAsync(item.GitRepoRoot, ct);
             }
 
-            await _items.UpdateAsync(item, ct);
+            await _items.SaveSnapshotAsync(item, entries, create: false, ct);
 
             done++;
             progress?.Report(new ProgressInfo(done, items.Count, sourcePath));
@@ -375,6 +364,7 @@ public sealed class StashService : IStashService
 
     public async Task SetRootAsync(IReadOnlyList<string> itemIds, string newRoot)
     {
+        await using var storageLease = await StorageWriteLease.AcquireAsync(_blobStore, CancellationToken.None);
         var normalizedRoot = PathUtil.Normalize(newRoot);
         var items = await _items.GetByIdsAsync(itemIds, CancellationToken.None);
 
@@ -403,9 +393,7 @@ public sealed class StashService : IStashService
             }
 
             // 先删旧的再写新的：顺序反了会把刚写进去的也一起删掉
-            await _entries.DeleteByItemAsync(item.Id, CancellationToken.None);
-            await _entries.AddManyAsync(entries, CancellationToken.None);
-            await _items.UpdateAsync(item, CancellationToken.None);
+            await _items.SaveSnapshotAsync(item, entries, create: false, CancellationToken.None);
         }
     }
 
@@ -486,6 +474,17 @@ public sealed class StashService : IStashService
         }
 
         return results;
+    }
+
+    private async Task<IReadOnlyList<EnumeratedEntry>> FilterCandidatesAsync(
+        IReadOnlyList<EnumeratedEntry> entries, string? repo, CancellationToken ct)
+    {
+        if (!_settings.Current.RespectGitIgnore || repo is null) return entries;
+        var ignored = await _git.FilterIgnoredAsync(repo,
+            entries.Where(entry => !entry.IsDirectory)
+                .Select(entry => PathUtil.GetRelative(repo, entry.FullPath)).ToList(), ct);
+        return entries.Where(entry => entry.IsDirectory
+            || !ignored.Contains(PathUtil.GetRelative(repo, entry.FullPath))).ToList();
     }
 
     private static long SafeLength(string path)

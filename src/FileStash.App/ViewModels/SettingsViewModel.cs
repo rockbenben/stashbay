@@ -133,6 +133,7 @@ public sealed partial class SettingsViewModel : ObservableObject
         // 热重载全局快捷键（无需重启应用）
         if (Application.Current is App app)
         {
+            App.ApplyShellIntegration(Settings);
             app.ReloadGlobalHotkey();
         }
 

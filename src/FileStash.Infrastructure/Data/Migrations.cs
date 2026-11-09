@@ -11,6 +11,17 @@ public static class Migrations
     public static IReadOnlyList<Migration> All { get; } =
     [
         new Migration(1, SchemaV1),
+        new Migration(2, """
+            ALTER TABLE OperationEntry ADD COLUMN IntendedAction INTEGER;
+            ALTER TABLE OperationEntry ADD COLUMN Pending INTEGER NOT NULL DEFAULT 0;
+            """),
+        new Migration(3, """
+            ALTER TABLE OperationEntry ADD COLUMN WitnessPath TEXT;
+            ALTER TABLE OperationEntry ADD COLUMN WitnessIdentity TEXT;
+            ALTER TABLE OperationEntry ADD COLUMN PreviousSha256 TEXT;
+            ALTER TABLE OperationEntry ADD COLUMN UndoPending INTEGER NOT NULL DEFAULT 0;
+            ALTER TABLE OperationEntry ADD COLUMN Undone INTEGER NOT NULL DEFAULT 0;
+            """),
     ];
 
     /// <summary>

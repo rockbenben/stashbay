@@ -50,6 +50,16 @@ public sealed class DatabaseMigrator
         var applied = await GetAppliedVersionsAsync(connection, ct);
         var current = applied.Count == 0 ? 0 : applied.Max();
 
+        if (current > 0 && Migrations.All.Any(migration => migration.Version > current))
+        {
+            await using var backup = new SqliteConnection(new SqliteConnectionStringBuilder
+            {
+                DataSource = connection.DataSource + $".schema-v{current}-{Guid.NewGuid():N}.bak",
+            }.ToString());
+            await backup.OpenAsync(ct);
+            connection.BackupDatabase(backup);
+        }
+
         foreach (var migration in Migrations.All.OrderBy(m => m.Version))
         {
             if (applied.Contains(migration.Version))

@@ -61,20 +61,27 @@ public sealed class CleanupService : ICleanupService
             return 0;
         }
 
+        await using var storageLease = await StorageWriteLease.AcquireAsync(_blobStore, ct);
         var cutoff = DateTimeOffset.UtcNow.AddDays(-retentionDays);
         var expired = await _operations.GetOlderThanAsync(cutoff, ct);
 
+        var deleted = 0;
         foreach (var operation in expired)
         {
+            if (operation.Status == FileStash.Core.Models.OperationStatus.Running
+                || (await _operationEntries.GetByOperationAsync(operation.Id, ct)).Any(entry => entry.Pending || entry.UndoPending))
+                continue;
             // 条目上的外键是 ON DELETE CASCADE，操作删了条目跟着删
             await _operations.DeleteAsync(operation.Id, ct);
+            deleted++;
         }
 
-        return expired.Count;
+        return deleted;
     }
 
     public async Task<int> DeleteUnreferencedBlobsAsync(CancellationToken ct)
     {
+        await using var storageLease = await StorageWriteLease.AcquireAsync(_blobStore, ct);
         var referenced = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         // 暂存内容引用的

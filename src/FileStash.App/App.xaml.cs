@@ -77,6 +77,13 @@ public partial class App : Application
         // 区域性就退回系统语言了。表现是"界面静默变回中文"，
         // 而日志里一个异常都没有。构造函数不是 async 的，
         // 改动落在进程的根上下文上，谁也带不走。
+        var startup = CommandLine.Parse(Environment.GetCommandLineArgs().Skip(1).ToArray());
+        if (startup.RetryHome is not null)
+        {
+            if (!Path.IsPathFullyQualified(startup.RetryHome) || !Directory.Exists(startup.RetryHome))
+                throw new ArgumentException(nameof(startup.RetryHome));
+            Environment.SetEnvironmentVariable(AppPaths.HomeVariable, startup.RetryHome);
+        }
         _paths = new AppPaths();
         _paths.EnsureDirectories();
 
@@ -255,8 +262,11 @@ public partial class App : Application
         // 提权重试：这个进程已经是提权状态了，直接把失败的条目重写一遍就退出
         if (command.ElevatedRetryOperationId is not null)
         {
-            await RunElevatedRetryAsync(command.ElevatedRetryOperationId);
-            Shutdown();
+            _ = Dispatcher.BeginInvoke(async () =>
+            {
+                await RunElevatedRetryAsync(command.ElevatedRetryOperationId);
+                Shutdown();
+            }, DispatcherPriority.ApplicationIdle);
             return;
         }
 
@@ -318,10 +328,15 @@ public partial class App : Application
                     var version = await migrator.EnsureReadyAsync(CancellationToken.None);
                     Log.Information("数据库迁移完成，schema 版本 {Version}", version);
 
+                    await _host.Services.GetRequiredService<IApplyExecutor>().RecoverAsync(CancellationToken.None);
                     var settings = _host.Services.GetRequiredService<ISettingsService>();
 
                     // 设置在启动路径上已经读过了，这里不要再读一遍 ——
                     // 重读会把 Current 换成新对象，正在开着的窗口还攥着旧的那份。
+                    if (!ShellIntegrationDisabled)
+                    {
+                        _settings.ImportStartupPreference(new StartupRegistrar().IsEnabled);
+                    }
                     ApplyShellIntegration(settings.Current);
 
                     var cleanup = _host.Services.GetRequiredService<ICleanupService>();
@@ -393,13 +408,16 @@ public partial class App : Application
         base.OnExit(e);
     }
 
+    private static bool ShellIntegrationDisabled => InSmoke ||
+        !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(AppPaths.NoShellIntegrationVariable)) ||
+        !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(AppPaths.LegacyNoShellIntegrationVariable));
+
     /// <summary>按设置同步资源管理器右键菜单、"发送到"、开机自启。</summary>
-    private static void ApplyShellIntegration(Core.Models.AppSettings settings)
+    internal static void ApplyShellIntegration(Core.Models.AppSettings settings)
     {
         // 自动化 / 无头运行：注册表**一个都不碰** ——
         // 连"关掉开关"都不做，免得变成一个静默改变用户既有设置的动作
-        if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(AppPaths.NoShellIntegrationVariable)) ||
-            !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(AppPaths.LegacyNoShellIntegrationVariable)))
+        if (ShellIntegrationDisabled)
         {
             Log.Information("已按环境变量跳过资源管理器集成");
             return;
@@ -447,6 +465,11 @@ public partial class App : Application
     /// <summary>卸载时用：把注册表里的痕迹清干净。</summary>
     private static void UnregisterShellIntegration()
     {
+        if (ShellIntegrationDisabled)
+        {
+            return;
+        }
+
         var executablePath = Environment.ProcessPath;
 
         if (string.IsNullOrEmpty(executablePath))
@@ -607,8 +630,27 @@ public partial class App : Application
     {
         try
         {
+            using var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
+            var elevated = new System.Security.Principal.WindowsPrincipal(identity)
+                .IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator);
+            Log.Information("提权重试 TokenIsElevated={Elevated}", elevated);
+            if (!elevated || InSmoke) return;
             var executor = _host!.Services.GetRequiredService<IApplyExecutor>();
-            var count = await executor.RetryFailedAsync(operationId, CancellationToken.None);
+            Log.Information("提权重试正在读取确认范围");
+            var selection = await executor.PrepareRetryAsync(operationId, CancellationToken.None, inspectTargets: false);
+            Log.Information("提权重试确认范围 {Count} 项", selection.Count);
+            if (selection.Count == 0) return;
+            var details = string.Join(Environment.NewLine + Environment.NewLine, selection.Select(entry =>
+                $"{entry.TargetPath}{Environment.NewLine}" +
+                $"{(entry.Action == Core.Models.PlannedAction.Overwrite ? Strings.ActionOverwrite : entry.Action == Core.Models.PlannedAction.Rename ? Strings.ActionRename : Strings.ActionCreate)}" +
+                $"{Environment.NewLine}SHA-256 {entry.Sha256}"));
+            if (ThemedMessageBox.Show(Strings.ElevatedRetryConfirm + Environment.NewLine + details,
+                    Strings.ToastRetryElevated, MessageBoxButton.YesNo, MessageBoxImage.Question, showInTaskbar: true) != MessageBoxResult.Yes)
+            {
+                Log.Information("提权重试已取消");
+                return;
+            }
+            var count = await executor.RetryApprovedAsync(operationId, selection, CancellationToken.None);
 
             Log.Information("提权重试完成：{Count} 个条目", count);
         }

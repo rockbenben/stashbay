@@ -981,4 +981,8 @@
     <value>Tümünü temizle</value>
   </data>
   <data name="ViewModeIcons" xml:space="preserve"><value>Simgeler</value></data>
+  <data name="KeepCurrentButton" xml:space="preserve"><value>Mevcut dosyayı koru</value></data>
+  <data name="KeepCurrentConfirm" xml:space="preserve"><value>Mevcut dosya korunsun ve bu kaydın kurtarılması bitirilsin mi?
+{0}</value></data>
+  <data name="ElevatedRetryConfirm" xml:space="preserve"><value>Aşağıdaki tam yolları, işlemleri ve karmaları onaylayın. Yalnızca bu başarısız kayıtlar yeniden denenecek.</value></data>
 </root>

@@ -36,7 +36,7 @@ Before committing or releasing, verify the following invariants:
      base = maps[r'src/FileStash.App/Resources/Strings.resx']
      assert all(v == base for v in maps.values()), "i18n keys mismatch!"
      ```
-   - Note there is a **second, independent** resource set: `src/FileStash.Core/Resources/Strings.*.resx` (18 files, 50 keys each) for core error/status strings. Parity is required within each project, not across them.
+   - Note there is a **second, independent** resource set: `src/FileStash.Core/Resources/Strings.*.resx` (18 files, 54 keys each) for core error/status strings. Parity is required within each project, not across them.
 
 2. **DPI & Multi-Monitor**:
    - `WindowEffects.PlaceNearCursor` / `.GetWindowWorkArea` / `.FitToWorkArea` / `.PlaceAtBottomRight` / `.ClampToWorkArea` must use Win32 `GetMonitorInfo(MonitorFromWindow)` and divide by monitor DPI scale. **Never use `SystemParameters.WorkArea` directly for positioning** — it only reports the primary screen.
@@ -51,7 +51,7 @@ Before committing or releasing, verify the following invariants:
    - `SummonAtCursor`: window pops up adjacent to mouse pointer.
    - `EnableShakeToSummon`: `ShakeDetector` captures rapid mouse reversals when dragging files.
    - Floating Ball: expands shelf on click or short drag, snaps to edges on release.
-   - Action layout: title bar carries only `pin / add / expand / close`; actions with consequences (`write back`, `clear all boxes`) live in the status bar with text. Before adding a title-bar glyph, check whether the command already has an entry point (tray menu, workbench, per-item context menu, hotkey).
+   - Action layout: title bar carries only `pin / add / expand / close`. Statistics and fixed-size `view / write back / clear all boxes` icons share a single status-bar row, including at the 260-DIP minimum width. Icons need localized tooltips and accessibility names; statistics trim with a full-text tooltip. Before adding a title-bar glyph, check whether the command already has another entry point.
 
 5. **Named elements are witnesses, not cosmetics**:
    - `ItemTree` must stay a `TreeView` that has a `ContextMenu`, and the header row's grid must keep exactly four `ColumnDefinition`s. `ProbeRunner.IsColumnGrid` counts columns and `WindowCatalog` opens the context-menu variant by name; if either misses, the witness writes "没有量到东西" and **the run still exits 0**.

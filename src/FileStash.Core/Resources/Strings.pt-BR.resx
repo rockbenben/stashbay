@@ -182,4 +182,8 @@
   <data name="WriteFailedDetail" xml:space="preserve">
     <value>Falha ao gravar: {0}</value>
   </data>
+  <data name="BlobIntegrityFailed" xml:space="preserve"><value>Falha na verificação de integridade da cópia.</value></data>
+  <data name="RecoveryNeedsReview" xml:space="preserve"><value>Verifique o resultado e o destino. Depois, mantenha o arquivo atual para concluir.</value></data>
+  <data name="RecoveryNotCommitted" xml:space="preserve"><value>A gravação não foi confirmada. Verifique antes de tentar novamente.</value></data>
+  <data name="RetryAuthorizationChanged" xml:space="preserve"><value>O arquivo ou o escopo mudou. Verifique novamente.</value></data>
 </root>

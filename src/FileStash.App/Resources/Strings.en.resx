@@ -981,4 +981,8 @@
     <value>Clear all</value>
   </data>
   <data name="ViewModeIcons" xml:space="preserve"><value>Icons</value></data>
+  <data name="KeepCurrentButton" xml:space="preserve"><value>Keep current file</value></data>
+  <data name="KeepCurrentConfirm" xml:space="preserve"><value>Keep the current file and finish recovery for this entry?
+{0}</value></data>
+  <data name="ElevatedRetryConfirm" xml:space="preserve"><value>Confirm the full targets, actions and content hashes below. Only these failed entries will be retried.</value></data>
 </root>

@@ -182,4 +182,8 @@
   <data name="WriteFailedDetail" xml:space="preserve">
     <value>Error al escribir: {0}</value>
   </data>
+  <data name="BlobIntegrityFailed" xml:space="preserve"><value>Falló la verificación de integridad de la copia.</value></data>
+  <data name="RecoveryNeedsReview" xml:space="preserve"><value>Revise el resultado y el destino. Después puede conservar el archivo actual.</value></data>
+  <data name="RecoveryNotCommitted" xml:space="preserve"><value>La escritura no se confirmó. Revise antes de reintentar.</value></data>
+  <data name="RetryAuthorizationChanged" xml:space="preserve"><value>Cambió el archivo o el alcance del reintento. Revise de nuevo.</value></data>
 </root>

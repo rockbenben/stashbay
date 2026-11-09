@@ -182,4 +182,8 @@
   <data name="WriteFailedDetail" xml:space="preserve">
     <value>Gagal menulis: {0}</value>
   </data>
+  <data name="BlobIntegrityFailed" xml:space="preserve"><value>Verifikasi integritas salinan gagal.</value></data>
+  <data name="RecoveryNeedsReview" xml:space="preserve"><value>Periksa hasil penulisan dan tujuan, lalu pilih untuk mempertahankan berkas saat ini.</value></data>
+  <data name="RecoveryNotCommitted" xml:space="preserve"><value>Penulisan belum diselesaikan. Periksa sebelum mencoba lagi.</value></data>
+  <data name="RetryAuthorizationChanged" xml:space="preserve"><value>Berkas atau cakupan percobaan berubah. Periksa kembali.</value></data>
 </root>

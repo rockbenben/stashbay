@@ -30,7 +30,7 @@ FileStash.sln
 │   │   ├── Services/               # StashService, BlobStore, ApplyPlanner, ApplyExecutor, PathMapper, DragExportService, CleanupService, SettingsService
 │   │   ├── Localization/           # AppLanguageResolver (language option → CultureInfo, incl. "follow system")
 │   │   ├── Utils/                  # AppPaths, HashUtil, PathUtil, Glob
-│   │   └── Resources/              # Core localized error and status strings (18 languages, 50 keys each)
+│   │   └── Resources/              # Core localized error and status strings (18 languages, 54 keys each)
 │   ├── FileStash.Infrastructure/   # net10.0-windows, SQLite + Dapper, Windows Shell integration, Win32 P/Invoke
 │   │   ├── Data/                   # SqliteConnectionFactory, SchemaReadyConnectionFactory, DatabaseMigrator, Migrations, Repositories, Iso8601DateTimeOffsetTypeHandler
 │   │   ├── Shell/                  # ShellRegistrars (ContextMenuRegistrar, SendToRegistrar, StartupRegistrar)
@@ -76,7 +76,7 @@ StashBay features two tightly integrated workflows:
   * Shake and the global hotkey share `HandleSummonTrigger`, which reads Explorer file selections.
 * **Floating Ball**: Topmost floating widget. Click **or a short drag** (movement under 6 px) expands the shelf; releasing within 32 px of a screen edge magnet-snaps it to that edge.
   * Placement and snapping both go through `WindowEffects.GetWindowWorkArea` (the window's *own* monitor), so the ball does not jump to the primary screen on multi-monitor setups.
-* **Action layout**: the title bar keeps four buttons — `pin`, `add`, `expand`, `close`. The two actions with consequences (`write back to original locations`, `clear all boxes`) live in the **status bar with text labels**, never as more same-size glyphs in that row.
+* **Action layout**: the title bar keeps four buttons — `pin`, `add`, `expand`, `close`. The status bar keeps statistics and fixed-size `view / write back / clear all boxes` icon buttons on **one row**. Each icon has a localized tooltip and accessibility name; statistics may trim with a full-text tooltip, but actions must never wrap or be clipped, even at the 260-DIP minimum width.
   * The reason is a count, not taste: in a typical transit session none of the six original glyphs is pressed, and five of them already had another entry point (tray menu, workbench, per-item context menu, <kbd>F11</kbd>, <kbd>Esc</kbd>). Only `pin` was unique. A row of identical 26×26 icons mixing window chrome, intake and destructive actions is a lookup task, not a shortcut.
   * Keep it that way when adding buttons: if a command already has an entry point elsewhere, it does not need a glyph in the title bar.
 

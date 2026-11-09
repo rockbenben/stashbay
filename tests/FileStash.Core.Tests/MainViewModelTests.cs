@@ -177,6 +177,37 @@ public sealed class MainViewModelTests : IAsyncLifetime
         Assert.Single(_viewModel.Groups);
         Assert.NotNull(_viewModel.SelectedGroup);
         Assert.NotEmpty(_dialogs.Infos);
+        Assert.False(_viewModel.IsBusy);
+        Assert.True(_viewModel.ClearAllBoxesCommand.CanExecute(null));
+        Assert.Equal("内容A", await File.ReadAllTextAsync(first, TestContext.Current.CancellationToken));
+        Assert.Equal("内容B", await File.ReadAllTextAsync(second, TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task ClearAllBoxesCommand_WhenCancelled_ShouldKeepBoxesAndItems()
+    {
+        await _viewModel.InitializeAsync();
+        SimulateListBoxSelectionBinding(_viewModel);
+        await _viewModel.AddPathsAsync([_workspace.CreateFile("keep.txt", "keep")]);
+        var groupId = _viewModel.SelectedGroup!.Id;
+        _dialogs.ConfirmResult = false;
+
+        await _viewModel.ClearAllBoxesCommand.ExecuteAsync(null);
+
+        Assert.Single(_viewModel.Items);
+        Assert.Equal(groupId, Assert.Single(_viewModel.Groups).Id);
+        Assert.Empty(_dialogs.Infos);
+        Assert.False(_viewModel.IsBusy);
+    }
+
+    [Fact]
+    public async Task ClearAllBoxesCommand_WhileBusy_ShouldBeDisabled()
+    {
+        await _viewModel.InitializeAsync();
+        _viewModel.IsBusy = true;
+        Assert.False(_viewModel.ClearAllBoxesCommand.CanExecute(null));
+        _viewModel.IsBusy = false;
+        Assert.True(_viewModel.ClearAllBoxesCommand.CanExecute(null));
     }
 
     [Fact]

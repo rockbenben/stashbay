@@ -137,6 +137,37 @@ public sealed class StashItemRepository : IStashItemRepository
         return item;
     }
 
+    public async Task SaveSnapshotAsync(StashItem item, IReadOnlyList<StashEntry> entries, bool create, CancellationToken ct)
+    {
+        await using var connection = await _connectionFactory.OpenAsync(ct);
+        await using var transaction = (SqliteTransaction)await connection.BeginTransactionAsync(ct);
+        var sql = create ? """
+
+            INSERT INTO StashItem (Id, GroupId, Kind, DisplayName, SourcePath, SourcePathKey, RootPath,
+                                   RelativePath, GitRepoRoot, GitBranch, GitCommit, FileCount, TotalSize,
+                                   AddedAt, SnapshotAt)
+            VALUES (@Id, @GroupId, @Kind, @DisplayName, @SourcePath, @SourcePathKey, @RootPath,
+                    @RelativePath, @GitRepoRoot, @GitBranch, @GitCommit, @FileCount, @TotalSize,
+                    @AddedAt, @SnapshotAt);
+            """ : """
+
+            UPDATE StashItem
+               SET GroupId = @GroupId, Kind = @Kind, DisplayName = @DisplayName, SourcePath = @SourcePath,
+                   SourcePathKey = @SourcePathKey, RootPath = @RootPath, RelativePath = @RelativePath,
+                   GitRepoRoot = @GitRepoRoot, GitBranch = @GitBranch, GitCommit = @GitCommit,
+                   FileCount = @FileCount, TotalSize = @TotalSize, SnapshotAt = @SnapshotAt
+             WHERE Id = @Id;
+            """;
+        await connection.ExecuteAsync(new CommandDefinition(sql, ToRow(item), transaction, cancellationToken: ct));
+        await connection.ExecuteAsync(new CommandDefinition("DELETE FROM StashEntry WHERE ItemId = @Id;",
+            new { item.Id }, transaction, cancellationToken: ct));
+        await connection.ExecuteAsync(new CommandDefinition("""
+            INSERT INTO StashEntry (ItemId, RelativePath, IsDirectory, Sha256, Size, SourceLastWriteUtc)
+            VALUES (@ItemId, @RelativePath, @IsDirectory, @Sha256, @Size, @SourceLastWriteUtc);
+            """, entries, transaction, cancellationToken: ct));
+        await transaction.CommitAsync(ct);
+    }
+
     public async Task AddAsync(StashItem item, CancellationToken ct)
     {
         await using var connection = await _connectionFactory.OpenAsync(ct);
@@ -468,7 +499,7 @@ public sealed class OperationRepository : IOperationRepository
 public sealed class OperationEntryRepository : IOperationEntryRepository
 {
     private const string SelectColumns =
-        "Id, OperationId, TargetPath, Action, NewSha256, BackupSha256, CreatedDirectory, Error";
+        "Id, OperationId, TargetPath, Action, NewSha256, BackupSha256, CreatedDirectory, Error, IntendedAction, Pending, WitnessPath, WitnessIdentity, PreviousSha256, UndoPending, Undone";
 
     private readonly ISqliteConnectionFactory _connectionFactory;
 
@@ -487,15 +518,18 @@ public sealed class OperationEntryRepository : IOperationEntryRepository
         await using var connection = await _connectionFactory.OpenAsync(ct);
         await using var transaction = (SqliteTransaction)await connection.BeginTransactionAsync(ct);
 
-        await connection.ExecuteAsync(new CommandDefinition(
-            """
-            INSERT INTO OperationEntry (OperationId, TargetPath, Action, NewSha256, BackupSha256, CreatedDirectory, Error)
-            VALUES (@OperationId, @TargetPath, @Action, @NewSha256, @BackupSha256, @CreatedDirectory, @Error);
-            """,
-            entries,
-            transaction,
-            cancellationToken: ct));
-
+        foreach (var entry in entries)
+        {
+            entry.Id = await connection.ExecuteScalarAsync<long>(new CommandDefinition(
+                """
+                INSERT INTO OperationEntry (OperationId, TargetPath, Action, NewSha256, BackupSha256, CreatedDirectory, Error, IntendedAction, Pending, WitnessPath, WitnessIdentity, PreviousSha256, UndoPending, Undone)
+                VALUES (@OperationId, @TargetPath, @Action, @NewSha256, @BackupSha256, @CreatedDirectory, @Error, @IntendedAction, @Pending, @WitnessPath, @WitnessIdentity, @PreviousSha256, @UndoPending, @Undone);
+                SELECT last_insert_rowid();
+                """,
+                entry,
+                transaction,
+                cancellationToken: ct));
+        }
         await transaction.CommitAsync(ct);
     }
 
@@ -519,7 +553,10 @@ public sealed class OperationEntryRepository : IOperationEntryRepository
             """
             UPDATE OperationEntry
                SET TargetPath = @TargetPath, Action = @Action, NewSha256 = @NewSha256,
-                   BackupSha256 = @BackupSha256, CreatedDirectory = @CreatedDirectory, Error = @Error
+                   BackupSha256 = @BackupSha256, CreatedDirectory = @CreatedDirectory, Error = @Error,
+                   IntendedAction = @IntendedAction, Pending = @Pending,
+                   WitnessPath = @WitnessPath, WitnessIdentity = @WitnessIdentity,
+                   PreviousSha256 = @PreviousSha256, UndoPending = @UndoPending, Undone = @Undone
              WHERE Id = @Id;
             """,
             entry,
@@ -531,7 +568,11 @@ public sealed class OperationEntryRepository : IOperationEntryRepository
         await using var connection = await _connectionFactory.OpenAsync(ct);
 
         var hashes = await connection.QueryAsync<string>(new CommandDefinition(
-            "SELECT DISTINCT BackupSha256 FROM OperationEntry WHERE BackupSha256 IS NOT NULL;",
+            """
+            SELECT DISTINCT BackupSha256 FROM OperationEntry WHERE BackupSha256 IS NOT NULL
+            UNION SELECT DISTINCT NewSha256 FROM OperationEntry
+            WHERE NewSha256 IS NOT NULL AND (Action = 4 OR Pending = 1 OR UndoPending = 1);
+            """,
             cancellationToken: ct));
 
         return hashes.AsList().ToHashSet(StringComparer.OrdinalIgnoreCase);

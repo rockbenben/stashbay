@@ -123,6 +123,14 @@ public sealed class OperationEntry
     public string TargetPath { get; set; } = string.Empty;
 
     public EntryResult Action { get; set; }
+    public PlannedAction? IntendedAction { get; set; }
+    /// <summary>Intent was saved, but file commit has not been acknowledged.</summary>
+    public bool Pending { get; set; }
+    public string? WitnessPath { get; set; }
+    public string? WitnessIdentity { get; set; }
+    public string? PreviousSha256 { get; set; }
+    public bool UndoPending { get; set; }
+    public bool Undone { get; set; }
 
     /// <summary>写入的内容。</summary>
     public string? NewSha256 { get; set; }

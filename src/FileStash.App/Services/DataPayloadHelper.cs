@@ -10,6 +10,16 @@ namespace FileStash.App.Services;
 /// </summary>
 public static class DataPayloadHelper
 {
+    public static DataObject CreateFileDropData(IReadOnlyList<string> paths)
+    {
+        var collection = new System.Collections.Specialized.StringCollection();
+        collection.AddRange(paths.ToArray());
+        var data = new DataObject();
+        data.SetFileDropList(collection);
+        data.SetData("PreferredDropEffect", DragDropEffects.Copy);
+        return data;
+    }
+
     /// <summary>检查拖拽数据是否包含支持的格式。</summary>
     public static bool IsSupported(IDataObject? data)
     {

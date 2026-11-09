@@ -981,4 +981,8 @@
     <value>Vaciar todo</value>
   </data>
   <data name="ViewModeIcons" xml:space="preserve"><value>Iconos</value></data>
+  <data name="KeepCurrentButton" xml:space="preserve"><value>Conservar archivo actual</value></data>
+  <data name="KeepCurrentConfirm" xml:space="preserve"><value>¿Conservar el archivo actual y finalizar la recuperación de esta entrada?
+{0}</value></data>
+  <data name="ElevatedRetryConfirm" xml:space="preserve"><value>Confirme las rutas completas, acciones y hashes. Solo se reintentarán estas entradas fallidas.</value></data>
 </root>

@@ -981,4 +981,8 @@
     <value>清空全部</value>
   </data>
   <data name="ViewModeIcons" xml:space="preserve"><value>圖示</value></data>
+  <data name="KeepCurrentButton" xml:space="preserve"><value>保留目前檔案</value></data>
+  <data name="KeepCurrentConfirm" xml:space="preserve"><value>保留目前檔案並結束此項目的復原？
+{0}</value></data>
+  <data name="ElevatedRetryConfirm" xml:space="preserve"><value>請確認以下完整目標、動作及內容雜湊。僅執行此清單中的失敗項目。</value></data>
 </root>

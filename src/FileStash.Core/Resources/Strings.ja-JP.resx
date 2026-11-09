@@ -182,4 +182,8 @@
   <data name="WriteFailedDetail" xml:space="preserve">
     <value>書き込みに失敗しました：{0}</value>
   </data>
+  <data name="BlobIntegrityFailed" xml:space="preserve"><value>スナップショットの整合性を確認できません。</value></data>
+  <data name="RecoveryNeedsReview" xml:space="preserve"><value>書き込み結果の確認が必要です。対象を確認し、現在のファイルを保持して解決できます。</value></data>
+  <data name="RecoveryNotCommitted" xml:space="preserve"><value>書き込みは未確定です。確認してから再試行してください。</value></data>
+  <data name="RetryAuthorizationChanged" xml:space="preserve"><value>再試行の対象またはファイルが変更されました。再確認してください。</value></data>
 </root>

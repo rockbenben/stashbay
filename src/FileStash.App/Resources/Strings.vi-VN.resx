@@ -981,4 +981,8 @@
     <value>Xóa tất cả</value>
   </data>
   <data name="ViewModeIcons" xml:space="preserve"><value>Biểu tượng</value></data>
+  <data name="KeepCurrentButton" xml:space="preserve"><value>Giữ tệp hiện tại</value></data>
+  <data name="KeepCurrentConfirm" xml:space="preserve"><value>Giữ tệp hiện tại và kết thúc khôi phục mục này?
+{0}</value></data>
+  <data name="ElevatedRetryConfirm" xml:space="preserve"><value>Xác nhận đường dẫn đầy đủ, thao tác và mã băm. Chỉ thử lại các mục lỗi trong danh sách này.</value></data>
 </root>

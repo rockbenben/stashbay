@@ -25,6 +25,35 @@ public sealed class SettingsServiceTests : IDisposable
     }
 
     [Fact]
+    public void ImportStartupPreference_FirstRun_PersistsInstallerChoice()
+    {
+        _service.Load();
+        _service.ImportStartupPreference(true);
+        _service.Load();
+
+        Assert.True(_service.Current.StartWithWindows);
+    }
+
+    [Fact]
+    public void ImportStartupPreference_SavedOptOut_IsPreserved()
+    {
+        _service.Save(new AppSettings { StartWithWindows = false });
+        _service.ImportStartupPreference(true);
+        _service.Load();
+
+        Assert.False(_service.Current.StartWithWindows);
+    }
+
+    [Fact]
+    public void ImportStartupPreference_NoStartupEntry_DoesNotCreateSettings()
+    {
+        _service.ImportStartupPreference(false);
+
+        Assert.False(_service.Current.StartWithWindows);
+        Assert.False(File.Exists(_paths.SettingsPath));
+    }
+
+    [Fact]
     public void Load_WhenFileMissing_ShouldReturnDefaults()
     {
         _service.Load();

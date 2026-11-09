@@ -981,4 +981,8 @@
     <value>مسح الكل</value>
   </data>
   <data name="ViewModeIcons" xml:space="preserve"><value>أيقونات</value></data>
+  <data name="KeepCurrentButton" xml:space="preserve"><value>الاحتفاظ بالملف الحالي</value></data>
+  <data name="KeepCurrentConfirm" xml:space="preserve"><value>هل تريد الاحتفاظ بالملف الحالي وإنهاء استعادة هذا العنصر؟
+{0}</value></data>
+  <data name="ElevatedRetryConfirm" xml:space="preserve"><value>أكد المسارات الكاملة والإجراءات والبصمات أدناه. ستتم إعادة محاولة هذه العناصر الفاشلة فقط.</value></data>
 </root>

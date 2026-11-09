@@ -981,4 +981,8 @@
     <value>清空全部</value>
   </data>
   <data name="ViewModeIcons" xml:space="preserve"><value>图标</value></data>
+  <data name="KeepCurrentButton" xml:space="preserve"><value>保留当前文件</value></data>
+  <data name="KeepCurrentConfirm" xml:space="preserve"><value>保留当前文件并结束此条目的恢复？
+{0}</value></data>
+  <data name="ElevatedRetryConfirm" xml:space="preserve"><value>请确认以下完整目标、动作及内容哈希。仅执行此列表中的失败项。</value></data>
 </root>

@@ -78,6 +78,8 @@ public sealed class ApplyPlanner : IApplyPlanner
                 Source = entry,
                 TargetPath = targetPath,
                 State = state,
+                ExpectedTargetSha256 = state == PlannedState.Overwrite
+                    ? await TryGetTargetHashAsync(targetPath, ct) : null,
                 Action = action,
                 Warning = BuildWarning(targetPath, state),
                 ItemId = item.Id,
@@ -197,6 +199,12 @@ public sealed class ApplyPlanner : IApplyPlanner
         }
 
         return !PathUtil.IsUnder(root, targetPath);
+    }
+
+    private static async Task<string?> TryGetTargetHashAsync(string path, CancellationToken ct)
+    {
+        try { return await HashUtil.ComputeFileSha256Async(path, ct); }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { return null; }
     }
 
     private static async Task<PlannedState> DetermineStateAsync(string targetPath, StashEntry entry, CancellationToken ct)

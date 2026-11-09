@@ -374,6 +374,9 @@ public sealed class ApplyExecutorTests : IAsyncLifetime
 
     private sealed class FailingFileWriter(Exception exception) : IAtomicFileWriter
     {
+        public Task<bool> CreateAsync(string temporaryPath, string targetPath, CancellationToken ct) =>
+            Task.FromException<bool>(exception);
+
         public Task<bool> ReplaceAsync(string temporaryPath, string targetPath, CancellationToken ct) =>
             Task.FromException<bool>(exception);
     }

@@ -1,3 +1,4 @@
+using System.IO;
 using System.Diagnostics;
 
 namespace FileStash.App.Services;
@@ -10,7 +11,7 @@ public static class ElevatedRetryLauncher
     {
         var executablePath = Environment.ProcessPath;
 
-        if (string.IsNullOrEmpty(executablePath))
+        if (string.IsNullOrEmpty(executablePath) || !Guid.TryParseExact(operationId, "N", out _))
         {
             return false;
         }
@@ -19,13 +20,23 @@ public static class ElevatedRetryLauncher
         {
             // 提权进程**不参与单实例检查**（命令行的 --elevated-retry 会被豁免），
             // 否则它会被管道转发出去、随即退出，重试根本不会执行
-            Process.Start(new ProcessStartInfo
+            var startInfo = new ProcessStartInfo
             {
                 FileName = executablePath,
-                Arguments = $"--elevated-retry {operationId}",
                 UseShellExecute = true,
                 Verb = "runas",
-            });
+            };
+            startInfo.ArgumentList.Add("--elevated-retry");
+            startInfo.ArgumentList.Add(operationId);
+            var redirected = Environment.GetEnvironmentVariable(FileStash.Core.Utils.AppPaths.HomeVariable);
+            if (string.IsNullOrWhiteSpace(redirected))
+                redirected = Environment.GetEnvironmentVariable(FileStash.Core.Utils.AppPaths.LegacyHomeVariable);
+            if (!string.IsNullOrWhiteSpace(redirected))
+            {
+                startInfo.ArgumentList.Add("--elevated-home");
+                startInfo.ArgumentList.Add(Path.GetFullPath(redirected));
+            }
+            Process.Start(startInfo);
 
             return true;
         }

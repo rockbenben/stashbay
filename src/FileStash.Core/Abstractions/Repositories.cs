@@ -17,6 +17,8 @@ public interface IStashGroupRepository
 
 public interface IStashItemRepository
 {
+    Task SaveSnapshotAsync(StashItem item, IReadOnlyList<StashEntry> entries, bool create, CancellationToken ct);
+
     Task<IReadOnlyList<StashItem>> GetByGroupAsync(string groupId, CancellationToken ct);
 
     Task<IReadOnlyList<StashItem>> GetByIdsAsync(IReadOnlyList<string> ids, CancellationToken ct);

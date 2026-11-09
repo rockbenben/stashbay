@@ -18,16 +18,57 @@ public sealed record TargetSpec(
     bool TreatTargetAsFileName = false);
 
 /// <summary>计划里的一个条目。</summary>
-public sealed class PlannedEntry
+public sealed class PlannedEntry : System.ComponentModel.INotifyPropertyChanged
 {
     public required StashEntry Source { get; init; }
 
-    public required string TargetPath { get; set; }
+    public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+    private string _targetPath = string.Empty;
+    private string? _originalTargetPath;
+    public required string TargetPath
+    {
+        get => _targetPath;
+        set
+        {
+            _originalTargetPath ??= value;
+            _targetPath = value;
+            PropertyChanged?.Invoke(this, new(nameof(TargetPath)));
+        }
+    }
 
     public PlannedState State { get; set; }
 
+    public string? ExpectedTargetSha256 { get; init; }
+    public bool RequireBackup { get; init; }
+
     /// <summary>用户可在预览中修改。</summary>
-    public PlannedAction Action { get; set; }
+    private PlannedAction _action;
+    public PlannedAction Action
+    {
+        get => _action;
+        set
+        {
+            if (_action == PlannedAction.Rename && value != PlannedAction.Rename)
+                TargetPath = _originalTargetPath!;
+            if (value == PlannedAction.Rename && _action != PlannedAction.Rename
+                && File.Exists(TargetPath))
+            {
+                var directory = Path.GetDirectoryName(TargetPath)!;
+                var name = Path.GetFileNameWithoutExtension(TargetPath);
+                var extension = Path.GetExtension(TargetPath);
+                var index = 2;
+                string candidate;
+                do
+                {
+                    candidate = Path.Combine(directory, $"{name} ({index++}){extension}");
+                }
+                while (File.Exists(candidate) || Directory.Exists(candidate));
+                TargetPath = candidate;
+            }
+            _action = value;
+            PropertyChanged?.Invoke(this, new(nameof(Action)));
+        }
+    }
 
     /// <summary>如"目标有未提交改动"、"只读文件"。</summary>
     public string? Warning { get; set; }
@@ -39,13 +80,11 @@ public sealed class PlannedEntry
     public string? ItemDisplayName { get; init; }
 
     /// <summary>
-    /// 这一行要不要人当场决定：只有"会被覆盖"与"根本写不了"的行需要。
+    /// 这一行要不要人当场决定：只有"会被覆盖"的行需要。
     /// 每个数据档都摆一颗下拉的话，24 行的表键盘要走 81 站，
     /// 而绝大多数行没有可决定的东西。
     /// </summary>
-    public bool NeedsDecision => State is PlannedState.Overwrite
-        or PlannedState.TypeConflict
-        or PlannedState.Invalid;
+    public bool NeedsDecision => State == PlannedState.Overwrite;
 }
 
 /// <summary>一次应用的完整计划。</summary>
@@ -92,3 +131,7 @@ public sealed class UndoResult
 
     public bool HasIssues => Skipped > 0 || Failed > 0;
 }
+
+/// <summary>A frozen selection presented for explicit retry approval.</summary>
+public sealed record RetryEntry(long Id, string TargetPath, PlannedAction Action, string Sha256,
+    string? CurrentSha256, string? CurrentIdentity, bool TargetInspected = true);

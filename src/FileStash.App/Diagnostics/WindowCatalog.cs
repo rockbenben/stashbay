@@ -47,6 +47,14 @@ internal static class WindowCatalog
             new("MainWindow.Compact", () => CreateMainWindow(services, viewModel, compact: true),
                 (window, provider) => SelectGroup(window, provider, viewModel, defaultBox)),
 
+            new("MainWindow.Compact.Narrow", () => CreateMainWindow(services, viewModel, compact: true),
+                async (window, provider) =>
+                {
+                    await SelectGroup(window, provider, viewModel, defaultBox);
+                    window.Width = window.MinWidth;
+                    await Pump(window);
+                }),
+
             new("MainWindow.Compact.ViewList", () => CreateMainWindow(services, viewModel, compact: true),
                 async (window, provider) =>
                 {

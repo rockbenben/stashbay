@@ -16,6 +16,10 @@ public static class Strings
 {
     private static readonly ResourceManager ResourceManager =
         new("FileStash.Core.Resources.Strings", typeof(Strings).Assembly);
+    public static string BlobIntegrityFailed => Get(nameof(BlobIntegrityFailed));
+    public static string RecoveryNeedsReview => Get(nameof(RecoveryNeedsReview));
+    public static string RecoveryNotCommitted => Get(nameof(RecoveryNotCommitted));
+    public static string RetryAuthorizationChanged => Get(nameof(RetryAuthorizationChanged));
     public static string BackupExpired => Get(nameof(BackupExpired));
     public static string BlobNotFound => Get(nameof(BlobNotFound));
     public static string BranchChangedText => Get(nameof(BranchChangedText));

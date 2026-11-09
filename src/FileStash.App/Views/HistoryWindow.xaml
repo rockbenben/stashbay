@@ -66,6 +66,7 @@
             <!-- 明细 -->
             <DataGrid Grid.Column="1"
                       ItemsSource="{Binding Entries}"
+                      SelectedItem="{Binding SelectedEntry}"
                       AutoGenerateColumns="False"
                       IsReadOnly="True"
                       CanUserAddRows="False"
@@ -110,6 +111,8 @@
                     ToolTip="{x:Static app:Strings.UndoNeedsWrite}"
                     Command="{Binding UndoCommand}"
                     IsEnabled="{Binding CanUndoSelected}" />
+            <Button Content="{x:Static app:Strings.KeepCurrentButton}"
+                    Margin="6,0,0,0" Command="{Binding KeepCurrentCommand}" IsEnabled="{Binding CanKeepCurrent}" />
             <Button Content="{x:Static app:Strings.OpenTargetFolderButton}"
                     Margin="6,0,0,0"
                     Command="{Binding OpenTargetFolderCommand}"

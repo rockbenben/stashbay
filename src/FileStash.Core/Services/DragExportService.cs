@@ -16,7 +16,6 @@ public sealed class DragExportService : IDragExportService
     private readonly IStashEntryRepository _entries;
     private readonly IBlobStore _blobStore;
     private readonly AppPaths _paths;
-    private readonly PathMapper _mapper = new();
 
     public DragExportService(IStashEntryRepository entries, IBlobStore blobStore, AppPaths paths)
     {
@@ -32,65 +31,40 @@ public sealed class DragExportService : IDragExportService
             return [];
         }
 
+        await using var storageLease = await StorageWriteLease.AcquireAsync(_blobStore, ct);
         var exportRoot = Path.Combine(_paths.ExportDirectory, Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(exportRoot);
 
-        var context = new PathMapper.MappingContext();
+        var names = new PathMapper.MappingContext();
         var topLevel = new List<string>();
-
         foreach (var item in items)
         {
             ct.ThrowIfCancellationRequested();
-
+            var name = Path.GetFileName(Path.TrimEndingDirectorySeparator(item.SourcePath));
+            var top = Path.Combine(exportRoot, names.ReserveFlattenName(name));
             var entries = await _entries.GetByItemAsync(item.Id, ct);
-            var itemTopLevel = new List<string>();
+            if (entries.Count == 0 && item.Kind == StashItemKind.File)
+                throw new FileNotFoundException(item.SourcePath);
+            if (item.Kind == StashItemKind.Folder)
+                Directory.CreateDirectory(top);
 
             foreach (var entry in entries)
             {
                 ct.ThrowIfCancellationRequested();
-
-                var targetPath = _mapper.Map(item, entry, new TargetSpec(TargetMode.DragExport, null, StructureMode.ItemOnly), context, exportRoot);
-
-                if (entry.IsDirectory || entry.Sha256 is null)
-                {
-                    // 空目录：建出来
+                var source = Path.Combine(item.RootPath, entry.RelativePath);
+                var inner = item.Kind == StashItemKind.File ? string.Empty
+                    : PathUtil.GetRelative(item.SourcePath, source);
+                var targetPath = string.IsNullOrEmpty(inner) ? top : Path.Combine(top, inner);
+                if (!PathUtil.IsUnder(exportRoot, targetPath))
+                    throw new IOException(targetPath);
+                if (entry.IsDirectory)
                     Directory.CreateDirectory(targetPath);
-                }
-                else
-                {
-                    var directory = Path.GetDirectoryName(targetPath);
-
-                    if (!string.IsNullOrEmpty(directory))
-                    {
-                        Directory.CreateDirectory(directory);
-                    }
-
+                else if (entry.Sha256 is not null)
                     await _blobStore.CopyBlobToAsync(entry.Sha256, targetPath, ct);
-                }
-
-                itemTopLevel.Add(targetPath);
             }
-
-            // 顶层路径 = 这一项的落点里第一层（拖到桌面的是文件夹本身或文件本身）
-            foreach (var path in itemTopLevel)
-            {
-                var relative = PathUtil.GetRelative(exportRoot, path);
-                var firstSegment = PathUtil.SplitSegments(relative).FirstOrDefault();
-
-                if (firstSegment is null)
-                {
-                    continue;
-                }
-
-                var top = Path.Combine(exportRoot, firstSegment);
-
-                if (!topLevel.Contains(top, StringComparer.OrdinalIgnoreCase))
-                {
-                    topLevel.Add(top);
-                }
-            }
+            if (entries.Count > 0 || item.Kind == StashItemKind.Folder)
+                topLevel.Add(top);
         }
-
         return topLevel;
     }
 }

@@ -24,6 +24,10 @@ public interface IApplyExecutor
 
     /// <summary>重试一次操作里失败的条目（"以管理员身份重试失败项"走这里）。</summary>
     Task<int> RetryFailedAsync(string operationId, CancellationToken ct);
+    Task<IReadOnlyList<RetryEntry>> PrepareRetryAsync(string operationId, CancellationToken ct, bool inspectTargets = true);
+    Task<int> RetryApprovedAsync(string operationId, IReadOnlyList<RetryEntry> approved, CancellationToken ct);
+    Task<int> RecoverAsync(CancellationToken ct);
+    Task KeepCurrentAsync(string operationId, long entryId, CancellationToken ct);
 }
 
 /// <summary>
@@ -32,6 +36,12 @@ public interface IApplyExecutor
 public interface IAtomicFileWriter
 {
     Task<bool> ReplaceAsync(string temporaryPath, string targetPath, CancellationToken ct);
+
+    /// <summary>Only commit when the destination is still absent.</summary>
+    Task<bool> CreateAsync(string temporaryPath, string targetPath, CancellationToken ct);
+    string? GetIdentity(string path) => null;
+    IDisposable? GuardTarget(string path) => null;
+
 }
 
 /// <summary>查是谁占着这个文件。</summary>

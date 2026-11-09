@@ -182,4 +182,8 @@
   <data name="WriteFailedDetail" xml:space="preserve">
     <value>Schreibvorgang fehlgeschlagen: {0}</value>
   </data>
+  <data name="BlobIntegrityFailed" xml:space="preserve"><value>Integritätsprüfung des Schnappschusses fehlgeschlagen.</value></data>
+  <data name="RecoveryNeedsReview" xml:space="preserve"><value>Schreibergebnis prüfen. Danach kann die aktuelle Datei beibehalten werden.</value></data>
+  <data name="RecoveryNotCommitted" xml:space="preserve"><value>Schreibvorgang wurde nicht übernommen. Vor dem Wiederholen prüfen.</value></data>
+  <data name="RetryAuthorizationChanged" xml:space="preserve"><value>Datei oder Umfang des Wiederholens geändert. Erneut prüfen.</value></data>
 </root>

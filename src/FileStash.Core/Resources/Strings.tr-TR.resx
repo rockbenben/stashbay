@@ -182,4 +182,8 @@
   <data name="WriteFailedDetail" xml:space="preserve">
     <value>Yazma başarısız: {0}</value>
   </data>
+  <data name="BlobIntegrityFailed" xml:space="preserve"><value>Anlık görüntü bütünlüğü doğrulanamadı.</value></data>
+  <data name="RecoveryNeedsReview" xml:space="preserve"><value>Yazma sonucunu ve hedefi denetleyin, ardından mevcut dosyayı korumayı seçin.</value></data>
+  <data name="RecoveryNotCommitted" xml:space="preserve"><value>Yazma tamamlanmadı. Yeniden denemeden önce inceleyin.</value></data>
+  <data name="RetryAuthorizationChanged" xml:space="preserve"><value>Dosya veya yeniden deneme kapsamı değişti. Tekrar inceleyin.</value></data>
 </root>

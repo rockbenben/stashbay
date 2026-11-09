@@ -182,4 +182,8 @@
   <data name="WriteFailedDetail" xml:space="preserve">
     <value>เขียนไม่สำเร็จ: {0}</value>
   </data>
+  <data name="BlobIntegrityFailed" xml:space="preserve"><value>ตรวจสอบความสมบูรณ์ของสำเนาไม่สำเร็จ</value></data>
+  <data name="RecoveryNeedsReview" xml:space="preserve"><value>ต้องตรวจสอบผลการเขียน ตรวจสอบปลายทางแล้วเลือกเก็บไฟล์ปัจจุบัน</value></data>
+  <data name="RecoveryNotCommitted" xml:space="preserve"><value>ยังไม่ได้ยืนยันการเขียน โปรดตรวจสอบก่อนลองใหม่</value></data>
+  <data name="RetryAuthorizationChanged" xml:space="preserve"><value>ไฟล์หรือขอบเขตการลองใหม่เปลี่ยนไป โปรดตรวจสอบอีกครั้ง</value></data>
 </root>

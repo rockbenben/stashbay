@@ -156,6 +156,8 @@ public static class FolderEnumerator
             }
         }
 
+        if (entries.Count == 0 && warnings.Count == 0)
+            entries.Add(new EnumeratedEntry(PathUtil.GetRelative(root, folderPath), folderPath, true, 0, DateTime.MinValue));
         return new EnumerationResult(entries, warnings);
     }
 }

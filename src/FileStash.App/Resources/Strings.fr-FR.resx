@@ -981,4 +981,8 @@
     <value>Tout vider</value>
   </data>
   <data name="ViewModeIcons" xml:space="preserve"><value>Icônes</value></data>
+  <data name="KeepCurrentButton" xml:space="preserve"><value>Conserver le fichier actuel</value></data>
+  <data name="KeepCurrentConfirm" xml:space="preserve"><value>Conserver le fichier actuel et terminer la récupération de cette entrée ?
+{0}</value></data>
+  <data name="ElevatedRetryConfirm" xml:space="preserve"><value>Confirmez les chemins complets, actions et empreintes ci-dessous. Seules ces entrées en échec seront réessayées.</value></data>
 </root>

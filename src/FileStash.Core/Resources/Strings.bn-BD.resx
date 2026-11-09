@@ -182,4 +182,8 @@
   <data name="WriteFailedDetail" xml:space="preserve">
     <value>লেখা ব্যর্থ: {0}</value>
   </data>
+  <data name="BlobIntegrityFailed" xml:space="preserve"><value>স্ন্যাপশটের অখণ্ডতা যাচাই ব্যর্থ হয়েছে।</value></data>
+  <data name="RecoveryNeedsReview" xml:space="preserve"><value>লেখার ফলাফল ও গন্তব্য পরীক্ষা করে বর্তমান ফাইল রাখার বিকল্প বেছে নিন।</value></data>
+  <data name="RecoveryNotCommitted" xml:space="preserve"><value>লেখা সম্পূর্ণ হয়নি। আবার চেষ্টা করার আগে পরীক্ষা করুন।</value></data>
+  <data name="RetryAuthorizationChanged" xml:space="preserve"><value>ফাইল বা পুনরায় চেষ্টার পরিসর বদলেছে। আবার পরীক্ষা করুন।</value></data>
 </root>

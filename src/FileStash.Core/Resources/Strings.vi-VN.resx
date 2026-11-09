@@ -182,4 +182,8 @@
   <data name="WriteFailedDetail" xml:space="preserve">
     <value>Ghi thất bại: {0}</value>
   </data>
+  <data name="BlobIntegrityFailed" xml:space="preserve"><value>Không xác minh được tính toàn vẹn của bản chụp.</value></data>
+  <data name="RecoveryNeedsReview" xml:space="preserve"><value>Cần kiểm tra kết quả ghi. Kiểm tra đích rồi chọn giữ tệp hiện tại.</value></data>
+  <data name="RecoveryNotCommitted" xml:space="preserve"><value>Chưa hoàn tất ghi. Hãy kiểm tra trước khi thử lại.</value></data>
+  <data name="RetryAuthorizationChanged" xml:space="preserve"><value>Tệp hoặc phạm vi thử lại đã thay đổi. Hãy kiểm tra lại.</value></data>
 </root>

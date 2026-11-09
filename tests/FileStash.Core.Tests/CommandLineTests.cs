@@ -6,6 +6,14 @@ namespace FileStash.Core.Tests;
 public sealed class CommandLineTests
 {
     [Fact]
+    public void ElevatedHomeMustOnlyApplyToRetryProcess()
+    {
+        Assert.Null(CommandLine.Parse(["--elevated-home", @"C:\fixture"]).RetryHome);
+        Assert.Equal(@"C:\fixture", CommandLine.Parse(
+            ["--elevated-home", @"C:\fixture", "--elevated-retry", "operation"]).RetryHome);
+    }
+
+    [Fact]
     public void Parse_WithNoArguments_ShouldBeEmpty()
     {
         var command = CommandLine.Parse([]);

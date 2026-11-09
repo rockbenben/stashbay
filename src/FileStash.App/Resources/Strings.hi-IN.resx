@@ -981,4 +981,8 @@
     <value>सब साफ़ करें</value>
   </data>
   <data name="ViewModeIcons" xml:space="preserve"><value>आइकन</value></data>
+  <data name="KeepCurrentButton" xml:space="preserve"><value>वर्तमान फ़ाइल रखें</value></data>
+  <data name="KeepCurrentConfirm" xml:space="preserve"><value>वर्तमान फ़ाइल रखकर इस प्रविष्टि की पुनर्प्राप्ति पूरी करें?
+{0}</value></data>
+  <data name="ElevatedRetryConfirm" xml:space="preserve"><value>नीचे पूर्ण पथ, क्रियाएँ और हैश की पुष्टि करें। केवल इन विफल प्रविष्टियों का पुनः प्रयास होगा।</value></data>
 </root>

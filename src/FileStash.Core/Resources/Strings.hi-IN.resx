@@ -182,4 +182,8 @@
   <data name="WriteFailedDetail" xml:space="preserve">
     <value>लेखन विफल: {0}</value>
   </data>
+  <data name="BlobIntegrityFailed" xml:space="preserve"><value>स्नैपशॉट की अखंडता की जाँच विफल हुई।</value></data>
+  <data name="RecoveryNeedsReview" xml:space="preserve"><value>लेखन परिणाम की समीक्षा करें। लक्ष्य जाँचकर वर्तमान फ़ाइल रखने का विकल्प चुनें।</value></data>
+  <data name="RecoveryNotCommitted" xml:space="preserve"><value>लेखन पूरा नहीं हुआ। दोबारा प्रयास से पहले समीक्षा करें।</value></data>
+  <data name="RetryAuthorizationChanged" xml:space="preserve"><value>फ़ाइल या पुनः प्रयास का दायरा बदल गया। फिर जाँचें।</value></data>
 </root>

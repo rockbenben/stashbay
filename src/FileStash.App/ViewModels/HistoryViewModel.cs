@@ -54,9 +54,11 @@ public sealed partial class OperationViewModel : ObservableObject
 /// <summary>历史里的一条条目。</summary>
 public sealed class OperationEntryViewModel(OperationEntry entry)
 {
+        public long Id => entry.Id;
+    public bool NeedsReview => entry.Pending || entry.UndoPending;
     public string TargetPath => entry.TargetPath;
 
-    public string ActionText => entry.Action switch
+    public string ActionText => entry.Pending ? Strings.OpRunning : entry.Action switch
     {
         EntryResult.Created => Strings.ResultCreated,
         EntryResult.Overwritten => Strings.ResultOverwritten,
@@ -102,6 +104,11 @@ public sealed partial class HistoryViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(CanUndoSelected))]
     private OperationViewModel? _selectedOperation;
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanKeepCurrent))]
+    private OperationEntryViewModel? _selectedEntry;
+
+    public bool CanKeepCurrent => SelectedEntry?.NeedsReview == true;
     public bool HasSelection => SelectedOperation is not null;
 
     /// <summary>
@@ -113,6 +120,7 @@ public sealed partial class HistoryViewModel : ObservableObject
     [RelayCommand]
     public async Task LoadAsync()
     {
+        await _executor.RecoverAsync(CancellationToken.None);
         var operations = await _operations.GetAllAsync(CancellationToken.None);
         var groups = await _groups.GetAllAsync(CancellationToken.None);
         var groupNames = groups.ToDictionary(group => group.Id, group => group.Name);
@@ -141,6 +149,7 @@ public sealed partial class HistoryViewModel : ObservableObject
 
     private async Task LoadEntriesAsync(OperationViewModel? operation)
     {
+        SelectedEntry = null;
         Entries.Clear();
 
         if (operation is null)
@@ -149,6 +158,7 @@ public sealed partial class HistoryViewModel : ObservableObject
         }
 
         var entries = await _entries.GetByOperationAsync(operation.Id, CancellationToken.None);
+        if (SelectedOperation?.Id != operation.Id) return;
 
         foreach (var entry in entries)
         {
@@ -185,6 +195,19 @@ public sealed partial class HistoryViewModel : ObservableObject
         _dialogs.ShowInfo(Strings.UndoButton, message);
 
         await LoadAsync();
+    }
+
+    [RelayCommand]
+    private async Task KeepCurrentAsync()
+    {
+        var operation = SelectedOperation;
+        var entry = SelectedEntry;
+        if (operation is null || entry?.NeedsReview != true) return;
+        if (!_dialogs.Confirm(Strings.KeepCurrentButton,
+                Strings.Format(Strings.KeepCurrentConfirm, entry.TargetPath))) return;
+        await _executor.KeepCurrentAsync(operation.Id, entry.Id, CancellationToken.None);
+        await LoadAsync();
+        await LoadEntriesAsync(SelectedOperation);
     }
 
     /// <summary>打开目标文件夹。</summary>

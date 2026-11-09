@@ -981,4 +981,8 @@
     <value>Очистить всё</value>
   </data>
   <data name="ViewModeIcons" xml:space="preserve"><value>Значки</value></data>
+  <data name="KeepCurrentButton" xml:space="preserve"><value>Сохранить текущий файл</value></data>
+  <data name="KeepCurrentConfirm" xml:space="preserve"><value>Сохранить текущий файл и завершить восстановление этой записи?
+{0}</value></data>
+  <data name="ElevatedRetryConfirm" xml:space="preserve"><value>Подтвердите полные пути, действия и хеши. Будут повторены только эти неудачные записи.</value></data>
 </root>

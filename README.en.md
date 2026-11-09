@@ -20,7 +20,7 @@ A file transfer station for Windows. **Everything runs locally: no uploads, no n
 * **Summoned at the cursor**: the global hotkey opens the shelf on the monitor your mouse is actually on. No sliding back to the primary screen.
 * **Shake to stash**: select files in Explorer and shake the mouse left and right to stash those files.
 * **Floating widget**: an unobtrusive edge ball that expands the shelf on click or short drag, snapping magnetically to screen borders on release.
-* **Four buttons on top, no more**: pin, add, expand, close. The two actions with consequences (write back to the original locations, clear everything) sit in the status bar with words on them, so nothing has to be guessed from a glyph.
+* **Four buttons on top, no more**: pin, add, expand, close. View, write back, and clear all use fixed-size icons with tooltips in the status bar, staying on one row even in a narrow window.
 
 ### Holds your changes across a branch switch
 * **Finds the repository**: when stashed files come from a Git repo, the write-back target is the repo root; switching branches raises a tray notification and one click writes everything back in place.
@@ -51,7 +51,7 @@ A file transfer station for Windows. **Everything runs locally: no uploads, no n
 | **Write-back targets** | Local disks, network drives / UNC paths, Git repositories |
 | **Large files** | Single files over 2 GB (paths longer than 260 characters too) |
 | **Where data lives** | Everything under `%LOCALAPPDATA%\StashBay\`; uninstalling removes the program and settings but keeps this folder — delete it yourself for a clean sweep |
-| **Requirements** | .NET 10; the installer needs no admin rights and lands in `%LOCALAPPDATA%\Programs\StashBay` |
+| **Requirements** | The installer and self-contained portable builds include the runtime; compact builds require the .NET 10 Desktop Runtime. The installer needs no admin rights and lands in `%LOCALAPPDATA%\Programs\StashBay` |
 
 ---
 
@@ -133,6 +133,7 @@ Old `%LOCALAPPDATA%\FileStash\` is still honored: if that directory is found on 
 
 ## Known limitations
 
+* **Auto-start uses standard privileges.** Saving the setting applies it immediately. Elevated auto-start is not supported; failed write-back entries can be retried with administrator privileges through UAC.
 * **Windows only.** It is WPF plus Windows Shell integration (context menu, Send To, RestartManager lock detection). No cross-platform plans.
 * **Stashes copies, not links.** Content is snapshotted when a file enters the box, so later edits to the original don't touch the stashed copy — and edits on the shelf never touch the source file.
 * **One instance.** Starting it again forwards the arguments to the first instance instead of opening a second window.

@@ -981,4 +981,8 @@
     <value>ล้างทั้งหมด</value>
   </data>
   <data name="ViewModeIcons" xml:space="preserve"><value>ไอคอน</value></data>
+  <data name="KeepCurrentButton" xml:space="preserve"><value>เก็บไฟล์ปัจจุบัน</value></data>
+  <data name="KeepCurrentConfirm" xml:space="preserve"><value>เก็บไฟล์ปัจจุบันและจบการกู้คืนรายการนี้หรือไม่?
+{0}</value></data>
+  <data name="ElevatedRetryConfirm" xml:space="preserve"><value>ยืนยันเส้นทางเต็ม การกระทำ และแฮชด้านล่าง จะลองใหม่เฉพาะรายการที่ล้มเหลวในรายการนี้</value></data>
 </root>

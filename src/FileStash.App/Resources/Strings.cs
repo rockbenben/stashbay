@@ -16,6 +16,9 @@ public static class Strings
 {
     private static readonly ResourceManager ResourceManager =
         new("FileStash.App.Resources.Strings", typeof(Strings).Assembly);
+    public static string KeepCurrentButton => Get(nameof(KeepCurrentButton));
+    public static string KeepCurrentConfirm => Get(nameof(KeepCurrentConfirm));
+    public static string ElevatedRetryConfirm => Get(nameof(ElevatedRetryConfirm));
     public static string AbortButton => Get(nameof(AbortButton));
     public static string AboutTagline => Get(nameof(AboutTagline));
     public static string AboutTitle => Get(nameof(AboutTitle));

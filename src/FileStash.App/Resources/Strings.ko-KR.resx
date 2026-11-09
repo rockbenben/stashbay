@@ -981,4 +981,8 @@
     <value>모두 지우기</value>
   </data>
   <data name="ViewModeIcons" xml:space="preserve"><value>아이콘</value></data>
+  <data name="KeepCurrentButton" xml:space="preserve"><value>현재 파일 유지</value></data>
+  <data name="KeepCurrentConfirm" xml:space="preserve"><value>현재 파일을 유지하고 이 항목의 복구를 마칠까요?
+{0}</value></data>
+  <data name="ElevatedRetryConfirm" xml:space="preserve"><value>아래 전체 경로, 작업 및 해시를 확인하세요. 이 목록의 실패한 항목만 다시 시도합니다.</value></data>
 </root>

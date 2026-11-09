@@ -21,6 +21,8 @@ public sealed record CommandLine(
     bool UnregisterShell,
     bool Quit)
 {
+    public string? RetryHome { get; init; }
+
     public bool IsEmpty => AddPaths.Count == 0
         && ApplyHerePath is null
         && !ApplyOriginal
@@ -36,6 +38,7 @@ public sealed record CommandLine(
         string? applyHere = null;
         string? group = null;
         string? elevatedRetry = null;
+        string? retryHome = null;
         var applyOriginal = false;
         var minimized = false;
         var show = false;
@@ -93,6 +96,10 @@ public sealed record CommandLine(
                     quit = true;
                     break;
 
+                case "--elevated-home":
+                    if (index + 1 < args.Count) retryHome = args[++index];
+                    break;
+
                 case "--elevated-retry":
                     if (index + 1 < args.Count)
                     {
@@ -103,6 +110,9 @@ public sealed record CommandLine(
             }
         }
 
-        return new CommandLine(addPaths, applyHere, applyOriginal, group, minimized, elevatedRetry, show, unregisterShell, quit);
+        return new CommandLine(addPaths, applyHere, applyOriginal, group, minimized, elevatedRetry, show, unregisterShell, quit)
+        {
+            RetryHome = elevatedRetry is null ? null : retryHome,
+        };
     }
 }

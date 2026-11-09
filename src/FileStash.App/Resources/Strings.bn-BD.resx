@@ -981,4 +981,8 @@
     <value>সব মুছুন</value>
   </data>
   <data name="ViewModeIcons" xml:space="preserve"><value>আইকন</value></data>
+  <data name="KeepCurrentButton" xml:space="preserve"><value>বর্তমান ফাইল রাখুন</value></data>
+  <data name="KeepCurrentConfirm" xml:space="preserve"><value>বর্তমান ফাইল রেখে এই এন্ট্রির পুনরুদ্ধার শেষ করবেন?
+{0}</value></data>
+  <data name="ElevatedRetryConfirm" xml:space="preserve"><value>নিচের সম্পূর্ণ পথ, কাজ এবং হ্যাশ নিশ্চিত করুন। শুধু এই ব্যর্থ এন্ট্রিগুলোতে আবার চেষ্টা করা হবে।</value></data>
 </root>

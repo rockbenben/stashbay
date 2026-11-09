@@ -439,10 +439,15 @@
                         <TextBlock Style="{StaticResource Text.Caption}" VerticalAlignment="Center" TextWrapping="Wrap"
                                    Text="{x:Static app:Strings.CompactFooter}"
                                    Visibility="{Binding HasNoItems, Converter={StaticResource BoolToVisibility}}" />
-                        <WrapPanel Visibility="{Binding HasNoItems, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}">
-                            <TextBlock Style="{StaticResource Text.Caption}" VerticalAlignment="Center" Margin="0,0,12,0"
-                                       Text="{Binding StatusSummary}" />
-                            <ToggleButton IsChecked="{Binding CompactIconView, Mode=TwoWay}" Width="26" Height="26" Margin="0,0,4,0" ToolTip="{x:Static app:Strings.ViewModeIcons}" AutomationProperties.Name="{x:Static app:Strings.ViewModeIcons}">
+                        <Grid x:Name="CompactStatusBar" Visibility="{Binding HasNoItems, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock x:Name="CompactStatistics" Style="{StaticResource Text.Caption}" VerticalAlignment="Center" Margin="0,0,8,0"
+                                       Text="{Binding StatusSummary}" TextTrimming="CharacterEllipsis" ToolTip="{Binding StatusSummary}" />
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <ToggleButton IsChecked="{Binding CompactIconView, Mode=TwoWay}" Width="28" Height="28" Margin="0,0,4,0" ToolTip="{x:Static app:Strings.ViewModeIcons}" AutomationProperties.Name="{x:Static app:Strings.ViewModeIcons}">
                                 <ToggleButton.Template>
                                     <ControlTemplate TargetType="ToggleButton">
                                         <Border x:Name="ViewToggle" CornerRadius="{DynamicResource Radius.Control}" Background="Transparent">
@@ -465,12 +470,20 @@
                                     </ControlTemplate>
                                 </ToggleButton.Template>
                             </ToggleButton>
-                            <Button Command="{Binding ApplyOriginalCommand}" Content="{x:Static app:Strings.ShelfApply}"
-                                    ToolTip="{x:Static app:Strings.TrayApplyOriginal}" Padding="7,3" Margin="0,0,4,0" />
-                            <Button Style="{StaticResource Button.Ghost}" Command="{Binding ClearAllBoxesCommand}"
-                                    Content="{x:Static app:Strings.ShelfClearAll}" ToolTip="{x:Static app:Strings.ClearAllBoxesButton}"
-                                    Padding="7,3" />
-                        </WrapPanel>
+                            <Button x:Name="CompactApplyButton" Style="{StaticResource Button.Ghost}" Command="{Binding ApplyOriginalCommand}"
+                                    ToolTip="{x:Static app:Strings.TrayApplyOriginal}" AutomationProperties.Name="{x:Static app:Strings.ShelfApply}"
+                                    Width="28" Height="28" Padding="0" Margin="0,0,4,0">
+                                <Path Data="M9 4L4 9L9 14M4 9H14A5 5 0 0 1 14 19H10" Stroke="{DynamicResource Brush.TextSecondary}"
+                                      StrokeThickness="1.6" Width="14" Height="14" Stretch="Uniform" />
+                            </Button>
+                            <Button x:Name="CompactClearButton" Style="{StaticResource Button.Ghost}" Command="{Binding ClearAllBoxesCommand}"
+                                    ToolTip="{x:Static app:Strings.ClearAllBoxesTooltip}" AutomationProperties.Name="{x:Static app:Strings.ShelfClearAll}"
+                                    Width="28" Height="28" Padding="0">
+                                <Path Data="M4 6H20M9 6V3H15V6M6 6L7 21H17L18 6M10 10V17M14 10V17" Stroke="{DynamicResource Brush.TextSecondary}"
+                                      StrokeThickness="1.6" Width="13" Height="14" Stretch="Uniform" />
+                            </Button>
+                            </StackPanel>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Border>
@@ -951,6 +964,10 @@
                     </Grid.RowDefinitions>
 
                     <Grid Grid.Row="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
@@ -987,8 +1004,10 @@
                                 </StackPanel>
                             </Border>
 
-                            <!-- 只有非"原位置"模式才要填目标路径 -->
-                            <Grid Margin="12,0,0,0"
+                        </StackPanel>
+
+                            <!-- 独立一行，让长语言的模式选项不会把路径和浏览按钮推到窗口外。 -->
+                            <Grid Grid.Row="1" Grid.ColumnSpan="3" Margin="0,8,0,0"
                                   VerticalAlignment="Center"
                                   Visibility="{Binding HasTargetPath, Converter={StaticResource BoolToVisibility}}">
                                 <Grid.ColumnDefinitions>
@@ -996,12 +1015,9 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBox Grid.Column="0"
-                                         MinWidth="220"
                                          Text="{Binding TargetPath, UpdateSourceTrigger=PropertyChanged}" />
                                 <Button WindowChrome.IsHitTestVisibleInChrome="True" Grid.Column="1" Margin="6,0,0,0" Style="{StaticResource Button.Picker}" ToolTip="{x:Static app:Strings.BrowseTargetTooltip}" AutomationProperties.Name="{x:Static app:Strings.BrowseTargetTooltip}" Command="{Binding BrowseTargetPathCommand}" />
                             </Grid>
-                        </StackPanel>
-
                         <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock VerticalAlignment="Center" Style="{StaticResource Text.Caption}" Text="{x:Static app:Strings.StructureLabel}" />
                             <ComboBox Width="120"

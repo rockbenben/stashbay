@@ -107,7 +107,7 @@ public sealed class BlobStore : IBlobStore
                 {
                     File.Move(tempPath, finalPath);
                 }
-                catch (IOException)
+                catch (IOException) when (File.Exists(finalPath))
                 {
                     // 并发写入同一内容：别人先落地了，丢掉自己这份即可
                     File.Delete(tempPath);

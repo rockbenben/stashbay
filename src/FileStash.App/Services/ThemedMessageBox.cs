@@ -5,10 +5,10 @@ namespace FileStash.App.Services;
 
 internal static class ThemedMessageBox
 {
-    public static MessageBoxResult Show(string message, string title, MessageBoxButton buttons, MessageBoxImage image) =>
-        Show(null, message, title, buttons, image);
+    public static MessageBoxResult Show(string message, string title, MessageBoxButton buttons, MessageBoxImage image, bool showInTaskbar = false) =>
+        Show(null, message, title, buttons, image, showInTaskbar);
 
-    public static MessageBoxResult Show(Window? owner, string message, string title, MessageBoxButton buttons, MessageBoxImage image)
+    public static MessageBoxResult Show(Window? owner, string message, string title, MessageBoxButton buttons, MessageBoxImage image, bool showInTaskbar = false)
     {
         if (App.InSmoke)
         {
@@ -17,7 +17,10 @@ internal static class ThemedMessageBox
             return buttons == MessageBoxButton.YesNo ? MessageBoxResult.No : MessageBoxResult.OK;
         }
 
-        var dialog = new MessageDialog(title, message, buttons == MessageBoxButton.YesNo);
+        var dialog = new MessageDialog(title, message, buttons == MessageBoxButton.YesNo)
+        {
+            ShowInTaskbar = showInTaskbar,
+        };
         owner ??= Application.Current?.Windows.OfType<Window>().FirstOrDefault(window => window.IsActive);
         if (owner is { IsVisible: true })
         {

@@ -27,6 +27,18 @@ public sealed class SettingsService : ISettingsService
 
     public AppSettings Current { get; private set; }
 
+    /// <summary>首次运行时接纳安装器已创建的启动项，不覆盖用户保存过的偏好。</summary>
+    public void ImportStartupPreference(bool enabled)
+    {
+        if (!enabled || File.Exists(_settingsPath))
+        {
+            return;
+        }
+
+        Current.StartWithWindows = true;
+        Save(Current);
+    }
+
     public void Load()
     {
         if (!File.Exists(_settingsPath))

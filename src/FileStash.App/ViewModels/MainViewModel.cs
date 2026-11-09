@@ -256,6 +256,7 @@ public sealed partial class MainViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(BusyText))]
     [NotifyPropertyChangedFor(nameof(HasProgress))]
+    [NotifyCanExecuteChangedFor(nameof(ClearAllBoxesCommand))]
     private bool _isBusy;
 
     /// <summary>
@@ -517,7 +518,9 @@ public sealed partial class MainViewModel : ObservableObject
         SelectedGroup = Groups.FirstOrDefault();
     }
 
-    [RelayCommand]
+    private bool CanClearAllBoxes() => !IsBusy;
+
+    [RelayCommand(CanExecute = nameof(CanClearAllBoxes))]
     private async Task ClearAllBoxesAsync()
     {
         var totalItems = Groups.Sum(group => group.ItemCount);
@@ -530,16 +533,31 @@ public sealed partial class MainViewModel : ObservableObject
             }
         }
 
-        var allGroups = await _groups.GetAllAsync(CancellationToken.None);
-        foreach (var group in allGroups)
+        IsBusy = true;
+        StatusText = Strings.ClearAllBoxesTitle;
+        try
         {
-            await _stash.DeleteGroupAsync(group.Id);
-        }
+            // SQLite's async API can execute synchronously. Cascading deletes must
+            // not block painting/input on the dispatcher, especially for large boxes.
+            await Task.Run(async () =>
+            {
+                var allGroups = await _groups.GetAllAsync(CancellationToken.None);
+                foreach (var group in allGroups)
+                {
+                    await _stash.DeleteGroupAsync(group.Id);
+                }
 
-        await _stash.CreateGroupAsync(Strings.DefaultGroupName);
-        await LoadGroupsAsync();
-        SelectedGroup = Groups.FirstOrDefault();
-        _dialogs.ShowInfo(Strings.ClearAllBoxesTitle, Strings.ClearAllBoxesDone);
+                await _stash.CreateGroupAsync(Strings.DefaultGroupName);
+            });
+            await LoadGroupsAsync();
+            SelectedGroup = Groups.FirstOrDefault();
+            _dialogs.ShowInfo(Strings.ClearAllBoxesTitle, Strings.ClearAllBoxesDone);
+        }
+        finally
+        {
+            IsBusy = false;
+            StatusText = Strings.StatusReady;
+        }
     }
 
     [RelayCommand]
@@ -1237,7 +1255,7 @@ public sealed partial class MainViewModel : ObservableObject
         var entries = await _operationEntries.GetByOperationAsync(operation.Id, CancellationToken.None);
 
         var toast = new ResultToast(operation, entries);
-        toast.UndoRequested += async () => await UndoLastAsync();
+        toast.UndoRequested += async () => await _executor.UndoAsync(operation.Id, CancellationToken.None);
         toast.Show();
     }
 

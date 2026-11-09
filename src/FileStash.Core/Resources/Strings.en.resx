@@ -182,4 +182,8 @@
   <data name="WriteFailedDetail" xml:space="preserve">
     <value>Write failed: {0}</value>
   </data>
+  <data name="BlobIntegrityFailed" xml:space="preserve"><value>Snapshot integrity verification failed.</value></data>
+  <data name="RecoveryNeedsReview" xml:space="preserve"><value>The write needs review. Check the target, then choose Keep current file to resolve it.</value></data>
+  <data name="RecoveryNotCommitted" xml:space="preserve"><value>The write was not committed. Review it before retrying.</value></data>
+  <data name="RetryAuthorizationChanged" xml:space="preserve"><value>The retry scope or file changed. Review it again.</value></data>
 </root>

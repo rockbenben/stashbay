@@ -981,4 +981,8 @@
     <value>Alle leeren</value>
   </data>
   <data name="ViewModeIcons" xml:space="preserve"><value>Symbole</value></data>
+  <data name="KeepCurrentButton" xml:space="preserve"><value>Aktuelle Datei behalten</value></data>
+  <data name="KeepCurrentConfirm" xml:space="preserve"><value>Aktuelle Datei behalten und Wiederherstellung dieses Eintrags beenden?
+{0}</value></data>
+  <data name="ElevatedRetryConfirm" xml:space="preserve"><value>Vollständige Ziele, Aktionen und Hashwerte prüfen. Nur diese fehlgeschlagenen Einträge werden wiederholt.</value></data>
 </root>
