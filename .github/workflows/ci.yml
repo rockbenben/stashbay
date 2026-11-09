@@ -104,6 +104,7 @@ jobs:
             $directory = $p -replace '^win-', 'publish-'
             dotnet publish src/FileStash.App -c Release -p:PublishProfile=$p -p:Version=$v -o "artifacts/$directory" --nologo
             if ($LASTEXITCODE) { exit $LASTEXITCODE }
+            Get-ChildItem "artifacts/$directory" -Filter '*.pdb' | Remove-Item -Force
           }
 
       - name: Azure login (for signing)
@@ -156,6 +157,19 @@ jobs:
           New-Item -ItemType Directory -Force -Path artifacts | Out-Null
           iscc "/DAppVersion=$v" $iss
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          "STASHBAY_INSTALLER=$PWD\artifacts\StashBay-$v-setup.exe" >> $env:GITHUB_ENV
+
+      - name: Sign installer (Azure Artifact Signing)
+        if: vars.AZURE_CLIENT_ID != ''
+        uses: azure/artifact-signing-action@v2
+        with:
+          endpoint: ${{ vars.ARTIFACT_SIGNING_ENDPOINT }}
+          signing-account-name: ${{ vars.ARTIFACT_SIGNING_ACCOUNT }}
+          certificate-profile-name: ${{ vars.ARTIFACT_SIGNING_PROFILE }}
+          files: ${{ env.STASHBAY_INSTALLER }}
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
 
       - name: Package + SHA256
         shell: pwsh
@@ -179,7 +193,12 @@ jobs:
           foreach ($arch in 'x64', 'arm64') {
             foreach ($form in '', '-needs-dotnet10') {
               $zip = "StashBay-$env:TAG-win-$arch$form.zip"
-              Compress-Archive -Path "$pub/publish-$arch$form/StashBay.exe" -DestinationPath $zip -Force
+              # Framework-dependent builds also require the native SQLite DLL.
+              $sourceDirectory = "$pub/publish-$arch$form"
+              if ($form -and -not (Test-Path "$sourceDirectory/e_sqlite3.dll")) {
+                throw "Missing native SQLite library: $sourceDirectory"
+              }
+              Compress-Archive -Path "$sourceDirectory/*" -DestinationPath $zip -Force
               $assets += $zip
             }
           }
@@ -188,6 +207,26 @@ jobs:
           $lines = Get-FileHash $assets -Algorithm SHA256 |
             ForEach-Object { "{0}  {1}" -f $_.Hash.ToLower(), (Split-Path $_.Path -Leaf) }
           [System.IO.File]::WriteAllText("$PWD/SHA256SUMS.txt", ($lines -join "`n") + "`n")
+
+      - name: Verify packaged SQLite runtime (x64)
+        shell: pwsh
+        run: |
+          $validationRoot = Join-Path $env:RUNNER_TEMP 'stashbay-package-check'
+          $packageDirectory = Join-Path $validationRoot 'app'
+          Expand-Archive "StashBay-$env:TAG-win-x64-needs-dotnet10.zip" $packageDirectory
+          $env:STASHBAY_HOME = Join-Path $validationRoot 'home'
+          $env:TEMP = Join-Path $validationRoot 'temp'
+          $env:TMP = $env:TEMP
+          New-Item -ItemType Directory -Force $env:TEMP | Out-Null
+          $p = Start-Process (Join-Path $packageDirectory 'StashBay.exe') -ArgumentList '--inspect' -PassThru -WindowStyle Hidden
+          if (-not $p.WaitForExit(30000)) {
+            $p.Kill()
+            throw 'Packaged SQLite runtime check timed out'
+          }
+          $marker = Join-Path $env:TEMP 'filestash-smoke.txt'
+          if (-not (Test-Path $marker) -or (Get-Content $marker -Raw).Trim() -ne 'OK') {
+            throw 'Packaged application failed to initialize and query SQLite'
+          }
 
       - uses: actions/attest@v4
         with:

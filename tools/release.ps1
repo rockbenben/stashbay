@@ -17,6 +17,8 @@
 #>
 [CmdletBinding()]
 param(
+    [ValidatePattern('^\d+\.\d+\.\d+$')]
+    [string]$Version,
     [switch]$SkipArm64,
     [switch]$SkipSmoke
 )
@@ -80,8 +82,15 @@ function Find-InnoCompiler {
     return $null
 }
 
+if (-not $Version) {
+    $Version = (& dotnet msbuild $project -target:VersionFromGitTag -getProperty:Version -nologo | Select-Object -Last 1).Trim()
+    if ($LASTEXITCODE -ne 0 -or $Version -notmatch '^\d+\.\d+\.\d+$') {
+        throw "无法确定发布版本：$Version"
+    }
+}
+
 Write-Host '==> 还原与构建'
-Invoke-Checked 'dotnet' @('build', $project, '-c', 'Release', '-v', 'minimal') '构建'
+Invoke-Checked 'dotnet' @('build', $project, '-c', 'Release', '-v', 'minimal', "-p:Version=$Version") '构建'
 
 $profiles = @(
     @{ Name = 'win-x64';                  Directory = 'publish-x64';                  Archive = 'win-x64' },
@@ -95,7 +104,6 @@ if (-not $SkipArm64) {
     )
 }
 
-$version = (& dotnet msbuild $project -getProperty:Version -nologo | Select-Object -Last 1).Trim()
 Write-Host "==> 版本 $version"
 
 if (Test-Path $artifacts) {
@@ -127,6 +135,7 @@ foreach ($profile in $profiles) {
     Invoke-Checked 'dotnet' @(
         'publish', $project,
         '-c', 'Release',
+        "-p:Version=$Version",
         # 这里必须加括号：数组字面量里 'a' + $b 会被拆成三个元素
         # （'-p:PublishProfile='、'+'、'win-x64'），拼出来就成了
         # "dotnet publish <项目> ... + win-x64"，MSBuild 报 MSB1008「只能指定一个项目」
@@ -135,6 +144,11 @@ foreach ($profile in $profiles) {
     ) "发布 $($profile.Name)"
 
     $published = Join-Path $artifacts $profile.Directory
+
+    if ($profile.Archive -like '*-needs-dotnet10' -and
+        -not (Test-Path -LiteralPath (Join-Path $published 'e_sqlite3.dll'))) {
+        throw "发布产物缺少 SQLite 原生库：$($profile.Name)"
+    }
 
     # 引用工程（Core / Infrastructure）的 pdb 还是会生成，发布产物里不需要
     Get-ChildItem $published -Filter '*.pdb' -ErrorAction SilentlyContinue | Remove-Item -Force

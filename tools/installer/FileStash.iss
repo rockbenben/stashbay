@@ -28,6 +28,9 @@ PrivilegesRequired=lowest
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 UninstallDisplayName={#AppName}
+; Older uninstall logs contain recursive deletion of {app} and its sibling.
+; Reinstall every owned file from [Files] and replace that unsafe legacy log.
+UninstallLogMode=overwrite
 CloseApplications=yes
 RestartApplications=no
 ChangesAssociations=no
@@ -50,7 +53,8 @@ Name: "startwithwindows"; Description: "开机自动启动"; GroupDescription: "
 ; 自包含版本（体积大、下载即用）
 Source: "..\..\artifacts\publish-x64\{#AppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 ; 框架依赖版本（体积小、要求装 .NET 10）
-Source: "..\..\artifacts\publish-x64-needs-dotnet10\{#AppExeName}"; DestDir: "{app}-needs-dotnet10"; Flags: ignoreversion
+; 还需要 e_sqlite3.dll：只安装 EXE 会导致数据库初始化失败。
+Source: "..\..\artifacts\publish-x64-needs-dotnet10\*"; DestDir: "{app}-needs-dotnet10"; Excludes: "*.pdb"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{group}\{#AppName}"; Filename: "{app}\{#AppExeName}"
@@ -66,8 +70,8 @@ Filename: "{app}\{#AppExeName}"; Description: "立即启动 {#AppName}"; Flags: 
 
 [UninstallDelete]
 ; 卸载时清掉资源管理器右键菜单与"发送到"快捷方式
-Type: filesandordirs; Name: "{app}"
-Type: filesandordirs; Name: "{app}-needs-dotnet10"
+Type: dirifempty; Name: "{app}"
+Type: dirifempty; Name: "{app}-needs-dotnet10"
 Type: files; Name: "{userappdata}\Microsoft\Windows\SendTo\StashBay.lnk"
 Type: files; Name: "{userappdata}\Microsoft\Windows\SendTo\FileStash.lnk"
 Type: files; Name: "{userappdata}\Microsoft\Windows\SendTo\FileStash 暂存.lnk"

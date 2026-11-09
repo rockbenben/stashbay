@@ -21,7 +21,7 @@
     VersionFallback 是下面那个 target 的 Condition 判据，必须先定义，否则 target 永不触发。
   -->
   <PropertyGroup>
-    <VersionFallback>0.0.1</VersionFallback>
+    <VersionFallback>1.0.0</VersionFallback>
     <Version>$(VersionFallback)</Version>
   </PropertyGroup>
 

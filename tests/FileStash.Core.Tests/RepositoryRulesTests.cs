@@ -51,6 +51,15 @@ public sealed class RepositoryRulesTests
             .Where(path => !path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.Ordinal));
 
     [Fact]
+    public void InstallerMustKeepFilesOutsideItsInstallManifest()
+    {
+        var text = File.ReadAllText(Path.Combine(RepositoryRoot, "tools", "installer", "FileStash.iss"));
+        Assert.DoesNotContain("Type: filesandordirs; Name: \"{app}", text);
+        Assert.Contains("Type: dirifempty; Name: \"{app}\"", text);
+        Assert.Contains("UninstallLogMode=overwrite", text);
+    }
+
+    [Fact]
     public void ProjectFiles_MustNotContainPublishProperties()
     {
         // 放进 csproj 会有两个后果：每次 dotnet build 都走 RID 专属单文件路径；

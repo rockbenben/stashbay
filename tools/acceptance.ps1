@@ -210,7 +210,7 @@ $running = @(Get-Process StashBay -ErrorAction SilentlyContinue)
 if ($running.Count -gt 0)
 {
     Write-Host ''
-    Write-Host "注意：机器上已有 $running.Count 个 StashBay 进程在跑（PID：$($running.Id -join ', ')）。"
+    Write-Host "注意：机器上已有 $($running.Count) 个 StashBay 进程在跑（PID：$($running.Id -join ', ')）。"
     Write-Host '      单实例机制会把参数转发给最先启动的那个，验收会变成在测别人的实例。'
     Write-Host '      请先退出托盘里的 StashBay，再重跑本脚本。'
     exit 1
@@ -685,7 +685,7 @@ Write-Host '需要人工的（脚本代替不了）：'
     '文件被 Excel / Word 占用时的提示（自动测试覆盖了报错文本，界面提示要人看）',
     '网络驱动器与 UNC 路径',
     '高 DPI（150%/200%）下实际观感（截图矩阵覆盖了布局，人工确认观感）',
-    '安装 / 卸载（这台机器没装 Inno Setup，编译不了安装包）'
+    '安装 / 卸载（需用生成的安装包实际确认快捷方式、自启和卸载清理）'
 ) | ForEach-Object { Write-Host ("  · " + $_) }
 
 if ($failed.Count -gt 0) { exit 1 }
