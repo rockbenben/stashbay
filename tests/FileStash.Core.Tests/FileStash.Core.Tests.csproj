@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!--
+      net10.0-windows：测试工程引用了 Infrastructure（net10.0-windows），
+      TFM 必须兼容得上。Core 本身仍是纯 net10.0。
+    -->
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>FileStash.Core.Tests</RootNamespace>
+    <!-- xunit.v3 的测试工程是自执行 exe，跑在 Microsoft Testing Platform 上 -->
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 模板生成的是 MTP v2 变体；纯 xunit.v3 包名不带 MTP v2 适配 -->
+    <PackageReference Include="xunit.v3.mtp-v2" Version="4.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\FileStash.Core\FileStash.Core.csproj" />
+    <!-- 仓储与迁移在 Infrastructure 里，测试工程一并引用 -->
+    <ProjectReference Include="..\..\src\FileStash.Infrastructure\FileStash.Infrastructure.csproj" />
+    <!-- 命令行解析在 App 工程里（纯逻辑，无 WPF 依赖） -->
+    <ProjectReference Include="..\..\src\FileStash.App\FileStash.App.csproj" />
+  </ItemGroup>
+
+</Project>
