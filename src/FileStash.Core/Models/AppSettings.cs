@@ -14,18 +14,22 @@ public sealed class AppSettings
     /// <summary>历史与备份保留天数，0 = 永久。</summary>
     public int HistoryRetentionDays { get; set; } = 30;
 
+    /// <summary>写回成功后自动将修改文件加入 Git 暂存区（git add）。</summary>
     public bool AutoGitAddAfterApply { get; set; }
 
+    /// <summary>监控 Git 分支切换并在分支改变时弹出通知提醒写回。</summary>
     public bool WatchGitBranchSwitch { get; set; } = true;
 
     /// <summary>添加文件夹时排除，如 ["**/node_modules/**", "**/bin/**"]。</summary>
     public string[] ExcludeGlobs { get; set; } = [];
 
-    /// <summary>仓库内文件夹仅暂存未被忽略的文件。</summary>
+    /// <summary>仓库内文件夹仅暂存未被 .gitignore 忽略的文件。</summary>
     public bool RespectGitIgnore { get; set; }
 
+    /// <summary>外部差异对比工具命令模板，如 code --diff "{left}" "{right}"。</summary>
     public string DiffToolCommand { get; set; } = "code --diff \"{left}\" \"{right}\"";
 
+    /// <summary>快速入箱 / 唤出搁架的全局快捷键，默认 Win+Alt+S。</summary>
     public string GlobalHotkeyAdd { get; set; } = "Win+Alt+S";
 
     /// <summary>呼出完整工作台的全局快捷键，默认 Win+Alt+W。</summary>
@@ -34,12 +38,16 @@ public sealed class AppSettings
     /// <summary>将当前剪贴板内容直接加入暂存的全局快捷键，默认 Win+Alt+V。</summary>
     public string GlobalHotkeyPaste { get; set; } = "Win+Alt+V";
 
+    /// <summary>开机时自动启动 StashBay（写入 HKCU Run 注册表）。</summary>
     public bool StartWithWindows { get; set; }
 
+    /// <summary>启动时最小化到系统托盘。</summary>
     public bool MinimizeToTray { get; set; } = true;
 
+    /// <summary>关闭窗口时最小化到托盘而不是直接退出应用。</summary>
     public bool CloseToTray { get; set; } = true;
 
+    /// <summary>启用 Windows 资源管理器右键上下文菜单集成。</summary>
     public bool ContextMenuEnabled { get; set; } = true;
 
     /// <summary>
@@ -66,6 +74,7 @@ public sealed class AppSettings
     /// <summary>工作台的条目视图档位（树 / 列表 / 按来源目录 / 图标）。</summary>
     public WorkbenchViewMode WorkbenchViewMode { get; set; } = WorkbenchViewMode.Tree;
 
+    /// <summary>紧凑模式下是否采用大图标视图（默认 true，关掉后为紧凑列表）。</summary>
     public bool CompactIconView { get; set; } = true;
 
     /// <summary>上次选中的组。</summary>

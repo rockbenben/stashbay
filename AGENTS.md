@@ -25,14 +25,14 @@
 FileStash.sln
 ├── src/
 │   ├── FileStash.Core/             # net10.0, POCO models, repository & service interfaces, pure logic (no UI dependency)
-│   │   ├── Abstractions/           # IStashService, IApplyEngine, IBlobStore, IDragExportService, IGitService, repositories
-│   │   ├── Models/                 # AppSettings, StashItem, StashEntry, StashGroup, TargetSpec, ApplyModels, Enums, ProgressInfo
-│   │   ├── Services/               # StashService, BlobStore, ApplyPlanner, ApplyExecutor, PathMapper, DragExportService, CleanupService, SettingsService
+│   │   ├── Abstractions/           # IStashService, IApplyEngine, IBlobStore, IDragExportService, IGitService, ISettingsService, repositories
+│   │   ├── Models/                 # AppSettings, StashItem, StashEntry, StashGroup, TargetSpec, ApplyModels, Enums, ProgressInfo, AppLanguage, ThemeChoice, GitStatusEntry, FolderEnumerator
+│   │   ├── Services/               # StashService, BlobStore, ApplyPlanner, ApplyExecutor (incl. ApplyRecovery, ApplyRetry), PathMapper, DragExportService, CleanupService, SettingsService, StorageWriteLease
 │   │   ├── Localization/           # AppLanguageResolver (language option → CultureInfo, incl. "follow system")
 │   │   ├── Utils/                  # AppPaths, HashUtil, PathUtil, Glob
 │   │   └── Resources/              # Core localized error and status strings (18 languages, 54 keys each)
 │   ├── FileStash.Infrastructure/   # net10.0-windows, SQLite + Dapper, Windows Shell integration, Win32 P/Invoke
-│   │   ├── Data/                   # SqliteConnectionFactory, SchemaReadyConnectionFactory, DatabaseMigrator, Migrations, Repositories, Iso8601DateTimeOffsetTypeHandler
+│   │   ├── Data/                   # SqliteConnectionFactory, SchemaReadyConnectionFactory, DatabaseMigrator, Migrations, Repositories, Iso8601DateTimeOffsetTypeHandler, ISqliteConnectionFactory
 │   │   ├── Shell/                  # ShellRegistrars (ContextMenuRegistrar, SendToRegistrar, StartupRegistrar)
 │   │   ├── Native/                 # RestartManagerLockInspector (file lock detection), AtomicFileWriter, SelectionGrabber, ExplorerSelection, SystemTheme
 │   │   ├── Services/               # GitService, GitBranchWatcher
@@ -48,13 +48,15 @@ FileStash.sln
 │       ├── Startup/                # CommandLine (parses --add / --apply-here / --apply-original / --group / --minimized / --show / --quit / --unregister-shell / --elevated-retry)
 │       └── Resources/              # Controls.xaml, Themes/{Dark,Light}.xaml, Tray.xaml, Strings.cs, Strings.*.resx (18 languages, identical key sets)
 ├── tests/
-│   └── FileStash.Core.Tests/       # net10.0-windows, xUnit.v3 unit and integration test suite (30 test files)
+│   └── FileStash.Core.Tests/       # net10.0-windows, xUnit.v3 unit and integration test suite (33 test/helper files: 29 suites + 4 helpers)
 │       └── TempDirectory.cs, TempWorkspace.cs, GitHelper.cs, ApplyTestContext.cs   # test-only isolation helpers
 ├── tools/                          # Automated tooling
 │   ├── acceptance.ps1              # End-to-end acceptance runner (fully sandboxed)
 │   ├── shots.ps1                   # Fixture workspace → --seed → --shots, with an empty-shelf hash guard
 │   ├── release.ps1                 # Release build script (4 pubxml profiles, setup installer, SHA256SUMS)
 │   ├── manual-checks.ps1           # Automated harness for OS-level scenarios (lock detection, UNC, >2GB files, DPI)
+│   ├── recovery-checks.ps1         # Crash recovery, interrupted apply/undo reconciliation, and elevation verification
+│   ├── installer-checks.ps1        # Upgrade, clean uninstall, and user content preservation verification
 │   ├── gen-strings.ps1             # Regenerates Resources/Strings.cs from the neutral resx
 │   └── installer/                  # Inno Setup 6 script (FileStash.iss) + lang/ChineseSimplified.isl
 └── README.md                       # User-facing manual and project documentation
@@ -147,6 +149,12 @@ pwsh -File tools/shots.ps1
 
 # Automated harness for OS-level scenarios (lock detection, UNC, >2GB, DPI)
 pwsh -File tools/manual-checks.ps1 -SkipBigFile
+
+# Crash recovery, interrupted apply/undo reconciliation & elevation verification
+pwsh -File tools/recovery-checks.ps1
+
+# Verify installer upgrade and clean uninstallation
+pwsh -File tools/installer-checks.ps1 -Compiler "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" -CurrentPackages artifacts -BaselineRepository . -BaselinePackages artifacts
 
 # Build release distributions & Inno Setup installer
 pwsh -File tools/release.ps1

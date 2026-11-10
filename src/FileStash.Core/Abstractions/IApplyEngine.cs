@@ -24,9 +24,17 @@ public interface IApplyExecutor
 
     /// <summary>重试一次操作里失败的条目（"以管理员身份重试失败项"走这里）。</summary>
     Task<int> RetryFailedAsync(string operationId, CancellationToken ct);
+
+    /// <summary>准备待重试的条目清单，可预先检测目标当前状态与文件标识。</summary>
     Task<IReadOnlyList<RetryEntry>> PrepareRetryAsync(string operationId, CancellationToken ct, bool inspectTargets = true);
+
+    /// <summary>执行经授权/确认的重试条目。</summary>
     Task<int> RetryApprovedAsync(string operationId, IReadOnlyList<RetryEntry> approved, CancellationToken ct);
+
+    /// <summary>恢复未决的写入或撤销事务日志，使数据库状态与实际文件系统一致。</summary>
     Task<int> RecoverAsync(CancellationToken ct);
+
+    /// <summary>保留目标文件当前内容，将该条目从重试候选标记为已解决。</summary>
     Task KeepCurrentAsync(string operationId, long entryId, CancellationToken ct);
 }
 
@@ -37,11 +45,14 @@ public interface IAtomicFileWriter
 {
     Task<bool> ReplaceAsync(string temporaryPath, string targetPath, CancellationToken ct);
 
-    /// <summary>Only commit when the destination is still absent.</summary>
+    /// <summary>仅在目标文件不存在时安全创建。</summary>
     Task<bool> CreateAsync(string temporaryPath, string targetPath, CancellationToken ct);
-    string? GetIdentity(string path) => null;
-    IDisposable? GuardTarget(string path) => null;
 
+    /// <summary>获取文件的唯一系统标识（如卷序列号与文件索引），用于崩溃恢复见证与一致性比对。</summary>
+    string? GetIdentity(string path) => null;
+
+    /// <summary>锁定并保护目标祖先目录与文件链，防止并发路径切换或符号链接竞态攻击。</summary>
+    IDisposable? GuardTarget(string path) => null;
 }
 
 /// <summary>查是谁占着这个文件。</summary>

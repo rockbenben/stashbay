@@ -155,6 +155,9 @@ dotnet test --nologo -v q
 # 端到端自动化验收（全在临时沙箱里跑，不碰真实数据与注册表）
 pwsh -File tools/acceptance.ps1
 
+# 写入安全与崩溃恢复验收（断点模拟与事务对齐）
+pwsh -File tools/recovery-checks.ps1
+
 # 出截图矩阵：造夹具工作区 → 播数据 → 渲染，并证明拍下来的不是空架
 pwsh -File tools/shots.ps1
 ```

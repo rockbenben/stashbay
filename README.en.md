@@ -155,6 +155,9 @@ dotnet test --nologo -v q
 # End-to-end acceptance (runs entirely in a temp sandbox; touches no real data or registry)
 pwsh -File tools/acceptance.ps1
 
+# Write safety and crash recovery validation (checkpoints and transaction reconciliation)
+pwsh -File tools/recovery-checks.ps1
+
 # Screenshot matrix: build the fixture workspace, seed data, render, and prove the shelf wasn't empty
 pwsh -File tools/shots.ps1
 ```

@@ -75,6 +75,12 @@ pwsh -File tools/shots.ps1
 # Run manual OS-level automated harness (lock detection, UNC, >2GB files)
 pwsh -File tools/manual-checks.ps1 -SkipBigFile
 
+# Run crash recovery, interrupted apply/undo reconciliation & elevation verification
+pwsh -File tools/recovery-checks.ps1
+
+# Verify installer upgrade and clean uninstallation
+pwsh -File tools/installer-checks.ps1 -Compiler "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" -CurrentPackages artifacts -BaselineRepository . -BaselinePackages artifacts
+
 # Build release distributions and Inno Setup installer
 pwsh -File tools/release.ps1
 ```

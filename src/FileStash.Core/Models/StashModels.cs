@@ -123,13 +123,26 @@ public sealed class OperationEntry
     public string TargetPath { get; set; } = string.Empty;
 
     public EntryResult Action { get; set; }
+
+    /// <summary>计划阶段预期的写入动作。</summary>
     public PlannedAction? IntendedAction { get; set; }
-    /// <summary>Intent was saved, but file commit has not been acknowledged.</summary>
+
+    /// <summary>写入意图已记录，但物理文件尚未完成提交确认。</summary>
     public bool Pending { get; set; }
+
+    /// <summary>用于崩溃恢复与一致性判定的见证路径。</summary>
     public string? WitnessPath { get; set; }
+
+    /// <summary>目标文件的唯一文件系统标识（卷序列号 + 文件索引）。</summary>
     public string? WitnessIdentity { get; set; }
+
+    /// <summary>写入前目标文件的 SHA-256 哈希值。</summary>
     public string? PreviousSha256 { get; set; }
+
+    /// <summary>撤销意图已记录，但文件还原尚未完成确认。</summary>
     public bool UndoPending { get; set; }
+
+    /// <summary>该条目已成功撤销。</summary>
     public bool Undone { get; set; }
 
     /// <summary>写入的内容。</summary>

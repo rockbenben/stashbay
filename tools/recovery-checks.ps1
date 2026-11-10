@@ -1,4 +1,20 @@
-#Requires -Version 7.0
+﻿#Requires -Version 7.0
+<#
+.SYNOPSIS
+    StashBay 崩溃恢复与写入安全验收脚本：验证事务断点、恢复与一致性对齐。
+
+.DESCRIPTION
+    针对写入（Apply）与撤销（Undo）过程中的异常中断与进程崩溃执行自动化验证：
+      · 阶段断点模拟（Stage Checkpoints）：新建写入前、覆盖前、撤销删除前、撤销还原前
+      · 崩溃后重启时的自动恢复（RecoverAsync）与事务日志对齐
+      · 幂等恢复：多次 RecoverAsync 不破坏文件与数据库一致性
+      · 支持可选的提权写入重试验证（-ElevatedRetry）
+    所有验证均在独立的临时沙箱中运行，不触碰真实数据与注册表。
+
+    用法示例：
+      pwsh tools/recovery-checks.ps1
+      pwsh tools/recovery-checks.ps1 -ElevatedRetry
+#>
 [CmdletBinding()]
 param([switch]$ElevatedRetry, [string]$Out = (Join-Path ([IO.Path]::GetTempPath()) ('stashbay-recovery-' + [guid]::NewGuid().ToString('N'))))
 $ErrorActionPreference = 'Stop'

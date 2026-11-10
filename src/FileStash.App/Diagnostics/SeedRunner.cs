@@ -16,7 +16,7 @@ namespace FileStash.App.Diagnostics;
 /// 截图与探针要看的是"真数据长什么样"（中文长名、MB 档大小、分支名、被占用的报错）。
 /// 造出来的对象绕过写入路径，界面上那一列就成了零像素。
 ///
-/// 只动重定向后的库（<c>FILESTASH_HOME</c>）：这个开关是给自动化用的，
+/// 只动重定向后的库（<c>STASHBAY_HOME</c> / <c>FILESTASH_HOME</c>）：这个开关是给自动化用的，
 /// 顺手改到用户真实的暂存区就是事故。
 /// </remarks>
 internal static class SeedRunner
