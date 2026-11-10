@@ -33,6 +33,8 @@ public sealed class WpfDialogService : IDialogService
 
     public string? PromptText(string title, string initialValue)
     {
+        if (App.InSmoke) return null;
+
         var dialog = new InputDialog { Title = title, InputText = initialValue };
         var owner = GetOwner();
 
@@ -65,6 +67,8 @@ public sealed class WpfDialogService : IDialogService
 
     public string? PickSetRoot(string sourcePath)
     {
+        if (App.InSmoke) return null;
+
         var dialog = new SetRootDialog();
         var owner = GetOwner();
 
@@ -80,6 +84,8 @@ public sealed class WpfDialogService : IDialogService
 
     public string? PickGroup(IReadOnlyList<(string Id, string Name)> groups, string currentGroupId)
     {
+        if (App.InSmoke) return null;
+
         var dialog = new GroupPickerDialog();
         var owner = GetOwner();
 

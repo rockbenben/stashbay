@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <!-- 模板生成的是 MTP v2 变体；纯 xunit.v3 包名不带 MTP v2 适配 -->
-    <PackageReference Include="xunit.v3.mtp-v2" Version="4.0.2" />
+    <PackageReference Include="xunit.v3.mtp-v2" Version="4.0.3" />
   </ItemGroup>
 
   <ItemGroup>

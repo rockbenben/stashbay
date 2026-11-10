@@ -241,17 +241,19 @@ public sealed class SingleInstanceTests
         using var primary = new CoordinatorOnOwnThread(pipeName, TimeSpan.FromMilliseconds(250), mutexName);
 
         var received = new List<string[]>();
-        var signal = new SemaphoreSlim(0);
 
         _ = primary.Coordinator.RunServerAsync(
             args =>
             {
+                // 次实例构造时还会发送一条空参数唤醒消息；它不属于下面的文件转发。
+                // 把它算进完成条件会提前结束等待，最后一条文件消息可能仍在后台排队。
+                if (args.Length == 0) return Task.CompletedTask;
+
                 lock (received)
                 {
                     received.Add(args);
                 }
 
-                signal.Release();
                 return Task.CompletedTask;
             },
             TestContext.Current.CancellationToken);

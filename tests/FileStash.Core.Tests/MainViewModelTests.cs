@@ -484,6 +484,44 @@ public sealed class MainViewModelTests : IAsyncLifetime
         Assert.Equal(WorkbenchViewMode.Tree, reloaded.Current.WorkbenchViewMode);
     }
 
+    [Fact]
+    public void DialogService_WhenHeadless_ShouldCancelEveryModalPrompt()
+    {
+        var previous = FileStash.App.App.InSmoke;
+        FileStash.App.App.InSmoke = true;
+        try
+        {
+            // Run on an MTA thread: reaching WPF construction fails immediately,
+            // so a missing guard cannot leave the test waiting for user input.
+            Exception? failure = null;
+            var thread = new Thread(() =>
+            {
+                try
+                {
+                    var dialogs = new WpfDialogService();
+                    Assert.Null(dialogs.PromptText("Test", "initial"));
+                    Assert.Null(dialogs.PickSetRoot(@"C:\source\file.txt"));
+                    Assert.Null(dialogs.PickGroup([("group", "Group")], "group"));
+                    Assert.Null(dialogs.PickStashPaths());
+                    Assert.Null(dialogs.PickFolder());
+                    Assert.False(dialogs.Confirm("Test", "Confirm?"));
+                }
+                catch (Exception ex)
+                {
+                    failure = ex;
+                }
+            }) { IsBackground = true };
+            thread.SetApartmentState(ApartmentState.MTA);
+            thread.Start();
+            Assert.True(thread.Join(TimeSpan.FromSeconds(10)));
+            Assert.Null(failure);
+        }
+        finally
+        {
+            FileStash.App.App.InSmoke = previous;
+        }
+    }
+
 }
 
 /// <summary>只记不弹的对话框替身。</summary>
