@@ -1,4 +1,20 @@
-#Requires -Version 7.0
+﻿#Requires -Version 7.0
+<#
+.SYNOPSIS
+    StashBay 安装程序验收脚本：验证全新安装、跨版本升级、完整卸载与用户文件保留。
+
+.DESCRIPTION
+    针对 Inno Setup 生成的 StashBay-<version>-setup.exe 安装包执行自动化集成验证：
+      · 全新静默安装到沙箱目录
+      · 跨版本（从基线版本到当前版本）升级安装
+      · 验证用户在安装目录自建的文件（如 user-notes.txt）在卸载或升级时不被误删
+      · 验证程序自身文件与快捷方式在卸载后彻底清理
+    所有验证均在隔离目录运行，不污染真实系统。
+
+    用法示例：
+      pwsh tools/installer-checks.ps1 -Compiler "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" `
+          -CurrentPackages artifacts -BaselineRepository . -BaselinePackages artifacts
+#>
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)][string]$Compiler,
