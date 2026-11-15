@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE) [![365 Open Source Plan #048](https://img.shields.io/badge/365%20Open%20Source%20Plan-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
 
-[⬇ नवीनतम संस्करण डाउनलोड करें](https://github.com/rockbenben/048-stashbay/releases/latest)
+[⬇ नवीनतम संस्करण डाउनलोड करें](https://github.com/rockbenben/stashbay/releases/latest)
 
 ![StashBay कॉम्पैक्ट शेल्फ़: स्क्रीन पर हमेशा सबसे ऊपर रहने वाला कार्ड शेल्फ़ — फ़ाइलें रखें और बाहर निकालें](../../assets/shelf.png)
 
@@ -31,7 +31,7 @@ Windows डेस्कटॉप के लिए एक हल्का स्�
 
 ## त्वरित शुरुआत
 
-1. **प्रोग्राम डाउनलोड करें**: [Releases](https://github.com/rockbenben/048-stashbay/releases/latest) से इंस्टॉलर `StashBay-vx.y.z-setup.exe` (व्यवस्थापक अनुमति की आवश्यकता नहीं) या पोर्टेबल `StashBay-vx.y.z-win-x64.zip` डाउनलोड करें।
+1. **प्रोग्राम डाउनलोड करें**: [Releases](https://github.com/rockbenben/stashbay/releases/latest) से इंस्टॉलर `StashBay-vx.y.z-setup.exe` (व्यवस्थापक अनुमति की आवश्यकता नहीं) या पोर्टेबल `StashBay-vx.y.z-win-x64.zip` डाउनलोड करें।
 2. **शेल्फ़ खोलें**: शॉर्टकट <kbd>Win+Alt+S</kbd> दबाएं; मिनी शेल्फ़ तुरंत सक्रिय स्क्रीन पर माउस कर्सर के पास खुल जाएगा।
 3. **फ़ाइलें रखें**: फ़ाइल एक्सप्लोरर में फ़ाइलों का चयन करें और फिर से <kbd>Win+Alt+S</kbd> दबाएं (या उन्हें शेल्फ़ में खींचें, या माउस हिलाएं) — चयनित फ़ाइलें तुरंत सुरक्षित हो जाएंगी।
 4. **एक बार में बाहर खींचें**: शेल्फ़ के नीचे स्थित `[⤹ कुल X आइटम]` हैंडल को पकड़ें और एक ही इशारे में सभी फ़ाइलों को लक्षित विंडो या चैट ऐप में खींचें। फ़ाइलें खाली होते ही शेल्फ़ स्वचालित रूप से बंद हो जाता है।

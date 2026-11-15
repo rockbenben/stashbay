@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE) [![365 Open Source Plan #048](https://img.shields.io/badge/365%20Open%20Source%20Plan-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
 
-[⬇ Descargar última versión](https://github.com/rockbenben/048-stashbay/releases/latest)
+[⬇ Descargar última versión](https://github.com/rockbenben/stashbay/releases/latest)
 
 ![Bandeja compacta de StashBay: una tarjeta flotante siempre visible para guardar y transferir archivos](../../assets/shelf.png)
 
@@ -31,7 +31,7 @@ Estación de transferencia de archivos ligera para el escritorio de Windows. Se 
 
 ## Inicio rápido
 
-1. **Obtener el programa**: Descarga el instalador `StashBay-vx.y.z-setup.exe` (no requiere permisos de administrador) o la versión portable `StashBay-vx.y.z-win-x64.zip` desde [Releases](https://github.com/rockbenben/048-stashbay/releases/latest).
+1. **Obtener el programa**: Descarga el instalador `StashBay-vx.y.z-setup.exe` (no requiere permisos de administrador) o la versión portable `StashBay-vx.y.z-win-x64.zip` desde [Releases](https://github.com/rockbenben/stashbay/releases/latest).
 2. **Abrir la bandeja**: Pulsa el atajo <kbd>Win+Alt+S</kbd> y la minibandeja se abrirá al instante junto al cursor del ratón en la pantalla activa.
 3. **Guardar archivos**: Selecciona los archivos en el Explorador de archivos y vuelve a pulsar <kbd>Win+Alt+S</kbd> (o arrástralos a la bandeja, o agita el ratón) para que queden guardados inmediatamente.
 4. **Arrastrar todo de una vez**: Arrastra el tirador `[⤹ Total X elementos]` en la parte inferior para transferir todos los archivos al destino o aplicación en un solo movimiento. Al quedar vacía, la bandeja se desvanece y se cierra automáticamente.

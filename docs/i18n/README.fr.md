@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE) [![365 Open Source Plan #048](https://img.shields.io/badge/365%20Open%20Source%20Plan-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
 
-[⬇ Télécharger la dernière version](https://github.com/rockbenben/048-stashbay/releases/latest)
+[⬇ Télécharger la dernière version](https://github.com/rockbenben/stashbay/releases/latest)
 
 ![Étagère compacte StashBay : une petite zone flottante toujours visible pour déposer et réutiliser vos fichiers](../../assets/shelf.png)
 
@@ -31,7 +31,7 @@ Une station de transit de fichiers locale et ultra-légère pour le bureau Windo
 
 ## Démarrage rapide
 
-1. **Téléchargement** : Récupérez l'installeur `StashBay-vx.y.z-setup.exe` (aucun droit administrateur requis) ou la version portable `StashBay-vx.y.z-win-x64.zip` depuis les [Releases](https://github.com/rockbenben/048-stashbay/releases/latest).
+1. **Téléchargement** : Récupérez l'installeur `StashBay-vx.y.z-setup.exe` (aucun droit administrateur requis) ou la version portable `StashBay-vx.y.z-win-x64.zip` depuis les [Releases](https://github.com/rockbenben/stashbay/releases/latest).
 2. **Afficher l'étagère** : Appuyez sur le raccourci <kbd>Win+Alt+S</kbd> pour faire apparaître la mini-étagère immédiatement près de votre curseur sur l'écran actif.
 3. **Déposer des fichiers** : Sélectionnez vos fichiers dans l'Explorateur et appuyez de nouveau sur <kbd>Win+Alt+S</kbd> (ou glissez-les sur l'étagère, ou secouez la souris) : les fichiers y sont aussitôt déposés.
 4. **Glisser d'un coup** : Attrapez la poignée `[⤹ Total X éléments]` au bas de l'étagère pour glisser l'ensemble des fichiers en un seul geste vers une fenêtre cible ou une application. Une fois vidée, l'étagère disparaît automatiquement en fondu.

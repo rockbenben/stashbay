@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE) [![365 Open Source Plan #048](https://img.shields.io/badge/365%20Open%20Source%20Plan-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
 
-[⬇ Baixar versão mais recente](https://github.com/rockbenben/048-stashbay/releases/latest)
+[⬇ Baixar versão mais recente](https://github.com/rockbenben/stashbay/releases/latest)
 
 ![Prateleira compacta StashBay: um pequeno rack sempre no topo para reter e mover arquivos](../../assets/shelf.png)
 
@@ -31,7 +31,7 @@ Estação leve e local de trânsito de arquivos para a área de trabalho do Wind
 
 ## Início rápido
 
-1. **Obter o programa**: Baixe o instalador `StashBay-vx.y.z-setup.exe` (não requer administrador) ou o pacote portátil `StashBay-vx.y.z-win-x64.zip` em [Releases](https://github.com/rockbenben/048-stashbay/releases/latest).
+1. **Obter o programa**: Baixe o instalador `StashBay-vx.y.z-setup.exe` (não requer administrador) ou o pacote portátil `StashBay-vx.y.z-win-x64.zip` em [Releases](https://github.com/rockbenben/stashbay/releases/latest).
 2. **Abrir a prateleira**: Pressione o atalho <kbd>Win+Alt+S</kbd>; a mini-prateleira se abrirá instantaneamente ao lado do ponteiro do mouse na tela ativa.
 3. **Guardar arquivos**: Selecione os arquivos no Explorador e pressione <kbd>Win+Alt+S</kbd> novamente (ou arraste-os para a prateleira, ou sacuda o mouse): os arquivos selecionados entrarão na prateleira na hora.
 4. **Arrastar tudo de uma vez**: Puxe a alça `[⤹ Total X itens]` na parte inferior para exportar todos os arquivos com um único movimento para a janela de destino ou comunicador. Quando vazia, a prateleira esmaece e fecha automaticamente.

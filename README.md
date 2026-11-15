@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![365 开源计划 #048](https://img.shields.io/badge/365%20%E5%BC%80%E6%BA%90%E8%AE%A1%E5%88%92-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
 
-[⬇ 下载最新版](https://github.com/rockbenben/048-stashbay/releases/latest)
+[⬇ 下载最新版](https://github.com/rockbenben/stashbay/releases/latest)
 
 ![StashBay 紧凑搁架：一个置顶小卡片架，拖进来放着，拖出去用掉](assets/shelf.png)
 
@@ -31,7 +31,7 @@ Windows 桌面端轻量文件中转站。全部本地运行，零上传、不联
 
 ## 快速开始
 
-1. **获取程序**：从 [Releases](https://github.com/rockbenben/048-stashbay/releases/latest) 下载安装包 `StashBay-vx.y.z-setup.exe`（免管理员权限）或绿色便携包 `StashBay-vx.y.z-win-x64.zip`。
+1. **获取程序**：从 [Releases](https://github.com/rockbenben/stashbay/releases/latest) 下载安装包 `StashBay-vx.y.z-setup.exe`（免管理员权限）或绿色便携包 `StashBay-vx.y.z-win-x64.zip`。
 2. **唤出搁架**：按下快捷键 <kbd>Win+Alt+S</kbd>，迷你搁架即刻在当前鼠标光标所在屏幕展开。
 3. **放入文件**：在资源管理器中选中文件，再次按下 <kbd>Win+Alt+S</kbd>（或拖入搁架、或晃动鼠标），选中的文件立刻入箱。
 4. **一键拖出**：拖住搁架底部的 `[⤹ 共 X 项]` 句柄，一次拖拽即可将所有文件拖入目标窗口或通讯软件。文件全部移出后搁架自动淡出关闭。

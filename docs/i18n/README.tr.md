@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE) [![365 Open Source Plan #048](https://img.shields.io/badge/365%20Open%20Source%20Plan-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
 
-[⬇ En Son Sürümü İndir](https://github.com/rockbenben/048-stashbay/releases/latest)
+[⬇ En Son Sürümü İndir](https://github.com/rockbenben/stashbay/releases/latest)
 
 ![StashBay kompakt raf: dosyaları tutmak ve taşımak için her zaman en üstte duran küçük bir kart rafı](../../assets/shelf.png)
 
@@ -31,7 +31,7 @@ Windows masaüstü için hafif, yerel bir dosya geçiş istasyonu. Buluta yükle
 
 ## Hızlı Başlangıç
 
-1. **Programı İndirin**: [Releases](https://github.com/rockbenben/048-stashbay/releases/latest) sayfasından `StashBay-vx.y.z-setup.exe` yükleyicisini (yönetici izni gerektirmez) veya taşınabilir `StashBay-vx.y.z-win-x64.zip` paketini indirin.
+1. **Programı İndirin**: [Releases](https://github.com/rockbenben/stashbay/releases/latest) sayfasından `StashBay-vx.y.z-setup.exe` yükleyicisini (yönetici izni gerektirmez) veya taşınabilir `StashBay-vx.y.z-win-x64.zip` paketini indirin.
 2. **Rafı Açın**: <kbd>Win+Alt+S</kbd> kısayoluna basın; mini raf etkin ekranda fare imlecinizin hemen yanında açılır.
 3. **Dosyaları Bırakın**: Dosya Gezgini'nde dosyaları seçin ve tekrar <kbd>Win+Alt+S</kbd> tuşuna basın (veya rafa sürükleyin ya da fareyi hafifçe sallayın) — dosyalar anında rafa yerleşir.
 4. **Hepsini Tek Hamlede Çıkarın**: Alt kısımdaki `[⤹ Toplam X Öğe]` tutamacından sürükleyerek tüm dosyaları hedef pencereye veya sohbet uygulamasına tek seferde aktarın. Tüm dosyalar çıkarıldığında raf otomatik olarak kapanır.

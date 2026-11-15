@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE) [![365 Open Source Plan #048](https://img.shields.io/badge/365%20Open%20Source%20Plan-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
 
-[⬇ Unduh Versi Terbaru](https://github.com/rockbenben/048-stashbay/releases/latest)
+[⬇ Unduh Versi Terbaru](https://github.com/rockbenben/stashbay/releases/latest)
 
 ![Rak ringkas StashBay: rak kartu kecil selalu di atas untuk menahan dan memindahkan berkas](../../assets/shelf.png)
 
@@ -31,7 +31,7 @@ Stasiun transit berkas lokal yang ringan untuk desktop Windows. Berjalan sepenuh
 
 ## Mulai Cepat
 
-1. **Unduh Program**: Unduh berkas pemasang `StashBay-vx.y.z-setup.exe` (tanpa perlu hak admin) atau paket portabel `StashBay-vx.y.z-win-x64.zip` dari [Releases](https://github.com/rockbenben/048-stashbay/releases/latest).
+1. **Unduh Program**: Unduh berkas pemasang `StashBay-vx.y.z-setup.exe` (tanpa perlu hak admin) atau paket portabel `StashBay-vx.y.z-win-x64.zip` dari [Releases](https://github.com/rockbenben/stashbay/releases/latest).
 2. **Buka Rak**: Tekan pintasan <kbd>Win+Alt+S</kbd>; rak mini akan langsung terbuka di dekat kursor mouse pada monitor yang sedang aktif.
 3. **Simpan Berkas**: Pilih berkas di File Explorer dan tekan <kbd>Win+Alt+S</kbd> lagi (atau seret ke rak, atau goyangkan mouse) — berkas yang dipilih akan langsung masuk ke rak.
 4. **Seret Sekaligus**: Tarik pegangan `[⤹ Total X item]` di bagian bawah untuk mengekspor semua berkas ke jendela tujuan atau aplikasi obrolan dalam satu gerakan. Setelah kosong, rak akan otomatis menghilang dan tertutup.

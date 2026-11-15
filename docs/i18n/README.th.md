@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE) [![365 Open Source Plan #048](https://img.shields.io/badge/365%20Open%20Source%20Plan-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
 
-[⬇ ดาวน์โหลดเวอร์ชันล่าสุด](https://github.com/rockbenben/048-stashbay/releases/latest)
+[⬇ ดาวน์โหลดเวอร์ชันล่าสุด](https://github.com/rockbenben/stashbay/releases/latest)
 
 ![เชลฟ์ขนาดกะทัดรัด StashBay: การ์ดลอยขนาดเล็กที่อยู่ด้านบนเสมอสำหรับพักและส่งต่อไฟล์](../../assets/shelf.png)
 
@@ -31,7 +31,7 @@
 
 ## เริ่มต้นใช้งาน
 
-1. **ดาวน์โหลดโปรแกรม**: ดาวน์โหลดตัวติดตั้ง `StashBay-vx.y.z-setup.exe` (ไม่ต้องใช้สิทธิ์แอดมิน) หรือแบบพกพา `StashBay-vx.y.z-win-x64.zip` จาก [Releases](https://github.com/rockbenben/048-stashbay/releases/latest)
+1. **ดาวน์โหลดโปรแกรม**: ดาวน์โหลดตัวติดตั้ง `StashBay-vx.y.z-setup.exe` (ไม่ต้องใช้สิทธิ์แอดมิน) หรือแบบพกพา `StashBay-vx.y.z-win-x64.zip` จาก [Releases](https://github.com/rockbenben/stashbay/releases/latest)
 2. **เรียกเชลฟ์**: กดปุ่มลัด <kbd>Win+Alt+S</kbd> เชลฟ์ขนาดกะทัดรัดจะเปิดขึ้นใกล้เคอร์เซอร์เมาส์บนหน้าจอที่ใช้งานอยู่ทันที
 3. **วางไฟล์ลงเชลฟ์**: เลือกไฟล์ใน File Explorer แล้วกด <kbd>Win+Alt+S</kbd> อีกครั้ง (หรือลากไฟล์ใส่เชลฟ์ หรือเขย่าเมาส์) ไฟล์ที่เลือกจะถูกเก็บลงเชลฟ์ทันที
 4. **ลากออกไปใช้ในคลิกเดียว**: จับที่แถบ `[⤹ รวม X รายการ]` ด้านล่าง แล้วลากไฟล์ทั้งหมดไปยังหน้าต่างปลายทางหรือแอปแชท เมื่อไฟล์ถูกนำออกหมด เชลฟ์จะค่อยๆ จางและปิดตัวเองโดยอัตโนมัติ

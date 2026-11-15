@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE) [![365 Open Source Plan #048](https://img.shields.io/badge/365%20Open%20Source%20Plan-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
 
-[⬇ 最新版をダウンロード](https://github.com/rockbenben/048-stashbay/releases/latest)
+[⬇ 最新版をダウンロード](https://github.com/rockbenben/stashbay/releases/latest)
 
 ![StashBay コンパクトシェルフ：最前面に常駐する一時保管ラック、ドラッグして退避、ドラッグして活用](../../assets/shelf.png)
 
@@ -31,7 +31,7 @@ Windows 向けの軽量ローカルファイル中継ステーション。すべ
 
 ## クイックスタート
 
-1. **プログラムの入手**：[Releases](https://github.com/rockbenben/048-stashbay/releases/latest) からインストーラー `StashBay-vx.y.z-setup.exe`（管理者権限不要）またはポータブル版 `StashBay-vx.y.z-win-x64.zip` をダウンロードします。
+1. **プログラムの入手**：[Releases](https://github.com/rockbenben/stashbay/releases/latest) からインストーラー `StashBay-vx.y.z-setup.exe`（管理者権限不要）またはポータブル版 `StashBay-vx.y.z-win-x64.zip` をダウンロードします。
 2. **シェルフの呼び出し**：ショートカットキー <kbd>Win+Alt+S</kbd> を押すと、マウスポインターがある画面にミニシェルフが即座に開きます。
 3. **ファイルの一時保管**：エクスプローラーでファイルを選択し、再度 <kbd>Win+Alt+S</kbd> を押す（またはシェルフへドラッグ、またはマウスを小刻みに振る）と、選択ファイルがシェルフに収まります。
 4. **まとめてドラッグアウト**：シェルフ下部の `[⤹ 合計 X 件]` ハンドルをドラッグすると、1 回のマウス操作ですべてのファイルを目的のウィンドウやチャットアプリへ書き出せます。ファイルが空になると自動でフェードアウトして閉じます。

@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![365 Open Source Plan #048](https://img.shields.io/badge/365%20Open%20Source%20Plan-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
 
-[⬇ Download Latest Release](https://github.com/rockbenben/048-stashbay/releases/latest)
+[⬇ Download Latest Release](https://github.com/rockbenben/stashbay/releases/latest)
 
 ![StashBay compact shelf: a small always-on-top card rack — drop files in to keep them, drag them out to use them](assets/shelf.png)
 
@@ -31,7 +31,7 @@ A lightweight local file transit station for Windows. Runs completely offline wi
 
 ## Getting Started
 
-1. **Install**: Download `StashBay-vx.y.z-setup.exe` (no admin needed) from [Releases](https://github.com/rockbenben/048-stashbay/releases/latest), or grab the portable `StashBay-vx.y.z-win-x64.zip` and unzip to run.
+1. **Install**: Download `StashBay-vx.y.z-setup.exe` (no admin needed) from [Releases](https://github.com/rockbenben/stashbay/releases/latest), or grab the portable `StashBay-vx.y.z-win-x64.zip` and unzip to run.
 2. **Summon**: Press <kbd>Win+Alt+S</kbd>. The mini shelf opens near your cursor on the active display.
 3. **Stash**: Select files in Explorer, press <kbd>Win+Alt+S</kbd> again (or drag them in, or shake the mouse) — the selected files land on the shelf.
 4. **Drag out**: Drag the `[⤹ X items]` handle at the bottom into an Explorer folder or app window. When empty, the shelf fades out back to the tray.

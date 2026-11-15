@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE) [![365 Open Source Plan #048](https://img.shields.io/badge/365%20Open%20Source%20Plan-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
 
-[⬇ تنزيل أحدث إصدار](https://github.com/rockbenben/048-stashbay/releases/latest)
+[⬇ تنزيل أحدث إصدار](https://github.com/rockbenben/stashbay/releases/latest)
 
 ![رف StashBay الصغير: لوحة عائمة صغيرة في المقدمة دائماً للاحتفاظ بالملفات ونقلها](../../assets/shelf.png)
 
@@ -31,7 +31,7 @@
 
 ## البدء السريع
 
-1. **تحميل البرنامج**: نزّل مثبت `StashBay-vx.y.z-setup.exe` (لا يتطلب صلاحيات مسؤول) أو الحزمة المحمولة `StashBay-vx.y.z-win-x64.zip` من صفحة [Releases](https://github.com/rockbenben/048-stashbay/releases/latest).
+1. **تحميل البرنامج**: نزّل مثبت `StashBay-vx.y.z-setup.exe` (لا يتطلب صلاحيات مسؤول) أو الحزمة المحمولة `StashBay-vx.y.z-win-x64.zip` من صفحة [Releases](https://github.com/rockbenben/stashbay/releases/latest).
 2. **استدعاء الرف**: اضغط على الاختصار <kbd>Win+Alt+S</kbd> ليفتح الرف المصغر فوراً بجوار مؤشر الفأرة على الشاشة النشطة.
 3. **وضع الملفات**: حدد الملفات في مستكشف الملفات واضغط على <kbd>Win+Alt+S</kbd> مجدداً (أو اسحبها نحو الرف، أو هز الفأرة) لتوضع في الرف على الفور.
 4. **السحب والإفلات دفعة واحدة**: اسحب مقبض `[⤹ الإجمالي X عناصر]` أسفل الرف لنقل جميع الملفات بحركة واحدة نحو النافذة المستهدفة أو التطبيق. عند إفراغ الرف، يختفي تلقائياً بهدوء.

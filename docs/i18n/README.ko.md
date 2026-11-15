@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE) [![365 Open Source Plan #048](https://img.shields.io/badge/365%20Open%20Source%20Plan-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
 
-[⬇ 최신 버전 다운로드](https://github.com/rockbenben/048-stashbay/releases/latest)
+[⬇ 최신 버전 다운로드](https://github.com/rockbenben/stashbay/releases/latest)
 
 ![StashBay 콤팩트 선반: 화면 최상단에 머무는 미니 보관대 — 드래그해 담고 끌어다 쓰기](../../assets/shelf.png)
 
@@ -31,7 +31,7 @@ Windows 데스크톱용 초경량 파일 중계 스테이션입니다. 모든 �
 
 ## 빠른 시작
 
-1. **프로그램 다운로드**: [Releases](https://github.com/rockbenben/048-stashbay/releases/latest)에서 설치형 `StashBay-vx.y.z-setup.exe`(관리자 권한 불필요) 또는 무설치 포터블 `StashBay-vx.y.z-win-x64.zip`을 다운로드합니다.
+1. **프로그램 다운로드**: [Releases](https://github.com/rockbenben/stashbay/releases/latest)에서 설치형 `StashBay-vx.y.z-setup.exe`(관리자 권한 불필요) 또는 무설치 포터블 `StashBay-vx.y.z-win-x64.zip`을 다운로드합니다.
 2. **선반 호출**: 단축키 <kbd>Win+Alt+S</kbd>를 누르면 현재 마우스 커서가 위치한 화면에 미니 선반이 즉시 열립니다.
 3. **파일 보관**: 탐색기에서 파일을 선택하고 <kbd>Win+Alt+S</kbd>를 다시 누르면(또는 선반으로 드래그하거나 마우스를 흔들면) 선택한 파일이 선반에 담깁니다.
 4. **일괄 드래그 아웃**: 선반 하단의 `[⤹ 총 X개 항목]` 핸들을 잡고 드래그하면 한 번의 제스처로 모든 파일을 대상 창이나 메신저로 내보낼 수 있습니다. 모든 파일이 비워지면 선반이 자동으로 페이드아웃되며 닫힙니다.

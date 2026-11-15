@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE) [![365 Open Source Plan #048](https://img.shields.io/badge/365%20Open%20Source%20Plan-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
 
-[⬇ Скачать последнюю версию](https://github.com/rockbenben/048-stashbay/releases/latest)
+[⬇ Скачать последнюю версию](https://github.com/rockbenben/stashbay/releases/latest)
 
 ![Компактная полка StashBay: небольшая плавающая панель поверх всех окон для временного хранения и переноса файлов](../../assets/shelf.png)
 
@@ -31,7 +31,7 @@
 
 ## Быстрый старт
 
-1. **Скачивание**: Загрузите инсталлятор `StashBay-vx.y.z-setup.exe` (не требует прав администратора) или портативный архив `StashBay-vx.y.z-win-x64.zip` со страницы [Releases](https://github.com/rockbenben/048-stashbay/releases/latest).
+1. **Скачивание**: Загрузите инсталлятор `StashBay-vx.y.z-setup.exe` (не требует прав администратора) или портативный архив `StashBay-vx.y.z-win-x64.zip` со страницы [Releases](https://github.com/rockbenben/stashbay/releases/latest).
 2. **Вызов полки**: Нажмите комбинацию клавиш <kbd>Win+Alt+S</kbd> — мини-полка сразу откроется рядом с курсором мыши на активном экране.
 3. **Добавление файлов**: Выделите файлы в Проводнике и снова нажмите <kbd>Win+Alt+S</kbd> (или перетащите их на полку, или покачайте мышь из стороны в сторону) — выбранные файлы мгновенно окажутся на полке.
 4. **Перетаскивание одним движением**: Потяните за нижнюю ручку `[⤹ Всего X элементов]`, чтобы одним жестом перенести все файлы в целевое окно или мессенджер. Когда полка опустеет, она плавно закроется сама.

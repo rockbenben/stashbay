@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE) [![365 Open Source Plan #048](https://img.shields.io/badge/365%20Open%20Source%20Plan-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
 
-[⬇ Tải bản mới nhất](https://github.com/rockbenben/048-stashbay/releases/latest)
+[⬇ Tải bản mới nhất](https://github.com/rockbenben/stashbay/releases/latest)
 
 ![Giá đỡ nhỏ gọn StashBay: thẻ nổi luôn trên cùng để lưu trữ và kéo thả tệp](../../assets/shelf.png)
 
@@ -31,7 +31,7 @@ Trạm trung chuyển tệp cục bộ siêu nhẹ dành cho màn hình Windows.
 
 ## Bắt đầu nhanh
 
-1. **Tải phần mềm**: Tải trình cài đặt `StashBay-vx.y.z-setup.exe` (không cần quyền quản trị) hoặc bản di động `StashBay-vx.y.z-win-x64.zip` từ [Releases](https://github.com/rockbenben/048-stashbay/releases/latest).
+1. **Tải phần mềm**: Tải trình cài đặt `StashBay-vx.y.z-setup.exe` (không cần quyền quản trị) hoặc bản di động `StashBay-vx.y.z-win-x64.zip` từ [Releases](https://github.com/rockbenben/stashbay/releases/latest).
 2. **Mở giá đỡ**: Nhấn phím tắt <kbd>Win+Alt+S</kbd>; giá đỡ mini sẽ mở ra ngay cạnh con trỏ chuột trên màn hình đang hoạt động.
 3. **Thêm tệp**: Chọn tệp trong File Explorer rồi nhấn lại <kbd>Win+Alt+S</kbd> (hoặc kéo tệp vào giá đỡ, hoặc lắc nhẹ chuột) — các tệp sẽ được lưu vào giá đỡ ngay lập tức.
 4. **Kéo ra tất cả một lần**: Kéo tay cầm `[⤹ Tổng cộng X mục]` ở cạnh dưới để xuất tất cả tệp vào cửa sổ đích hoặc ứng dụng chat chỉ với một động tác. Khi hết tệp, giá đỡ sẽ tự động mờ dần và đóng lại.

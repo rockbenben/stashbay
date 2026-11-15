@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE) [![365 開源計畫 #048](https://img.shields.io/badge/365%20%E9%96%8B%E6%BA%90%E8%A8%88%E7%95%AB-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
 
-[⬇ 下載最新版](https://github.com/rockbenben/048-stashbay/releases/latest)
+[⬇ 下載最新版](https://github.com/rockbenben/stashbay/releases/latest)
 
 ![StashBay 緊湊擱架：一個置頂小卡片架，拖進來放著，拖出去用掉](../../assets/shelf.png)
 
@@ -31,7 +31,7 @@ Windows 桌面端輕量檔案中轉站。全部本機執行，零上傳、不聯
 
 ## 快速開始
 
-1. **取得程式**：從 [Releases](https://github.com/rockbenben/048-stashbay/releases/latest) 下載安裝包 `StashBay-vx.y.z-setup.exe`（免管理員權限）或免安裝綠色包 `StashBay-vx.y.z-win-x64.zip`。
+1. **取得程式**：從 [Releases](https://github.com/rockbenben/stashbay/releases/latest) 下載安裝包 `StashBay-vx.y.z-setup.exe`（免管理員權限）或免安裝綠色包 `StashBay-vx.y.z-win-x64.zip`。
 2. **喚出擱架**：按下快捷鍵 <kbd>Win+Alt+S</kbd>，迷你擱架即刻在當前滑鼠游標所在螢幕展開。
 3. **放入檔案**：在檔案總管中選取檔案，再次按下 <kbd>Win+Alt+S</kbd>（或拖入擱架、或晃動滑鼠），選取的檔案立刻入箱。
 4. **一鍵拖出**：拖住擱架底部的 `[⤹ 共 X 項]` 控點，一次拖曳即可將所有檔案拖入目標視窗或通訊軟體。檔案全部移出後擱架自動淡出關閉。

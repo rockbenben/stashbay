@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE) [![365 Open Source Plan #048](https://img.shields.io/badge/365%20Open%20Source%20Plan-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
 
-[⬇ Scarica l'ultima versione](https://github.com/rockbenben/048-stashbay/releases/latest)
+[⬇ Scarica l'ultima versione](https://github.com/rockbenben/stashbay/releases/latest)
 
 ![Mensola compatta StashBay: una scheda sempre in primo piano per parcheggiare e trasferire file](../../assets/shelf.png)
 
@@ -31,7 +31,7 @@ Una stazione di transito file locale e leggera per il desktop di Windows. Funzio
 
 ## Guida rapida
 
-1. **Scaricare il programma**: Scarica l'installer `StashBay-vx.y.z-setup.exe` (senza privilegi di amministratore) o la versione portatile `StashBay-vx.y.z-win-x64.zip` da [Releases](https://github.com/rockbenben/048-stashbay/releases/latest).
+1. **Scaricare il programma**: Scarica l'installer `StashBay-vx.y.z-setup.exe` (senza privilegi di amministratore) o la versione portatile `StashBay-vx.y.z-win-x64.zip` da [Releases](https://github.com/rockbenben/stashbay/releases/latest).
 2. **Aprire la mensola**: Premi la combinazione di tasti <kbd>Win+Alt+S</kbd>; la mini-mensola si aprirà immediatamente vicino al puntatore del mouse sullo schermo attivo.
 3. **Parcheggiare i file**: Seleziona i file in Esplora file e premi di nuovo <kbd>Win+Alt+S</kbd> (oppure trascinali nella mensola, o agita il mouse): i file verranno raccolti all'istante.
 4. **Trascina tutto in un colpo solo**: Trascina la maniglia `[⤹ Totale X elementi]` nella parte inferiore per esportare tutti i file con un unico gesto nella finestra di destinazione o nell'applicazione desiderata. Una volta svuotata, la mensola si chiude automaticamente in dissolvenza.

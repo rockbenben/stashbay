@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE) [![365 Open Source Plan #048](https://img.shields.io/badge/365%20Open%20Source%20Plan-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
 
-[⬇ Neueste Version herunterladen](https://github.com/rockbenben/048-stashbay/releases/latest)
+[⬇ Neueste Version herunterladen](https://github.com/rockbenben/stashbay/releases/latest)
 
 ![StashBay kompakte Ablage: eine kleine, immer im Vordergrund sichtbare Kartenablage — ablegen und weiterverwenden](../../assets/shelf.png)
 
@@ -31,7 +31,7 @@ Eine leichtgewichtige lokale Datei-Transitstation für Windows. Läuft vollstän
 
 ## Schnellstart
 
-1. **Programm herunterladen**: Laden Sie den Installer `StashBay-vx.y.z-setup.exe` (keine Admin-Rechte erforderlich) oder das portable ZIP `StashBay-vx.y.z-win-x64.zip` von [Releases](https://github.com/rockbenben/048-stashbay/releases/latest) herunter.
+1. **Programm herunterladen**: Laden Sie den Installer `StashBay-vx.y.z-setup.exe` (keine Admin-Rechte erforderlich) oder das portable ZIP `StashBay-vx.y.z-win-x64.zip` von [Releases](https://github.com/rockbenben/stashbay/releases/latest) herunter.
 2. **Ablage aufrufen**: Drücken Sie <kbd>Win+Alt+S</kbd>. Die Mini-Ablage öffnet sich direkt am Mauszeiger auf dem aktiven Bildschirm.
 3. **Dateien ablegen**: Wählen Sie Dateien im Datei-Explorer aus und drücken Sie erneut <kbd>Win+Alt+S</kbd> (oder ziehen Sie sie hinein bzw. schütteln Sie die Maus) — die Dateien landen sofort in der Ablage.
 4. **Mit einem Griff herausziehen**: Ziehen Sie den Griff `[⤹ Gesamt X Elemente]` am unteren Rand, um alle Dateien in einem Zug in ein Zielverzeichnis oder eine Anwendung zu exportieren. Wenn alle Dateien entnommen sind, blendet sich die Ablage automatisch aus.

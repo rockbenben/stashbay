@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE) [![365 Open Source Plan #048](https://img.shields.io/badge/365%20Open%20Source%20Plan-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
 
-[⬇ সর্বশেষ সংস্করণ ডাউনলোড করুন](https://github.com/rockbenben/048-stashbay/releases/latest)
+[⬇ সর্বশেষ সংস্করণ ডাউনলোড করুন](https://github.com/rockbenben/stashbay/releases/latest)
 
 ![StashBay কমপ্যাক্ট শেল্ফ: স্ক্রিনের শীর্ষে ভেসে থাকা ছোট ফাইল র্যাক — ফাইল রাখুন এবং ব্যবহার করুন](../../assets/shelf.png)
 
@@ -31,7 +31,7 @@ Windows ডেস্কটপের জন্য একটি হালকা �
 
 ## দ্রুত শুরু
 
-1. **প্রোগ্রাম ডাউনলোড করুন**: [Releases](https://github.com/rockbenben/048-stashbay/releases/latest) থেকে ইনস্টলার `StashBay-vx.y.z-setup.exe` (অ্যাডমিন অনুমতির প্রয়োজন নেই) অথবা পোর্টেবল `StashBay-vx.y.z-win-x64.zip` ডাউনলোড করুন।
+1. **প্রোগ্রাম ডাউনলোড করুন**: [Releases](https://github.com/rockbenben/stashbay/releases/latest) থেকে ইনস্টলার `StashBay-vx.y.z-setup.exe` (অ্যাডমিন অনুমতির প্রয়োজন নেই) অথবা পোর্টেবল `StashBay-vx.y.z-win-x64.zip` ডাউনলোড করুন।
 2. **শেল্ফ চালু করুন**: শর্টকাট <kbd>Win+Alt+S</kbd> টিপুন; মিনি শেল্ফটি বর্তমান স্ক্রিনে মাউস কার্সারের কাছে সাথে সাথে খুলে যাবে।
 3. **ফাইল সংরক্ষণ করুন**: ফাইল এক্সপ্লোরারে ফাইল নির্বাচন করে আবার <kbd>Win+Alt+S</kbd> টিপুন (অথবা টেনে শেল্ফে আনুন বা মাউস নাড়ান) — ফাইলগুলো তৎক্ষণাৎ জমা হয়ে যাবে।
 4. **এক টানে বের করুন**: শেল্ফের নিচে থাকা `[⤹ মোট X টি আইটেম]` হ্যান্ডেলটি টেনে যেকোনো উইন্ডো বা অ্যাপে ছেড়ে দিন। ফাইল খালি হয়ে গেলে শেল্ফটি নিজে থেকেই মিলিয়ে যাবে।
