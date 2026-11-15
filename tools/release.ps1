@@ -151,11 +151,6 @@ foreach ($profile in $profiles) {
 
     $published = Join-Path $artifacts $profile.Directory
 
-    if ($profile.Archive -like '*-needs-dotnet10' -and
-        -not (Test-Path -LiteralPath (Join-Path $published 'e_sqlite3.dll'))) {
-        throw "发布产物缺少 SQLite 原生库：$($profile.Name)"
-    }
-
     # 引用工程（Core / Infrastructure）的 pdb 还是会生成，发布产物里不需要
     Get-ChildItem $published -Filter '*.pdb' -ErrorAction SilentlyContinue | Remove-Item -Force
 

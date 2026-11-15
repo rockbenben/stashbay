@@ -81,6 +81,9 @@ foreach ($scenario in 'fresh', 'upgrade') {
     $sentinels = @((Join-Path $install 'user-notes.txt'), (Join-Path "$install-needs-dotnet10" 'user-notes.txt'), (Join-Path $outRoot "$scenario-neighbor.txt"))
     foreach ($file in $sentinels) { [IO.File]::WriteAllText($file, 'User-owned content must survive') }
     if ($scenario -eq 'upgrade') { Run-TestProcess $current ($arguments + "/LOG=$outRoot/$scenario-update.log") }
+    if (Test-Path -LiteralPath (Join-Path "$install-needs-dotnet10" 'e_sqlite3.dll')) {
+        throw "External SQLite DLL remained after $scenario installation"
+    }
     $version = [Diagnostics.FileVersionInfo]::GetVersionInfo((Join-Path $install 'StashBay.exe')).ProductVersion
     if ($version -ne $expectedApplicationVersion) { throw "Unexpected installed version: $version" }
     Run-TestProcess (Join-Path $install 'unins000.exe') @('/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', "/LOG=$outRoot/$scenario-uninstall.log")

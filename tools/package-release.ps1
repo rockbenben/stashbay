@@ -6,7 +6,7 @@
 .DESCRIPTION
     本脚本由 tools/release.ps1 与 GitHub Actions release workflow 共同调用：
       1. 验证各架构发布产物（PE 头与 Machine 架构校验：x64 为 0x8664，ARM64 为 0xaa64）
-      2. 校验依赖完整性（框架依赖版本必须自带 e_sqlite3.dll）
+      2. 校验单文件发布清单（SQLite 必须嵌入 EXE）
       3. 可选 Authenticode 签名有效性验证（启用 -RequireSigning 时）
       4. 通过 tar 归档为 ZIP，并即时解包进行双向文件清单与内容 SHA-256 哈希比对
       5. 在独立隔离沙箱中解包运行 x64 版本的无头窗口冒烟（--smoke）
@@ -95,9 +95,8 @@ foreach ($arch in $architectures) {
     foreach ($form in '', '-needs-dotnet10') {
         $directory = Join-Path $PublishRoot "publish-$arch$form"
         $exe = Join-Path $directory "$AppName.exe"
-        # Self-contained bundles embed SQLite; framework-dependent ones need it alongside the EXE.
+        # Every flavor embeds SQLite, including framework-dependent single-file bundles.
         $profileFiles = @("$AppName.exe") + $RequiredFiles
-        if ($form) { $profileFiles += 'e_sqlite3.dll' }
         foreach ($relative in $profileFiles) {
             $file = [IO.Path]::GetFullPath((Join-Path $directory $relative))
             if (-not $file.StartsWith([IO.Path]::GetFullPath($directory) + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) { throw "Required file outside profile: $relative" }
@@ -105,8 +104,11 @@ foreach ($arch in $architectures) {
         }
         $expected = if ($arch -eq 'x64') { 0x8664 } else { 0xaa64 }
         Assert-PeArchitecture $exe $expected
-        if ($form) {
-            Assert-PeArchitecture (Join-Path $directory 'e_sqlite3.dll') $expected
+        $publishedFiles = @(Get-ChildItem -LiteralPath $directory -Recurse -File -Force |
+            Where-Object Extension -ne '.pdb' |
+            ForEach-Object { [IO.Path]::GetRelativePath($directory, $_.FullName) })
+        if (Compare-Object @($profileFiles | Sort-Object) @($publishedFiles | Sort-Object)) {
+            throw "Single-file publish inventory differs: $directory ($($publishedFiles -join ', '))"
         }
         $executables += $exe
     }
@@ -154,10 +156,14 @@ foreach ($arch in $architectures) {
                 $environment.APPDATA = $data; $environment.LOCALAPPDATA = $data
                 $environment.STASHBAY_HOME = $data
                 $environment.STASHBAY_NO_SHELL_INTEGRATION = '1'
+                $environment.DOTNET_BUNDLE_EXTRACT_BASE_DIR = Join-Path $sandbox 'bundle'
                 $process = Start-Process -FilePath "$unpacked/$AppName.exe" -WorkingDirectory $unpacked -ArgumentList '--smoke' -Environment $environment -WindowStyle Hidden -PassThru
                 if (-not $process.WaitForExit(90000)) { $process.Kill(); $process.WaitForExit(); throw "Packaged smoke timed out: $zip" }
                 $marker = Join-Path $temp $SmokeMarker
                 if (-not (Test-Path -LiteralPath $marker) -or (Get-Content -LiteralPath $marker -Raw).Trim() -ne 'OK' -or $process.ExitCode) { throw "Packaged smoke failed: $zip" }
+                $sqlite = @(Get-ChildItem -LiteralPath $environment.DOTNET_BUNDLE_EXTRACT_BASE_DIR -Recurse -File -Filter e_sqlite3.dll)
+                if ($sqlite.Count -ne 1) { throw "Expected one embedded SQLite extraction: $zip" }
+                Assert-PeArchitecture $sqlite[0].FullName 0x8664
                 Write-Host "Packaged smoke passed: $arch$form"
             }
             $assets += $zip

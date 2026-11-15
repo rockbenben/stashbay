@@ -67,7 +67,7 @@ Before committing or releasing, verify the following invariants:
    - Release workflow requires PowerShell 7.4+ and Inno Setup 6 (`ISCC.exe`).
    - `package-release.ps1` runs both locally (via `tools/release.ps1`) and in CI (`.github/workflows/ci.yml`).
    - Validates PE machine architecture (x64 = `0x8664`, ARM64 = `0xaa64`).
-   - Framework-dependent packages (`*-needs-dotnet10`) must bundle `e_sqlite3.dll`.
+   - All flavors, including `*-needs-dotnet10`, embed SQLite with `IncludeNativeLibrariesForSelfExtract` and distribute only `StashBay.exe`. Packaged x64 smokes verify SQLite extraction and its PE architecture.
    - Packages are created via `tar`, immediately extracted to temporary sandboxes, and checked for 100% file list equivalence and SHA-256 match.
    - Both x64 editions are unpack-smoke-tested with `--smoke` in isolated sandboxes (`STASHBAY_HOME` and `STASHBAY_NO_SHELL_INTEGRATION=1`).
    - When code signing is active (`RequireSigning`), all 4 executables and the installer must possess valid Authenticode signatures.

@@ -52,8 +52,12 @@ Name: "startwithwindows"; Description: "Start with Windows"; GroupDescription: "
 ; 自包含版本（体积大、下载即用）
 Source: "..\..\artifacts\publish-x64\{#AppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 ; 框架依赖版本（体积小、要求装 .NET 10）
-; 还需要 e_sqlite3.dll：只安装 EXE 会导致数据库初始化失败。
-Source: "..\..\artifacts\publish-x64-needs-dotnet10\*"; DestDir: "{app}-needs-dotnet10"; Excludes: "*.pdb"; Flags: ignoreversion recursesubdirs createallsubdirs
+; SQLite 已内嵌，只安装 EXE。
+Source: "..\..\artifacts\publish-x64-needs-dotnet10\{#AppExeName}"; DestDir: "{app}-needs-dotnet10"; Flags: ignoreversion
+
+[InstallDelete]
+; 清理旧版安装清单拥有的 SQLite DLL，保留目录中的其他用户文件。
+Type: files; Name: "{app}-needs-dotnet10\e_sqlite3.dll"
 
 [Icons]
 Name: "{group}\{#AppName}"; Filename: "{app}\{#AppExeName}"

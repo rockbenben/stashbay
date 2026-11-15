@@ -143,7 +143,7 @@ StashBay features two tightly integrated workflows:
 * Release tooling requires **PowerShell 7.4+** (`#Requires -Version 7.4`) and **Inno Setup 6** (`ISCC.exe`).
 * `tools/package-release.ps1` is the shared single source of truth for packaging verification between local builds (`tools/release.ps1`) and CI (`.github/workflows/ci.yml`).
 * **PE Architecture Check**: Validates the PE machine header (x64 = `0x8664`, ARM64 = `0xaa64`) to reject cross-compilation misconfigurations.
-* **SQLite Runtime Dependency**: Self-contained bundles embed SQLite; framework-dependent bundles (`*-needs-dotnet10`) must include external `e_sqlite3.dll` alongside `StashBay.exe`.
+* **SQLite Runtime Dependency**: All four publish flavors embed SQLite in `StashBay.exe` using `IncludeNativeLibrariesForSelfExtract`. Framework-dependent bundles (`*-needs-dotnet10`) still require .NET 10 Desktop Runtime. Release packaging rejects external DLLs and verifies extracted SQLite during isolated x64 smokes.
 * **Roundtrip ZIP Verification**: Every ZIP archive is created using `tar`, immediately unpacked to an isolated directory, and checked for 100% file inventory and byte-for-byte SHA256 match.
 * **Isolated x64 Package Smokes**: Both unpacked x64 distributions (`win-x64` and `win-x64-needs-dotnet10`) execute `--smoke` in separate sandboxed directories with isolated `TEMP`, `TMP`, `APPDATA`, `LOCALAPPDATA`, `STASHBAY_HOME`, and `STASHBAY_NO_SHELL_INTEGRATION=1`.
 * **Authenticode Validation**: When code signing is enabled (`RequireSigning`), all 4 application binaries and the installer must have valid digital signatures.

@@ -8,7 +8,7 @@ public sealed class ReleasePackagingTests
     [Theory]
     [InlineData("x64")]
     [InlineData("arm64")]
-    public async Task PackagingMustRejectSqliteFromAnotherArchitecture(string invalidArchitecture)
+    public async Task PackagingMustRejectExternalSqlite(string architectureWithSidecar)
     {
         using var workspace = new TempWorkspace();
         var packages = Path.Combine(workspace.Root, "packages");
@@ -20,9 +20,8 @@ public sealed class ReleasePackagingTests
                 var profile = Path.Combine(packages, "publish-" + architecture + form);
                 Directory.CreateDirectory(profile);
                 WritePe(Path.Combine(profile, "StashBay.exe"), expected);
-                if (form.Length > 0)
-                    WritePe(Path.Combine(profile, "e_sqlite3.dll"),
-                        architecture == invalidArchitecture ? (ushort)(expected == 0x8664 ? 0xaa64 : 0x8664) : expected);
+                if (form.Length > 0 && architecture == architectureWithSidecar)
+                    WritePe(Path.Combine(profile, "e_sqlite3.dll"), expected);
             }
         }
         var installer = Path.Combine(workspace.Root, "setup.exe");
@@ -45,12 +44,12 @@ public sealed class ReleasePackagingTests
         try { await process.WaitForExitAsync(timeout.Token); }
         finally { if (!process.HasExited) process.Kill(entireProcessTree:true); }
         var diagnostics = await output + await error;
-        Assert.True(process.ExitCode != 0, "Packaging accepted a SQLite DLL from another architecture. " + diagnostics);
+        Assert.True(process.ExitCode != 0, "Packaging accepted an external SQLite DLL instead of a single EXE. " + diagnostics);
         Assert.Contains("e_sqlite3.dll", diagnostics);
         Assert.Empty(Directory.EnumerateFiles(Path.Combine(workspace.Root, "output"), "*.zip"));
     }
 
-    // Minimal PE headers exercise the static architecture gate; real release smoke is separate.
+    // Minimal PE headers exercise the inventory gate; real release smoke verifies embedded SQLite.
     private static void WritePe(string path, ushort machine)
     {
         using var file = File.Create(path);
