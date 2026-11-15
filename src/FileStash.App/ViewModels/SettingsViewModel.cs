@@ -168,7 +168,9 @@ public sealed partial class SettingsViewModel : ObservableObject
             System.Globalization.CultureInfo.InvariantCulture, out int seconds) && (uint)seconds <= 300;
         var status = await _startupService.ReadAsync(valid ? seconds : 3);
         SetStartupStatus(status);
-        StartupUncertain = _startupService.IsPending || status.State == LogonStartupState.Unknown;
+        // A query failure alone must not lock the whole settings editor. Keep the
+        // replay guard only for a pending or previously unconfirmed startup change.
+        StartupUncertain = _startupService.IsPending || (StartupUncertain && status.State == LogonStartupState.Unknown);
     }
 
     private void SetStartupStatus(LogonStartupStatus status)
@@ -207,45 +209,54 @@ public sealed partial class SettingsViewModel : ObservableObject
         }
         Settings.AdministratorStartupDelaySeconds = seconds;
         IsStartupBusy = true;
-        StartupStatusText = Strings.StartupStatusBusy;
         try
         {
             // Capture the request before awaiting UAC. The form is disabled while it is pending.
             var committed = Settings.Clone();
-            ElevatedStartup.ValidateDelay(committed.AdministratorStartupDelaySeconds);
-            var result = await _startupService.ChangeAsync(committed.StartWithWindows,
-                committed.StartWithWindowsAsAdministrator, repair, committed.AdministratorStartupDelaySeconds);
-            int readbackDelay = committed.AdministratorStartupDelaySeconds;
-            if (result.Outcome == StartupOutcome.Cancelled &&
-                (uint)_settingsService.Current.AdministratorStartupDelaySeconds <= 300)
-                readbackDelay = _settingsService.Current.AdministratorStartupDelaySeconds;
-            var status = await _startupService.ReadAsync(readbackDelay);
-            SetStartupStatus(status);
-            if (result.Outcome is not (StartupOutcome.Applied or StartupOutcome.Unchanged))
+            // Ordinary preferences must remain editable when Task Scheduler cannot be queried.
+            // Reconcile startup only after an explicit edit or Repair action.
+            var saved = _settingsService.Current;
+            bool startupChanged = committed.StartWithWindows != saved.StartWithWindows ||
+                committed.StartWithWindowsAsAdministrator != saved.StartWithWindowsAsAdministrator ||
+                committed.AdministratorStartupDelaySeconds != saved.AdministratorStartupDelaySeconds;
+            if (repair || startupChanged)
             {
-                Serilog.Log.Warning("Startup change {Outcome}: {Detail}", result.Outcome, result.Detail);
-                StartupUncertain = result.Outcome == StartupOutcome.Uncertain ||
-                    _startupService.IsPending || status.State == LogonStartupState.Unknown;
-                RestoreStartupSelection(status);
-                if (result.Outcome == StartupOutcome.Cancelled)
+                StartupStatusText = Strings.StartupStatusBusy;
+                ElevatedStartup.ValidateDelay(committed.AdministratorStartupDelaySeconds);
+                var result = await _startupService.ChangeAsync(committed.StartWithWindows,
+                    committed.StartWithWindowsAsAdministrator, repair, committed.AdministratorStartupDelaySeconds);
+                int readbackDelay = committed.AdministratorStartupDelaySeconds;
+                if (result.Outcome == StartupOutcome.Cancelled &&
+                    (uint)_settingsService.Current.AdministratorStartupDelaySeconds <= 300)
+                    readbackDelay = _settingsService.Current.AdministratorStartupDelaySeconds;
+                var status = await _startupService.ReadAsync(readbackDelay);
+                SetStartupStatus(status);
+                if (result.Outcome is not (StartupOutcome.Applied or StartupOutcome.Unchanged))
                 {
-                    Settings.AdministratorStartupDelaySeconds = readbackDelay;
-                    _startupDelayText = null;
-                    OnPropertyChanged(nameof(StartupDelayText));
-                    _dialogs.ShowToast(Strings.SettingsTitle, Strings.StartupCancelled);
+                    Serilog.Log.Warning("Startup change {Outcome}: {Detail}", result.Outcome, result.Detail);
+                    StartupUncertain = result.Outcome == StartupOutcome.Uncertain ||
+                        _startupService.IsPending || status.State == LogonStartupState.Unknown;
+                    RestoreStartupSelection(status);
+                    if (result.Outcome == StartupOutcome.Cancelled)
+                    {
+                        Settings.AdministratorStartupDelaySeconds = readbackDelay;
+                        _startupDelayText = null;
+                        OnPropertyChanged(nameof(StartupDelayText));
+                        _dialogs.ShowToast(Strings.SettingsTitle, Strings.StartupCancelled);
+                    }
+                    else
+                        _dialogs.ShowWarning(Strings.SettingsTitle, result.Outcome == StartupOutcome.Uncertain
+                            ? Strings.StartupUncertainMessage : StartupFailureMessage(result.Failure));
+                    return;
                 }
-                else
-                    _dialogs.ShowWarning(Strings.SettingsTitle, result.Outcome == StartupOutcome.Uncertain
-                        ? Strings.StartupUncertainMessage : StartupFailureMessage(result.Failure));
-                return;
-            }
-            var expected = !committed.StartWithWindows ? LogonStartupState.Disabled :
-                committed.StartWithWindowsAsAdministrator ? LogonStartupState.Elevated : LogonStartupState.Plain;
-            if ((status.State != expected && status.State != LogonStartupState.Suppressed) || _startupService.IsPending)
-            {
-                StartupUncertain = true;
-                _dialogs.ShowWarning(Strings.SettingsTitle, Strings.StartupUncertainMessage);
-                return;
+                var expected = !committed.StartWithWindows ? LogonStartupState.Disabled :
+                    committed.StartWithWindowsAsAdministrator ? LogonStartupState.Elevated : LogonStartupState.Plain;
+                if ((status.State != expected && status.State != LogonStartupState.Suppressed) || _startupService.IsPending)
+                {
+                    StartupUncertain = true;
+                    _dialogs.ShowWarning(Strings.SettingsTitle, Strings.StartupUncertainMessage);
+                    return;
+                }
             }
             var languageChanged = committed.Language != _languageBeforeEdit;
             var current = _settingsService.Current;

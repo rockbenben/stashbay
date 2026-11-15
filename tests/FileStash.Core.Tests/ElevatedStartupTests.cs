@@ -1,5 +1,7 @@
 using FileStash.Infrastructure.Shell;
 using FileStash.StartupTests;
+using System.Security.Principal;
+using System.Xml.Linq;
 
 namespace FileStash.Core.Tests;
 
@@ -7,6 +9,37 @@ public sealed class ElevatedStartupTests
 {
     [Fact]
     public void IsolatedTemplateRegressions() => RegressionSuite.Run();
+
+    [Theory]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    [InlineData(true, true)]
+    public void SchedulerAccountNameReadbackMatchesOnlyTheSameSid(bool principalName, bool triggerName)
+    {
+        using var identity = WindowsIdentity.GetCurrent();
+        var target = NewTarget() with { UserSid = identity.User!.Value };
+        var document = XDocument.Parse(ElevatedStartup.TaskXml(target));
+        XNamespace ns = "http://schemas.microsoft.com/windows/2004/02/mit/task";
+        var principal = document.Descendants(ns + "Principal").Single().Element(ns + "UserId")!;
+        var trigger = document.Descendants(ns + "LogonTrigger").Single().Element(ns + "UserId")!;
+        if (principalName) principal.Value = identity.Name;
+        if (triggerName) trigger.Value = identity.Name;
+        // Actual registered readback also omits these default values.
+        document.Descendants().Where(e => e.Name.LocalName is
+            "Enabled" or "RunOnlyIfNetworkAvailable" or "RunOnlyIfIdle").Remove();
+        Assert.True(ElevatedStartup.Matches(document.ToString(), target));
+
+        // A valid account belonging to a different SID must still be rejected.
+        var otherSid = new SecurityIdentifier(identity.User.Value == "S-1-5-18" ? "S-1-5-19" : "S-1-5-18");
+        string otherAccount = ((NTAccount)otherSid.Translate(typeof(NTAccount))).Value;
+        principal.Value = otherAccount;
+        Assert.False(ElevatedStartup.Matches(document.ToString(), target));
+        principal.Value = target.UserSid;
+        trigger.Value = otherAccount;
+        Assert.False(ElevatedStartup.Matches(document.ToString(), target));
+        trigger.Value = "";
+        Assert.False(ElevatedStartup.Matches(document.ToString(), target));
+    }
 
     [Theory]
     [InlineData(5, StartupFailure.AccountMismatch)]

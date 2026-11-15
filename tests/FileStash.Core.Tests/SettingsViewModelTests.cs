@@ -63,6 +63,73 @@ public sealed class SettingsViewModelTests : IAsyncLifetime
 
 
     [Fact]
+    public async Task UnknownStartupStatusDoesNotBlockSavingOrdinaryPreferences()
+    {
+        _startup.State = LogonStartupState.Unknown;
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
+        Assert.True(_viewModel.SaveCommand.CanExecute(null));
+        _viewModel.Settings.Language = AppLanguage.English;
+        _viewModel.Settings.BackupBeforeOverwrite = false;
+
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+
+        Assert.True(_viewModel.LastSaveSucceeded);
+        Assert.Equal(0, _startup.Calls);
+        _settings.Load();
+        Assert.Equal(AppLanguage.English, _settings.Current.Language);
+        Assert.False(_settings.Current.BackupBeforeOverwrite);
+    }
+
+    [Fact]
+    public async Task UnknownReadbackAfterStartupEditDoesNotPersistOrEnableReplay()
+    {
+        _startup.State = LogonStartupState.Unknown;
+        _startup.Outcome = StartupOutcome.Failed;
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
+        _viewModel.Settings.StartWithWindows = true;
+
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+
+        Assert.Equal(1, _startup.Calls);
+        Assert.False(_viewModel.LastSaveSucceeded);
+        Assert.False(_settings.Current.StartWithWindows);
+        Assert.False(_viewModel.SaveCommand.CanExecute(null));
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
+        Assert.False(_viewModel.SaveCommand.CanExecute(null));
+    }
+
+    [Fact]
+    public async Task PendingStartupHelperStillBlocksSaving()
+    {
+        _startup.IsPending = true;
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
+        Assert.False(_viewModel.SaveCommand.CanExecute(null));
+        Assert.False(_viewModel.RepairStartupCommand.CanExecute(null));
+    }
+
+    [Fact]
+    public async Task FailedStartupEditCanBeSavedAfterRefreshConfirmsUnregisteredState()
+    {
+        _startup.State = LogonStartupState.Unknown;
+        _startup.Outcome = StartupOutcome.Failed;
+        _viewModel.Settings.StartWithWindows = true;
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+        Assert.False(_viewModel.SaveCommand.CanExecute(null));
+
+        _startup.State = LogonStartupState.Disabled;
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
+        Assert.True(_viewModel.SaveCommand.CanExecute(null));
+        Assert.True(_viewModel.RepairStartupCommand.CanExecute(null));
+
+        _startup.Outcome = StartupOutcome.Applied;
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+        Assert.True(_viewModel.LastSaveSucceeded);
+        _settings.Load();
+        Assert.True(_settings.Current.StartWithWindows);
+        Assert.Equal(2, _startup.Calls);
+    }
+
+    [Fact]
     public async Task CancelledDelayChangeRestoresSavedValueAndReadsBackAgainstIt()
     {
         _settings.Save(new AppSettings { StartWithWindows = true, StartWithWindowsAsAdministrator = true });

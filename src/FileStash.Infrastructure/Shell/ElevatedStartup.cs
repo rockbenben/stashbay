@@ -130,11 +130,11 @@ public static class ElevatedStartup
                 root.Element(Ns + "Principals")?.Element(Ns + "Principal")?.Attribute("id")?.Value == "User" &&
                 root.Element(Ns + "Actions")?.Attribute("Context")?.Value == "User" &&
                 root.Element(Ns + "Triggers")?.Elements().Count() == 1 &&
-                Value(root, "Principals", "Principal", "UserId") == target.UserSid &&
+                SameUser(Value(root, "Principals", "Principal", "UserId"), target.UserSid) &&
                 Value(root, "Principals", "Principal", "LogonType") == "InteractiveToken" &&
                 Value(root, "Principals", "Principal", "RunLevel") == "HighestAvailable" &&
-                Value(root, "Triggers", "LogonTrigger", "UserId") == target.UserSid &&
-                Value(root, "Triggers", "LogonTrigger", "Enabled") == "true" &&
+                SameUser(Value(root, "Triggers", "LogonTrigger", "UserId"), target.UserSid) &&
+                BooleanValue(root, true, "Triggers", "LogonTrigger", "Enabled") &&
                 !root.Element(Ns + "Triggers")!.Descendants().Any(e =>
                     e.Name == Ns + "StartBoundary" || e.Name == Ns + "EndBoundary" ||
                     e.Name == Ns + "Repetition") &&
@@ -143,17 +143,39 @@ public static class ElevatedStartup
                 Value(root, "Actions", "Exec", "Arguments") == target.Options.TrayArguments &&
                 NormalizePath(Value(root, "Actions", "Exec", "WorkingDirectory")).Equals(
                     Path.GetDirectoryName(target.Executable), StringComparison.OrdinalIgnoreCase) &&
-                Value(root, "Settings", "Enabled") == "true" &&
+                BooleanValue(root, true, "Settings", "Enabled") &&
                 Value(root, "Settings", "Priority") == "4" &&
                 Value(root, "Settings", "MultipleInstancesPolicy") == "IgnoreNew" &&
                 Value(root, "Settings", "DisallowStartIfOnBatteries") == "false" &&
                 Value(root, "Settings", "StopIfGoingOnBatteries") == "false" &&
                 Value(root, "Settings", "StartWhenAvailable") == "true" &&
-                Value(root, "Settings", "RunOnlyIfNetworkAvailable") == "false" &&
-                Value(root, "Settings", "RunOnlyIfIdle") == "false" &&
+                !BooleanValue(root, false, "Settings", "RunOnlyIfNetworkAvailable") &&
+                !BooleanValue(root, false, "Settings", "RunOnlyIfIdle") &&
                 Value(root, "Settings", "ExecutionTimeLimit") == "PT0S";
         }
         catch { return false; }
+    }
+
+    private static bool BooleanValue(XElement root, bool defaultValue, params string[] path)
+    {
+        XElement? node = root;
+        foreach (string name in path) node = node?.Element(Ns + name);
+        // Registered task XML omits schema defaults. An explicitly empty or
+        // malformed boolean still throws and is rejected by Matches.
+        return node is null ? defaultValue : XmlConvert.ToBoolean(node.Value.Trim());
+    }
+
+    private static bool SameUser(string value, string expectedSid)
+    {
+        if (value == expectedSid) return true;
+        if (string.IsNullOrWhiteSpace(value)) return false;
+        // Task Scheduler may serialize the same identity as DOMAIN\User after
+        // registration. Resolve it to a SID rather than accepting names by text.
+        // Lookup failures propagate to Matches, which rejects the task.
+        var sid = value.StartsWith("S-", StringComparison.OrdinalIgnoreCase)
+            ? new SecurityIdentifier(value)
+            : (SecurityIdentifier)new NTAccount(value).Translate(typeof(SecurityIdentifier));
+        return sid.Value == expectedSid;
     }
 
     private static bool DelayMatches(XElement root, int seconds)
@@ -210,7 +232,9 @@ public static class ElevatedStartup
             stage = "verify task";
             string? after = store.ReadTask(name);
             if (remove ? after is not null : !Matches(after, target))
-                throw new IOException("Task readback does not match the requested state.");
+                throw new IOException("Task readback does not match the requested state. " +
+                    $"Expected XML: {(remove ? "<absent>" : TaskXml(target))}; " +
+                    $"Actual XML: {after ?? "<absent>"}");
             stage = "update plain startup";
             store.WriteRun(target.Options.AppId, desiredRun);
             if (target.Options.LegacyRunValueName is { } legacy) store.WriteRun(legacy, null);
@@ -495,7 +519,9 @@ public sealed class WindowsStartupStore : IStartupStore
     {
         object? task = null;
         try { task = folder.GetTask(name); return (string)((dynamic)task).Xml; }
-        catch (COMException ex) when (ex.HResult == unchecked((int)0x80070002)) { return null; }
+        // COM interop may map HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND) to
+        // FileNotFoundException. A missing task is an ordinary unregistered state.
+        catch (Exception ex) when (ex.HResult == unchecked((int)0x80070002)) { return null; }
         finally { Release(task); }
     });
     public void WriteTask(string name, string xml, string userSid) => WithFolder(folder =>
@@ -510,7 +536,7 @@ public sealed class WindowsStartupStore : IStartupStore
     public void DeleteTask(string name) => WithFolder(folder =>
     {
         try { folder.DeleteTask(name, 0); }
-        catch (COMException ex) when (ex.HResult == unchecked((int)0x80070002)) { }
+        catch (Exception ex) when (ex.HResult == unchecked((int)0x80070002)) { }
         return true;
     });
     public string? ReadRun(string valueName)

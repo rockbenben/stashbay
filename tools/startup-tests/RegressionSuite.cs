@@ -124,6 +124,23 @@ public static class RegressionSuite
                 ("RunOnlyIfIdle", "true"), ("RunOnlyIfNetworkAvailable", "true") })
                 Check(!ElevatedStartup.Matches(Changed(desired, name, value), target), name);
         });
+        Test("registered XML may omit default enabled, network and idle flags", () =>
+        {
+            var xml = XDocument.Parse(desired);
+            string[] defaults = ["Enabled", "RunOnlyIfNetworkAvailable", "RunOnlyIfIdle"];
+            xml.Descendants().Where(e => defaults.Contains(e.Name.LocalName)).Remove();
+            Check(ElevatedStartup.Matches(xml.ToString(), target));
+            foreach (var (parent, field, value) in new[] {
+                ("Settings", "Enabled", "false"), ("LogonTrigger", "Enabled", "false"),
+                ("Settings", "RunOnlyIfNetworkAvailable", "true"), ("Settings", "RunOnlyIfIdle", "true"),
+                ("Settings", "Enabled", ""), ("LogonTrigger", "Enabled", "invalid") })
+            {
+                var changed = XDocument.Parse(xml.ToString());
+                var node = changed.Descendants().Single(e => e.Name.LocalName == parent);
+                node.Add(new XElement(node.Name.Namespace + field, value));
+                Check(!ElevatedStartup.Matches(changed.ToString(), target), parent + "/" + field + "=" + value);
+            }
+        });
         Test("install verifies the task before removing plain startup", () =>
         {
             var store = new MemoryStore { Run = "old ordinary startup" };
