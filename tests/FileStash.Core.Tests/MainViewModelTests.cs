@@ -70,6 +70,471 @@ public sealed class MainViewModelTests : IAsyncLifetime
         return ValueTask.CompletedTask;
     }
 
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task SuccessfulRestoreConsumesOnlyCompactQueueAndPreservesUndo(bool compact)
+    {
+        await _viewModel.InitializeAsync();
+        var source = _workspace.CreateFile("source/restored.txt", "snapshot contents");
+        await _viewModel.AddPathsAsync([source]);
+        var itemId = Assert.Single(_viewModel.Items).Id;
+        var constructor = typeof(MainViewModel).GetConstructors().Single();
+        var sibling = (MainViewModel)constructor.Invoke(constructor.GetParameters()
+            .Select(parameter => Dependency("_" + parameter.Name)).ToArray());
+        _viewModel.IsCompact = compact;
+        var completed = 0;
+        var siblingCompleted = 0;
+        _viewModel.RestoreSucceeded += () => completed++;
+        sibling.RestoreSucceeded += () => siblingCompleted++;
+        _viewModel.TargetMode = TargetMode.SpecifiedPath;
+        _viewModel.TargetPath = Path.Combine(_workspace.Root, "destination");
+        _viewModel.Structure = StructureMode.ItemOnly;
+        _viewModel.ConflictPolicy = ConflictPolicy.Rename;
+        await _viewModel.ApplyCommand.ExecuteAsync(null);
+        Assert.Equal("snapshot contents", await File.ReadAllTextAsync(Path.Combine(_viewModel.TargetPath, "restored.txt"), TestContext.Current.CancellationToken));
+        Assert.Equal(compact ? 1 : 0, completed);
+        Assert.Equal(0, siblingCompleted);
+        if (compact) Assert.Empty(_viewModel.Items);
+        else Assert.Equal(itemId, Assert.Single(_viewModel.Items).Id);
+        await _viewModel.RefreshAsync();
+        Assert.Equal(compact ? 0 : 1, _viewModel.Items.Count);
+        var operation = Assert.Single(await ((IOperationRepository)Dependency("_operations"))
+            .GetAllAsync(TestContext.Current.CancellationToken));
+        var undo = await ((IApplyExecutor)Dependency("_executor")).UndoAsync(operation.Id, TestContext.Current.CancellationToken);
+        Assert.True(undo.Deleted >= 1);
+        Assert.False(File.Exists(Path.Combine(_viewModel.TargetPath, "restored.txt")));
+        Assert.False(undo.HasIssues);
+        Assert.Equal("snapshot contents", await File.ReadAllTextAsync(source, TestContext.Current.CancellationToken));
+        Assert.False(_viewModel.IsBusy);
+    }
+
+    [Theory]
+    [InlineData(OperationStatus.Cancelled)]
+    [InlineData(OperationStatus.Failed)]
+    [InlineData(OperationStatus.PartiallyFailed)]
+    public async Task UnsuccessfulRestoreMustNotRequestDismissal(OperationStatus status)
+    {
+        await _viewModel.InitializeAsync();
+        await _viewModel.AddPathsAsync([_workspace.CreateFile("inbox/preserve.txt", "keep")]);
+        var executor = (IApplyExecutor)Dependency("_executor");
+        ReplaceDependency("_executor", Proxy<IApplyExecutor>((method, args) =>
+            method.Name == nameof(IApplyExecutor.ExecuteAsync)
+                ? Task.FromResult(new Operation { Id = "unsuccessful", Status = status })
+                : method.Invoke(executor, args)));
+        var completed = 0;
+        _viewModel.RestoreSucceeded += () => completed++;
+        _viewModel.TargetMode = TargetMode.SpecifiedPath;
+        _viewModel.TargetPath = Path.Combine(_workspace.Root, "destination");
+        _viewModel.ConflictPolicy = ConflictPolicy.Rename;
+        await _viewModel.ApplyCommand.ExecuteAsync(null);
+        Assert.Equal(0, completed);
+        Assert.Single(_viewModel.Items);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task RestoreMustKeepLaterAdditionsAndNewerSnapshots(bool restash)
+    {
+        await _viewModel.InitializeAsync();
+        var source = _workspace.CreateFile("inbox/first.txt", "first snapshot");
+        await _viewModel.AddPathsAsync([source]);
+        var initialId = Assert.Single(_viewModel.Items).Id;
+        var executor = (IApplyExecutor)Dependency("_executor");
+        async Task<Operation> ExecuteWithLaterAddition(ApplyPlan plan, IProgress<ProgressInfo>? progress, CancellationToken ct)
+        {
+            var operation = await executor.ExecuteAsync(plan, progress, ct);
+            if (restash)
+            {
+                await File.WriteAllTextAsync(source, "new snapshot", ct);
+                await ((IStashService)Dependency("_stash")).RefreshSnapshotAsync([initialId], progress, ct);
+                await _viewModel.RefreshAsync();
+            }
+            else await _viewModel.AddPathsAsync([_workspace.CreateFile("inbox/later.txt", "later")]);
+            return operation;
+        }
+        ReplaceDependency("_executor", Proxy<IApplyExecutor>((method, args) =>
+            method.Name == nameof(IApplyExecutor.ExecuteAsync)
+                ? ExecuteWithLaterAddition((ApplyPlan)args![0]!, (IProgress<ProgressInfo>?)args[1], (CancellationToken)args[2]!)
+                : method.Invoke(executor, args)));
+        var dismissed = 0;
+        _viewModel.RestoreSucceeded += () => dismissed++;
+        _viewModel.TargetMode = TargetMode.SpecifiedPath;
+        _viewModel.TargetPath = Path.Combine(_workspace.Root, "destination");
+        _viewModel.Structure = StructureMode.ItemOnly;
+        _viewModel.ConflictPolicy = ConflictPolicy.Rename;
+        await _viewModel.ApplyCommand.ExecuteAsync(null);
+        Assert.Equal(0, dismissed);
+        var pending = Assert.Single(_viewModel.Items);
+        if (restash) Assert.Equal(initialId, pending.Id);
+        else Assert.Equal("later.txt", pending.DisplayName);
+        Assert.Equal("first snapshot", await File.ReadAllTextAsync(
+            Path.Combine(_viewModel.TargetPath, "first.txt"), TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task OriginalRestoreOfIdenticalFileDrainsQueueForNextSummon()
+    {
+        await _viewModel.InitializeAsync();
+        var source = _workspace.CreateFile("identical.txt", "already delivered");
+        await _viewModel.AddPathsAsync([source]);
+        _viewModel.ConflictPolicy = ConflictPolicy.Skip;
+        var dismissed = 0;
+        _viewModel.RestoreSucceeded += () => dismissed++;
+        await _viewModel.ApplyOriginalAsync();
+        Assert.Equal(1, dismissed);
+        Assert.Empty(_viewModel.Items);
+        var constructor = typeof(MainViewModel).GetConstructors().Single();
+        var reopened = (MainViewModel)constructor.Invoke(constructor.GetParameters()
+            .Select(parameter => Dependency("_" + parameter.Name)).ToArray());
+        await reopened.InitializeAsync();
+        Assert.Empty(reopened.Items);
+        Assert.Equal("already delivered", await File.ReadAllTextAsync(source, TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task EmptyTemporaryGroupIsRemovedFromSidebarAndSelectionFallsBackToDefault()
+    {
+        await _viewModel.InitializeAsync();
+        var permanent = _viewModel.SelectedGroup!.Id;
+        await _viewModel.AddPathsAsync([_workspace.CreateFile("default.txt", "keep default")]);
+        await _viewModel.CreateShelfAsync();
+        var temporary = _viewModel.SelectedGroup!.Id;
+        Assert.Equal(StashGroupKind.Temporary, _viewModel.SelectedGroup.Group.Kind);
+        await _viewModel.AddPathsAsync([_workspace.CreateFile("temporary.txt", "temporary")]);
+        await _viewModel.RemoveItemDirectCommand.ExecuteAsync(Assert.Single(_viewModel.Items));
+        Assert.DoesNotContain(_viewModel.Groups, group => group.Id == temporary);
+        Assert.Equal(permanent, _viewModel.SelectedGroup!.Id);
+        Assert.Equal("default.txt", Assert.Single(_viewModel.Items).DisplayName);
+        Assert.Null(await ((IStashGroupRepository)Dependency("_groups")).GetAsync(temporary, TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task CompletedTemporaryRestoreClosesItsShelfEvenWhenDefaultContainsSavedFiles()
+    {
+        await _viewModel.InitializeAsync();
+        await _viewModel.AddPathsAsync([_workspace.CreateFile("default.txt", "preserve")]);
+        var permanent = _viewModel.SelectedGroup!.Id;
+        await _viewModel.CreateShelfAsync();
+        var temporary = _viewModel.SelectedGroup!.Id;
+        await _viewModel.AddPathsAsync([_workspace.CreateFile("transit.txt", "deliver")]);
+        _viewModel.TargetMode = TargetMode.SpecifiedPath;
+        _viewModel.TargetPath = Path.Combine(_workspace.Root, "destination");
+        _viewModel.Structure = StructureMode.ItemOnly;
+        _viewModel.ConflictPolicy = ConflictPolicy.Rename;
+        var dismissed = 0;
+        _viewModel.RestoreSucceeded += () => dismissed++;
+        await _viewModel.ApplyCommand.ExecuteAsync(null);
+        Assert.Equal(1, dismissed);
+        Assert.DoesNotContain(_viewModel.Groups, group => group.Id == temporary);
+        Assert.Single(await ((IStashItemRepository)Dependency("_items")).GetByGroupAsync(permanent, TestContext.Current.CancellationToken));
+        Assert.Equal("deliver", await File.ReadAllTextAsync(Path.Combine(_viewModel.TargetPath, "transit.txt"), TestContext.Current.CancellationToken));
+    }
+
+    private object Dependency(string name) => typeof(MainViewModel)
+        .GetField(name, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!.GetValue(_viewModel)!;
+
+    [Fact]
+    public async Task CleanupInAnotherWindowPreservesUnchangedItemsSelectionAndMode()
+    {
+        await _viewModel.InitializeAsync();
+        await _viewModel.AddPathsAsync([_workspace.CreateFile("other-window.txt", "preserve selection")]);
+        var selectedGroup = _viewModel.SelectedGroup!.Id;
+        var selectedItem = Assert.Single(_viewModel.Items);
+        _viewModel.SelectedItem = selectedItem;
+        _viewModel.IsCompact = false;
+        var constructor = typeof(MainViewModel).GetConstructors().Single();
+        var other = (MainViewModel)constructor.Invoke(constructor.GetParameters()
+            .Select(parameter => Dependency("_" + parameter.Name)).ToArray());
+        await other.CreateShelfAsync();
+        await other.AddPathsAsync([_workspace.CreateFile("cleared-window.txt", "clear only this")]);
+        await other.RemoveItemDirectCommand.ExecuteAsync(Assert.Single(other.Items));
+        await _viewModel.RefreshAfterGroupCleanupAsync();
+        Assert.Equal(selectedGroup, _viewModel.SelectedGroup!.Id);
+        Assert.Same(selectedItem, Assert.Single(_viewModel.Items));
+        Assert.Same(selectedItem, _viewModel.SelectedItem);
+        Assert.False(_viewModel.IsCompact);
+    }
+
+    [Fact]
+    public async Task NewShelvesHaveIndependentGroupsItemsAndDisplayModes()
+    {
+        await _viewModel.InitializeAsync();
+        var originalGroup = _viewModel.SelectedGroup!.Id;
+        await _viewModel.AddPathsAsync([_workspace.CreateFile("first.txt", "first")]);
+        var constructor = typeof(MainViewModel).GetConstructors().Single();
+        var sibling = (MainViewModel)constructor.Invoke(constructor.GetParameters()
+            .Select(parameter => Dependency("_" + parameter.Name)).ToArray());
+        await sibling.CreateShelfAsync();
+        Assert.NotEqual(originalGroup, sibling.SelectedGroup!.Id);
+        Assert.Empty(sibling.Items);
+        await sibling.AddPathsAsync([_workspace.CreateFile("second.txt", "second")]);
+        sibling.IsCompact = false;
+        Assert.True(_viewModel.IsCompact);
+        Assert.Equal("first.txt", Assert.Single(_viewModel.Items).DisplayName);
+        Assert.Equal("second.txt", Assert.Single(sibling.Items).DisplayName);
+        await _viewModel.RefreshAsync();
+        Assert.Equal(originalGroup, _viewModel.SelectedGroup!.Id);
+        Assert.Equal("first.txt", Assert.Single(_viewModel.Items).DisplayName);
+    }
+
+    private void ReplaceDependency(string name, object value) => typeof(MainViewModel)
+        .GetField(name, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!.SetValue(_viewModel, value);
+
+    private Task LoadItems(GroupViewModel group) => (Task)typeof(MainViewModel)
+        .GetMethod("LoadItemsAsync", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!
+        .Invoke(_viewModel, [group])!;
+
+    public class ForwardingProxy : System.Reflection.DispatchProxy
+    {
+        public Func<System.Reflection.MethodInfo, object?[]?, object?> InvokeMethod { get; set; } = null!;
+        protected override object? Invoke(System.Reflection.MethodInfo? method, object?[]? args) => InvokeMethod(method!, args);
+    }
+
+    private static T Proxy<T>(Func<System.Reflection.MethodInfo, object?[]?, object?> invoke) where T : class
+    {
+        var proxy = System.Reflection.DispatchProxy.Create<T, ForwardingProxy>();
+        ((ForwardingProxy)(object)proxy).InvokeMethod = invoke;
+        return proxy;
+    }
+
+    [Fact]
+    public async Task InitializationMustRetryAfterTransientFailure()
+    {
+        var inner = (IStashGroupRepository)Dependency("_groups");
+        var first = true;
+        ReplaceDependency("_groups", Proxy<IStashGroupRepository>((method, args) =>
+        {
+            if (method.Name == nameof(IStashGroupRepository.GetAllAsync) && first)
+            {
+                first = false;
+                return Task.FromException<IReadOnlyList<StashGroup>>(new IOException("Transient query failure"));
+            }
+            return method.Invoke(inner, args);
+        }));
+        await Assert.ThrowsAsync<IOException>(() => _viewModel.InitializeAsync());
+        await _viewModel.InitializeAsync();
+        Assert.NotNull(_viewModel.SelectedGroup);
+    }
+
+    [Fact]
+    public async Task InitializationMustRestoreSavedGroup()
+    {
+        await _viewModel.InitializeAsync();
+        await _viewModel.SelectGroupAsync("A");
+        var saved = await _viewModel.SelectGroupAsync("B");
+        var constructor = typeof(MainViewModel).GetConstructors().Single();
+        var next = (MainViewModel)constructor.Invoke(constructor.GetParameters()
+            .Select(parameter => Dependency("_" + parameter.Name)).ToArray());
+        await next.InitializeAsync();
+        Assert.Equal(saved, next.SelectedGroup!.Id);
+    }
+
+    [Fact]
+    public async Task CancelledAddMustDisplayAlreadyCommittedItems()
+    {
+        await _viewModel.InitializeAsync();
+        var inner = (IStashService)Dependency("_stash");
+        var committed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        async Task<AddResult> Partial(string group, IReadOnlyList<string> paths, CancellationToken token)
+        {
+            await inner.AddAsync(group, [paths[0]], null, token);
+            committed.SetResult();
+            await Task.Delay(Timeout.InfiniteTimeSpan, token);
+            return new AddResult();
+        }
+        ReplaceDependency("_stash", Proxy<IStashService>((method, args) =>
+            method.Name == nameof(IStashService.AddAsync)
+                ? Partial((string)args![0]!, (IReadOnlyList<string>)args[1]!, (CancellationToken)args[3]!)
+                : method.Invoke(inner, args)));
+        var adding = _viewModel.AddPathsAsync([_workspace.CreateFile("a.txt", "a"), _workspace.CreateFile("b.txt", "b")]);
+        await committed.Task.WaitAsync(TestContext.Current.CancellationToken);
+        _viewModel.CancelCurrentOperationCommand.Execute(null);
+        await adding;
+        Assert.Equal("a.txt", Assert.Single(_viewModel.Items).DisplayName);
+    }
+
+    [Fact]
+    public async Task OlderItemLoadMustNotResurrectRemovedItems()
+    {
+        await _viewModel.InitializeAsync();
+        await _viewModel.AddPathsAsync([_workspace.CreateFile("a.txt", "a")]);
+        var group = _viewModel.SelectedGroup!;
+        var id = Assert.Single(_viewModel.Items).Id;
+        var inner = (IStashItemRepository)Dependency("_items");
+        var captured = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        async Task<IReadOnlyList<StashItem>> OldRead()
+        {
+            var rows = await inner.GetByGroupAsync(group.Id, TestContext.Current.CancellationToken);
+            captured.SetResult();
+            await release.Task;
+            return rows;
+        }
+        var first = true;
+        ReplaceDependency("_items", Proxy<IStashItemRepository>((method, args) =>
+        {
+            if (method.Name == nameof(IStashItemRepository.GetByGroupAsync) && first)
+            {
+                first = false;
+                return OldRead();
+            }
+            return method.Invoke(inner, args);
+        }));
+        var older = LoadItems(group);
+        await captured.Task.WaitAsync(TestContext.Current.CancellationToken);
+        await inner.DeleteManyAsync([id], TestContext.Current.CancellationToken);
+        await LoadItems(group);
+        release.SetResult();
+        await older;
+        Assert.Empty(_viewModel.Items);
+    }
+
+    [Fact]
+    public async Task NewSourceCheckMustCancelAndSupersedeOldCheck()
+    {
+        await _viewModel.InitializeAsync();
+        await _viewModel.AddPathsAsync([_workspace.CreateFile("a.txt", "a")]);
+        var group = _viewModel.SelectedGroup!;
+        var id = Assert.Single(_viewModel.Items).Id;
+        var inner = (IStashService)Dependency("_stash");
+        var oldResult = new TaskCompletionSource<IReadOnlyList<ItemSourceStatus>>(TaskCreationOptions.RunContinuationsAsynchronously);
+        CancellationToken oldToken = default;
+        var first = true;
+        ReplaceDependency("_stash", Proxy<IStashService>((method, args) =>
+        {
+            if (method.Name != nameof(IStashService.CheckSourceStatusAsync)) return method.Invoke(inner, args);
+            if (first)
+            {
+                first = false;
+                oldToken = (CancellationToken)args![1]!;
+                return oldResult.Task;
+            }
+            return Task.FromResult<IReadOnlyList<ItemSourceStatus>>([new(id, "a.txt", ItemSourceState.Modified)]);
+        }));
+        Task Check() => (Task)typeof(MainViewModel)
+            .GetMethod("RefreshSourceStatusAsync", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!
+            .Invoke(_viewModel, [group])!;
+        var older = Check();
+        await Check();
+        oldResult.SetResult([new(id, "a.txt", ItemSourceState.Unchanged)]);
+        await older;
+        Assert.True(oldToken.IsCancellationRequested);
+        Assert.Equal(ItemSourceState.Modified, Assert.Single(_viewModel.Items).SourceState);
+    }
+
+    [Fact]
+    public async Task GroupReloadMustPreserveSelectionMadeWhileReading()
+    {
+        await _viewModel.InitializeAsync();
+        await _viewModel.SelectGroupAsync("B");
+        var groupB = _viewModel.SelectedGroup!;
+        await _viewModel.SelectGroupAsync("A");
+        var inner = (IStashGroupRepository)Dependency("_groups");
+        var captured = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        async Task<IReadOnlyList<StashGroup>> Read()
+        {
+            var rows = await inner.GetAllAsync(TestContext.Current.CancellationToken);
+            captured.SetResult();
+            await release.Task;
+            return rows;
+        }
+        ReplaceDependency("_groups", Proxy<IStashGroupRepository>((method, args) =>
+            method.Name == nameof(IStashGroupRepository.GetAllAsync) ? Read() : method.Invoke(inner, args)));
+        var loading = (Task)typeof(MainViewModel)
+            .GetMethod("LoadGroupsAsync", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!
+            .Invoke(_viewModel, [true])!;
+        await captured.Task.WaitAsync(TestContext.Current.CancellationToken);
+        _viewModel.SelectedGroup = groupB;
+        release.SetResult();
+        await loading;
+        Assert.Equal(groupB.Id, _viewModel.SelectedGroup!.Id);
+    }
+
+    [Fact]
+    public async Task BulkDragRemovalMustUseCapturedIdsAfterSwitchingGroup()
+    {
+        await _viewModel.InitializeAsync();
+        await _viewModel.SelectGroupAsync("A");
+        await _viewModel.AddPathsAsync([_workspace.CreateFile("export.txt", "export")]);
+        var exportedGroup = _viewModel.SelectedGroup!.Id;
+        var exportedIds = _viewModel.Items.Select(item => item.Id).ToArray();
+        await _viewModel.SelectGroupAsync("B");
+        await _viewModel.AddPathsAsync([_workspace.CreateFile("keep.txt", "keep")]);
+        var selectedGroup = _viewModel.SelectedGroup!.Id;
+        await _viewModel.RemoveExportedItemsAsync(exportedIds);
+        Assert.Equal(selectedGroup, _viewModel.SelectedGroup!.Id);
+        Assert.Equal("keep.txt", Assert.Single(_viewModel.Items).DisplayName);
+        var repository = new StashItemRepository(_workspace.ConnectionFactory);
+        Assert.Empty(await repository.GetByGroupAsync(exportedGroup, TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task EmptyExportRemovalMustNotReloadGroups()
+    {
+        await _viewModel.InitializeAsync();
+        var resets = 0;
+        _viewModel.Groups.CollectionChanged += (_, args) =>
+        {
+            if (args.Action == NotifyCollectionChangedAction.Reset) resets++;
+        };
+        await _viewModel.RemoveExportedItemsAsync([]);
+        Assert.Equal(0, resets);
+    }
+
+    [Fact]
+    public async Task BulkDragRemovalMustRefreshOnceAndKeepUnexportedItems()
+    {
+        await _viewModel.InitializeAsync();
+        SimulateListBoxSelectionBinding(_viewModel);
+        var files = Enumerable.Range(0, 10).Select(index => _workspace.CreateFile(index + ".txt", "file")).ToArray();
+        await _viewModel.AddPathsAsync(files);
+        var exported = _viewModel.Items.Take(8).Select(item => item.Id).ToArray();
+        var survivors = _viewModel.Items.Skip(8).Select(item => item.Id).Order().ToArray();
+        var groupRefreshes = 0;
+        var itemLoads = 0;
+        _viewModel.Groups.CollectionChanged += (_, e) =>
+        {
+            if (e.Action == NotifyCollectionChangedAction.Reset) groupRefreshes++;
+        };
+        _viewModel.RepositoriesChanged += _ => itemLoads++;
+        await _viewModel.RemoveExportedItemsAsync(exported);
+        Assert.Equal(survivors, _viewModel.Items.Select(item => item.Id).Order());
+        Assert.Equal(1, groupRefreshes);
+        Assert.Equal(1, itemLoads);
+    }
+
+    [Fact]
+    public async Task CapturedGroupMustSurviveSelectionChange()
+    {
+        await _viewModel.InitializeAsync();
+        await _viewModel.SelectGroupAsync("A");
+        var groupA = _viewModel.SelectedGroup!.Id;
+        await _viewModel.SelectGroupAsync("B");
+        var groupB = _viewModel.SelectedGroup!.Id;
+        var a = _workspace.CreateFile("a.txt", "a");
+        var b = _workspace.CreateFile("b.txt", "b");
+        await _viewModel.AddPathsToGroupAsync(groupA, [a]);
+        await _viewModel.AddPathsToGroupAsync(groupB, [b]);
+        var items = new StashItemRepository(_workspace.ConnectionFactory);
+        Assert.Equal("a.txt", (await items.GetByGroupAsync(groupA, TestContext.Current.CancellationToken)).Single().DisplayName);
+        Assert.Equal("b.txt", (await items.GetByGroupAsync(groupB, TestContext.Current.CancellationToken)).Single().DisplayName);
+        Assert.Equal(groupB, _viewModel.SelectedGroup!.Id);
+        Assert.Equal("b.txt", _viewModel.Items.Single().DisplayName);
+    }
+
+    [Theory]
+    [InlineData(System.Windows.DragDropEffects.None, 0)]
+    [InlineData(System.Windows.DragDropEffects.Copy, 1)]
+    public async Task DragHistoryMustReflectDropResult(System.Windows.DragDropEffects effect, int expectedCount)
+    {
+        await _viewModel.RecordDragExportAsync(["exported.txt"], effect);
+        var operations = new OperationRepository(_workspace.ConnectionFactory);
+        Assert.Equal(expectedCount, (await operations.GetAllAsync(TestContext.Current.CancellationToken)).Count);
+    }
+
     [Fact]
     public async Task InitializeAsync_ShouldSelectTheFirstGroup()
     {
@@ -215,6 +680,8 @@ public sealed class MainViewModelTests : IAsyncLifetime
     {
         await _viewModel.InitializeAsync();
         SimulateListBoxSelectionBinding(_viewModel);
+        await _viewModel.CreateShelfAsync();
+        var clearedName = _viewModel.SelectedGroup!.DisplayName;
 
         var file = _workspace.CreateFile("current_box.txt", "测试清空当前箱");
         await _viewModel.AddPathsAsync([file]);
@@ -224,7 +691,8 @@ public sealed class MainViewModelTests : IAsyncLifetime
         await _viewModel.ClearCurrentBoxCommand.ExecuteAsync(null);
 
         Assert.Empty(_viewModel.Items);
-        Assert.NotEmpty(_dialogs.Infos);
+        Assert.Equal(StashGroupKind.Default, _viewModel.SelectedGroup!.Group.Kind);
+        Assert.Contains(clearedName, Assert.Single(_dialogs.Infos));
     }
 
     [Fact]
@@ -297,11 +765,7 @@ public sealed class MainViewModelTests : IAsyncLifetime
 
         _viewModel.PasteCommand.Execute(null);
 
-        var deadline = DateTime.UtcNow.AddSeconds(3);
-        while (DateTime.UtcNow < deadline && _viewModel.Items.Count == 0)
-        {
-            await Task.Delay(50, TestContext.Current.CancellationToken);
-        }
+        await _viewModel.AddPathsCommand.ExecutionTask!.WaitAsync(TestContext.Current.CancellationToken);
 
         Assert.Single(_viewModel.Items);
         Assert.Equal("Snippet_test.txt", _viewModel.Items[0].DisplayName);
@@ -549,7 +1013,6 @@ internal sealed class RecordingDialogService : IDialogService
 
     public IReadOnlyList<string>? ClipboardPaths { get; set; }
     public IReadOnlyList<string>? GetClipboardPaths() => ClipboardPaths;
-
 
     public void SetClipboardPaths(IReadOnlyList<string> paths)
     {

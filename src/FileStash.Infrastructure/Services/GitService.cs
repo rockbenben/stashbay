@@ -39,11 +39,11 @@ public sealed class GitService : IGitService
         return output;
     }
 
-    public Task<string?> GetCurrentBranchAsync(string repoRoot, CancellationToken ct)
+    public async Task<string?> GetCurrentBranchAsync(string repoRoot, CancellationToken ct)
     {
         // symbolic-ref 在 detached HEAD 时退出码非 0，回退成短提交号
-        return RunAsync(repoRoot, "symbolic-ref --quiet --short HEAD", ct)
-            ?? RunAsync(repoRoot, "rev-parse --short HEAD", ct);
+        return await RunAsync(repoRoot, "symbolic-ref --quiet --short HEAD", ct)
+            ?? await RunAsync(repoRoot, "rev-parse --short HEAD", ct);
     }
 
     public Task<string?> GetHeadCommitAsync(string repoRoot, CancellationToken ct) =>

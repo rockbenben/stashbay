@@ -186,4 +186,5 @@
   <data name="RecoveryNeedsReview" xml:space="preserve"><value>Проверьте результат и целевой файл, затем выберите сохранение текущего файла.</value></data>
   <data name="RecoveryNotCommitted" xml:space="preserve"><value>Запись не завершена. Проверьте перед повтором.</value></data>
   <data name="RetryAuthorizationChanged" xml:space="preserve"><value>Файл или область повтора изменились. Проверьте снова.</value></data>
+  <data name="DefaultGroupName" xml:space="preserve"><value>По умолчанию</value></data>
 </root>

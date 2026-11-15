@@ -1,4 +1,5 @@
 using FileStash.App.Services;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -79,12 +80,14 @@ public partial class PreviewDialog : Window
     private async void OnExecute(object sender, RoutedEventArgs e)
     {
         ExecuteButton.IsEnabled = false;
+        EntryGrid.IsEnabled = false;
         Progress.Visibility = Visibility.Visible;
 
         // 几 GB 的文件要写好一会儿，得给用户一个中止的办法。
         // 写入期间"取消"变成"中止"：直接关窗的话写入还在后台跑着，
         // 用户以为停了其实没停 —— Esc 也要一并关掉，免得按 Esc 把窗关了而写入还在跑。
-        _execution = new CancellationTokenSource();
+        using var execution = new CancellationTokenSource();
+        _execution = execution;
         CancelButton.IsCancel = false;
         CancelButton.Content = Strings.AbortButton;
 
@@ -93,7 +96,8 @@ public partial class PreviewDialog : Window
             var progress = new Progress<ProgressInfo>(info =>
                 ProgressText.Text = $"{info.Done}/{info.Total}{Strings.ProgressSeparator}{info.CurrentPath}");
 
-            Result = await _executor.ExecuteAsync(_plan, progress, _execution.Token);
+            Result = await _executor.ExecuteAsync(_plan, progress, execution.Token);
+            _execution = null;
 
             ProgressText.Text = Strings.Format(Strings.PreviewWritten, Result.Status);
             DialogResult = true;
@@ -110,11 +114,22 @@ public partial class PreviewDialog : Window
         }
         finally
         {
-            _execution?.Dispose();
+            EntryGrid.IsEnabled = true;
             _execution = null;
             CancelButton.Content = Strings.CancelButton;
             CancelButton.IsCancel = true;
         }
+    }
+
+    protected override void OnClosing(CancelEventArgs e)
+    {
+        if (_execution is not null)
+        {
+            _execution.Cancel();
+            ProgressText.Text = Strings.StatusAborting;
+            e.Cancel = true;
+        }
+        base.OnClosing(e);
     }
 
     private void OnCancel(object sender, RoutedEventArgs e)
@@ -147,6 +162,7 @@ public partial class PreviewDialog : Window
 
             var right = Path.Combine(temporaryDirectory, $"{Guid.NewGuid():N}.tmp");
             await _blobStore.CopyBlobToAsync(entry.Source.Sha256, right, CancellationToken.None);
+            await Core.Utils.ZoneIdentifier.WriteAsync(right, entry.Source.ZoneIdentifier, CancellationToken.None);
 
             var template = _settings.Current.DiffToolCommand;
             var (fileName, arguments) = SplitCommand(template);

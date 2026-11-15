@@ -8,6 +8,8 @@ using FileStash.App.Services;
 using FileStash.Core.Abstractions;
 using FileStash.Core.Models;
 using FileStash.Core.Services;
+using FileStash.Core.Utils;
+using FileStash.Infrastructure.Shell;
 
 namespace FileStash.App.ViewModels;
 
@@ -19,24 +21,32 @@ public sealed partial class SettingsViewModel : ObservableObject
     private readonly IBlobStore _blobStore;
     private readonly IOperationRepository _operations;
     private readonly IDialogService _dialogs;
+    private readonly Func<AppSettings, bool> _applyShellIntegration;
+    private readonly ILogonStartupService _startupService;
 
     /// <summary>打开这个窗口时的语言：用来判断用户有没有改它。</summary>
-    private readonly AppLanguage _languageBeforeEdit;
+    private AppLanguage _languageBeforeEdit;
 
     public SettingsViewModel(
         ISettingsService settingsService,
         ICleanupService cleanup,
         IBlobStore blobStore,
         IOperationRepository operations,
-        IDialogService dialogs)
+        IDialogService dialogs,
+        Func<AppSettings, bool>? applyShellIntegration = null,
+        ILogonStartupService? startupService = null)
     {
         _settingsService = settingsService;
         _cleanup = cleanup;
         _blobStore = blobStore;
         _operations = operations;
         _dialogs = dialogs;
+        _applyShellIntegration = applyShellIntegration ?? (settings =>
+            Application.Current is not App || App.ApplyShellIntegration(settings));
 
-        Settings = settingsService.Current;
+        _startupService = startupService ?? new LogonStartupService(
+            disabled: Application.Current is not App || App.ShellIntegrationDisabled);
+        Settings = settingsService.Current.Clone();
         _languageBeforeEdit = Settings.Language;
     }
 
@@ -50,6 +60,15 @@ public sealed partial class SettingsViewModel : ObservableObject
 
     /// <summary>表单绑定的设置对象。</summary>
     public AppSettings Settings { get; private set; }
+
+    public bool LastSaveSucceeded { get; private set; }
+
+    private string? _startupDelayText;
+    public string StartupDelayText
+    {
+        get => _startupDelayText ?? Settings.AdministratorStartupDelaySeconds.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        set { _startupDelayText = value; OnPropertyChanged(); }
+    }
 
     /// <summary>排除规则：一行一个通配符。</summary>
     public string ExcludeGlobsText
@@ -119,39 +138,164 @@ public sealed partial class SettingsViewModel : ObservableObject
         new(ThemeChoice.Dark, Strings.ThemeDark),
     ];
 
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    [NotifyCanExecuteChangedFor(nameof(RepairStartupCommand))]
+    private bool _isStartupBusy;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    [NotifyCanExecuteChangedFor(nameof(RepairStartupCommand))]
+    private bool _startupUncertain;
+
+    [ObservableProperty]
+    private string _startupStatusText = Strings.StartupStatusUnknown;
+
+    private bool CanSave() => !IsStartupBusy && !StartupUncertain;
+
+    [RelayCommand(CanExecute = nameof(CanSave))]
+    private Task SaveAsync() => SaveCoreAsync(repair: false);
+
+    [RelayCommand(CanExecute = nameof(CanSave))]
+    private Task RepairStartupAsync() => SaveCoreAsync(repair: true);
+
     [RelayCommand]
-    private void Save()
+    private async Task RefreshStartupAsync()
     {
-        var languageChanged = Settings.Language != _languageBeforeEdit;
+        if (IsStartupBusy) return;
+        // An invalid saved setting must not trap the editor in an unknown/retry-disabled state.
+        bool valid = int.TryParse(StartupDelayText, System.Globalization.NumberStyles.None,
+            System.Globalization.CultureInfo.InvariantCulture, out int seconds) && (uint)seconds <= 300;
+        var status = await _startupService.ReadAsync(valid ? seconds : 3);
+        SetStartupStatus(status);
+        StartupUncertain = _startupService.IsPending || status.State == LogonStartupState.Unknown;
+    }
 
-        _settingsService.Save(Settings);
-
-        // 配色是 DynamicResource，能当场翻过来（不像语言要重启）。
-        // 不跟着变的：托盘图标本身（系统绘制）与已经算好的窗口尺寸。
-        ThemeService.ApplyFromSettings(Settings);
-
-        // 热重载全局快捷键（无需重启应用）
-        if (Application.Current is App app)
+    private void SetStartupStatus(LogonStartupStatus status)
+    {
+        StartupStatusText = status.State switch
         {
-            App.ApplyShellIntegration(Settings);
-            app.ReloadGlobalHotkey();
-        }
+            LogonStartupState.Disabled => Strings.StartupStatusDisabled,
+            LogonStartupState.Plain => Strings.StartupStatusPlain,
+            LogonStartupState.Elevated => Strings.StartupStatusElevated,
+            LogonStartupState.PlainNeedsRepair or LogonStartupState.ElevatedNeedsRepair => Strings.StartupStatusRepair,
+            LogonStartupState.Conflict => Strings.StartupStatusConflict,
+            LogonStartupState.Suppressed => Strings.StartupStatusSuppressed,
+            _ => Strings.StartupStatusUnknown,
+        };
+        if (status.Detail is not null) Serilog.Log.Information("Startup readback {State}: {Detail}", status.State, status.Detail);
+    }
 
-        if (languageChanged)
+    private void RestoreStartupSelection(LogonStartupStatus status)
+    {
+        if (status.State is LogonStartupState.Unknown or LogonStartupState.Conflict or LogonStartupState.Suppressed) return;
+        Settings = Settings.Clone();
+        Settings.StartWithWindows = status.State != LogonStartupState.Disabled;
+        Settings.StartWithWindowsAsAdministrator = status.State is LogonStartupState.Elevated or LogonStartupState.ElevatedNeedsRepair;
+        OnPropertyChanged(nameof(Settings));
+    }
+
+    private async Task SaveCoreAsync(bool repair)
+    {
+        if (!CanSave()) return;
+        LastSaveSucceeded = false;
+        if (!int.TryParse(StartupDelayText, System.Globalization.NumberStyles.None,
+                System.Globalization.CultureInfo.InvariantCulture, out int seconds) || (uint)seconds > 300)
         {
-            // 界面文字换不掉，只能重开进程。弹"已保存"没意义 —— 马上就重启了。
-            LanguageChangeRequested?.Invoke();
+            _dialogs.ShowWarning(Strings.SettingsTitle, Strings.StartupDelayRange);
             return;
         }
-
-        _dialogs.ShowInfo(Strings.SettingsTitle, Strings.SettingsSavedMessage);
+        Settings.AdministratorStartupDelaySeconds = seconds;
+        IsStartupBusy = true;
+        StartupStatusText = Strings.StartupStatusBusy;
+        try
+        {
+            // Capture the request before awaiting UAC. The form is disabled while it is pending.
+            var committed = Settings.Clone();
+            ElevatedStartup.ValidateDelay(committed.AdministratorStartupDelaySeconds);
+            var result = await _startupService.ChangeAsync(committed.StartWithWindows,
+                committed.StartWithWindowsAsAdministrator, repair, committed.AdministratorStartupDelaySeconds);
+            int readbackDelay = committed.AdministratorStartupDelaySeconds;
+            if (result.Outcome == StartupOutcome.Cancelled &&
+                (uint)_settingsService.Current.AdministratorStartupDelaySeconds <= 300)
+                readbackDelay = _settingsService.Current.AdministratorStartupDelaySeconds;
+            var status = await _startupService.ReadAsync(readbackDelay);
+            SetStartupStatus(status);
+            if (result.Outcome is not (StartupOutcome.Applied or StartupOutcome.Unchanged))
+            {
+                Serilog.Log.Warning("Startup change {Outcome}: {Detail}", result.Outcome, result.Detail);
+                StartupUncertain = result.Outcome == StartupOutcome.Uncertain ||
+                    _startupService.IsPending || status.State == LogonStartupState.Unknown;
+                RestoreStartupSelection(status);
+                if (result.Outcome == StartupOutcome.Cancelled)
+                {
+                    Settings.AdministratorStartupDelaySeconds = readbackDelay;
+                    _startupDelayText = null;
+                    OnPropertyChanged(nameof(StartupDelayText));
+                    _dialogs.ShowToast(Strings.SettingsTitle, Strings.StartupCancelled);
+                }
+                else
+                    _dialogs.ShowWarning(Strings.SettingsTitle, result.Outcome == StartupOutcome.Uncertain
+                        ? Strings.StartupUncertainMessage : StartupFailureMessage(result.Failure));
+                return;
+            }
+            var expected = !committed.StartWithWindows ? LogonStartupState.Disabled :
+                committed.StartWithWindowsAsAdministrator ? LogonStartupState.Elevated : LogonStartupState.Plain;
+            if ((status.State != expected && status.State != LogonStartupState.Suppressed) || _startupService.IsPending)
+            {
+                StartupUncertain = true;
+                _dialogs.ShowWarning(Strings.SettingsTitle, Strings.StartupUncertainMessage);
+                return;
+            }
+            var languageChanged = committed.Language != _languageBeforeEdit;
+            var current = _settingsService.Current;
+            committed.LastGroupId = current.LastGroupId;
+            committed.WindowBounds = current.Clone().WindowBounds;
+            committed.WorkbenchViewMode = current.WorkbenchViewMode;
+            committed.CompactIconView = current.CompactIconView;
+            committed.ShelfRetentionDays = current.ShelfRetentionDays; // Preserve the legacy JSON field for older builds.
+            _settingsService.Save(committed);
+            ThemeService.ApplyFromSettings(committed);
+            if (Application.Current is App app) app.ReloadGlobalHotkey();
+            if (!_applyShellIntegration(committed))
+            {
+                _dialogs.ShowWarning(Strings.SettingsTitle, Strings.ShellIntegrationFailedMessage);
+                return;
+            }
+            _languageBeforeEdit = committed.Language;
+            LastSaveSucceeded = true;
+            if (languageChanged) LanguageChangeRequested?.Invoke();
+            else _dialogs.ShowInfo(Strings.SettingsTitle, Strings.SettingsSavedMessage);
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Error(ex, "Saving settings/startup failed; read system state before retrying.");
+            var status = await _startupService.ReadAsync();
+            SetStartupStatus(status);
+            StartupUncertain = _startupService.IsPending || status.State == LogonStartupState.Unknown;
+            _dialogs.ShowWarning(Strings.SettingsTitle, Strings.Format(Strings.StartupFailedMessage, new AppPaths().LogDirectory));
+        }
+        finally { IsStartupBusy = false; }
     }
+
+    private static string StartupFailureMessage(StartupFailure failure) => Strings.Format(failure switch
+    {
+        StartupFailure.AccountMismatch => Strings.StartupAccountMessage,
+        StartupFailure.AccessDenied => Strings.StartupDeniedMessage,
+        StartupFailure.OwnershipConflict => Strings.StartupConflictMessage,
+        StartupFailure.RollbackIncomplete => Strings.StartupRollbackMessage,
+        _ => Strings.StartupFailedMessage,
+    }, new AppPaths().LogDirectory);
 
     /// <summary>取消未保存的修改，回滚内存设置。</summary>
     [RelayCommand]
     private void Cancel()
     {
-        _settingsService.Load();
+        Settings = _settingsService.Current.Clone();
+        _startupDelayText = null;
+        OnPropertyChanged(nameof(StartupDelayText));
+        OnPropertyChanged(nameof(Settings));
+        OnPropertyChanged(nameof(ExcludeGlobsText));
     }
 
     /// <summary>刷新存储占用显示。</summary>

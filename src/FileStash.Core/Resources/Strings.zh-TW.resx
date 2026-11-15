@@ -186,4 +186,5 @@
   <data name="RecoveryNeedsReview" xml:space="preserve"><value>寫入結果待核對，請檢查目標檔案；確認後可選擇保留目前檔案。</value></data>
   <data name="RecoveryNotCommitted" xml:space="preserve"><value>寫入尚未提交，可重新確認後重試。</value></data>
   <data name="RetryAuthorizationChanged" xml:space="preserve"><value>重試範圍或檔案已變更，請重新確認。</value></data>
+  <data name="DefaultGroupName" xml:space="preserve"><value>預設暫存</value></data>
 </root>

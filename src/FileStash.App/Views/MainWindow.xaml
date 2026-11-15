@@ -1,98 +1,116 @@
-<Window x:Class="FileStash.App.Views.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="clr-namespace:FileStash.App.ViewModels"
-        xmlns:ctrl="clr-namespace:FileStash.App.Controls"
-        xmlns:conv="clr-namespace:FileStash.App.Converters"
-        xmlns:app="clr-namespace:FileStash.App.Resources"
-        Title="{x:Static app:Strings.AppName}"
-        Icon="pack://application:,,,/Resources/app.ico"
-        Width="1180"
-        Height="760"
-        MinWidth="900"
-        MinHeight="380"
-        WindowStartupLocation="CenterScreen"
-        AllowDrop="True"
-        DragEnter="OnWindowDragEnter"
-        DragOver="OnWindowDragOver"
-        DragLeave="OnWindowDragLeave"
-        Drop="OnWindowDrop"
-        Background="{DynamicResource Brush.Surface}"
-        FontFamily="{DynamicResource Font.UI}"
-        FontSize="{DynamicResource Font.Size.Body}"
-        UseLayoutRounding="True"
-        TextOptions.TextFormattingMode="Ideal">
-
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="clr-namespace:FileStash.App.ViewModels" xmlns:ctrl="clr-namespace:FileStash.App.Controls" xmlns:conv="clr-namespace:FileStash.App.Converters" xmlns:app="clr-namespace:FileStash.App.Resources" x:Class="FileStash.App.Views.MainWindow" Title="{x:Static app:Strings.AppName}" Icon="pack://application:,,,/Resources/app.ico" Width="1180" Height="760" MinWidth="900" MinHeight="380" WindowStartupLocation="CenterScreen" AllowDrop="True" DragEnter="OnWindowDragEnter" DragOver="OnWindowDragOver" DragLeave="OnWindowDragLeave" Drop="OnWindowDrop" Background="{DynamicResource Brush.Surface}" FontFamily="{DynamicResource Font.UI}" FontSize="{DynamicResource Font.Size.Body}" UseLayoutRounding="True" TextOptions.TextFormattingMode="Ideal">
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="40"
-                     CornerRadius="0"
-                     GlassFrameThickness="0"
-                     ResizeBorderThickness="6"
-                     UseAeroCaptionButtons="False" />
+        <WindowChrome CaptionHeight="40" CornerRadius="0" GlassFrameThickness="0" ResizeBorderThickness="6" UseAeroCaptionButtons="False"/>
     </WindowChrome.WindowChrome>
-
     <Window.Resources>
-        <conv:EnumMatchConverter x:Key="EnumMatch" />
-        <conv:WorkbenchChildrenConverter x:Key="WorkbenchChildren" />
-        <conv:BooleanToVisibilityConverter x:Key="BoolToVisibility" />
-        <conv:NullToVisibilityConverter x:Key="NullToVisibility" />
-
+        <conv:EnumMatchConverter x:Key="EnumMatch"/>
+        <conv:WorkbenchChildrenConverter x:Key="WorkbenchChildren"/>
+        <conv:BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+        <conv:NullToVisibilityConverter x:Key="NullToVisibility"/>
+        <!-- Shared file stack for headers, empty states and drag-over feedback. -->
+        <DataTemplate x:Key="ShelfFileStackGlyph">
+            <Viewbox Stretch="Uniform">
+                <Canvas Width="64" Height="64">
+                    <Rectangle Canvas.Left="12" Canvas.Top="7" Width="34" Height="43" RadiusX="7" RadiusY="7" Fill="{DynamicResource Brush.ShelfCardBack}" RenderTransformOrigin="0.5,1">
+                        <Rectangle.RenderTransform>
+                            <RotateTransform Angle="-13"/>
+                        </Rectangle.RenderTransform>
+                    </Rectangle>
+                    <Rectangle Canvas.Left="19" Canvas.Top="8" Width="34" Height="43" RadiusX="7" RadiusY="7" Fill="{DynamicResource Brush.ShelfSecondary}" Opacity="0.45" RenderTransformOrigin="0.5,1">
+                        <Rectangle.RenderTransform>
+                            <RotateTransform Angle="8"/>
+                        </Rectangle.RenderTransform>
+                    </Rectangle>
+                    <Rectangle Canvas.Left="17" Canvas.Top="18" Width="35" Height="42" RadiusX="7" RadiusY="7" Fill="{DynamicResource Brush.ShelfCard}" Stroke="{DynamicResource Brush.ShelfBorder}" StrokeThickness="1"/>
+                </Canvas>
+            </Viewbox>
+        </DataTemplate>
+        <Style x:Key="ShelfRestoreButton" TargetType="Button">
+            <Setter Property="Width" Value="38"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Margin" Value="5,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="ToolTipService.InitialShowDelay" Value="350"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Tile" CornerRadius="9" Background="Transparent" BorderBrush="Transparent" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Tile" Property="Background" Value="{DynamicResource Brush.ShelfHover}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Tile" Property="Opacity" Value="0.65"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="Tile" Property="BorderBrush" Value="{DynamicResource Brush.ShelfText}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <ItemsPanelTemplate x:Key="ShelfRows">
-            <VirtualizingStackPanel />
+            <VirtualizingStackPanel/>
         </ItemsPanelTemplate>
         <ItemsPanelTemplate x:Key="ShelfTiles">
-            <WrapPanel ItemWidth="80" ItemHeight="68" />
+            <WrapPanel ItemWidth="80" ItemHeight="68"/>
         </ItemsPanelTemplate>
         <DataTemplate x:Key="ShelfTile" DataType="{x:Type vm:ItemViewModel}">
             <Border Width="76" Height="64" Margin="2" Padding="4" CornerRadius="6" ToolTip="{Binding SourcePath}">
                 <Border.Style>
                     <Style TargetType="Border">
-                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Background" Value="Transparent"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource Brush.Hover}" />
+                                <Setter Property="Background" Value="{DynamicResource Brush.Hover}"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource Brush.Selection}" />
+                                <Setter Property="Background" Value="{DynamicResource Brush.Selection}"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="32" />
-                        <RowDefinition Height="*" />
+                        <RowDefinition Height="32"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Image Source="{Binding FileIcon}" Width="28" Height="28" RenderOptions.BitmapScalingMode="HighQuality" />
-                    <TextBlock Grid.Row="1" Text="{Binding DisplayName}" FontSize="11" TextAlignment="Center" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                    <Image Source="{Binding FileIcon}" Width="28" Height="28" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <TextBlock Grid.Row="1" Text="{Binding DisplayName}" FontSize="11" TextAlignment="Center" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
                 </Grid>
             </Border>
         </DataTemplate>
         <Style x:Key="ShelfItems" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
-            <Setter Property="ctrl:WheelScroll.IsEnabled" Value="True" />
-            <Setter Property="Padding" Value="4" />
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
-            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
-            <Setter Property="ScrollViewer.CanContentScroll" Value="False" />
-            <Setter Property="ItemsPanel" Value="{StaticResource ShelfTiles}" />
-            <Setter Property="ItemTemplate" Value="{StaticResource ShelfTile}" />
+            <Setter Property="ctrl:WheelScroll.IsEnabled" Value="True"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
+            <Setter Property="ItemsPanel" Value="{StaticResource ShelfTiles}"/>
+            <Setter Property="ItemTemplate" Value="{StaticResource ShelfTile}"/>
             <Setter Property="ItemContainerStyle">
                 <Setter.Value>
                     <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                        <Setter Property="Padding" Value="0" />
-                        <Setter Property="Margin" Value="0" />
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="Margin" Value="0"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="ListBoxItem">
                                     <Border x:Name="FocusBorder" BorderThickness="1" CornerRadius="6" BorderBrush="Transparent">
-                                        <ContentPresenter />
+                                        <ContentPresenter/>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                                            <Setter TargetName="FocusBorder" Property="BorderBrush" Value="{DynamicResource Brush.TextSecondary}" />
+                                            <Setter TargetName="FocusBorder" Property="BorderBrush" Value="{DynamicResource Brush.TextSecondary}"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -103,696 +121,365 @@
             </Setter>
         </Style>
         <DataTemplate x:Key="ShelfRow" DataType="{x:Type vm:ItemViewModel}">
-            <Border CornerRadius="{DynamicResource Radius.Control}"
-                    Margin="4,1"
-                    Padding="8,3"
->
+            <Border CornerRadius="{DynamicResource Radius.Control}" Margin="4,1" Padding="8,3">
                 <Border.Style>
                     <Style TargetType="Border">
-                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Background" Value="Transparent"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource Brush.Hover}" />
+                                <Setter Property="Background" Value="{DynamicResource Brush.Hover}"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource Brush.Selection}" />
+                                <Setter Property="Background" Value="{DynamicResource Brush.Selection}"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
                 <Grid Height="30">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-
                     <!-- 左侧：系统真实图标（提取失败时回退至矢量图） -->
                     <Grid Grid.Column="0" Width="18" Height="18" Margin="2,0,10,0" VerticalAlignment="Center">
-                        <Image Width="18" Height="18"
-                               RenderOptions.BitmapScalingMode="HighQuality"
-                               Source="{Binding FileIcon}"
-                               Visibility="{Binding FileIcon, Converter={StaticResource NullToVisibility}}" />
-                        <Path Width="16" Height="16"
-                              Stretch="Uniform"
-                              Fill="{Binding StatusBrush}"
-                              Visibility="{Binding FileIcon, Converter={StaticResource NullToVisibility}, ConverterParameter=Inverse}">
+                        <Image Width="18" Height="18" RenderOptions.BitmapScalingMode="HighQuality" Source="{Binding FileIcon}" Visibility="{Binding FileIcon, Converter={StaticResource NullToVisibility}}"/>
+                        <Path Width="16" Height="16" Stretch="Uniform" Fill="{Binding StatusBrush}" Visibility="{Binding FileIcon, Converter={StaticResource NullToVisibility}, ConverterParameter=Inverse}">
                             <Path.Style>
                                 <Style TargetType="Path">
-                                    <Setter Property="Data" Value="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+                                    <Setter Property="Data" Value="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsFolder}" Value="True">
-                                            <Setter Property="Data" Value="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" />
+                                            <Setter Property="Data" Value="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </Path.Style>
                         </Path>
                     </Grid>
-
                     <!-- 中间：双行信息流（首行大字文件名，次行淡色大小与路径） -->
                     <Grid Grid.Column="1" VerticalAlignment="Center">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-
                         <!-- 首行：文件名（全宽拥有，绝不被大小与按钮切断） -->
-                        <TextBlock Grid.Row="0"
-                                   Text="{Binding DisplayName}"
-                                   FontWeight="SemiBold"
-                                   FontSize="{DynamicResource Font.Size.Body}"
-                                   TextTrimming="CharacterEllipsis"
-                                   ToolTip="{Binding CompactToolTip}">
+                        <TextBlock Grid.Row="0" Text="{Binding DisplayName}" FontWeight="SemiBold" FontSize="{DynamicResource Font.Size.Body}" TextTrimming="CharacterEllipsis" ToolTip="{Binding CompactToolTip}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock" BasedOn="{StaticResource Text.Body}">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsSourceMissing}" Value="True">
-                                            <Setter Property="Opacity" Value="0.55" />
+                                            <Setter Property="Opacity" Value="0.55"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>
-
                         <!-- 次行：大小 · 原始目录（淡灰色，直观交代来历） -->
-                        <TextBlock Grid.Row="1"
-                                   Margin="0,2,0,0"
-                                   Text="{Binding CompactSubtitle}"
-                                   Style="{StaticResource Text.Caption}"
-                                   TextTrimming="CharacterEllipsis"
-                                   ToolTip="{Binding CompactToolTip}" />
+                        <TextBlock Grid.Row="1" Margin="0,2,0,0" Text="{Binding CompactSubtitle}" Style="{StaticResource Text.Caption}" TextTrimming="CharacterEllipsis" ToolTip="{Binding CompactToolTip}"/>
                     </Grid>
-
                     <!-- 右侧：悬浮快捷按钮（原路覆盖 + 移出） -->
-                    <StackPanel Grid.Column="2"
-                                Orientation="Horizontal"
-                                Margin="8,0,0,0"
-                                VerticalAlignment="Center">
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="8,0,0,0" VerticalAlignment="Center">
                         <StackPanel.Style>
                             <Style TargetType="StackPanel">
-                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Setter Property="Visibility" Value="Collapsed"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
-                                        <Setter Property="Visibility" Value="Visible" />
+                                        <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </StackPanel.Style>
-
                         <!-- 单项原路覆盖 -->
                         <Button WindowChrome.IsHitTestVisibleInChrome="True" Padding="0" Width="24" Height="24" Margin="0,0,3,0" Focusable="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding DataContext.ApplyOriginalCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" ToolTip="{x:Static app:Strings.TrayApplyOriginal}" Style="{StaticResource Button.Ghost}">
-                            <Path Data="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C20.83 11.22 17.03 8 12.5 8z"
-                                  Fill="{DynamicResource Brush.TextSecondary}"
-                                  Width="11" Height="11"
-                                  Stretch="Uniform" />
+                            <Path Data="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C20.83 11.22 17.03 8 12.5 8z" Fill="{DynamicResource Brush.TextSecondary}" Width="11" Height="11" Stretch="Uniform"/>
                         </Button>
-
                         <!-- 移出暂存 -->
                         <Button WindowChrome.IsHitTestVisibleInChrome="True" Padding="0" Width="24" Height="24" Focusable="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Command="{Binding DataContext.RemoveItemDirectCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" ToolTip="{x:Static app:Strings.DeleteButton}" Style="{StaticResource Button.Ghost}">
-                            <Path Data="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-                                  Fill="{DynamicResource Brush.TextSecondary}"
-                                  Width="11" Height="11"
-                                  Stretch="Uniform" />
+                            <Path Data="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" Fill="{DynamicResource Brush.TextSecondary}" Width="11" Height="11" Stretch="Uniform"/>
                         </Button>
                     </StackPanel>
                 </Grid>
             </Border>
         </DataTemplate>
-
-                    <ContextMenu x:Key="ShelfMenu" x:Shared="False">
-                        <MenuItem Header="{x:Static app:Strings.TrayApplyOriginal}"
-                                  Command="{Binding ApplyOriginalCommand}"
-                                  CommandParameter="{Binding SelectedItem}" />
-                        <MenuItem Header="{x:Static app:Strings.MenuOpenSource}"
-                                  Command="{Binding OpenSourceLocationCommand}"
-                                  CommandParameter="{Binding SelectedItem}" />
-                        <MenuItem Header="{x:Static app:Strings.MenuCopySourcePath}"
-                                  Command="{Binding CopySourcePathCommand}"
-                                  CommandParameter="{Binding SelectedItem}" />
-                        <Separator />
-                        <MenuItem Header="{x:Static app:Strings.DeleteItemTitle}"
-                                  Command="{Binding RemoveItemDirectCommand}"
-                                  CommandParameter="{Binding SelectedItem}" />
-                    </ContextMenu>
-                    </Window.Resources>
-
+        <ContextMenu x:Key="ShelfMenu" x:Shared="False">
+            <MenuItem Header="{x:Static app:Strings.TrayApplyOriginal}" Command="{Binding ApplyOriginalCommand}" CommandParameter="{Binding SelectedItem}"/>
+            <MenuItem Header="{x:Static app:Strings.MenuOpenSource}" Command="{Binding OpenSourceLocationCommand}" CommandParameter="{Binding SelectedItem}"/>
+            <MenuItem Header="{x:Static app:Strings.MenuCopySourcePath}" Command="{Binding CopySourcePathCommand}" CommandParameter="{Binding SelectedItem}"/>
+            <Separator/>
+            <MenuItem Header="{x:Static app:Strings.DeleteItemTitle}" Command="{Binding RemoveItemDirectCommand}" CommandParameter="{Binding SelectedItem}"/>
+        </ContextMenu>
+    </Window.Resources>
     <Window.InputBindings>
-        <KeyBinding Key="V" Modifiers="Control" Command="{Binding PasteCommand}" />
-        <KeyBinding Key="N" Modifiers="Control" Command="{Binding NewGroupCommand}" />
-        <KeyBinding Key="O" Modifiers="Control" Command="{Binding AddItemsCommand}" />
-        <KeyBinding Key="O" Modifiers="Control+Shift" Command="{Binding AddItemsCommand}" />
-        <KeyBinding Key="Delete" Command="{Binding RemoveCommand}" />
-        <KeyBinding Key="F2" Command="{Binding RenameGroupCommand}" />
-        <KeyBinding Key="F5" Command="{Binding RefreshCommand}" />
-        <KeyBinding Key="F11" Command="{Binding ToggleCompactCommand}" />
-        <KeyBinding Key="E" Modifiers="Control" Command="{Binding ToggleCompactCommand}" />
+        <KeyBinding Key="N" Modifiers="Control+Shift" Command="{Binding NewShelfCommand}"/>
+        <KeyBinding Key="V" Modifiers="Control" Command="{Binding PasteCommand}"/>
+        <KeyBinding Key="N" Modifiers="Control" Command="{Binding NewGroupCommand}"/>
+        <KeyBinding Key="O" Modifiers="Control" Command="{Binding AddItemsCommand}"/>
+        <KeyBinding Key="O" Modifiers="Control+Shift" Command="{Binding AddItemsCommand}"/>
+        <KeyBinding Key="Delete" Command="{Binding RemoveCommand}"/>
+        <KeyBinding Key="F2" Command="{Binding RenameGroupCommand}"/>
+        <KeyBinding Key="F5" Command="{Binding RefreshCommand}"/>
+        <KeyBinding Key="F11" Command="{Binding ToggleCompactCommand}"/>
+        <KeyBinding Key="E" Modifiers="Control" Command="{Binding ToggleCompactCommand}"/>
     </Window.InputBindings>
-
     <Grid>
-        <!-- ================= 紧凑：暂存区 ================= -->
-        <Grid Visibility="{Binding IsCompact, Converter={StaticResource BoolToVisibility}}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-
-            <!-- 简洁界面顶部栏：一体化现代标题栏（无缝融合，支持拖拽移动窗口） -->
-            <Border Grid.Row="0"
-                    Background="{DynamicResource Brush.Surface}"
-                    BorderBrush="{DynamicResource Brush.Border}"
-                    BorderThickness="0,0,0,1"
-                    Padding="10,6">
-                <Grid>
+        <!-- Transit shelf: one drag-out surface and three restore actions. -->
+        <Border x:Name="CompactShell" CornerRadius="12" SizeChanged="OnCompactShellSizeChanged" Background="{DynamicResource Brush.ShelfSurface}" BorderBrush="{DynamicResource Brush.ShelfBorder}" BorderThickness="1" Visibility="{Binding IsCompact, Converter={StaticResource BoolToVisibility}}" PreviewMouseLeftButtonDown="OnCompactDoubleClick">
+            <Grid Background="Transparent">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="36"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="{Binding ShelfHeader}" Margin="16,0,46,0" VerticalAlignment="Center" Foreground="{DynamicResource Brush.ShelfSecondary}" FontSize="11" TextTrimming="CharacterEllipsis" Visibility="{Binding HasNoItems, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}" ToolTip="{Binding ShelfHeader}"/>
+                <Button Grid.Row="0" WindowChrome.IsHitTestVisibleInChrome="True" HorizontalAlignment="Right" Style="{StaticResource Button.Ghost}" Width="26" Height="26" Margin="0,0,10,0" Padding="0" ToolTip="{x:Static app:Strings.CloseButton}" AutomationProperties.Name="{x:Static app:Strings.CloseButton}" Click="OnCloseClick">
+                    <Path Data="M5 5L15 15M15 5L5 15" Stroke="{DynamicResource Brush.ShelfSecondary}" StrokeThickness="1.5" Width="10" Height="10" Stretch="Uniform"/>
+                </Button>
+                <!-- The stack is the only drag-out affordance; the footer contains restore actions. -->
+                <Border x:Name="ShelfExportSurface" Grid.Row="1" Background="Transparent" Cursor="Hand" Margin="20,0,20,4" Focusable="True" KeyDown="OnShelfExportKeyDown" MouseEnter="OnShelfStackHover" MouseLeave="OnShelfStackHover" ToolTip="{x:Static app:Strings.DragAllTooltip}" AutomationProperties.Name="{x:Static app:Strings.DragAllTooltip}" PreviewMouseLeftButtonDown="OnDragAllPreviewMouseLeftButtonDown" PreviewMouseMove="OnDragAllPreviewMouseMove">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasNoItems}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <Viewbox Stretch="Uniform" StretchDirection="DownOnly" Margin="0,2">
+                        <StackPanel VerticalAlignment="Center" IsHitTestVisible="False" MaxWidth="240">
+                            <Grid x:Name="ShelfStack" Width="56" Height="56" RenderTransformOrigin="0.5,0.7" Margin="0,0,0,10">
+                                <Grid.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform/>
+                                        <TranslateTransform/>
+                                    </TransformGroup>
+                                </Grid.RenderTransform>
+                                <ContentControl ContentTemplate="{StaticResource ShelfFileStackGlyph}"/>
+                            </Grid>
+                            <TextBlock Text="{x:Static app:Strings.ShelfDragPrompt}" FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap" TextAlignment="Center" Foreground="{DynamicResource Brush.ShelfText}"/>
+                            <TextBlock Text="{Binding ShelfCountText}" FontSize="12" Margin="0,4,0,0" TextAlignment="Center" Foreground="{DynamicResource Brush.ShelfSecondary}"/>
+                        </StackPanel>
+                    </Viewbox>
+                </Border>
+                <Grid Grid.Row="1" Margin="26,2,26,22" IsHitTestVisible="False" Visibility="{Binding HasNoItems, Converter={StaticResource BoolToVisibility}}">
+                    <StackPanel VerticalAlignment="Center" Margin="16">
+                        <ContentControl ContentTemplate="{StaticResource ShelfFileStackGlyph}" Width="56" Height="56" Margin="0,0,0,14"/>
+                        <TextBlock Text="{x:Static app:Strings.ShelfDropPrompt}" FontSize="20" TextAlignment="Center" TextWrapping="Wrap" Foreground="{DynamicResource Brush.ShelfSecondary}"/>
+                    </StackPanel>
+                </Grid>
+                <Grid x:Name="CompactStatusBar" Grid.Row="2" HorizontalAlignment="Center" Margin="0,2,0,10" Visibility="{Binding HasNoItems, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-
-                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                        <!-- 应用品牌图标 -->
-                        <Image Source="pack://application:,,,/Resources/app.ico"
-                               Width="16" Height="16"
-                               Margin="2,0,8,0"
-                               VerticalAlignment="Center"
-                               RenderOptions.BitmapScalingMode="HighQuality" />
-
-                        <!-- 当前暂存箱标题 -->
-                        <TextBlock Text="{Binding CompactHeader}"
-                                   ToolTip="{Binding CompactHeader}"
-                                   FontWeight="SemiBold"
-                                   FontSize="13"
-                                   MaxWidth="130"
-                                   TextTrimming="CharacterEllipsis"
-                                   VerticalAlignment="Center" />
-
-                        <!-- 一键拖出全部徽章手柄 -->
-                        <Border x:Name="DragAllHandle"
-                                WindowChrome.IsHitTestVisibleInChrome="True" Background="Transparent"
-                                BorderBrush="{DynamicResource Brush.BorderStrong}"
-                                BorderThickness="0"
-                                CornerRadius="{DynamicResource Radius.Control}"
-                                Padding="9,3"
-                                Margin="8,0,0,0"
-                                Cursor="Hand"
-                                VerticalAlignment="Center"
-                                ToolTip="{x:Static app:Strings.DragAllTooltip}"
-                                Visibility="{Binding HasNoItems, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}"
-                                PreviewMouseLeftButtonDown="OnDragAllPreviewMouseLeftButtonDown"
-                                PreviewMouseMove="OnDragAllPreviewMouseMove">
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="↗"
-                                           FontWeight="Bold"
-                                           FontSize="11"
-                                           Margin="0,0,4,0"
-                                           VerticalAlignment="Center"
-                                           Foreground="{DynamicResource Brush.TextPrimary}" />
-                                <TextBlock x:Name="CompactStatusSummary"
-                                           VerticalAlignment="Center"
-                                           RenderTransformOrigin="0.5,0.5"
-                                           FontSize="11"
-                                           FontWeight="SemiBold"
-                                           Foreground="{DynamicResource Brush.TextPrimary}"
-                                           Text="{Binding DragAllBadgeText}">
-                                    <TextBlock.RenderTransform>
-                                        <ScaleTransform ScaleX="1" ScaleY="1" />
-                                    </TextBlock.RenderTransform>
-                                </TextBlock>
-                            </StackPanel>
-                        </Border>
-                    </StackPanel>
-
-                    <!-- 右侧操作与窗口控制 -->
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                        <!-- 置顶锁定 -->
-                        <Button WindowChrome.IsHitTestVisibleInChrome="True" x:Name="PinButton" ToolTip="{x:Static app:Strings.PinButtonTooltip}" Style="{StaticResource Button.Ghost}" Click="OnToggleTopmostClick" Width="26" Height="26" Margin="1,0,0,0" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-                            <Path Data="M16 12V4h1V2H7v2h1v8l-2 2v2h5v6l1 1 1-1v-6h5v-2l-2-2z"
-                                  Fill="{DynamicResource Brush.TextSecondary}"
-                                  Width="12" Height="12"
-                                  Stretch="Uniform" />
-                        </Button>
-
-                        <!-- 添加文件 -->
-                        <Button WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="{x:Static app:Strings.AddButton}" Style="{StaticResource Button.Ghost}" Command="{Binding AddItemsCommand}" Width="26" Height="26" Margin="1,0,0,0" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-                            <Path Data="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
-                                  Fill="{DynamicResource Brush.TextSecondary}"
-                                  Width="12" Height="12"
-                                  Stretch="Uniform" />
-                        </Button>
-
-                        <!-- 展开工作台 -->
-                        <Button WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="{x:Static app:Strings.ExpandButton}" Margin="1,0,0,0" Style="{StaticResource Button.Ghost}" Command="{Binding ExpandCommand}" Width="26" Height="26" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-                            <Path Data="M5 4h5v2H7.41l4.29 4.29-1.41 1.41L6 7.41V10H4V5a1 1 0 0 1 1-1zm14 15h-5v-2h2.59l-4.29-4.29 1.41-1.41L18 16.59V14h2v5a1 1 0 0 1-1 1z"
-                                  Fill="{DynamicResource Brush.TextSecondary}"
-                                  Width="11" Height="11"
-                                  Stretch="Uniform" />
-                        </Button>
-
-                        <!-- 关闭/隐藏 -->
-                        <Button WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="{x:Static app:Strings.CloseButton}" Margin="1,0,0,0" Style="{StaticResource Button.Ghost}" Click="OnCloseClick" Width="26" Height="26" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-                            <Path Data="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-                                  Fill="{DynamicResource Brush.TextSecondary}"
-                                  Width="11" Height="11"
-                                  Stretch="Uniform" />
-                        </Button>
-                    </StackPanel>
+                    <Button x:Name="CompactRestoreOriginal" Grid.Column="0" Style="{StaticResource ShelfRestoreButton}" Command="{Binding ApplyOriginalCommand}" ToolTip="{x:Static app:Strings.TrayApplyOriginal}" AutomationProperties.Name="{x:Static app:Strings.TrayApplyOriginal}">
+                        <Path Data="M9 5L4 10L9 15M4 10H14C18 10 20 13 20 17" Width="20" Height="20" Stretch="Uniform" Stroke="{DynamicResource Brush.ShelfText}" StrokeThickness="1.6" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round"/>
+                    </Button>
+                    <Button x:Name="CompactRestoreFolder" Grid.Column="1" Style="{StaticResource ShelfRestoreButton}" Command="{Binding RestoreToFolderCommand}" ToolTip="{x:Static app:Strings.TargetSpecifiedPath}" AutomationProperties.Name="{x:Static app:Strings.TargetSpecifiedPath}">
+                        <Path Data="M3 6H9L11 8H21V20H3ZM12 11V17M9 14L12 17L15 14" Width="20" Height="20" Stretch="Uniform" Stroke="{DynamicResource Brush.ShelfText}" StrokeThickness="1.6" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round"/>
+                    </Button>
+                    <Button x:Name="CompactRestoreRoot" Grid.Column="2" Style="{StaticResource ShelfRestoreButton}" Command="{Binding RestoreToRootCommand}" ToolTip="{x:Static app:Strings.TargetAnotherRoot}" AutomationProperties.Name="{x:Static app:Strings.TargetAnotherRoot}">
+                        <Path Data="M5 3V8M19 3V8M5 5H19M12 5V11M8 15L12 11L16 15M12 11V21" Width="20" Height="20" Stretch="Uniform" Stroke="{DynamicResource Brush.ShelfText}" StrokeThickness="1.6" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round"/>
+                    </Button>
                 </Grid>
-            </Border>
-
-            <!-- 暂存项：拖出去就是中转，悬浮/右键可原路覆盖恢复 -->
-            <ListBox x:Name="CompactList"
-                     Grid.Row="1"
-                     ItemsSource="{Binding Items}"
-                     SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
-                     ContextMenu="{StaticResource ShelfMenu}"
-                     Background="Transparent"
-                     BorderThickness="0"
-                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                     ScrollViewer.VerticalScrollBarVisibility="Auto"
-                     PreviewMouseLeftButtonDown="OnCompactPreviewMouseLeftButtonDown"
-                     PreviewMouseMove="OnCompactPreviewMouseMove">
-
-                <ListBox.Style>
-                    <Style TargetType="ListBox" BasedOn="{StaticResource ShelfItems}">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding CompactIconView}" Value="False">
-                                <Setter Property="ItemsPanel" Value="{StaticResource ShelfRows}" />
-                                <Setter Property="ItemTemplate" Value="{StaticResource ShelfRow}" />
-                                <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </ListBox.Style>
-
-            </ListBox>
-
-            <!-- 空态：DropPoint 风格虚线托盘货架（点击任意区域即可添加文件） -->
-            <Border Grid.Row="1"
-                    Margin="14,10"
-                    CornerRadius="{DynamicResource Radius.Panel}"
-                    BorderThickness="1"
-                    Cursor="Hand"
-                    MouseLeftButtonUp="OnEmptyShelfClick"
-                    ToolTip="{x:Static app:Strings.AddButton}"
-                    Visibility="{Binding HasNoItems, Converter={StaticResource BoolToVisibility}}">
-                <Border.Style>
-                    <Style TargetType="Border">
-                        <Setter Property="Background" Value="{DynamicResource Brush.SurfaceAlt}" />
-                        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}" />
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource Brush.Surface}" />
-                                <Setter Property="BorderBrush" Value="{DynamicResource Brush.BorderStrong}" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
-                <StackPanel VerticalAlignment="Center" Margin="14" HorizontalAlignment="Center">
-                    <Path Data="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"
-                          Fill="{DynamicResource Brush.TextTertiary}"
-                          Width="28" Height="28"
-                          Stretch="Uniform"
-                          HorizontalAlignment="Center"
-                          Margin="0,0,0,8" />
-                    <TextBlock HorizontalAlignment="Center"
-                               FontWeight="SemiBold"
-                               FontSize="13.5"
-                               Foreground="{DynamicResource Brush.TextSecondary}"
-                               Text="{x:Static app:Strings.CompactEmptyTitle}" />
-                    <TextBlock Margin="0,5,0,0"
-                               HorizontalAlignment="Center"
-                               Style="{StaticResource Text.Caption}"
-                               TextWrapping="Wrap"
-                               TextAlignment="Center"
-                               Foreground="{DynamicResource Brush.TextTertiary}"
-                               Text="{x:Static app:Strings.CompactEmptyHint}" />
-                </StackPanel>
-            </Border>
-
-            <Border Grid.Row="2" Style="{StaticResource ActionBar}" Padding="12,6">
-                <Grid>
-                    <TextBlock Style="{StaticResource Text.Caption}" VerticalAlignment="Center" TextWrapping="Wrap"
-                               Text="{Binding StatusText}"
-                               Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
-                    <Grid Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}">
-                        <TextBlock Style="{StaticResource Text.Caption}" VerticalAlignment="Center" TextWrapping="Wrap"
-                                   Text="{x:Static app:Strings.CompactFooter}"
-                                   Visibility="{Binding HasNoItems, Converter={StaticResource BoolToVisibility}}" />
-                        <Grid x:Name="CompactStatusBar" Visibility="{Binding HasNoItems, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock x:Name="CompactStatistics" Style="{StaticResource Text.Caption}" VerticalAlignment="Center" Margin="0,0,8,0"
-                                       Text="{Binding StatusSummary}" TextTrimming="CharacterEllipsis" ToolTip="{Binding StatusSummary}" />
-                            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                            <ToggleButton IsChecked="{Binding CompactIconView, Mode=TwoWay}" Width="28" Height="28" Margin="0,0,4,0" ToolTip="{x:Static app:Strings.ViewModeIcons}" AutomationProperties.Name="{x:Static app:Strings.ViewModeIcons}">
-                                <ToggleButton.Template>
-                                    <ControlTemplate TargetType="ToggleButton">
-                                        <Border x:Name="ViewToggle" CornerRadius="{DynamicResource Radius.Control}" Background="Transparent">
-                                            <Path Width="12" Height="12" Stretch="Uniform" Fill="{DynamicResource Brush.TextSecondary}"
-                                                  HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                  Data="M0,0 H5 V5 H0 Z M7,0 H12 V5 H7 Z M0,7 H5 V12 H0 Z M7,7 H12 V12 H7 Z" />
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="ViewToggle" Property="Background" Value="{DynamicResource Brush.Hover}" />
-                                            </Trigger>
-                                            <Trigger Property="IsChecked" Value="True">
-                                                <Setter TargetName="ViewToggle" Property="Background" Value="{DynamicResource Brush.Selection}" />
-                                            </Trigger>
-                                            <Trigger Property="IsKeyboardFocused" Value="True">
-                                                <Setter TargetName="ViewToggle" Property="BorderBrush" Value="{DynamicResource Brush.TextSecondary}" />
-                                                <Setter TargetName="ViewToggle" Property="BorderThickness" Value="1" />
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </ToggleButton.Template>
-                            </ToggleButton>
-                            <Button x:Name="CompactApplyButton" Style="{StaticResource Button.Ghost}" Command="{Binding ApplyOriginalCommand}"
-                                    ToolTip="{x:Static app:Strings.TrayApplyOriginal}" AutomationProperties.Name="{x:Static app:Strings.ShelfApply}"
-                                    Width="28" Height="28" Padding="0" Margin="0,0,4,0">
-                                <Path Data="M9 4L4 9L9 14M4 9H14A5 5 0 0 1 14 19H10" Stroke="{DynamicResource Brush.TextSecondary}"
-                                      StrokeThickness="1.6" Width="14" Height="14" Stretch="Uniform" />
-                            </Button>
-                            <Button x:Name="CompactClearButton" Style="{StaticResource Button.Ghost}" Command="{Binding ClearAllBoxesCommand}"
-                                    ToolTip="{x:Static app:Strings.ClearAllBoxesTooltip}" AutomationProperties.Name="{x:Static app:Strings.ShelfClearAll}"
-                                    Width="28" Height="28" Padding="0">
-                                <Path Data="M4 6H20M9 6V3H15V6M6 6L7 21H17L18 6M10 10V17M14 10V17" Stroke="{DynamicResource Brush.TextSecondary}"
-                                      StrokeThickness="1.6" Width="13" Height="14" Stretch="Uniform" />
-                            </Button>
-                            </StackPanel>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </Border>
-        </Grid>
-
+                <Border Grid.Row="2" Padding="14,8" Background="{DynamicResource Brush.ShelfSurface}" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}">
+                    <TextBlock Text="{Binding StatusText}" Style="{StaticResource Text.Caption}" Foreground="{DynamicResource Brush.ShelfSecondary}" TextTrimming="CharacterEllipsis"/>
+                </Border>
+            </Grid>
+        </Border>
         <!-- ================= 完整：工作台 ================= -->
         <Grid Visibility="{Binding IsCompact, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-
             <!-- ================= 顶栏 ================= -->
-            <Border Grid.Row="0"
-                    Background="{DynamicResource Brush.Surface}"
-                    BorderBrush="{DynamicResource Brush.Border}"
-                    BorderThickness="0,0,0,1"
-                    Padding="14,6">
+            <Border Grid.Row="0" Background="{DynamicResource Brush.Surface}" BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,0,1" Padding="18,8">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-
                     <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Image Source="pack://application:,,,/Resources/app.ico"
-                               Width="18" Height="18"
-                               Margin="0,0,8,0"
-                               VerticalAlignment="Center"
-                               RenderOptions.BitmapScalingMode="HighQuality" />
-                        <TextBlock Text="{x:Static app:Strings.AppName}" Style="{StaticResource Text.Title}" VerticalAlignment="Center" />
-                        <Border CornerRadius="{DynamicResource Radius.Control}"
-                                Background="{DynamicResource Brush.SurfaceAlt}"
-                                BorderBrush="{DynamicResource Brush.Border}"
-                                BorderThickness="1"
-                                Padding="9,3"
-                                Margin="10,0,0,0"
-                                VerticalAlignment="Center">
-                            <TextBlock Text="{Binding CompactHeader}"
-                                       FontWeight="SemiBold"
-                                       FontSize="11.5"
-                                       Foreground="{DynamicResource Brush.TextSecondary}" />
-                        </Border>
-                        <TextBlock VerticalAlignment="Center"
-                                   Style="{StaticResource Text.Caption.Gap}"
-                                   Text="{Binding StatusSummary}" />
+                        <ContentControl ContentTemplate="{StaticResource ShelfFileStackGlyph}" Width="24" Height="24" Margin="0,0,8,0" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                        <TextBlock Text="{x:Static app:Strings.AppName}" Style="{StaticResource Text.Title}" VerticalAlignment="Center"/>
                     </StackPanel>
-
                     <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Button WindowChrome.IsHitTestVisibleInChrome="True"
-                                Content="{x:Static app:Strings.AbortButton}"
-                                Style="{StaticResource Button.Ghost}"
-                                Command="{Binding CancelCurrentOperationCommand}"
-                                Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
-
+                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Content="{x:Static app:Strings.AbortButton}" Style="{StaticResource Button.Ghost}" Command="{Binding CancelCurrentOperationCommand}" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}"/>
                         <!-- 一键原路覆盖恢复（核心高频动作，与缩小版保持一致） -->
-                        <Button WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="{x:Static app:Strings.TrayApplyOriginal}" Style="{StaticResource Button.Ghost}" Command="{Binding ApplyOriginalCommand}" Visibility="{Binding HasNoItems, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}" Width="28" Height="28" Margin="2,0,0,0" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-                            <Path Data="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C20.83 11.22 17.03 8 12.5 8z"
-                                  Fill="{DynamicResource Brush.TextSecondary}"
-                                  Width="13" Height="13"
-                                  Stretch="Uniform" />
-                        </Button>
-
                         <!-- 一键拖出全部徽章手柄（胶囊药丸，与缩小版保持一致） -->
-                        <Border x:Name="WorkbenchDragAllHandle"
-                                WindowChrome.IsHitTestVisibleInChrome="True"
-                                Background="Transparent"
-                                BorderBrush="{DynamicResource Brush.BorderStrong}"
-                                BorderThickness="0"
-                                CornerRadius="{DynamicResource Radius.Control}"
-                                Padding="10,4"
-                                Margin="4,0,0,0"
-                                Cursor="Hand"
-                                VerticalAlignment="Center"
-                                ToolTip="{x:Static app:Strings.DragAllTooltip}"
-                                Visibility="{Binding HasNoItems, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}"
-                                PreviewMouseLeftButtonDown="OnDragAllPreviewMouseLeftButtonDown"
-                                PreviewMouseMove="OnDragAllPreviewMouseMove">
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="↗"
-                                           FontWeight="Bold"
-                                           FontSize="11"
-                                           Margin="0,0,5,0"
-                                           VerticalAlignment="Center"
-                                           Foreground="{DynamicResource Brush.TextPrimary}" />
-                                <TextBlock Text="{Binding DragAllBadgeText}"
-                                           FontWeight="SemiBold"
-                                           FontSize="11.5"
-                                           VerticalAlignment="Center"
-                                           Foreground="{DynamicResource Brush.TextPrimary}" />
-                            </StackPanel>
-                        </Border>
-
                         <!-- 添加文件 -->
                         <Button WindowChrome.IsHitTestVisibleInChrome="True" Command="{Binding AddItemsCommand}" Margin="6,0,0,0" Padding="8,4">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <Path Data="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
-                                      Fill="{DynamicResource Brush.TextPrimary}"
-                                      Width="11" Height="11"
-                                      Margin="0,0,5,0"
-                                      Stretch="Uniform" />
-                                <TextBlock Text="{x:Static app:Strings.AddButton}" VerticalAlignment="Center" />
+                                <Path Data="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" Fill="{DynamicResource Brush.TextPrimary}" Width="11" Height="11" Margin="0,0,5,0" Stretch="Uniform"/>
+                                <TextBlock Text="{x:Static app:Strings.AddButton}" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
-
                         <!-- 清空当前箱 -->
-                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Style="{StaticResource Button.Ghost}" Command="{Binding ClearCurrentBoxCommand}" ToolTip="{x:Static app:Strings.ClearBoxButton}" Visibility="{Binding HasNoItems, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}" Width="28" Height="28" Margin="2,0,0,0" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-                            <Path Data="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
-                                  Fill="{DynamicResource Brush.TextSecondary}"
-                                  Width="12" Height="12"
-                                  Stretch="Uniform" />
-                        </Button>
-
                         <!-- 设置 -->
-                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Style="{StaticResource Button.Ghost}" Command="{Binding OpenSettingsCommand}" ToolTip="{x:Static app:Strings.SettingsButton}" Width="28" Height="28" Margin="2,0,0,0" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-                            <Path Data="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
-                                  Fill="{DynamicResource Brush.TextSecondary}"
-                                  Width="13" Height="13"
-                                  Stretch="Uniform" />
+                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Style="{StaticResource Button.Ghost}" Command="{Binding OpenSettingsCommand}" ToolTip="{x:Static app:Strings.SettingsButton}" Width="32" Height="32" Margin="2,0,0,0" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="{x:Static app:Strings.SettingsButton}">
+                            <Path Data="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" Fill="{DynamicResource Brush.TextSecondary}" Width="13" Height="13" Stretch="Uniform"/>
                         </Button>
-
                         <!-- 缩回小面板 -->
-                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Style="{StaticResource Button.Ghost}" Command="{Binding CollapseCommand}" ToolTip="{x:Static app:Strings.CollapseButtonTooltip}" Margin="4,0,0,0" Padding="7,4">
+                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Style="{StaticResource Button.Ghost}" Command="{Binding CollapseCommand}" ToolTip="{x:Static app:Strings.CollapseButtonTooltip}" Margin="4,0,0,0" Padding="7,4" AutomationProperties.Name="{x:Static app:Strings.CollapseButtonTooltip}">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <Path Data="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-14v3h3v2h-5V5h2z"
-                                      Fill="{DynamicResource Brush.TextSecondary}"
-                                      Width="12" Height="12"
-                                      Margin="0,0,4,0"
-                                      Stretch="Uniform" />
-                                <TextBlock Text="{x:Static app:Strings.CollapseButton}" VerticalAlignment="Center" />
-                                <Border Margin="5,0,0,0"
-                                        Background="{DynamicResource Brush.SurfaceAlt}"
-                                        BorderBrush="{DynamicResource Brush.Border}"
-                                        BorderThickness="1"
-                                        CornerRadius="{DynamicResource Radius.Control}"
-                                        Padding="6,1"
-                                        VerticalAlignment="Center">
-                                    <TextBlock Text="F11" FontSize="9.5" FontWeight="SemiBold" Foreground="{DynamicResource Brush.TextTertiary}" />
+                                <Path Data="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-14v3h3v2h-5V5h2z" Fill="{DynamicResource Brush.TextSecondary}" Width="12" Height="12" Margin="0,0,4,0" Stretch="Uniform"/>
+                                <TextBlock Text="{x:Static app:Strings.CollapseButton}" VerticalAlignment="Center"/>
+                                <Border Margin="5,0,0,0" Background="{DynamicResource Brush.SurfaceAlt}" BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1" CornerRadius="{DynamicResource Radius.Control}" Padding="6,1" VerticalAlignment="Center">
+                                    <TextBlock Text="F11" FontSize="9.5" FontWeight="SemiBold" Foreground="{DynamicResource Brush.TextTertiary}"/>
                                 </Border>
                             </StackPanel>
                         </Button>
                     </StackPanel>
                 </Grid>
             </Border>
-
             <!-- ================= 台面 ================= -->
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="216" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="216"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-
                 <!-- 收纳格（暂存箱） -->
                 <Grid Grid.Column="0" Background="{DynamicResource Brush.SurfaceAlt}">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-
-                    <TextBlock Grid.Row="0"
-                               Margin="16,14,16,8"
-                               Style="{StaticResource Text.Caption}"
-                               Text="{x:Static app:Strings.StashBoxLabel}" />
-
-                    <ListBox Grid.Row="1"
-                             ctrl:WheelScroll.IsEnabled="True"
-                             Margin="0,0,0,0"
-                             ItemsSource="{Binding Groups}"
-                             SelectedItem="{Binding SelectedGroup}"
-                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <TextBlock Grid.Row="0" Margin="16,14,16,8" Style="{StaticResource Text.Caption}" Text="{x:Static app:Strings.StashBoxLabel}"/>
+                    <ListBox Grid.Row="1" ctrl:WheelScroll.IsEnabled="True" Margin="0,0,0,0" ItemsSource="{Binding Groups}" SelectedItem="{Binding SelectedGroup}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <Border x:Name="GroupCard" Margin="8,3" CornerRadius="10" Background="Transparent" BorderBrush="Transparent" BorderThickness="1">
+                                                <ContentPresenter/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="GroupCard" Property="Background" Value="{DynamicResource Brush.Hover}"/>
+                                                </Trigger>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter TargetName="GroupCard" Property="Background" Value="{DynamicResource Brush.Surface}"/>
+                                                    <Setter TargetName="GroupCard" Property="BorderBrush" Value="{DynamicResource Brush.BorderStrong}"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="{x:Type vm:GroupViewModel}">
-                                <Border x:Name="Tab"
-                                        Margin="0"
-                                        Padding="12,7,12,7"
-                                        Background="Transparent"
-                                        BorderThickness="3,0,0,0"
-                                        BorderBrush="Transparent">
+                                <Border x:Name="Tab" Margin="0" Padding="12,10" Background="Transparent" BorderThickness="0" BorderBrush="Transparent" CornerRadius="10">
                                     <StackPanel>
-                                        <TextBlock Text="{Binding DisplayName}"
-                                                   ToolTip="{Binding DisplayName}"
-                                                   FontWeight="SemiBold"
-                                                   TextTrimming="CharacterEllipsis" />
-                                        <TextBlock Margin="0,2,0,0"
-                                                   Style="{StaticResource Text.Tertiary}"
-                                                   Text="{Binding SummaryText}"
-                                                   TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Text="{Binding DisplayName}" ToolTip="{Binding DisplayName}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Margin="0,2,0,0" Style="{StaticResource Text.Tertiary}" Text="{Binding SummaryText}" TextTrimming="CharacterEllipsis"/>
                                     </StackPanel>
                                 </Border>
-                                <DataTemplate.Triggers>
-                                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                        <Setter TargetName="Tab" Property="Background" Value="{DynamicResource Brush.Surface}" />
-                                        <Setter TargetName="Tab" Property="BorderBrush" Value="{DynamicResource Brush.TextSecondary}" />
-                                    </DataTrigger>
-                                </DataTemplate.Triggers>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
-
                     <Grid Grid.Row="2" Margin="16,8,16,14">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Grid.Column="0" Content="{x:Static app:Strings.NewGroupButton}" Style="{StaticResource Button.Ghost.Start}" Command="{Binding NewGroupCommand}" />
-                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Grid.Column="1" Margin="4,0,0,0" Content="{x:Static app:Strings.ClearAllBoxesButton}" ToolTip="{x:Static app:Strings.ClearAllBoxesTooltip}" Style="{StaticResource Button.Ghost}" Command="{Binding ClearAllBoxesCommand}" />
+                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Grid.Column="0" Content="{x:Static app:Strings.NewGroupButton}" Style="{StaticResource Button.Ghost.Start}" Command="{Binding NewGroupCommand}"/>
+                        <Button WindowChrome.IsHitTestVisibleInChrome="True" Grid.Column="1" Margin="4,0,0,0" Content="{x:Static app:Strings.ClearAllBoxesButton}" ToolTip="{x:Static app:Strings.ClearAllBoxesTooltip}" Style="{StaticResource Button.Ghost}" Command="{Binding ClearAllBoxesCommand}"/>
                     </Grid>
                 </Grid>
-
-                <GridSplitter Grid.Column="1"
-                              Width="1"
-                              HorizontalAlignment="Stretch"
-                              VerticalAlignment="Stretch"
-                              Background="{DynamicResource Brush.Border}" />
-
+                <GridSplitter Grid.Column="1" Width="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{DynamicResource Brush.Border}"/>
                 <!-- 暂存项 -->
                 <Grid Grid.Column="2">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-
                     <!--
                         视图档位单独一条，不塞进顶栏：顶栏右侧本来就排到 1180 的边上，
                         德语那一档再加一枚胶囊会把"缩回"和 F11 顶出窗口（探针实测出窗 60 DIP）。
                         这一条横向有整个内容区的宽度，长语言才有余量。
                     -->
-                    <Border Grid.Row="0"
-                            Margin="24,8,12,0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Background="{DynamicResource Brush.SurfaceSunken}"
-                            BorderBrush="{DynamicResource Brush.Border}"
-                            BorderThickness="1"
-                            CornerRadius="{DynamicResource Radius.Control}"
-                            Padding="3">
-                        <StackPanel Orientation="Horizontal">
-                            <RadioButton Content="{x:Static app:Strings.ViewModeTree}"
-                                         GroupName="WorkbenchView"
-                                         Style="{StaticResource Segment.Option}"
-                                         Margin="0"
-                                         IsChecked="{Binding WorkbenchViewMode, Converter={StaticResource EnumMatch}, ConverterParameter=Tree}" />
-                            <RadioButton Content="{x:Static app:Strings.ViewModeList}"
-                                         GroupName="WorkbenchView"
-                                         Style="{StaticResource Segment.Option}"
-                                         Margin="0"
-                                         IsChecked="{Binding WorkbenchViewMode, Converter={StaticResource EnumMatch}, ConverterParameter=List}" />
-                            <RadioButton Content="{x:Static app:Strings.ViewModeSource}"
-                                         GroupName="WorkbenchView"
-                                         Style="{StaticResource Segment.Option}"
-                                         Margin="0"
-                                         IsChecked="{Binding WorkbenchViewMode, Converter={StaticResource EnumMatch}, ConverterParameter=BySourceFolder}" />
-                            <RadioButton Content="{x:Static app:Strings.ViewModeIcons}" GroupName="WorkbenchView" Style="{StaticResource Segment.Option}" IsChecked="{Binding WorkbenchViewMode, Converter={StaticResource EnumMatch}, ConverterParameter=Icons}" />
-                        </StackPanel>
-                    </Border>
-
                     <!-- 表头的左右内缩照抄数据行的内容框（展开箭头 22 + 树内边距 / 滚动条槽 12），
                          两处不一致，表头三列就会整体飘离数据列。 -->
-                    <Border Visibility="{Binding IsIconView, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}" x:Name="ListHeader"
-                            Grid.Row="1"
-                            Background="{DynamicResource Brush.Surface}"
-                            BorderBrush="{DynamicResource Brush.Border}"
-                            BorderThickness="0,0,0,1"
-                            Padding="24,8,12,8">
+                    <Grid Grid.Row="0" Margin="24,16,20,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Margin="0,0,16,0" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding CompactHeader}" Style="{StaticResource Text.Title}" FontSize="18" TextTrimming="CharacterEllipsis" ToolTip="{Binding CompactHeader}"/>
+                            <TextBlock Text="{Binding StatusSummary}" Style="{StaticResource Text.Caption}" Margin="0,4,0,0" TextTrimming="CharacterEllipsis" ToolTip="{Binding StatusSummary}"/>
+                        </StackPanel>
+                        <Border Margin="0" HorizontalAlignment="Right" VerticalAlignment="Center" Background="{DynamicResource Brush.SurfaceSunken}" BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1" CornerRadius="{DynamicResource Radius.Control}" Padding="3" Grid.Column="1">
+                            <StackPanel Orientation="Horizontal">
+                                <RadioButton Content="{x:Static app:Strings.ViewModeTree}" GroupName="WorkbenchView" Style="{StaticResource Segment.Option}" Margin="0" IsChecked="{Binding WorkbenchViewMode, Converter={StaticResource EnumMatch}, ConverterParameter=Tree}"/>
+                                <RadioButton Content="{x:Static app:Strings.ViewModeList}" GroupName="WorkbenchView" Style="{StaticResource Segment.Option}" Margin="0" IsChecked="{Binding WorkbenchViewMode, Converter={StaticResource EnumMatch}, ConverterParameter=List}"/>
+                                <RadioButton Content="{x:Static app:Strings.ViewModeSource}" GroupName="WorkbenchView" Style="{StaticResource Segment.Option}" Margin="0" IsChecked="{Binding WorkbenchViewMode, Converter={StaticResource EnumMatch}, ConverterParameter=BySourceFolder}"/>
+                                <RadioButton Content="{x:Static app:Strings.ViewModeIcons}" GroupName="WorkbenchView" Style="{StaticResource Segment.Option}" IsChecked="{Binding WorkbenchViewMode, Converter={StaticResource EnumMatch}, ConverterParameter=Icons}"/>
+                            </StackPanel>
+                        </Border>
+                        <WrapPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,12,0,0">
+                            <Border x:Name="WorkbenchDragAllHandle" WindowChrome.IsHitTestVisibleInChrome="True" Background="{DynamicResource Brush.SurfaceAlt}" BorderBrush="{DynamicResource Brush.BorderStrong}" BorderThickness="1" CornerRadius="{DynamicResource Radius.Control}" Padding="12,6" Margin="0,0,8,4" Cursor="Hand" VerticalAlignment="Center" ToolTip="{x:Static app:Strings.DragAllTooltip}" Visibility="{Binding HasNoItems, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}" PreviewMouseLeftButtonDown="OnDragAllPreviewMouseLeftButtonDown" PreviewMouseMove="OnDragAllPreviewMouseMove" AutomationProperties.Name="{x:Static app:Strings.DragAllTooltip}">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="↗" FontWeight="Bold" FontSize="14" Margin="0,0,5,0" VerticalAlignment="Center" Foreground="{DynamicResource Brush.TextPrimary}"/>
+                                    <TextBlock Text="{x:Static app:Strings.ShelfDragPrompt}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBlock Text="{Binding DragAllBadgeText}" FontWeight="SemiBold" FontSize="11.5" VerticalAlignment="Center" Foreground="{DynamicResource Brush.TextPrimary}"/>
+                                </StackPanel>
+                            </Border>
+                            <Button WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="{x:Static app:Strings.TrayApplyOriginal}" Style="{StaticResource Button.Ghost}" Command="{Binding ApplyOriginalCommand}" Visibility="{Binding HasNoItems, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}" Height="32" Margin="0,0,8,4" Padding="10,5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="{x:Static app:Strings.TrayApplyOriginal}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C20.83 11.22 17.03 8 12.5 8z" Fill="{DynamicResource Brush.TextSecondary}" Width="13" Height="13" Stretch="Uniform"/>
+                                    <TextBlock Text="{x:Static app:Strings.TrayApplyOriginal}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Style="{StaticResource Button.Ghost}" Command="{Binding ClearCurrentBoxCommand}" ToolTip="{x:Static app:Strings.ClearBoxButton}" Visibility="{Binding HasNoItems, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}" Height="32" Margin="0,0,8,4" Padding="10,5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="{x:Static app:Strings.ClearBoxButton}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" Fill="{DynamicResource Brush.TextSecondary}" Width="12" Height="12" Stretch="Uniform"/>
+                                    <TextBlock Text="{x:Static app:Strings.ClearBoxButton}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </WrapPanel>
+                    </Grid>
+                    <Border Visibility="{Binding IsIconView, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}" x:Name="ListHeader" Grid.Row="1" Background="{DynamicResource Brush.Surface}" BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,0,1" Padding="24,8,12,8">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="90" />
-                                <ColumnDefinition Width="120" />
-                                <ColumnDefinition Width="110" />
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="90"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="110"/>
                             </Grid.ColumnDefinitions>
-
-                            <TextBlock Grid.Column="0" Style="{StaticResource Text.Caption}" Text="{x:Static app:Strings.ColumnNamePath}" />
-                            <TextBlock Grid.Column="1" Style="{StaticResource Text.Caption}" Text="{x:Static app:Strings.ColumnSize}" />
-                            <TextBlock Grid.Column="2" Style="{StaticResource Text.Caption}" Text="{x:Static app:Strings.ColumnSourceBranch}" />
-            <TextBlock Grid.Column="3" Style="{StaticResource Text.Caption}" Text="{x:Static app:Strings.ColumnSourceState}" />
+                            <TextBlock Grid.Column="0" Style="{StaticResource Text.Caption}" Text="{x:Static app:Strings.ColumnNamePath}"/>
+                            <TextBlock Grid.Column="1" Style="{StaticResource Text.Caption}" Text="{x:Static app:Strings.ColumnSize}"/>
+                            <TextBlock Grid.Column="2" Style="{StaticResource Text.Caption}" Text="{x:Static app:Strings.ColumnSourceBranch}"/>
+                            <TextBlock Grid.Column="3" Style="{StaticResource Text.Caption}" Text="{x:Static app:Strings.ColumnSourceState}"/>
                         </Grid>
                     </Border>
-
-                    <TreeView Visibility="{Binding IsIconView, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}" x:Name="ItemTree"
-                              ctrl:WheelScroll.IsEnabled="True"
-                              Grid.Row="2"
-                              ItemsSource="{Binding WorkbenchRows}"
-                              BorderThickness="0"
-                              Background="Transparent"
-                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                              ScrollViewer.VerticalScrollBarVisibility="Visible"
-                              SelectedItemChanged="OnItemTreeSelectedItemChanged"
-                              PreviewMouseLeftButtonDown="OnItemTreePreviewMouseLeftButtonDown"
-                              PreviewMouseMove="OnItemTreePreviewMouseMove"
-                              AllowDrop="True"
-                              DragOver="OnItemTreeDragOver"
-                              Drop="OnItemTreeDrop">
+                    <TreeView Visibility="{Binding IsIconView, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}" x:Name="ItemTree" ctrl:WheelScroll.IsEnabled="True" Grid.Row="2" ItemsSource="{Binding WorkbenchRows}" BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" SelectedItemChanged="OnItemTreeSelectedItemChanged" PreviewMouseLeftButtonDown="OnItemTreePreviewMouseLeftButtonDown" PreviewMouseMove="OnItemTreePreviewMouseMove" AllowDrop="True" DragOver="OnItemTreeDragOver" Drop="OnItemTreeDrop">
                         <TreeView.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="{x:Static app:Strings.MenuOpenSource}" Command="{Binding OpenSourceLocationCommand}" />
-                                <MenuItem Header="{x:Static app:Strings.MenuCopySourcePath}" Command="{Binding CopySourcePathCommand}" />
-                                <MenuItem Header="{x:Static app:Strings.MenuCopyToClipboard}" Command="{Binding CopyToClipboardCommand}" />
-                                <Separator />
-                                <MenuItem Header="{x:Static app:Strings.MenuRefreshSnapshot}" Command="{Binding RefreshSnapshotCommand}" />
-                                <MenuItem Header="{x:Static app:Strings.MenuSetRoot}" Command="{Binding SetRootCommand}" />
-                                <MenuItem Header="{x:Static app:Strings.MenuMoveToGroup}" Command="{Binding MoveToGroupCommand}" />
-                                <Separator />
-                                <MenuItem Header="{x:Static app:Strings.DeleteItemTitle}" Command="{Binding RemoveCommand}" />
+                                <MenuItem Header="{x:Static app:Strings.MenuOpenSource}" Command="{Binding OpenSourceLocationCommand}"/>
+                                <MenuItem Header="{x:Static app:Strings.MenuCopySourcePath}" Command="{Binding CopySourcePathCommand}"/>
+                                <MenuItem Header="{x:Static app:Strings.MenuCopyToClipboard}" Command="{Binding CopyToClipboardCommand}"/>
+                                <Separator/>
+                                <MenuItem Header="{x:Static app:Strings.MenuRefreshSnapshot}" Command="{Binding RefreshSnapshotCommand}"/>
+                                <MenuItem Header="{x:Static app:Strings.MenuSetRoot}" Command="{Binding SetRootCommand}"/>
+                                <MenuItem Header="{x:Static app:Strings.MenuMoveToGroup}" Command="{Binding MoveToGroupCommand}"/>
+                                <Separator/>
+                                <MenuItem Header="{x:Static app:Strings.DeleteItemTitle}" Command="{Binding RemoveCommand}"/>
                             </ContextMenu>
                         </TreeView.ContextMenu>
                         <TreeView.Resources>
@@ -804,347 +491,191 @@
                             <DataTemplate x:Key="RowCells">
                                 <Grid Height="30">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="90" />
-                                        <ColumnDefinition Width="120" />
-                                        <ColumnDefinition Width="110" />
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="90"/>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="110"/>
                                     </Grid.ColumnDefinitions>
-
                                     <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                                         <!-- 源文件没了：名字要跟着变暗，不能只靠一颗 6 DIP 的点 -->
-                                        <TextBlock Text="{Binding DisplayName}"
-                                                   FontWeight="SemiBold"
-                                                   VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" VerticalAlignment="Center">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock" BasedOn="{StaticResource Text.Body}">
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding IsSourceMissing}" Value="True">
-                                                            <Setter Property="Opacity" Value="0.55" />
+                                                            <Setter Property="Opacity" Value="0.55"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </TextBlock.Style>
                                         </TextBlock>
-                                        <TextBlock Text="{Binding PathTail}"
-                                                   Margin="10,0,0,0"
-                                                   VerticalAlignment="Center"
-                                                   MaxWidth="260"
-                                                   Style="{StaticResource Text.Mono}"
-                                                   TextTrimming="CharacterEllipsis"
-                                                   ToolTip="{Binding SourcePath}" />
+                                        <TextBlock Text="{Binding PathTail}" Margin="10,0,0,0" VerticalAlignment="Center" MaxWidth="260" Style="{StaticResource Text.Mono}" TextTrimming="CharacterEllipsis" ToolTip="{Binding SourcePath}"/>
                                     </StackPanel>
-
-                                    <TextBlock Grid.Column="1"
-                                               VerticalAlignment="Center"
-                                               Style="{StaticResource Text.Mono}"
-                                               Text="{Binding SizeText}" />
-
-                                    <TextBlock Grid.Column="2"
-                                               VerticalAlignment="Center"
-                                               Style="{StaticResource Text.Mono}"
-                                               Text="{Binding BranchText}"
-                                               TextTrimming="CharacterEllipsis" />
-
+                                    <TextBlock Grid.Column="1" VerticalAlignment="Center" Style="{StaticResource Text.Mono}" Text="{Binding SizeText}"/>
+                                    <TextBlock Grid.Column="2" VerticalAlignment="Center" Style="{StaticResource Text.Mono}" Text="{Binding BranchText}" TextTrimming="CharacterEllipsis"/>
                                     <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
-                                        <Ellipse Width="6" Height="6" Margin="0,0,6,0"
-                                                 VerticalAlignment="Center"
-                                                 Fill="{Binding StatusBrush}" />
-                                        <TextBlock VerticalAlignment="Center"
-                                                   Style="{StaticResource Text.Caption}"
-                                                   Text="{Binding StatusText}" />
+                                        <Ellipse Width="6" Height="6" Margin="0,0,6,0" VerticalAlignment="Center" Fill="{Binding StatusBrush}"/>
+                                        <TextBlock VerticalAlignment="Center" Style="{StaticResource Text.Caption}" Text="{Binding StatusText}"/>
                                     </StackPanel>
                                 </Grid>
                             </DataTemplate>
-
                             <!-- 暂存项：可展开；列表档下 Children 被换成空表，箭头随之消失 -->
                             <HierarchicalDataTemplate DataType="{x:Type vm:ItemViewModel}">
                                 <HierarchicalDataTemplate.ItemsSource>
                                     <MultiBinding Converter="{StaticResource WorkbenchChildren}">
-                                        <Binding Path="Children" />
-                                        <Binding Path="DataContext.WorkbenchViewMode"
-                                                 RelativeSource="{RelativeSource AncestorType=TreeView}" />
-                                        <Binding Path="IsFolder" />
+                                        <Binding Path="Children"/>
+                                        <Binding Path="DataContext.WorkbenchViewMode" RelativeSource="{RelativeSource AncestorType=TreeView}"/>
+                                        <Binding Path="IsFolder"/>
                                     </MultiBinding>
                                 </HierarchicalDataTemplate.ItemsSource>
-                                <ContentPresenter ContentTemplate="{StaticResource RowCells}" />
+                                <ContentPresenter ContentTemplate="{StaticResource RowCells}"/>
                             </HierarchicalDataTemplate>
-
                             <!-- 条目：没有下一级 -->
                             <DataTemplate DataType="{x:Type vm:EntryViewModel}">
-                                <ContentPresenter ContentTemplate="{StaticResource RowCells}" />
+                                <ContentPresenter ContentTemplate="{StaticResource RowCells}"/>
                             </DataTemplate>
-
                             <!-- "按来源"档的目录节头：念目录与个数，不去占大小/分支那几列 -->
-                            <HierarchicalDataTemplate DataType="{x:Type vm:SourceFolderRowViewModel}"
-                                                      ItemsSource="{Binding Children}">
+                            <HierarchicalDataTemplate DataType="{x:Type vm:SourceFolderRowViewModel}" ItemsSource="{Binding Children}">
                                 <Grid Height="26">
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Directory}"
-                                                   Style="{StaticResource Text.Caption}"
-                                                   FontWeight="SemiBold"
-                                                   MaxWidth="520"
-                                                   TextTrimming="CharacterEllipsis"
-                                                   ToolTip="{Binding Directory}"
-                                                   VerticalAlignment="Center" />
-                                        <Border Margin="8,0,0,0"
-                                                Padding="6,1"
-                                                VerticalAlignment="Center"
-                                                Background="{DynamicResource Brush.SurfaceSunken}"
-                                                BorderBrush="{DynamicResource Brush.Border}"
-                                                BorderThickness="1"
-                                                CornerRadius="{DynamicResource Radius.Control}">
-                                            <TextBlock Style="{StaticResource Text.Caption}"
-                                                       Foreground="{DynamicResource Brush.TextTertiary}"
-                                                       Text="{Binding FileCountText}" />
+                                        <TextBlock Text="{Binding Directory}" Style="{StaticResource Text.Caption}" FontWeight="SemiBold" MaxWidth="520" TextTrimming="CharacterEllipsis" ToolTip="{Binding Directory}" VerticalAlignment="Center"/>
+                                        <Border Margin="8,0,0,0" Padding="6,1" VerticalAlignment="Center" Background="{DynamicResource Brush.SurfaceSunken}" BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1" CornerRadius="{DynamicResource Radius.Control}">
+                                            <TextBlock Style="{StaticResource Text.Caption}" Foreground="{DynamicResource Brush.TextTertiary}" Text="{Binding FileCountText}"/>
                                         </Border>
                                     </StackPanel>
                                 </Grid>
                             </HierarchicalDataTemplate>
                         </TreeView.Resources>
                     </TreeView>
-                    <ListBox x:Name="IconList" Grid.Row="2" Style="{StaticResource ShelfItems}" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" ContextMenu="{StaticResource ShelfMenu}" Visibility="{Binding IsIconView, Converter={StaticResource BoolToVisibility}}" PreviewMouseLeftButtonDown="OnCompactPreviewMouseLeftButtonDown" PreviewMouseMove="OnCompactPreviewMouseMove" />
-
-
+                    <ListBox x:Name="IconList" Grid.Row="2" Style="{StaticResource ShelfItems}" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" ContextMenu="{StaticResource ShelfMenu}" Visibility="{Binding IsIconView, Converter={StaticResource BoolToVisibility}}" PreviewMouseLeftButtonDown="OnCompactPreviewMouseLeftButtonDown" PreviewMouseMove="OnCompactPreviewMouseMove"/>
                     <!-- 空台面：DropPoint 托盘货架风格容器（与缩小版保持一致） -->
-                    <Border Grid.Row="2"
-                            Margin="32,20"
-                            CornerRadius="{DynamicResource Radius.Panel}"
-                            BorderThickness="1"
-                            Cursor="Hand"
-                            MouseLeftButtonUp="OnEmptyShelfClick"
-                            ToolTip="{x:Static app:Strings.AddButton}"
-                            Visibility="{Binding HasNoItems, Converter={StaticResource BoolToVisibility}}">
+                    <Border Grid.Row="2" Margin="32,20" CornerRadius="{DynamicResource Radius.Panel}" BorderThickness="1" Cursor="Hand" MouseLeftButtonUp="OnEmptyShelfClick" ToolTip="{x:Static app:Strings.AddButton}" Visibility="{Binding HasNoItems, Converter={StaticResource BoolToVisibility}}">
                         <Border.Style>
                             <Style TargetType="Border">
-                                <Setter Property="Background" Value="{DynamicResource Brush.SurfaceAlt}" />
-                                <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}" />
+                                <Setter Property="Background" Value="{DynamicResource Brush.SurfaceAlt}"/>
+                                <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}"/>
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="{DynamicResource Brush.Surface}" />
-                                        <Setter Property="BorderBrush" Value="{DynamicResource Brush.BorderStrong}" />
+                                        <Setter Property="Background" Value="{DynamicResource Brush.Surface}"/>
+                                        <Setter Property="BorderBrush" Value="{DynamicResource Brush.BorderStrong}"/>
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
                         </Border.Style>
-                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="32">
-                            <Path Data="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"
-                                  Fill="{DynamicResource Brush.TextTertiary}"
-                                  Width="40" Height="40"
-                                  Stretch="Uniform"
-                                  HorizontalAlignment="Center"
-                                  Margin="0,0,0,12" />
-                            <TextBlock HorizontalAlignment="Center"
-                                       Style="{StaticResource Text.Title}"
-                                       FontWeight="SemiBold"
-                                       FontSize="15"
-                                       Foreground="{DynamicResource Brush.TextSecondary}"
-                                       Text="{x:Static app:Strings.WorkbenchEmptyTitle}" />
-                            <TextBlock Margin="0,6,0,0"
-                                       HorizontalAlignment="Center"
-                                       Style="{StaticResource Text.Caption}"
-                                       FontSize="12"
-                                       TextWrapping="Wrap"
-                                       TextAlignment="Center"
-                                       Foreground="{DynamicResource Brush.TextTertiary}"
-                                       Text="{x:Static app:Strings.WorkbenchEmptyHint}" />
-                            <Button Margin="0,12,0,0" HorizontalAlignment="Center"
-                                    Command="{Binding AddItemsCommand}" Content="{x:Static app:Strings.AddButton}" />
-                        </StackPanel>
+                        <Viewbox Stretch="Uniform" StretchDirection="DownOnly" Margin="20,16">
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0" Orientation="Horizontal">
+                                <ContentControl ContentTemplate="{StaticResource ShelfFileStackGlyph}" Width="56" Height="56" HorizontalAlignment="Center" IsHitTestVisible="False" Margin="0,0,20,0" VerticalAlignment="Center"/>
+                                <StackPanel Width="380" VerticalAlignment="Center">
+                                    <TextBlock HorizontalAlignment="Center" Style="{StaticResource Text.Title}" FontWeight="SemiBold" FontSize="15" Foreground="{DynamicResource Brush.TextSecondary}" Text="{x:Static app:Strings.WorkbenchEmptyTitle}"/>
+                                    <TextBlock Margin="0,6,0,0" HorizontalAlignment="Center" Style="{StaticResource Text.Caption}" FontSize="12" TextWrapping="Wrap" TextAlignment="Center" Foreground="{DynamicResource Brush.TextTertiary}" Text="{x:Static app:Strings.WorkbenchEmptyHint}"/>
+                                    <Button Margin="0,12,0,0" HorizontalAlignment="Center" Command="{Binding AddItemsCommand}" Content="{x:Static app:Strings.AddButton}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Viewbox>
                     </Border>
                 </Grid>
             </Grid>
-
             <!-- ================= 目标槽（写回） ================= -->
             <Border Grid.Row="2" Style="{StaticResource ActionBar}">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-
                     <Grid Grid.Row="0">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-
-                        <TextBlock Grid.Column="0"
-                                   Margin="0,0,12,0"
-                                   VerticalAlignment="Center"
-                                   Style="{StaticResource Text.Caption}"
-                                   Text="{x:Static app:Strings.WriteBackLabel}" />
-
-                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                            <!-- 三个档位读成一个整体：放进一个带边的槽里 -->
-                            <Border Background="{DynamicResource Brush.SurfaceSunken}"
-                                    BorderBrush="{DynamicResource Brush.Border}"
-                                    BorderThickness="1"
-                                    CornerRadius="{DynamicResource Radius.Control}"
-                                    Padding="3">
-                                <StackPanel Orientation="Horizontal">
-                                    <RadioButton Content="{x:Static app:Strings.TargetOriginal}"
-                                                 GroupName="Target"
-                                                 Style="{StaticResource Segment.Option}"
-                                                 Margin="0"
-                                                 IsChecked="{Binding TargetMode, Converter={StaticResource EnumMatch}, ConverterParameter=OriginalLocation}" />
-                                    <RadioButton Content="{x:Static app:Strings.TargetAnotherRoot}"
-                                                 GroupName="Target"
-                                                 Style="{StaticResource Segment.Option}"
-                                                 IsChecked="{Binding TargetMode, Converter={StaticResource EnumMatch}, ConverterParameter=AnotherRoot}" />
-                                    <RadioButton Content="{x:Static app:Strings.TargetSpecifiedPath}"
-                                                 GroupName="Target"
-                                                 Style="{StaticResource Segment.Option}"
-                                                 IsChecked="{Binding TargetMode, Converter={StaticResource EnumMatch}, ConverterParameter=SpecifiedPath}" />
-                                </StackPanel>
-                            </Border>
-
-                        </StackPanel>
-
-                            <!-- 独立一行，让长语言的模式选项不会把路径和浏览按钮推到窗口外。 -->
-                            <Grid Grid.Row="1" Grid.ColumnSpan="3" Margin="0,8,0,0"
-                                  VerticalAlignment="Center"
-                                  Visibility="{Binding HasTargetPath, Converter={StaticResource BoolToVisibility}}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <TextBox Grid.Column="0"
-                                         Text="{Binding TargetPath, UpdateSourceTrigger=PropertyChanged}" />
-                                <Button WindowChrome.IsHitTestVisibleInChrome="True" Grid.Column="1" Margin="6,0,0,0" Style="{StaticResource Button.Picker}" ToolTip="{x:Static app:Strings.BrowseTargetTooltip}" AutomationProperties.Name="{x:Static app:Strings.BrowseTargetTooltip}" Command="{Binding BrowseTargetPathCommand}" />
-                            </Grid>
-                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock VerticalAlignment="Center" Style="{StaticResource Text.Caption}" Text="{x:Static app:Strings.StructureLabel}" />
-                            <ComboBox Width="120"
-                                      Margin="6,0,0,0"
-                                      ItemsSource="{Binding Structures}"
-                                      DisplayMemberPath="Label"
-                                      SelectedValuePath="Value"
-                                      SelectedValue="{Binding Structure, Mode=TwoWay}" />
-
-                            <TextBlock Margin="14,0,6,0" VerticalAlignment="Center" Style="{StaticResource Text.Caption}" Text="{x:Static app:Strings.ConflictLabel}" />
-                            <ComboBox Width="92"
-                                      ItemsSource="{Binding Policies}"
-                                      DisplayMemberPath="Label"
-                                      SelectedValuePath="Value"
-                                      SelectedValue="{Binding ConflictPolicy, Mode=TwoWay}" />
-                        </StackPanel>
+                        <!-- 独立一行，让长语言的模式选项不会把路径和浏览按钮推到窗口外。 -->
+                        <Grid Grid.Row="1" Grid.ColumnSpan="3" Margin="0,8,0,0" VerticalAlignment="Center" Visibility="{Binding HasTargetPath, Converter={StaticResource BoolToVisibility}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0" Text="{Binding TargetPath, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Grid.Column="1" Margin="6,0,0,0" Style="{StaticResource Button.Picker}" ToolTip="{x:Static app:Strings.BrowseTargetTooltip}" AutomationProperties.Name="{x:Static app:Strings.BrowseTargetTooltip}" Command="{Binding BrowseTargetPathCommand}"/>
+                        </Grid>
+                        <WrapPanel Grid.ColumnSpan="3">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,6">
+                                <TextBlock Margin="0,0,12,0" VerticalAlignment="Center" Style="{StaticResource Text.Caption}" Text="{x:Static app:Strings.WriteBackLabel}"/>
+                                <!-- 三个档位读成一个整体：放进一个带边的槽里 -->
+                                <Border Background="{DynamicResource Brush.SurfaceSunken}" BorderBrush="{DynamicResource Brush.Border}" BorderThickness="1" CornerRadius="{DynamicResource Radius.Control}" Padding="3">
+                                    <StackPanel Orientation="Horizontal">
+                                        <RadioButton Content="{x:Static app:Strings.TargetOriginal}" GroupName="Target" Style="{StaticResource Segment.Option}" Margin="0" IsChecked="{Binding TargetMode, Converter={StaticResource EnumMatch}, ConverterParameter=OriginalLocation}"/>
+                                        <RadioButton Content="{x:Static app:Strings.TargetAnotherRoot}" GroupName="Target" Style="{StaticResource Segment.Option}" IsChecked="{Binding TargetMode, Converter={StaticResource EnumMatch}, ConverterParameter=AnotherRoot}"/>
+                                        <RadioButton Content="{x:Static app:Strings.TargetSpecifiedPath}" GroupName="Target" Style="{StaticResource Segment.Option}" IsChecked="{Binding TargetMode, Converter={StaticResource EnumMatch}, ConverterParameter=SpecifiedPath}"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,16,6" VerticalAlignment="Center">
+                                <TextBlock VerticalAlignment="Center" Style="{StaticResource Text.Caption}" Text="{x:Static app:Strings.StructureLabel}"/>
+                                <ComboBox Width="120" Margin="6,0,0,0" ItemsSource="{Binding Structures}" ToolTip="{Binding SelectedItem.Label, RelativeSource={RelativeSource Self}}" AutomationProperties.Name="{x:Static app:Strings.StructureLabel}" DisplayMemberPath="Label" SelectedValuePath="Value" SelectedValue="{Binding Structure, Mode=TwoWay}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,16,6" VerticalAlignment="Center">
+                                <TextBlock Margin="14,0,6,0" VerticalAlignment="Center" Style="{StaticResource Text.Caption}" Text="{x:Static app:Strings.ConflictLabel}"/>
+                                <ComboBox Width="92" ItemsSource="{Binding Policies}" ToolTip="{Binding SelectedItem.Label, RelativeSource={RelativeSource Self}}" AutomationProperties.Name="{x:Static app:Strings.ConflictLabel}" DisplayMemberPath="Label" SelectedValuePath="Value" SelectedValue="{Binding ConflictPolicy, Mode=TwoWay}"/>
+                            </StackPanel>
+                        </WrapPanel>
                     </Grid>
-
                     <!--
                         进度行：批量加入 / 写入时唯一的"跑到哪了"读数。
                         以前这些文案只写进 StatusText（没有任何绑定），
                         界面上只多出一个幽灵样式的「中止」。
                     -->
-                    <Grid Grid.Row="2"
-                          Margin="0,8,0,0"
-                          VerticalAlignment="Center"
-                          Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}">
+                    <Grid Grid.Row="2" Margin="0,8,0,0" VerticalAlignment="Center" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <ProgressBar Grid.Column="0"
-                                     Width="140"
-                                     Height="4"
-                                     Minimum="0"
-                                     Maximum="1"
-                                     VerticalAlignment="Center"
-                                     Foreground="{DynamicResource Brush.Accent}"
-                                     Background="{DynamicResource Brush.Border}"
-                                     BorderThickness="0"
-                                     Value="{Binding ProgressValue, Mode=OneWay}" />
-                        <TextBlock Grid.Column="1"
-                                   Margin="10,0,0,0"
-                                   VerticalAlignment="Center"
-                                   Style="{StaticResource Text.Caption}"
-                                   TextTrimming="CharacterEllipsis"
-                                   ToolTip="{Binding StatusText}"
-                                   Text="{Binding StatusText}" />
+                        <ProgressBar Grid.Column="0" Width="140" Height="4" Minimum="0" Maximum="1" VerticalAlignment="Center" Foreground="{DynamicResource Brush.Accent}" Background="{DynamicResource Brush.Border}" BorderThickness="0" Value="{Binding ProgressValue, Mode=OneWay}"/>
+                        <TextBlock Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" Style="{StaticResource Text.Caption}" TextTrimming="CharacterEllipsis" ToolTip="{Binding StatusText}" Text="{Binding StatusText}"/>
                     </Grid>
-
                     <!-- 落点预览：直接把"会写到哪"说出来 -->
                     <Grid Grid.Row="1" Margin="0,8,0,0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-
                         <!-- 落点路径要能截断，所以必须待在有界的列里：
                              横向 StackPanel 给子元素无限宽，省略号永远不触发，
                              长路径于是被窗口边无声切掉（用户以为路径就长这样）。 -->
                         <Grid Grid.Column="0" VerticalAlignment="Center">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-
                             <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock VerticalAlignment="Center"
-                                           Style="{StaticResource Text.Caption}"
-                                           Text="{Binding WillWriteCaption}"
-                                           Visibility="{Binding HasDestination, Converter={StaticResource BoolToVisibility}}" />
-                                <TextBlock VerticalAlignment="Center"
-                                           Style="{StaticResource Text.Caption}"
-                                           Text="{x:Static app:Strings.NothingToWrite}"
-                                           Visibility="{Binding HasDestination, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}" />
+                                <TextBlock VerticalAlignment="Center" Style="{StaticResource Text.Caption}" Text="{Binding WillWriteCaption}" Visibility="{Binding HasDestination, Converter={StaticResource BoolToVisibility}}"/>
+                                <TextBlock VerticalAlignment="Center" Style="{StaticResource Text.Caption}" Text="{x:Static app:Strings.NothingToWrite}" Visibility="{Binding HasDestination, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}"/>
                             </StackPanel>
-
-                            <TextBlock Grid.Column="1"
-                                       VerticalAlignment="Center"
-                                       Style="{StaticResource Text.Mono.Primary.Gap}"
-                                       Text="{Binding DestinationPreview}"
-                                       TextTrimming="CharacterEllipsis"
-                                       Visibility="{Binding HasDestination, Converter={StaticResource BoolToVisibility}}" />
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Style="{StaticResource Text.Mono.Primary.Gap}" Text="{Binding DestinationPreview}" TextTrimming="CharacterEllipsis" Visibility="{Binding HasDestination, Converter={StaticResource BoolToVisibility}}" ToolTip="{Binding DestinationPreview}"/>
                         </Grid>
-
                         <StackPanel Grid.Column="1" Orientation="Horizontal">
-                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Content="{x:Static app:Strings.UndoLastButton}" Command="{Binding UndoLastCommand}" />
-                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Content="{x:Static app:Strings.PreviewButton}" Margin="8,0,0,0" Command="{Binding PreviewCommand}" />
-                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Content="{x:Static app:Strings.ApplyButton}" Margin="8,0,0,0" Style="{StaticResource Button.Primary}" Command="{Binding ApplyCommand}" />
+                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Content="{x:Static app:Strings.UndoLastButton}" Command="{Binding UndoLastCommand}" Style="{StaticResource Button.Ghost}"/>
+                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Content="{x:Static app:Strings.PreviewButton}" Margin="8,0,0,0" Command="{Binding PreviewCommand}"/>
+                            <Button WindowChrome.IsHitTestVisibleInChrome="True" Content="{x:Static app:Strings.ApplyButton}" Margin="8,0,0,0" Style="{StaticResource Button.Primary}" Command="{Binding ApplyCommand}"/>
                         </StackPanel>
                     </Grid>
                 </Grid>
             </Border>
         </Grid>
-
         <!-- ================= 拖拽悬停反馈（参考 DropPoint） ================= -->
-        <Border x:Name="DropOverlay"
-                Visibility="Collapsed"
-                Opacity="0"
-                Margin="8"
-                CornerRadius="{DynamicResource Radius.Panel}"
-                BorderBrush="{DynamicResource Brush.Accent}"
-                BorderThickness="1.5"
-                Background="{DynamicResource Brush.Surface}"
-                RenderTransformOrigin="0.5,0.5"
-                IsHitTestVisible="False">
+        <Border x:Name="DropOverlay" Visibility="Collapsed" Opacity="0" Margin="1" CornerRadius="{DynamicResource Radius.Panel}" BorderThickness="0" Background="{DynamicResource Brush.ShelfSurface}" RenderTransformOrigin="0.5,0.5" IsHitTestVisible="False">
             <Border.RenderTransform>
-                <ScaleTransform ScaleX="1" ScaleY="1" />
+                <ScaleTransform ScaleX="1" ScaleY="1"/>
             </Border.RenderTransform>
-            <Grid Background="{DynamicResource Brush.AccentSoft}">
+            <Grid>
+                <Rectangle Margin="16" RadiusX="12" RadiusY="12" Stroke="{DynamicResource Brush.ShelfSecondary}" Opacity="0.7" StrokeThickness="1.2" StrokeDashArray="4,4" StrokeDashCap="Round"/>
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <Path Data="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"
-                          Fill="{DynamicResource Brush.TextPrimary}"
-                          Width="42" Height="42"
-                          Stretch="Uniform"
-                          HorizontalAlignment="Center"
-                          Margin="0,0,0,10" />
-                    <TextBlock Text="{x:Static app:Strings.DropToStashPrompt}"
-                               FontSize="15"
-                               FontWeight="SemiBold"
-                               Foreground="{DynamicResource Brush.TextPrimary}"
-                               HorizontalAlignment="Center" />
-                    <TextBlock Text="{x:Static app:Strings.DropToStashHint}"
-                               FontSize="11.5"
-                               Foreground="{DynamicResource Brush.TextSecondary}"
-                               HorizontalAlignment="Center"
-                               Margin="0,6,0,0" />
+                    <ContentControl ContentTemplate="{StaticResource ShelfFileStackGlyph}" Width="56" Height="56" Margin="0,0,0,14"/>
+                    <TextBlock Text="{x:Static app:Strings.DropToStashPrompt}" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource Brush.ShelfText}" TextAlignment="Center" TextWrapping="Wrap" Margin="26,0"/>
                 </StackPanel>
             </Grid>
         </Border>

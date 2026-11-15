@@ -33,6 +33,163 @@ public sealed class BlobStoreTests : IDisposable
     }
 
     [Fact]
+    public async Task QueuedPublicationMustProtectTheHashedTemporaryContent()
+    {
+        var source = CreateFile("source.txt", "verified source");
+        var (hash, _) = await _store.PutFileAsync(source, TestContext.Current.CancellationToken);
+        var publication = (SemaphoreSlim)typeof(BlobStore)
+            .GetField("PublicationLock", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)!.GetValue(null)!;
+        await publication.WaitAsync(TestContext.Current.CancellationToken);
+        Task<(string Sha256, long Size)>? publishing = null;
+        Exception? modification = null;
+        try
+        {
+            publishing = _store.PutFileAsync(source, TestContext.Current.CancellationToken);
+            await WaitUntilAsync(() => SourceIsReleased(source));
+            var temporary = Assert.Single(Directory.EnumerateFiles(_paths.BlobTempDirectory));
+            modification = Record.Exception(() => File.WriteAllText(temporary, "changed after hashing"));
+        }
+        finally { publication.Release(); }
+        Assert.NotNull(publishing);
+        await publishing;
+        Assert.Equal(hash, await HashUtil.ComputeFileSha256Async(_store.GetBlobPath(hash), TestContext.Current.CancellationToken));
+        Assert.True(modification is IOException or UnauthorizedAccessException);
+        Assert.Empty(Directory.EnumerateFiles(_paths.BlobTempDirectory));
+    }
+
+    [Fact]
+    public async Task CancelledQueuedPublicationMustReleaseAndRemoveItsTemporaryFile()
+    {
+        var source = CreateFile("source.txt", "verified source");
+        var (hash, _) = await _store.PutFileAsync(source, TestContext.Current.CancellationToken);
+        var publication = (SemaphoreSlim)typeof(BlobStore)
+            .GetField("PublicationLock", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)!.GetValue(null)!;
+        using var cancellation = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
+        await publication.WaitAsync(TestContext.Current.CancellationToken);
+        try
+        {
+            var publishing = _store.PutFileAsync(source, cancellation.Token);
+            await WaitUntilAsync(() => SourceIsReleased(source));
+            cancellation.Cancel();
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(() => publishing);
+            Assert.Empty(Directory.EnumerateFiles(_paths.BlobTempDirectory));
+            Assert.Equal(hash, await HashUtil.ComputeFileSha256Async(_store.GetBlobPath(hash), TestContext.Current.CancellationToken));
+            Assert.True(File.GetAttributes(_store.GetBlobPath(hash)).HasFlag(FileAttributes.ReadOnly));
+        }
+        finally { publication.Release(); }
+    }
+
+    [Fact]
+    public async Task CancelledFallbackMustRestoreReadOnlyAndReleasePublication()
+    {
+        var source = CreateFile("source.txt", "verified source");
+        var (hash, _) = await _store.PutFileAsync(source, TestContext.Current.CancellationToken);
+        var blob = _store.GetBlobPath(hash);
+        File.SetAttributes(blob, FileAttributes.Normal);
+        using (var file = File.OpenWrite(blob)) file.SetLength(256L * 1024 * 1024);
+        File.SetAttributes(blob, FileAttributes.ReadOnly);
+        await using (var reader = new FileStream(blob, FileMode.Open, FileAccess.Read, FileShare.Read))
+        {
+            using var cancellation = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
+            var publishing = _store.PutFileAsync(source, cancellation.Token);
+            await WaitUntilAsync(() => !File.GetAttributes(blob).HasFlag(FileAttributes.ReadOnly));
+            cancellation.Cancel();
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(() => publishing);
+            Assert.True(File.GetAttributes(blob).HasFlag(FileAttributes.ReadOnly));
+            Assert.Empty(Directory.EnumerateFiles(_paths.BlobTempDirectory));
+        }
+        await _store.PutFileAsync(source, TestContext.Current.CancellationToken);
+        Assert.Equal(hash, await HashUtil.ComputeFileSha256Async(blob, TestContext.Current.CancellationToken));
+    }
+
+    private static bool SourceIsReleased(string source)
+    {
+        try { using var handle = File.Open(source, FileMode.Open, FileAccess.Read, FileShare.None); return true; }
+        catch (IOException) { return false; }
+    }
+
+    private static async Task WaitUntilAsync(Func<bool> condition)
+    {
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+        while (!condition())
+        {
+            Assert.True(watch.Elapsed < TimeSpan.FromSeconds(10), "I/O checkpoint was not reached");
+            await Task.Delay(1, TestContext.Current.CancellationToken);
+        }
+    }
+
+    [Fact]
+    public async Task DeduplicationMustAtomicallyRepublishFreshHashedBytes()
+    {
+        var source = CreateFile("source.txt", "verified source");
+        var (hash, _) = await _store.PutFileAsync(source, TestContext.Current.CancellationToken);
+        var blob = _store.GetBlobPath(hash);
+        var writer = new FileStash.Infrastructure.Native.AtomicFileWriter();
+        var previousIdentity = writer.GetIdentity(blob);
+        var stored = await _store.PutFileAsync(source, TestContext.Current.CancellationToken);
+        Assert.Equal(hash, stored.Sha256);
+        Assert.NotEqual(previousIdentity, writer.GetIdentity(blob));
+        Assert.Equal(hash, await HashUtil.ComputeFileSha256Async(blob, TestContext.Current.CancellationToken));
+        Assert.True(File.GetAttributes(blob).HasFlag(FileAttributes.ReadOnly));
+        Assert.Empty(Directory.EnumerateFiles(_paths.BlobTempDirectory));
+    }
+
+    [Fact]
+    public async Task DeduplicationMustRetainVerifiedBlobWhenReaderDeniesReplacement()
+    {
+        var source = CreateFile("source.txt", "verified source");
+        var (hash, _) = await _store.PutFileAsync(source, TestContext.Current.CancellationToken);
+        await using var reader = new FileStream(_store.GetBlobPath(hash), FileMode.Open, FileAccess.Read, FileShare.Read);
+        Assert.Equal(hash, (await _store.PutFileAsync(source, TestContext.Current.CancellationToken)).Sha256);
+        Assert.True(File.GetAttributes(_store.GetBlobPath(hash)).HasFlag(FileAttributes.ReadOnly));
+        Assert.Empty(Directory.EnumerateFiles(_paths.BlobTempDirectory));
+    }
+
+    [Fact]
+    public async Task LockedCorruptBlobMustFailSafelyAndRecoverAfterUnlock()
+    {
+        var source = CreateFile("source.txt", "verified source");
+        var (hash, _) = await _store.PutFileAsync(source, TestContext.Current.CancellationToken);
+        var blob = _store.GetBlobPath(hash);
+        File.SetAttributes(blob, FileAttributes.Normal);
+        File.WriteAllText(blob, "corrupted");
+        File.SetAttributes(blob, FileAttributes.ReadOnly);
+        await using (var reader = new FileStream(blob, FileMode.Open, FileAccess.Read, FileShare.Read))
+        {
+            var error = await Record.ExceptionAsync(() => _store.PutFileAsync(source, TestContext.Current.CancellationToken));
+            Assert.True(error is IOException or UnauthorizedAccessException);
+            Assert.True(File.GetAttributes(blob).HasFlag(FileAttributes.ReadOnly));
+            Assert.Empty(Directory.EnumerateFiles(_paths.BlobTempDirectory));
+        }
+        await _store.PutFileAsync(source, TestContext.Current.CancellationToken);
+        Assert.Equal(hash, await HashUtil.ComputeFileSha256Async(blob, TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task CopyMustRejectCorruptContent()
+    {
+        var source = CreateFile("a.txt", "valid");
+        var (hash, _) = await _store.PutFileAsync(source, TestContext.Current.CancellationToken);
+        var blob = _store.GetBlobPath(hash);
+        File.SetAttributes(blob, FileAttributes.Normal);
+        File.WriteAllText(blob, "corrupted");
+        await Assert.ThrowsAsync<IOException>(() =>
+            _store.CopyBlobToAsync(hash, Path.Combine(_root, "copy.txt"), TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task ResnapshotMustRepairCorruptDeduplicatedBlob()
+    {
+        var source = CreateFile("a.txt", "valid");
+        var (hash, _) = await _store.PutFileAsync(source, TestContext.Current.CancellationToken);
+        var blob = _store.GetBlobPath(hash);
+        File.SetAttributes(blob, FileAttributes.Normal);
+        File.WriteAllText(blob, "corrupted");
+        await _store.PutFileAsync(source, TestContext.Current.CancellationToken);
+        Assert.Equal("valid", File.ReadAllText(blob));
+    }
+
+    [Fact]
     public async Task PutFileAsync_ShouldStoreBlobAndReturnHashAndSize()
     {
         var source = CreateFile("a.txt", "hello");
@@ -113,6 +270,20 @@ public sealed class BlobStoreTests : IDisposable
 
         Assert.Single(blobs);
         Assert.Empty(Directory.EnumerateFiles(_paths.BlobTempDirectory));
+    }
+
+    [Fact]
+    public async Task ConcurrentStoresMustPublishOnlyOneVerifiedBlob()
+    {
+        var source = CreateFile("source.txt", "concurrent stores");
+        var other = new BlobStore(_paths, TimeSpan.Zero);
+        var results = await Task.WhenAll(Enumerable.Range(0, 12).Select(index =>
+            (index % 2 == 0 ? _store : other).PutFileAsync(source, TestContext.Current.CancellationToken)));
+        var hash = Assert.Single(results.Select(result => result.Sha256).Distinct());
+        var files = Directory.EnumerateFiles(_paths.BlobDirectory, "*", SearchOption.AllDirectories).ToArray();
+        Assert.Equal(_store.GetBlobPath(hash), Assert.Single(files));
+        Assert.Equal(hash, await HashUtil.ComputeFileSha256Async(files[0], TestContext.Current.CancellationToken));
+        Assert.True(File.GetAttributes(files[0]).HasFlag(FileAttributes.ReadOnly));
     }
 
     [Fact]

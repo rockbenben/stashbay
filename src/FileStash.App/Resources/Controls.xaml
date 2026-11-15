@@ -449,10 +449,10 @@
 
     <Style TargetType="ComboBoxItem">
         <Setter Property="FontFamily" Value="{DynamicResource Font.UI}" />
-        <Setter Property="FontSize" Value="{DynamicResource Font.Size.Body}" />
+        <Setter Property="FontSize" Value="{DynamicResource Font.Size.Menu}" />
         <Setter Property="Foreground" Value="{DynamicResource Brush.TextPrimary}" />
-        <Setter Property="Padding" Value="9,5,9,5" />
-        <Setter Property="MinHeight" Value="26" />
+        <Setter Property="Padding" Value="12,7" />
+        <Setter Property="MinHeight" Value="34" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="FocusVisualStyle" Value="{StaticResource FocusRing}" />
         <Setter Property="Template">
@@ -952,6 +952,8 @@
         这与 ComboBox 当年那块白板是同一类：**没自绘的控件不吃主题 token**。
     -->
     <Style TargetType="ContextMenu">
+        <Setter Property="MinWidth" Value="196" />
+        <Setter Property="UseLayoutRounding" Value="True" />
         <Setter Property="Background" Value="{DynamicResource Brush.Surface}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Brush.BorderStrong}" />
         <Setter Property="BorderThickness" Value="1" />
@@ -963,8 +965,12 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="{DynamicResource Radius.Panel}"
-                            Padding="5">
-                        <ItemsPresenter />
+                            Padding="6">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled"
+                                      CanContentScroll="True">
+                            <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Cycle" />
+                        </ScrollViewer>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
@@ -975,9 +981,9 @@
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{DynamicResource Brush.TextPrimary}" />
         <Setter Property="FontFamily" Value="{DynamicResource Font.UI}" />
-        <Setter Property="FontSize" Value="{DynamicResource Font.Size.Body}" />
-        <Setter Property="Padding" Value="10,5,10,5" />
-        <Setter Property="MinHeight" Value="26" />
+        <Setter Property="FontSize" Value="{DynamicResource Font.Size.Menu}" />
+        <Setter Property="Padding" Value="12,7" />
+        <Setter Property="MinHeight" Value="34" />
         <!-- 这些菜单里没有图标，默认模板那条 28 DIP 的图标槽整个是空的，所以不再留 -->
         <Setter Property="Template">
             <Setter.Value>

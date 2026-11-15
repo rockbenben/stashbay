@@ -939,7 +939,7 @@
     <value>Scuoti rapidamente il mouse mentre trascini per aprire la mensola al cursore</value>
   </data>
   <data name="SectionDeveloperOptions" xml:space="preserve">
-    <value>Opzioni avanzate e per sviluppatori (Git)</value>
+    <value>Integrazione Git</value>
   </data>
   <data name="DeveloperOptionsHint" xml:space="preserve">
     <value>Si applica solo ai file all'interno di un repository Git. L'archiviazione temporanea e il ripristino rimangono completamente indipendenti.</value>
@@ -957,7 +957,7 @@
     <value>Scorciatoia globale (incolla file dagli appunti)</value>
   </data>
   <data name="HotkeyRecordingHint" xml:space="preserve">
-    <value>Fai clic e premi la combinazione di tasti per registrare. Esc per annullare.</value>
+    <value>Fai clic su un campo, premi una combinazione (es. Ctrl+Alt+S) e salva per applicarla. Backspace/Delete cancella; Esc annulla la registrazione.</value>
   </data>
   <data name="HotkeyClearButton" xml:space="preserve">
     <value>Cancella</value>
@@ -985,4 +985,85 @@
   <data name="KeepCurrentConfirm" xml:space="preserve"><value>Mantenere il file attuale e terminare il recupero di questa voce?
 {0}</value></data>
   <data name="ElevatedRetryConfirm" xml:space="preserve"><value>Confermare percorsi completi, azioni e hash. Verranno ritentate solo queste voci non riuscite.</value></data>
+  <data name="ShellIntegrationFailedMessage" xml:space="preserve">
+    <value>Le impostazioni sono state salvate, ma non è stato possibile applicare completamente l’integrazione con Windows (incluso l’avvio automatico). Controlla il registro dell’app, risolvi i problemi di autorizzazione e salva di nuovo.</value>
+  </data>
+  <data name="StartupAdminLabel" xml:space="preserve">
+    <value>Avvio con privilegi di amministratore (facoltativo)</value>
+  </data>
+  <data name="StartupAdminHint" xml:space="preserve">
+    <value>L’impostazione predefinita usa privilegi standard. Vale dal prossimo accesso; approva UAC con il tuo attuale account amministratore. Supporta anche le versioni portatili.</value>
+  </data>
+  <data name="StartupRepair" xml:space="preserve">
+    <value>Ripara avvio</value>
+  </data>
+  <data name="StartupRefresh" xml:space="preserve">
+    <value>Aggiorna stato</value>
+  </data>
+  <data name="StartupStatusDisabled" xml:space="preserve">
+    <value>Avvio: disattivato</value>
+  </data>
+  <data name="StartupStatusPlain" xml:space="preserve">
+    <value>Avvio: privilegi standard</value>
+  </data>
+  <data name="StartupStatusElevated" xml:space="preserve">
+    <value>Avvio: privilegi amministratore</value>
+  </data>
+  <data name="StartupStatusRepair" xml:space="preserve">
+    <value>Avvio: riparazione necessaria</value>
+  </data>
+  <data name="StartupStatusConflict" xml:space="preserve">
+    <value>Avvio: conflitto di proprietà dell’attività; controlla il registro</value>
+  </data>
+  <data name="StartupStatusUnknown" xml:space="preserve">
+    <value>Avvio: non confermato; aggiorna prima di riprovare</value>
+  </data>
+  <data name="StartupStatusSuppressed" xml:space="preserve">
+    <value>Avvio: modifiche al sistema disattivate per i test</value>
+  </data>
+  <data name="StartupStatusBusy" xml:space="preserve">
+    <value>Applicazione dell’avvio; completa UAC…</value>
+  </data>
+  <data name="StartupCancelled" xml:space="preserve">
+    <value>UAC annullato. Le impostazioni di avvio non sono state salvate.</value>
+  </data>
+  <data name="StartupFailedMessage" xml:space="preserve">
+    <value>Registrazione, rimozione o salvataggio non riusciti. Controlla i registri in {0}, aggiorna lo stato e riprova.</value>
+  </data>
+  <data name="StartupUncertainMessage" xml:space="preserve">
+    <value>Risultato non confermato; l’assistente potrebbe essere ancora in esecuzione. Aggiorna lo stato più tardi. L’operazione non sarà ripetuta prima della conferma.</value>
+  </data>
+  <data name="StartupAttention" xml:space="preserve">
+    <value>L’avvio richiede attenzione. Apri le impostazioni e riparalo se necessario. L’app non cambierà automaticamente il livello di privilegi.</value>
+  </data>
+  <data name="StartupAccountMessage" xml:space="preserve">
+    <value>Approva UAC con il tuo attuale account amministratore. La registrazione con un altro account amministratore non è supportata. Registri: {0}.</value>
+  </data>
+  <data name="StartupDeniedMessage" xml:space="preserve">
+    <value>Accesso all’avvio negato. Controlla i permessi dell’attività o del registro e i criteri locali. Registri: {0}.</value>
+  </data>
+  <data name="StartupConflictMessage" xml:space="preserve">
+    <value>L’attività appartiene a un’altra app e non è stata sovrascritta né rimossa. Controlla {0} e risolvi il conflitto.</value>
+  </data>
+  <data name="StartupRollbackMessage" xml:space="preserve">
+    <value>Avvio non riuscito e stato precedente non completamente ripristinato. Controlla {0}, aggiorna lo stato e ripara. Non presumere che il vecchio avvio funzioni ancora.</value>
+  </data>
+  <data name="StartupDelayLabel" xml:space="preserve">
+    <value>Ritardo accesso amministratore (secondi)</value>
+  </data>
+  <data name="StartupDelayRange" xml:space="preserve">
+    <value>Inserisci un intero da 0 a 300; 0 indica nessun ritardo. Si applica solo all’attività di accesso amministratore.</value>
+  </data>
+  <data name="ShelfDropPrompt" xml:space="preserve"><value>Trascina qui i file</value></data>
+  <data name="ShelfRestoreMenu" xml:space="preserve"><value>Ripristina ▾</value></data>
+  <data name="ShelfRetentionLabel" xml:space="preserve"><value>Giorni di conservazione dei ripiani chiusi (0 = sempre)</value></data>
+  <data name="TrayNewShelf" xml:space="preserve"><value>Nuovo ripiano</value></data>
+  <data name="ShelfDragPrompt" xml:space="preserve"><value>Trascina fuori i file</value></data>
+  <data name="ShelfCountFormat" xml:space="preserve"><value>{0} elementi conservati</value></data>
+  <data name="ToastDismissCountdown" xml:space="preserve"><value>Chiusura tra {0} secondi; pausa al passaggio del mouse o al focus della tastiera</value></data>
+  <data name="ShelfCleanupHint" xml:space="preserve"><value>Gli scaffali temporanei vuoti vengono rimossi automaticamente. Lo scaffale predefinito e i depositi con contenuti vengono conservati.</value></data>
+  <data name="SettingsAppearance" xml:space="preserve"><value>Aspetto</value></data>
+  <data name="SettingsShelf" xml:space="preserve"><value>Area temporanea</value></data>
+  <data name="SettingsFiles" xml:space="preserve"><value>Gestione dei file</value></data>
+  <data name="SettingsShortcuts" xml:space="preserve"><value>Scorciatoie</value></data>
 </root>

@@ -1,6 +1,15 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
+    <!-- The transit shelf keeps its silhouette against both white and black desktops. -->
+    <SolidColorBrush x:Key="Brush.ShelfSurface" Color="#FFECECEC" />
+    <SolidColorBrush x:Key="Brush.ShelfBorder" Color="#FF919191" />
+    <SolidColorBrush x:Key="Brush.ShelfText" Color="#FF252525" />
+    <SolidColorBrush x:Key="Brush.ShelfSecondary" Color="#FF525252" />
+    <SolidColorBrush x:Key="Brush.ShelfCard" Color="#FFFFFFFF" />
+    <SolidColorBrush x:Key="Brush.ShelfCardBack" Color="#FFB8B8B8" />
+    <SolidColorBrush x:Key="Brush.ShelfHover" Color="#FFDCDCDC" />
+
     <!--
         浅色主题（中性纸面）：冷灰改成无彩灰阶，与深色同一套语义。
         强调色不再是色相，而是"更深的中性色"：Brush.Accent 做结构高亮，
@@ -56,6 +65,7 @@
     -->
     <sys:Double xmlns:sys="clr-namespace:System;assembly=mscorlib" x:Key="Font.Size.Caption">11</sys:Double>
     <sys:Double xmlns:sys="clr-namespace:System;assembly=mscorlib" x:Key="Font.Size.Body">12.5</sys:Double>
+    <sys:Double xmlns:sys="clr-namespace:System;assembly=mscorlib" x:Key="Font.Size.Menu">14</sys:Double>
     <sys:Double xmlns:sys="clr-namespace:System;assembly=mscorlib" x:Key="Font.Size.Title">15</sys:Double>
     <sys:Double xmlns:sys="clr-namespace:System;assembly=mscorlib" x:Key="Font.Size.Display">20</sys:Double>
 

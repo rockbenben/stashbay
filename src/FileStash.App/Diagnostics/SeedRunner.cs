@@ -1,4 +1,6 @@
 using System.IO;
+using System.Text.Json;
+using FileStash.Core.Utils;
 using System.Windows;
 using FileStash.App.Resources;
 using FileStash.Core.Abstractions;
@@ -54,6 +56,24 @@ internal static class SeedRunner
         var planner = services.GetRequiredService<IApplyPlanner>();
         var executor = services.GetRequiredService<IApplyExecutor>();
 
+        workspace = Path.GetFullPath(workspace);
+        var paths = services.GetRequiredService<AppPaths>();
+        var fixtureHome = Path.Combine(workspace, ".stashbay-fixture");
+        var expected = new AppPaths(fixtureHome, fixtureHome);
+        if (!string.Equals(paths.RootDirectory, expected.RootDirectory, StringComparison.OrdinalIgnoreCase)
+            || !string.Equals(paths.SettingsPath, expected.SettingsPath, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException("Seed requires the dedicated workspace/.stashbay-fixture home.");
+        for (var directory = new DirectoryInfo(paths.RootDirectory); directory is not null; directory = directory.Parent)
+            if (directory.LinkTarget is not null) throw new IOException(directory.FullName);
+
+        var ownershipPath = Path.Combine(paths.RootDirectory, "seed-ownership.json");
+        var inventory = await ReadInventoryAsync(groups, items, operations, presets);
+        var owned = File.Exists(ownershipPath)
+            ? JsonSerializer.Deserialize<string[]>(await File.ReadAllTextAsync(ownershipPath))
+            : [];
+        if (owned is null || !inventory.SequenceEqual(owned))
+            throw new InvalidOperationException("Seed home contains content outside the fixture inventory.");
+
         var inbox = Path.Combine(workspace, "inbox");
         var repoRoot = Path.Combine(workspace, "repo");
         var outDir = Path.Combine(workspace, "out");
@@ -62,6 +82,27 @@ internal static class SeedRunner
         // 静默跳过会让后面所有截图与读数都拍在错的库上
         RequireDirectory(inbox);
         RequireDirectory(repoRoot);
+        foreach (var relative in new[]
+        {
+            "inbox/a.txt",
+            "inbox/改过的.txt",
+            "inbox/被删掉的.txt",
+            "inbox/大文件.bin",
+            "inbox/素材/字幕.srt",
+            "inbox/素材/纹理.png",
+            "inbox/素材/音效.wav",
+            "inbox/设计稿-首页-2026年第三季度-最终版-张三李四王五复核.psd",
+            "inbox/季度报表 (修订).xlsx",
+            "repo/src/components/VeryLongComponentNameThatIsSureToBeTruncatedInTheNameColumn.tsx",
+            "repo/src/utils/path-mapper.ts",
+            "repo/README.md",
+        })
+        {
+            var file = Path.Combine(workspace, relative);
+            if (!File.Exists(file)) throw new FileNotFoundException(file);
+            using var readable = File.OpenRead(file);
+        }
+        RequireDirectory(Path.Combine(inbox, "空目录"));
         Directory.CreateDirectory(outDir);
 
         // 幂等：重跑先把上一次的播掉，否则箱越加越多，截图与稿子对不上号
@@ -80,7 +121,7 @@ internal static class SeedRunner
             await presets.DeleteAsync(preset.Id, CancellationToken.None);
         }
 
-        var mainBox = await stash.CreateGroupAsync(Strings.DefaultGroupName);
+        var mainBox = await stash.CreateGroupAsync(Strings.DefaultGroupName, StashGroupKind.Default);
         var projectBox = await stash.CreateGroupAsync("项目 A · 前端");
         var longNameBox = await stash.CreateGroupAsync("2026 年第三季度营销物料汇总与设计稿备份（归档勿动）");
         await stash.CreateGroupAsync("空箱（还没放东西）");
@@ -155,6 +196,8 @@ internal static class SeedRunner
 
         await SeedExtraOperationsAsync(operations, operationEntries, targets, outDir, mainBox.Id);
 
+        await File.WriteAllTextAsync(ownershipPath,
+            JsonSerializer.Serialize(await ReadInventoryAsync(groups, items, operations, presets)));
         Fixture.Save(workspace, mainBox.Id);
 
         var groupCount = (await groups.GetAllAsync(CancellationToken.None)).Count;
@@ -164,6 +207,21 @@ internal static class SeedRunner
             $"OK groups={groupCount} mainBoxItems={groupItems.Count} targets={targets.Count}");
 
         return 0;
+    }
+
+    private static async Task<string[]> ReadInventoryAsync(IStashGroupRepository groups,
+        IStashItemRepository items, IOperationRepository operations, IRootPresetRepository presets)
+    {
+        var ids = new List<string>();
+        foreach (var group in await groups.GetAllAsync(CancellationToken.None))
+        {
+            ids.Add("group/" + group.Id);
+            ids.AddRange((await items.GetByGroupAsync(group.Id, CancellationToken.None))
+                .Select(item => "item/" + item.Id));
+        }
+        ids.AddRange((await operations.GetAllAsync(CancellationToken.None)).Select(operation => "operation/" + operation.Id));
+        ids.AddRange((await presets.GetAllAsync(CancellationToken.None)).Select(preset => "preset/" + preset.Id));
+        return ids.Order(StringComparer.Ordinal).ToArray();
     }
 
     private static void RequireDirectory(string path)

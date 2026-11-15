@@ -186,4 +186,5 @@
   <data name="RecoveryNeedsReview" xml:space="preserve"><value>Résultat à vérifier. Vérifiez la cible, puis conservez le fichier actuel pour terminer.</value></data>
   <data name="RecoveryNotCommitted" xml:space="preserve"><value>Écriture non validée. Vérifiez avant de réessayer.</value></data>
   <data name="RetryAuthorizationChanged" xml:space="preserve"><value>Le fichier ou la portée a changé. Vérifiez à nouveau.</value></data>
+  <data name="DefaultGroupName" xml:space="preserve"><value>Stockage par défaut</value></data>
 </root>

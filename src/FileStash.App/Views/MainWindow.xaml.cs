@@ -1,4 +1,5 @@
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.ComponentModel;
 using System.IO;
 using System.Windows;
@@ -11,6 +12,7 @@ using FileStash.App.Resources;
 using FileStash.App.ViewModels;
 using FileStash.Core.Abstractions;
 using FileStash.Core.Models;
+using FileStash.Core.Services;
 
 namespace FileStash.App.Views;
 
@@ -26,9 +28,9 @@ public partial class MainWindow : Window
     private const double WorkbenchMinHeight = 380;
 
     /// <summary>小暂存区的默认尺寸：拖放目标保持稳定，超出的内容在内部滚动。</summary>
-    private const double CompactWidth = 360;
+    private const double CompactWidth = 260;
 
-    private const double CompactDefaultHeight = 240;
+    private const double CompactDefaultHeight = 220;
 
     private const double CompactMaxHeight = 480;
 
@@ -43,7 +45,10 @@ public partial class MainWindow : Window
     private bool _compactPositionSaved;
     private bool _workbenchIsMaximized;
 
-    public MainWindow(MainViewModel viewModel, ISettingsService settings)
+    private readonly ShelfLifetimeService? _lifetime;
+    private bool _initialized;
+
+    public MainWindow(MainViewModel viewModel, ISettingsService settings, ShelfLifetimeService? lifetime = null)
     {
         InitializeComponent();
 
@@ -54,6 +59,7 @@ public partial class MainWindow : Window
         ViewModel = viewModel;
         DataContext = viewModel;
         _settings = settings;
+        _lifetime = lifetime;
 
         // 防白闪：窗口显示到第一帧之间有真实空档，那一帧是白的
         WindowEffects.EnableAntiFlash(this);
@@ -67,11 +73,57 @@ public partial class MainWindow : Window
             RestoreWindowBounds();
         }
 
+        SourceInitialized += (_, _) => WindowEffects.SetShelfChrome(this, ViewModel.IsCompact);
         ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+        ViewModel.RestoreSucceeded += OnRestoreSucceeded;
 
         Loaded += OnLoaded;
         Closing += OnClosing;
         LocationChanged += OnLocationChanged;
+        IsVisibleChanged += async (_, _) => await UpdateLifetimeAsync();
+        Closed += async (_, _) =>
+        {
+            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+            ViewModel.RestoreSucceeded -= OnRestoreSucceeded;
+            await UpdateLifetimeAsync(closing: true);
+        };
+        Activated += async (_, _) =>
+        {
+            if (App.InSmoke || !_initialized || ViewModel.IsBusy) return;
+            try { await ViewModel.RefreshAsync(); }
+            catch (Exception ex) { App.ShowError(this, ex.Message); }
+        };
+    }
+
+    public async Task UpdateLifetimeAsync(bool closing = false)
+    {
+        if (App.InSmoke || _lifetime is null) return;
+        try
+        {
+            await _lifetime.SetWindowGroupAsync(this,
+                !closing && (IsVisible || ViewModel.IsBusy) ? ViewModel.SelectedGroup?.Id : null);
+            if (closing || (!IsVisible && !ViewModel.IsBusy))
+                await _lifetime.SetWindowGroupAsync(ViewModel, null);
+            else await _lifetime.CompleteCreationAsync(ViewModel, this);
+        }
+        catch (Exception ex) { Serilog.Log.Error(ex, "Unable to persist shelf lifetime"); }
+    }
+
+    private void OnCompactDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ClickCount != 2) return;
+        DependencyObject? source = e.OriginalSource as DependencyObject;
+        while (source is not null && source != sender)
+        {
+            if (source is System.Windows.Controls.Primitives.ButtonBase) return;
+            source = source is Visual ? VisualTreeHelper.GetParent(source) : LogicalTreeHelper.GetParent(source);
+        }
+        // Resizing under a held second click must not turn the first click's
+        // file candidate into a drag when the pointer moves relative to the window.
+        _dragCandidate = null;
+        _isDraggingAllCandidate = false;
+        ViewModel.IsCompact = false;
+        e.Handled = true;
     }
 
     private void OnLocationChanged(object? sender, EventArgs e)
@@ -109,6 +161,11 @@ public partial class MainWindow : Window
     /// <summary>紧凑 ↔ 完整：换的是窗口的尺寸和位置，内容各走各的。</summary>
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
+        if (e.PropertyName == nameof(MainViewModel.IsBusy)
+            || (e.PropertyName == nameof(MainViewModel.SelectedGroup) && !ViewModel.IsRebuildingGroups))
+            _ = UpdateLifetimeAsync();
+        if (e.PropertyName == nameof(MainViewModel.DragAllBadgeText))
+            PulseStatusBadge();
         if (e.PropertyName == nameof(MainViewModel.IsCompact))
         {
             // 只记录用户手动调整的尺寸，收回工作台时恢复；内容和视图切换不改大小。
@@ -123,6 +180,8 @@ public partial class MainWindow : Window
 
     private void ApplyMode(bool compact)
     {
+        SetResourceReference(BackgroundProperty, compact ? "Brush.ShelfSurface" : "Brush.Surface");
+        WindowEffects.SetShelfChrome(this, compact);
         if (compact)
         {
             if (WindowState == WindowState.Normal)
@@ -293,7 +352,8 @@ public partial class MainWindow : Window
             return;
         }
 
-        if (_settings.Current.CloseToTray)
+        if ((ViewModel.IsCompact || _settings.Current.CloseToTray) &&
+            (ReferenceEquals(this, Application.Current.MainWindow) || ViewModel.IsBusy))
         {
             e.Cancel = true;
             Hide();
@@ -308,14 +368,7 @@ public partial class MainWindow : Window
         {
             if (ViewModel.IsCompact)
             {
-                if (_settings.Current.CloseToTray)
-                {
-                    Hide();
-                }
-                else
-                {
-                    WindowState = WindowState.Minimized;
-                }
+                Close();
             }
             else
             {
@@ -332,6 +385,8 @@ public partial class MainWindow : Window
         try
         {
             await ViewModel.InitializeAsync();
+            _initialized = true;
+            await UpdateLifetimeAsync();
         }
         catch (Exception ex)
         {
@@ -475,10 +530,10 @@ public partial class MainWindow : Window
 
             var data = DataPayloadHelper.CreateFileDropData(paths);
 
-            var result = DragDrop.DoDragDrop(source, data, DragDropEffects.Copy);
+            var result = RunExportDrag(source, data);
 
             // 拖出没有"写到目标"这一步（资源管理器接手的），但要记一条历史
-            await ViewModel.RecordDragExportAsync(paths);
+            await ViewModel.RecordDragExportAsync(paths, result);
 
             // 拖动结果判定：不为 None 说明已成功放置到目标文件夹/窗口
             if (result != DragDropEffects.None)
@@ -520,6 +575,7 @@ public partial class MainWindow : Window
             if (container is not null) container.Opacity = 1.0;
             App.ShowError(this, Strings.Format(Strings.DragOutFailed, ex.Message));
         }
+        finally { HideDropOverlay(); }
     }
 
     private async void OnItemTreeDrop(object sender, DragEventArgs e)
@@ -543,9 +599,47 @@ public partial class MainWindow : Window
     }
 
     private int _windowDragCounter;
+    private bool _isDraggingOut;
+    private bool _preparingDragAll;
+    private bool _dropOverlayActive;
+
+    private DragDropEffects RunExportDrag(DependencyObject source, IDataObject data)
+    {
+        _isDraggingOut = true;
+        ShelfExportSurface.BeginAnimation(OpacityProperty, new DoubleAnimation(0.45, TimeSpan.FromMilliseconds(120)));
+        try { return DragDrop.DoDragDrop(source, data, DragDropEffects.Copy); }
+        finally
+        {
+            _isDraggingOut = false;
+            _windowDragCounter = 0;
+            ShelfExportSurface.BeginAnimation(OpacityProperty, new DoubleAnimation(1, TimeSpan.FromMilliseconds(180)));
+        }
+    }
+
+    private void OnShelfStackHover(object sender, MouseEventArgs e)
+    {
+        if (ShelfStack.RenderTransform is TransformGroup transforms && transforms.Children[1] is TranslateTransform offset)
+        {
+            offset.BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation(
+                ShelfExportSurface.IsMouseOver ? -5 : 0, TimeSpan.FromMilliseconds(CanAnimate ? 180 : 0))
+            {
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            });
+        }
+    }
+
+    private void OnShelfExportKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter && !ViewModel.IsBusy)
+        {
+            ViewModel.IsCompact = false;
+            e.Handled = true;
+        }
+    }
 
     private void OnWindowDragEnter(object sender, DragEventArgs e)
     {
+        if (_isDraggingOut) { e.Effects = DragDropEffects.None; e.Handled = true; return; }
         if (DataPayloadHelper.IsSupported(e.Data))
         {
             _windowDragCounter++;
@@ -557,6 +651,7 @@ public partial class MainWindow : Window
 
     private void OnWindowDragOver(object sender, DragEventArgs e)
     {
+        if (_isDraggingOut) { e.Effects = DragDropEffects.None; e.Handled = true; return; }
         if (DataPayloadHelper.IsSupported(e.Data))
         {
             e.Effects = DragDropEffects.Copy;
@@ -582,6 +677,7 @@ public partial class MainWindow : Window
     {
         _windowDragCounter = 0;
         HideDropOverlay();
+        if (_isDraggingOut) { e.Handled = true; return; }
 
         var paths = DataPayloadHelper.ExtractPayloadPaths(e.Data, ViewModel.ClipboardDirectory);
         if (paths.Count == 0)
@@ -594,7 +690,6 @@ public partial class MainWindow : Window
         try
         {
             await ViewModel.AddPathsCommand.ExecuteAsync(paths);
-            PulseStatusBadge();
         }
         catch (Exception ex)
         {
@@ -602,34 +697,35 @@ public partial class MainWindow : Window
         }
     }
 
+    private static bool CanAnimate => !App.InSmoke && SystemParameters.ClientAreaAnimation;
+
     private void ShowDropOverlay()
     {
-        if (DropOverlay.Visibility == Visibility.Visible && DropOverlay.Opacity >= 0.99)
-        {
-            return;
-        }
-
+        if (_dropOverlayActive) return;
+        _dropOverlayActive = true;
         DropOverlay.Visibility = Visibility.Visible;
-        var anim = new System.Windows.Media.Animation.DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(120));
-        DropOverlay.BeginAnimation(UIElement.OpacityProperty, anim);
+        DropOverlay.BeginAnimation(OpacityProperty, new DoubleAnimation(CanAnimate ? DropOverlay.Opacity : 1, 1, TimeSpan.FromMilliseconds(160)));
+        if (CanAnimate && DropOverlay.RenderTransform is ScaleTransform scale)
+        {
+            var settle = new DoubleAnimation(0.96, 1, TimeSpan.FromMilliseconds(240))
+            {
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            };
+            scale.BeginAnimation(ScaleTransform.ScaleXProperty, settle);
+            scale.BeginAnimation(ScaleTransform.ScaleYProperty, settle);
+        }
     }
 
     private void HideDropOverlay()
     {
-        if (DropOverlay.Visibility != Visibility.Visible)
-        {
-            return;
-        }
-
-        var anim = new System.Windows.Media.Animation.DoubleAnimation(DropOverlay.Opacity, 0, TimeSpan.FromMilliseconds(120));
+        _dropOverlayActive = false;
+        if (DropOverlay.Visibility != Visibility.Visible) return;
+        var anim = new DoubleAnimation(DropOverlay.Opacity, 0, TimeSpan.FromMilliseconds(CanAnimate ? 140 : 0));
         anim.Completed += (_, _) =>
         {
-            if (_windowDragCounter <= 0)
-            {
-                DropOverlay.Visibility = Visibility.Collapsed;
-            }
+            if (!_dropOverlayActive) DropOverlay.Visibility = Visibility.Collapsed;
         };
-        DropOverlay.BeginAnimation(UIElement.OpacityProperty, anim);
+        DropOverlay.BeginAnimation(OpacityProperty, anim);
     }
 
 
@@ -645,14 +741,15 @@ public partial class MainWindow : Window
 
     private void PulseStatusBadge()
     {
-        if (CompactStatusSummary?.RenderTransform is ScaleTransform st)
+        if (!CanAnimate || !ViewModel.IsCompact || ViewModel.HasNoItems) return;
+        if (ShelfStack.RenderTransform is TransformGroup transforms && transforms.Children[0] is ScaleTransform scale)
         {
-            var anim = new System.Windows.Media.Animation.DoubleAnimation(1.0, 1.35, TimeSpan.FromMilliseconds(130))
+            var settle = new DoubleAnimation(0.86, 1, TimeSpan.FromMilliseconds(380))
             {
-                AutoReverse = true
+                EasingFunction = new BackEase { Amplitude = 0.3, EasingMode = EasingMode.EaseOut }
             };
-            st.BeginAnimation(ScaleTransform.ScaleXProperty, anim);
-            st.BeginAnimation(ScaleTransform.ScaleYProperty, anim);
+            scale.BeginAnimation(ScaleTransform.ScaleXProperty, settle);
+            scale.BeginAnimation(ScaleTransform.ScaleYProperty, settle);
         }
     }
 
@@ -662,7 +759,7 @@ public partial class MainWindow : Window
 
     private void OnDragAllPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
-        if (ViewModel.Items.Count == 0)
+        if (ViewModel.Items.Count == 0 || ViewModel.IsBusy || _isDraggingOut || _preparingDragAll)
         {
             return;
         }
@@ -693,11 +790,12 @@ public partial class MainWindow : Window
     /// <summary>一次性把暂存箱中的所有文件物化并拖出到外部目标（DropPoint 风格批量中转）。</summary>
     private async Task StartDragAllAsync(DependencyObject source)
     {
-        if (ViewModel.Items.Count == 0)
+        if (ViewModel.Items.Count == 0 || ViewModel.IsBusy || _isDraggingOut || _preparingDragAll)
         {
             return;
         }
 
+        _preparingDragAll = true;
         try
         {
             var exportedItems = ViewModel.Items.ToList();
@@ -709,15 +807,14 @@ public partial class MainWindow : Window
 
             var data = DataPayloadHelper.CreateFileDropData(paths);
 
-            var result = DragDrop.DoDragDrop(source, data, DragDropEffects.Copy);
-            await ViewModel.RecordDragExportAsync(paths);
+            var result = RunExportDrag(source, data);
+            await ViewModel.RecordDragExportAsync(paths, result);
 
             if (result != DragDropEffects.None)
             {
                 if (_settings.Current.RemoveAfterDragExport)
                 {
-                    foreach (var item in exportedItems)
-                        await ViewModel.RemoveItemDirectCommand.ExecuteAsync(item);
+                    await ViewModel.RemoveExportedItemsAsync(exportedItems.Select(item => item.Id).ToArray());
                     CheckAutoDismiss();
                 }
             }
@@ -726,22 +823,36 @@ public partial class MainWindow : Window
         {
             App.ShowError(this, Strings.Format(Strings.DragOutFailed, ex.Message));
         }
+        finally { _preparingDragAll = false; HideDropOverlay(); }
     }
 
-    /// <summary>空箱自动退场：暂存项全部清空或拖出完毕后平滑淡出并隐藏。</summary>
+    private void OnCompactShellSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        CompactShell.Clip = new RectangleGeometry(new Rect(e.NewSize), 12, 12);
+    }
+
+    private void OnRestoreSucceeded() => DismissCompactShelf();
+
+    /// <summary>Only empty-shelf dismissal depends on the retention preference.</summary>
     private void CheckAutoDismiss()
     {
-        if (_settings.Current.AutoDismissWhenEmpty && ViewModel.IsCompact && ViewModel.Items.Count == 0)
+        if (_settings.Current.AutoDismissWhenEmpty && ViewModel.Items.Count == 0)
+            DismissCompactShelf();
+    }
+
+    private void DismissCompactShelf()
+    {
+        if (!ViewModel.IsCompact || !IsVisible) return;
+        var anim = new DoubleAnimation(Opacity, 0, TimeSpan.FromMilliseconds(CanAnimate ? 160 : 0));
+        anim.Completed += (_, _) =>
         {
-            var anim = new System.Windows.Media.Animation.DoubleAnimation(1.0, 0.0, TimeSpan.FromMilliseconds(160));
-            anim.Completed += (_, _) =>
-            {
-                BeginAnimation(OpacityProperty, null);
-                Opacity = 1.0;
-                Hide();
-            };
-            BeginAnimation(OpacityProperty, anim);
-        }
+            BeginAnimation(OpacityProperty, null);
+            Opacity = 1;
+            if (!ViewModel.IsCompact) return;
+            if (ReferenceEquals(this, Application.Current.MainWindow)) Hide();
+            else Close();
+        };
+        BeginAnimation(OpacityProperty, anim);
     }
 
 

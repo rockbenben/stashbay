@@ -64,7 +64,9 @@ public partial class App : Application
     private readonly SettingsService _settings;
 
     // --add 的防抖聚合：资源管理器经典菜单多选时会启动多个进程
-    private readonly List<string> _pendingAddPaths = [];
+    private readonly List<(string GroupId, string[] Paths)> _pendingAddPaths = [];
+    private readonly SemaphoreSlim _commandLock = new(1, 1);
+    private bool _flushingAdds;
     private readonly DispatcherTimer _addAggregationTimer;
     private DispatcherTimer? _periodicCleanupTimer;
 
@@ -93,10 +95,6 @@ public partial class App : Application
         // 语言必须在建第一个窗口之前定下来：界面文字走的是 x:Static，
         // XAML 解析的那一刻就把值取死了，之后再换 CurrentUICulture 已经太晚。
         LanguageService.Apply(AppLanguageResolver.Resolve(_settings.Current.Language));
-
-        // 外观同样要在第一个窗口之前落好：配色 token 走 DynamicResource，
-        // 晚一点也能翻过来，但第一帧会先闪一下默认配色。
-        ThemeService.ApplyFromSettings(_settings.Current);
 
         _addAggregationTimer = new DispatcherTimer(DispatcherPriority.Normal)
         {
@@ -136,8 +134,13 @@ public partial class App : Application
         // 2) 异常处理要在任何用户代码之前挂上
         HookExceptionHandlers();
 
+        // InitializeComponent has now loaded Light.xaml. Apply the saved theme after it,
+        // before creating any windows, or the later Light dictionary overrides Dark.
+        ThemeService.ApplyFromSettings(_settings.Current);
+
         // 3) 宿主 + DI
         _host = BuildHost(_paths, _settings);
+        _host.Services.GetRequiredService<IStashService>().GroupsChanged += OnShelfGroupsChanged;
 
         // 4) 开发期自查开关：必须放在单实例互斥体检查之前。
         //    托盘里正在用的实例照常工作，检查进程自己开自己关。
@@ -186,10 +189,38 @@ public partial class App : Application
         }
 
         var command = CommandLine.Parse(e.Args);
+        if (command.UnregisterShell)
+        {
+            var result = await _host.Services.GetRequiredService<ILogonStartupService>().ChangeAsync(false, false);
+            if (result.Outcome is not (StartupOutcome.Applied or StartupOutcome.Unchanged))
+            {
+                Log.Error("Uninstall startup cleanup {Outcome}: {Detail}", result.Outcome, result.Detail);
+                Shutdown(result.Outcome == StartupOutcome.Cancelled ? 1223 : 4);
+                return;
+            }
+            Shutdown(UnregisterShellIntegration() ? 0 : 4);
+            return;
+        }
+        if (command.ElevatedLogon)
+        {
+            if (!IsProcessAdministrator())
+            {
+                Log.Error("Administrator logon launch did not receive an elevated token.");
+                Shutdown(5);
+                return;
+            }
+            // Explicitly replace a resident normal instance instead of forwarding an elevated
+            // logon launch to it. No process is killed; take over only after graceful shutdown.
+            using var messenger = new SingleInstanceCoordinator(SingleInstanceCoordinator.DefaultPipeName,
+                TimeSpan.Zero, skipInstanceCheck: true);
+            await messenger.SendToPrimaryAsync(["--quit"], attempts: 1);
+        }
 
-        // 5) 单实例        //    等待时长分档：双击走 250ms（老实例活得好好的才是常态，等满了必然走满）；
+
+        // 5) 单实例
+        //    等待时长分档：双击走 250ms（老实例活得好好的才是常态，等满了必然走满）；
         //    "以管理员身份重开自己""切语言后重开自己"这类接管路径给 3s。
-        var takeover = command.Show ? TimeSpan.FromSeconds(3) : TimeSpan.FromMilliseconds(250);
+        var takeover = (command.Show || command.ElevatedLogon) ? TimeSpan.FromSeconds(3) : TimeSpan.FromMilliseconds(250);
 
         var singleInstanceWatch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -198,7 +229,8 @@ public partial class App : Application
             _instance = new SingleInstanceCoordinator(
                 SingleInstanceCoordinator.DefaultPipeName,
                 takeover,
-                skipInstanceCheck: command.ElevatedRetryOperationId is not null);
+                skipInstanceCheck: command.ElevatedRetryOperationId is not null,
+                wakePrimary: !command.ElevatedLogon);
         }
         catch (Exception ex)
         {
@@ -207,6 +239,11 @@ public partial class App : Application
             // 注意 OnStartup 里抛的异常接不到 Dispatcher 的异常处理器，
             // 会直接变成进程崩溃 —— 所以这里必须自己兜住。
             Log.Error(ex, "单实例检查失败，本次不做单实例检查继续启动");
+            if (command.ElevatedLogon || _settings.Current.StartWithWindowsAsAdministrator)
+            {
+                Shutdown(4);
+                return;
+            }
             _instance = null;
         }
 
@@ -226,7 +263,8 @@ public partial class App : Application
             // 转发次数要分档：常态（双击 exe）老实例活得好好的，
             // 多试几次免得命令丢掉；接管路径（--show）转发失败还有"自己接管"
             // 这条退路，不值得为一次注定失败的转发等满 8 轮。
-            var forwarded = await _instance.SendToPrimaryAsync(e.Args, command.Show ? 2 : 8);
+            var forwarded = !command.ElevatedLogon &&
+                await _instance.SendToPrimaryAsync(e.Args, command.Show ? 2 : 8);
 
             if (forwarded)
             {
@@ -270,13 +308,8 @@ public partial class App : Application
             return;
         }
 
-        // 卸载时清掉右键菜单、"发送到"与自启（装程序自己的卸载流程会调它）
-        if (command.UnregisterShell)
-        {
-            UnregisterShellIntegration();
-            Shutdown();
-            return;
-        }
+        // Collect orphaned empty temporary shelves before commands restore a selection.
+        await DeleteEmptyShelvesAsync();
 
         // 6) 管道服务：接收其它实例转发过来的参数
         if (_instance is not null)
@@ -299,13 +332,10 @@ public partial class App : Application
 
         // 界面上的"设置"由 App 打开窗口（ViewModel 不碰窗口）
         _host.Services.GetRequiredService<MainViewModel>().SettingsRequested += () => OpenWindow<SettingsWindow>();
-
-        // 换语言要重启应用（界面文字是 x:Static，解析时就定死了），
-        // 重启这件事由 App 做 —— ViewModel 只管把"语言变了"这件事说出来。
-        _host.Services.GetRequiredService<SettingsViewModel>().LanguageChangeRequested += OnLanguageChangeRequested;
+        _host.Services.GetRequiredService<MainViewModel>().NewShelfRequested += async () => await OpenNewShelfAsync();
 
         // --show 是接管路径（重启自己）用的：它要的是"窗口出来"，所以压过"启动时最小化"。
-        if (!command.Minimized || command.Show)
+        if (!(command.Minimized || ((command.LogonStartup || command.ElevatedLogon) && _settings.Current.MinimizeToTray)) || command.Show)
         {
             _mainWindow.Show();
         }
@@ -335,9 +365,13 @@ public partial class App : Application
                     // 重读会把 Current 换成新对象，正在开着的窗口还攥着旧的那份。
                     if (!ShellIntegrationDisabled)
                     {
-                        _settings.ImportStartupPreference(new StartupRegistrar().IsEnabled);
+                        var startupStatus = await _host.Services.GetRequiredService<ILogonStartupService>().ReadAsync();
+                        _settings.ImportStartupPreference(startupStatus.State is LogonStartupState.Plain or
+                            LogonStartupState.PlainNeedsRepair or LogonStartupState.Elevated or LogonStartupState.ElevatedNeedsRepair,
+                            startupStatus.State is LogonStartupState.Elevated or LogonStartupState.ElevatedNeedsRepair);
                     }
                     ApplyShellIntegration(settings.Current);
+                    await ReconcileStartupAsync(settings.Current);
 
                     var cleanup = _host.Services.GetRequiredService<ICleanupService>();
 
@@ -364,6 +398,7 @@ public partial class App : Application
         {
             try
             {
+                await DeleteEmptyShelvesAsync();
                 var cleanup = _host?.Services.GetService<ICleanupService>();
                 if (cleanup is not null)
                 {
@@ -387,17 +422,8 @@ public partial class App : Application
         IsShuttingDown = true;
         Log.Information("StashBay 退出，退出码 {ExitCode}", e.ApplicationExitCode);
         _periodicCleanupTimer?.Stop();
-        try
-        {
-            var cleanup = _host?.Services.GetService<ICleanupService>();
-            if (cleanup is not null)
-            {
-                cleanup.DeleteExpiredExportsAsync(TimeSpan.FromMinutes(5), CancellationToken.None).GetAwaiter().GetResult();
-            }
-        }
-        catch
-        {
-        }
+        // Startup and periodic cleanup own cache expiry. Blocking here on a storage
+        // lease can deadlock a writer whose continuation needs this UI thread.
         _hotkey?.Dispose();
         _shakeDetector?.Dispose();
         _branchWatcher?.Dispose();
@@ -408,33 +434,53 @@ public partial class App : Application
         base.OnExit(e);
     }
 
-    private static bool ShellIntegrationDisabled => InSmoke ||
+    internal static bool ShellIntegrationDisabled => InSmoke ||
         !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(AppPaths.NoShellIntegrationVariable)) ||
         !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(AppPaths.LegacyNoShellIntegrationVariable));
 
+    private static bool IsProcessAdministrator()
+    {
+        using var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
+        return new System.Security.Principal.WindowsPrincipal(identity)
+            .IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator);
+    }
+
+    private async Task ReconcileStartupAsync(Core.Models.AppSettings settings)
+    {
+        var service = _host!.Services.GetRequiredService<ILogonStartupService>();
+        var status = await service.ReadAsync();
+        if (status.State == LogonStartupState.Suppressed) return;
+        var expected = !settings.StartWithWindows ? LogonStartupState.Disabled :
+            settings.StartWithWindowsAsAdministrator ? LogonStartupState.Elevated : LogonStartupState.Plain;
+        if (status.State == expected) return;
+        // Startup only reads state. Registration/repair/removal is an explicit settings action,
+        // so late startup housekeeping cannot undo a concurrent settings save.
+        Log.Warning("Logon startup requires attention: {State} {Detail}", status.State, status.Detail);
+        _host.Services.GetRequiredService<IDialogService>().ShowToast(Strings.SettingsTitle, Strings.StartupAttention);
+    }
+
     /// <summary>按设置同步资源管理器右键菜单、"发送到"、开机自启。</summary>
-    internal static void ApplyShellIntegration(Core.Models.AppSettings settings)
+    internal static bool ApplyShellIntegration(Core.Models.AppSettings settings)
     {
         // 自动化 / 无头运行：注册表**一个都不碰** ——
         // 连"关掉开关"都不做，免得变成一个静默改变用户既有设置的动作
         if (ShellIntegrationDisabled)
         {
             Log.Information("已按环境变量跳过资源管理器集成");
-            return;
+            return true;
         }
 
         var executablePath = Environment.ProcessPath;
 
         if (string.IsNullOrEmpty(executablePath))
         {
-            return;
+            return false;
         }
 
         try
         {
             var contextMenu = new ContextMenuRegistrar(executablePath);
             var sendTo = new SendToRegistrar(executablePath);
-            var startup = new StartupRegistrar();
 
             if (settings.ContextMenuEnabled)
             {
@@ -447,47 +493,42 @@ public partial class App : Application
                 sendTo.Unregister();
             }
 
-            if (settings.StartWithWindows)
-            {
-                startup.Enable(settings.MinimizeToTray);
-            }
-            else
-            {
-                startup.Disable();
-            }
+            return true;
         }
         catch (Exception ex)
         {
             Log.Warning(ex, "同步资源管理器集成失败");
+            return false;
         }
     }
 
     /// <summary>卸载时用：把注册表里的痕迹清干净。</summary>
-    private static void UnregisterShellIntegration()
+    private static bool UnregisterShellIntegration()
     {
         if (ShellIntegrationDisabled)
         {
-            return;
+            return true;
         }
 
         var executablePath = Environment.ProcessPath;
 
         if (string.IsNullOrEmpty(executablePath))
         {
-            return;
+            return false;
         }
 
         try
         {
             new ContextMenuRegistrar(executablePath).Unregister();
             new SendToRegistrar(executablePath).Unregister();
-            new StartupRegistrar().Disable();
 
             Log.Information("已注销资源管理器集成");
+            return true;
         }
         catch (Exception ex)
         {
             Log.Warning(ex, "注销资源管理器集成失败");
+            return false;
         }
     }
 
@@ -670,16 +711,19 @@ public partial class App : Application
 
         var viewModel = _host.Services.GetRequiredService<MainViewModel>();
 
+        await _commandLock.WaitAsync();
         try
         {
+            await viewModel.InitializeAsync();
+            var groupId = viewModel.SelectedGroup?.Id;
             if (command.GroupName is not null)
             {
-                await viewModel.SelectGroupAsync(command.GroupName);
+                groupId = await viewModel.SelectGroupAsync(command.GroupName);
             }
 
             if (command.AddPaths.Count > 0)
             {
-                QueueAddPaths(command.AddPaths);
+                QueueAddPaths(command.AddPaths, groupId);
             }
 
             if (command.Quit)
@@ -697,7 +741,7 @@ public partial class App : Application
             {
                 await viewModel.ApplyOriginalAsync();
             }
-            else
+            else if (!(command.Minimized || ((command.LogonStartup || command.ElevatedLogon) && _settings.Current.MinimizeToTray)) || command.Show)
             {
                 // 没有具体动作的转发（又双击了一次 exe）→ 把窗口叫出来
                 viewModel.ShowMainWindow();
@@ -707,6 +751,7 @@ public partial class App : Application
         {
             Log.Error(ex, "处理命令行失败");
         }
+        finally { _commandLock.Release(); }
     }
 
     /// <summary>别的实例通过管道转发过来的参数。</summary>
@@ -737,9 +782,13 @@ public partial class App : Application
     /// 停止要早于真正退出：窗口关闭、数据库清理都可能磨蹭，
     /// 那段时间里我们早就不该再接别人的指令了。
     /// </remarks>
-    private void ShutdownApplication()
+    private async void ShutdownApplication()
     {
+        if (IsShuttingDown) return;
+        IsShuttingDown = true;
         _instance?.StopServer();
+        foreach (var window in Windows.OfType<MainWindow>().ToArray())
+            await window.UpdateLifetimeAsync(closing: true);
         Shutdown();
     }
 
@@ -774,9 +823,11 @@ public partial class App : Application
     /// 资源管理器经典菜单多选时会启动多个进程，一个一个加会刷屏；
     /// 400ms 静默期后一次性加完。
     /// </remarks>
-    private void QueueAddPaths(IEnumerable<string> paths)
+    private void QueueAddPaths(IEnumerable<string> paths, string? groupId = null)
     {
-        _pendingAddPaths.AddRange(paths);
+        groupId ??= _host?.Services.GetRequiredService<MainViewModel>().SelectedGroup?.Id;
+        if (groupId is null) return;
+        _pendingAddPaths.Add((groupId, paths.ToArray()));
 
         _addAggregationTimer.Stop();
         _addAggregationTimer.Start();
@@ -784,23 +835,27 @@ public partial class App : Application
 
     private async Task FlushPendingAddPathsAsync()
     {
-        if (_pendingAddPaths.Count == 0 || _host is null)
-        {
-            return;
-        }
-
-        var paths = _pendingAddPaths.ToArray();
+        if (_flushingAdds || _pendingAddPaths.Count == 0 || _host is null) return;
+        _flushingAdds = true;
+        var requests = _pendingAddPaths.ToArray();
         _pendingAddPaths.Clear();
-
         var viewModel = _host.Services.GetRequiredService<MainViewModel>();
-
         try
         {
-            await viewModel.AddPathsAsync(paths);
+            foreach (var group in requests.GroupBy(request => request.GroupId))
+            {
+                try
+                {
+                    await viewModel.AddPathsToGroupAsync(group.Key,
+                        group.SelectMany(request => request.Paths).ToArray());
+                }
+                catch (Exception ex) { Log.Error(ex, "加入暂存失败"); }
+            }
         }
-        catch (Exception ex)
+        finally
         {
-            Log.Error(ex, "加入暂存失败");
+            _flushingAdds = false;
+            if (_pendingAddPaths.Count > 0) _addAggregationTimer.Start();
         }
     }
 
@@ -814,6 +869,10 @@ public partial class App : Application
 
         var viewModel = _host.Services.GetRequiredService<MainViewModel>();
         var menu = new System.Windows.Controls.ContextMenu { DataContext = viewModel };
+
+        var newShelfItem = new MenuItem { Header = Strings.TrayNewShelf };
+        newShelfItem.Click += async (_, _) => await OpenNewShelfAsync();
+        menu.Items.Add(newShelfItem);
 
         // 一键唤出：小暂存区。多数时候只想"把这个拖走"
         var showItem = new MenuItem { Header = Strings.TrayShowCompact };
@@ -865,7 +924,62 @@ public partial class App : Application
         menu.Items.Add(exitItem);
 
         _tray.ContextMenu = menu;
-        _tray.TrayMouseDoubleClick += (_, _) => viewModel.ShowCompactPanel();
+        _tray.TrayMouseDoubleClick += async (_, _) => await OpenNewShelfAsync();
+    }
+
+    private async Task OpenNewShelfAsync()
+    {
+        if (_host is null || IsShuttingDown) return;
+        try
+        {
+            var vm = ActivatorUtilities.CreateInstance<MainViewModel>(_host.Services);
+            await vm.CreateShelfAsync();
+            vm.SettingsRequested += () => OpenWindow<SettingsWindow>();
+            vm.NewShelfRequested += async () => await OpenNewShelfAsync();
+            var window = new MainWindow(vm, _settings,
+                _host.Services.GetRequiredService<ShelfLifetimeService>());
+            window.Show();
+            WindowEffects.PlaceNearCursor(window);
+            WindowEffects.BringToFront(window);
+        }
+        catch (Exception ex) { ShowError(_mainWindow, ex.Message); }
+    }
+
+    private bool _shelfGroupsRefreshing;
+    private bool _shelfGroupsRefreshRequested;
+    private void OnShelfGroupsChanged()
+    {
+        if (InSmoke || IsShuttingDown) return;
+        Dispatcher.BeginInvoke(async () =>
+        {
+            _shelfGroupsRefreshRequested = true;
+            if (_shelfGroupsRefreshing) return;
+            _shelfGroupsRefreshing = true;
+            try
+            {
+                do
+                {
+                    _shelfGroupsRefreshRequested = false;
+                    foreach (var vm in Windows.OfType<MainWindow>().Select(window => window.ViewModel).Distinct().ToArray())
+                        await vm.RefreshAfterGroupCleanupAsync();
+                } while (_shelfGroupsRefreshRequested && !IsShuttingDown);
+            }
+            catch (Exception error) { Log.Error(error, "Refreshing shelves after empty-group cleanup failed"); }
+            finally { _shelfGroupsRefreshing = false; }
+        });
+    }
+
+    private async Task DeleteEmptyShelvesAsync()
+    {
+        if (_host is null) return;
+        await ShelfGroupMigration.AdoptLegacyAsync(_host.Services.GetRequiredService<IStashGroupRepository>());
+        var count = await _host.Services.GetRequiredService<ShelfLifetimeService>().DeleteEmptyAsync();
+        if (count > 0)
+        {
+            await _host.Services.GetRequiredService<ICleanupService>()
+                .DeleteUnreferencedBlobsAsync(CancellationToken.None);
+            Log.Information("Removed {Count} empty temporary shelves", count);
+        }
     }
 
     /// <summary>从 git 改动里挑文件加入暂存。</summary>
@@ -949,6 +1063,11 @@ public partial class App : Application
         }
 
         var window = _host.Services.GetRequiredService<TWindow>();
+        if (window.DataContext is SettingsViewModel settingsViewModel)
+        {
+            settingsViewModel.LanguageChangeRequested += OnLanguageChangeRequested;
+            window.Closed += (_, _) => settingsViewModel.LanguageChangeRequested -= OnLanguageChangeRequested;
+        }
         window.Show();
     }
 
@@ -1194,6 +1313,7 @@ public partial class App : Application
         // 拖出与清理（M4）
         builder.Services.AddSingleton<IDragExportService, DragExportService>();
         builder.Services.AddSingleton<ICleanupService, CleanupService>();
+        builder.Services.AddSingleton<ShelfLifetimeService>();
 
         // 界面（M2）
         builder.Services.AddSingleton<IDialogService, WpfDialogService>();
@@ -1202,6 +1322,8 @@ public partial class App : Application
 
         // 工具窗口（M6）
         builder.Services.AddTransient<HistoryViewModel>();
+        builder.Services.AddSingleton<ILogonStartupService>(_ => new LogonStartupService(disabled: ShellIntegrationDisabled,
+            delay: () => settings.Current.AdministratorStartupDelaySeconds));
         builder.Services.AddTransient<SettingsViewModel>();
         builder.Services.AddTransient<RootPresetsViewModel>();
         builder.Services.AddTransient<GitStatusViewModel>();

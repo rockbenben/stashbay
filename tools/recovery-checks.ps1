@@ -59,6 +59,11 @@ var git = new GitService();
 var source = Path.Combine(root, "source", "sample.txt");
 var target = Path.Combine(root, "target", "sample.txt");
 var checkpoint = args.Length > 2 ? args[2] : "";
+var sourceZone = System.Text.Encoding.UTF8.GetBytes("[ZoneTransfer]\r\nZoneId=3\r\n");
+var targetZone = System.Text.Encoding.UTF8.GetBytes("[ZoneTransfer]\r\nZoneId=4\r\n");
+var kind = args.Length > 3 ? args[3] : "overwrite";
+byte[]? ReadZone(string path) => File.Exists(path) && File.Exists(path + ":Zone.Identifier")
+    ? File.ReadAllBytes(path + ":Zone.Identifier") : null;
 var armed = false;
 void StopAt(string stage)
 {
@@ -73,11 +78,13 @@ if (args[0] == "worker" || args[0] == "fixture")
 {
     Directory.CreateDirectory(Path.GetDirectoryName(source)!);
     File.WriteAllText(source, "snapshot");
-    var overwrite = args[3] == "overwrite";
+    if (kind != "overwrite-unmarked-source") File.WriteAllBytes(source + ":Zone.Identifier", sourceZone);
+    var overwrite = kind.StartsWith("overwrite");
     if (overwrite)
     {
         Directory.CreateDirectory(Path.GetDirectoryName(target)!);
         File.WriteAllText(target, "original");
+        if (kind != "overwrite-unmarked-target") File.WriteAllBytes(target + ":Zone.Identifier", targetZone);
     }
     var stash = new StashService(groups, items, entries, blobs, git, settings);
     var group = await stash.CreateGroupAsync("fixture");
@@ -102,11 +109,19 @@ if (args[0] == "verify")
     var rows = await operationEntries.GetByOperationAsync(operation.Id, default);
     if (rows.Any(row => row.Pending || row.UndoPending)) throw new Exception("Unresolved journal after recovery");
     var recovered = File.Exists(target) ? File.ReadAllText(target) : null;
+    var recoveredZone = recovered == "snapshot"
+        ? (kind == "overwrite-unmarked-source" ? null : sourceZone)
+        : (kind.StartsWith("overwrite") && kind != "overwrite-unmarked-target" ? targetZone : null);
+    if (!ZoneIdentifier.Matches(ReadZone(target), recoveredZone))
+        throw new Exception("Recovered origin mismatch");
     await executor.UndoAsync(operation.Id, default);
     await executor.UndoAsync(operation.Id, default);
     var final = File.Exists(target) ? File.ReadAllText(target) : null;
-    var expected = args[3] == "overwrite" ? "original" : null;
+    var expected = kind.StartsWith("overwrite") ? "original" : null;
     if (final != expected) throw new Exception($"Restoration mismatch: {final} vs {expected}");
+    var expectedZone = kind.StartsWith("overwrite") && kind != "overwrite-unmarked-target" ? targetZone : null;
+    if (!ZoneIdentifier.Matches(ReadZone(target), expectedZone))
+        throw new Exception("Origin restoration mismatch");
     Console.WriteLine(JsonSerializer.Serialize(new { checkpoint, reconciled = before, recovered, final, passed = true }));
 }
 
@@ -186,6 +201,7 @@ sealed class CheckpointWriter(Action<string> stop) : IAtomicFileWriter
     private readonly AtomicFileWriter inner = new();
     public string? GetIdentity(string path) => inner.GetIdentity(path);
     public IDisposable? GuardTarget(string path) => inner.GuardTarget(path);
+    public bool DeleteDirectory(string path, string expectedIdentity) => inner.DeleteDirectory(path, expectedIdentity);
     public async Task<bool> CreateAsync(string temporary, string target, CancellationToken ct)
     {
         stop("BeforeCommit");
@@ -220,7 +236,7 @@ sealed class CheckpointJournal(IOperationEntryRepository inner, Action<string> s
 if ($LASTEXITCODE) { throw 'Worker build failed' }
 $worker = Join-Path $outRoot 'bin/RecoveryWorker.exe'
 $results = @()
-foreach ($kind in 'create', 'overwrite') {
+foreach ($kind in 'create', 'overwrite', 'overwrite-unmarked-source', 'overwrite-unmarked-target') {
     foreach ($stage in 'BeforeCommit', 'AfterCommit', 'AfterRecorded', 'UndoBeforeCommit', 'UndoAfterCommit', 'UndoAfterRecorded') {
         $caseRoot = Join-Path $outRoot "$kind-$stage"
         $startInfo = [Diagnostics.ProcessStartInfo]::new($worker)

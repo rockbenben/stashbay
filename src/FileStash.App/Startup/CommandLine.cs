@@ -21,7 +21,13 @@ public sealed record CommandLine(
     bool UnregisterShell,
     bool Quit)
 {
+    /// <summary>
+    /// --elevated-home 传入的沙箱数据目录（仅在配合 --elevated-retry 时生效）。
+    /// </summary>
     public string? RetryHome { get; init; }
+
+    public bool LogonStartup { get; init; }
+    public bool ElevatedLogon { get; init; }
 
     public bool IsEmpty => AddPaths.Count == 0
         && ApplyHerePath is null
@@ -112,6 +118,8 @@ public sealed record CommandLine(
 
         return new CommandLine(addPaths, applyHere, applyOriginal, group, minimized, elevatedRetry, show, unregisterShell, quit)
         {
+            LogonStartup = args.Contains("--logon-startup"),
+            ElevatedLogon = args.Contains("--elevated-logon"),
             RetryHome = elevatedRetry is null ? null : retryHome,
         };
     }

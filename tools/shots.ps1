@@ -14,17 +14,31 @@
 
     用法：pwsh tools/shots.ps1
           pwsh tools/shots.ps1 -Out artifacts\shots-review -KeepData
+          pwsh tools/shots.ps1 -CompactOnly  # 极简模式，深浅主题 × 最小/最大工作区
+          pwsh tools/shots.ps1 -SettingsOnly -Language German # Every settings tab, including long labels
 #>
 [CmdletBinding()]
 param(
     [string]$Out = '',
     [string]$Verify = '',
-    [switch]$KeepData
+    [switch]$KeepData,
+    [switch]$CompactOnly,
+    [switch]$SettingsOnly,
+    [switch]$WorkbenchOnly,
+    [ValidateSet('System', 'Chinese', 'English', 'TraditionalChinese', 'Japanese', 'Korean',
+        'Spanish', 'PortugueseBrazil', 'French', 'German', 'Italian', 'Russian', 'Arabic',
+        'Hindi', 'Indonesian', 'Thai', 'Turkish', 'Vietnamese', 'Bengali')]
+    [string]$Language = 'Chinese',
+    [switch]$IncludeToasts
 )
 
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 $PSNativeCommandUseErrorActionPreference = $false
+if ([int]$SettingsOnly.IsPresent + [int]$CompactOnly.IsPresent + [int]$WorkbenchOnly.IsPresent -gt 1)
+{
+    throw 'Choose one focused screenshot mode: SettingsOnly, CompactOnly or WorkbenchOnly.'
+}
 
 # 子进程输出按本机代码页回来会变乱码，中文文件名（夹具里一大把）就对不上了
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -36,7 +50,7 @@ $smokeReport = Join-Path ([System.IO.Path]::GetTempPath()) 'filestash-smoke.txt'
 
 $sandboxRoot = Join-Path ([System.IO.Path]::GetTempPath()) ('filestash-shots-' + [guid]::NewGuid().ToString('N'))
 $workspace = Join-Path $sandboxRoot 'workspace'
-$home1 = Join-Path $sandboxRoot 'home'
+$home1 = Join-Path $workspace '.stashbay-fixture'
 if (-not $Out) { $Out = Join-Path $repositoryRoot 'artifacts\shots' }
 $Out = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Out)
 
@@ -79,6 +93,7 @@ function Test-ShotsNotEmpty {
     # Compact 与 Compact.Empty 当时逐字节相同，进程退出码 0，没人发问。
     $pairs = @(
         @{ This = 'MainWindow.Compact.Dark@1032.png'; That = 'MainWindow.Compact.Empty.Dark@1032.png'; Why = '架子上有没有货' }
+        @{ This = 'MainWindow.Compact.Light@1032.png'; That = 'MainWindow.Compact.Dark@1032.png'; Why = '深浅主题必须区分' }
     )
 
     foreach ($pair in $pairs)
@@ -187,6 +202,16 @@ if ($seedReport -notmatch '^OK groups=')
 }
 Write-Host "  $seedReport"
 
+# Use the seeded sandbox settings, never the user's real language preference.
+$fixtureSettings = Join-Path $home1 'StashBay\settings.json'
+$fixturePreferences = if (Test-Path -LiteralPath $fixtureSettings)
+{
+    Get-Content -LiteralPath $fixtureSettings -Raw | ConvertFrom-Json -AsHashtable
+}
+else { @{} }
+$fixturePreferences['language'] = $Language
+$fixturePreferences | ConvertTo-Json -Depth 32 | Set-Content -LiteralPath $fixtureSettings -Encoding utf8
+
 # ---------------------------------------------------------------- 出图
 
 Write-Host ''
@@ -196,7 +221,12 @@ Write-Host '== --shots'
 New-Item -ItemType Directory -Force -Path $Out | Out-Null
 
 if (Test-Path -LiteralPath $smokeReport) { Remove-Item -LiteralPath $smokeReport -Force }
-Start-Process -FilePath $exe -ArgumentList @('--shots', ('"' + $Out + '"')) -WindowStyle Hidden -Wait | Out-Null
+$shotArguments = @('--shots', ('"' + $Out + '"'))
+if ($CompactOnly) { $shotArguments += '--shots-compact-only' }
+if ($SettingsOnly) { $shotArguments += '--shots-settings-only' }
+if ($WorkbenchOnly) { $shotArguments += '--shots-workbench-only' }
+if ($IncludeToasts) { $shotArguments += '--shots-include-toasts' }
+Start-Process -FilePath $exe -ArgumentList $shotArguments -WindowStyle Hidden -Wait | Out-Null
 
 # --shots 自己会数失败并写回同一个结果文件（"FAIL shots=N ..."），但退出码不可信；
 # 不读它的话，解析期炸掉的变体只会表现为"少了几张图"，脚本照样报完成。
@@ -216,7 +246,50 @@ if ($shots.Count -eq 0) { Stop-Step "--shots 没产出任何 PNG（$Out）" }
 Write-Host ''
 Write-Host '== 空架守卫'
 
-Test-ShotsNotEmpty $Out
+if ($SettingsOnly)
+{
+    # Every tab must actually be selected: otherwise all screenshots can show Appearance.
+    $settingsPages = @('SettingsWindow', 'SettingsWindow.Shelf', 'SettingsWindow.Files',
+        'SettingsWindow.Windows', 'SettingsWindow.Storage', 'SettingsWindow.Git',
+        'SettingsWindow.StartupElevated', 'SettingsWindow.StartupRepair', 'SettingsWindow.StartupUnknown')
+    foreach ($theme in @('Light', 'Dark'))
+    {
+        foreach ($height in @(464, 1032))
+        {
+            $pageHashes = foreach ($page in $settingsPages)
+            {
+                $imagePath = Join-Path $Out "$page.$theme@$height.png"
+                if (-not (Test-Path -LiteralPath $imagePath)) { Stop-Step "Missing settings screenshot: $imagePath" }
+                (Get-FileHash -LiteralPath $imagePath -Algorithm SHA256).Hash
+            }
+            if (@($pageHashes | Select-Object -Unique).Count -ne $settingsPages.Count)
+            {
+                Stop-Step "Settings pages or startup states rendered identically: $theme@$height"
+            }
+        }
+    }
+    Write-Host '  [通过] All settings pages and startup states rendered distinctly in both themes and sizes.'
+}
+elseif ($WorkbenchOnly)
+{
+    foreach ($theme in @('Light', 'Dark'))
+    {
+        foreach ($height in @(464, 1032))
+        {
+            $populated = Join-Path $Out "MainWindow.Expanded.$theme@$height.png"
+            $empty = Join-Path $Out "MainWindow.Expanded.Empty.$theme@$height.png"
+            if ((Get-FileHash -LiteralPath $populated).Hash -eq (Get-FileHash -LiteralPath $empty).Hash)
+            {
+                Stop-Step "Workbench fixture did not render distinct populated and empty states: $theme@$height"
+            }
+        }
+    }
+    Write-Host '  [通过] Workbench populated and empty states rendered distinctly in both themes and sizes.'
+}
+else
+{
+    Test-ShotsNotEmpty $Out
+}
 
 Write-Host ''
 Write-Host "==== 完成：$($shots.Count) 张 PNG 在 $Out ===="

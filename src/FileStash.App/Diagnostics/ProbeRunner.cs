@@ -387,22 +387,18 @@ internal static class ProbeRunner
             var bar = FindNamed<Grid>(window, "CompactStatusBar");
             if (bar is { IsVisible: true })
             {
-                var stats = FindNamed<TextBlock>(bar, "CompactStatistics");
-                var apply = FindNamed<Button>(bar, "CompactApplyButton");
-                var clear = FindNamed<Button>(bar, "CompactClearButton");
-                if (stats is null || apply is null || clear is null)
+                var buttons = new[] { "CompactRestoreOriginal", "CompactRestoreFolder", "CompactRestoreRoot" }
+                    .Select(name => FindNamed<Button>(bar, name)).ToArray();
+                if (buttons.Any(button => button is null))
                 {
-                    failures.Add($"{screen}: 找不到简洁状态栏的统计或操作按钮");
+                    failures.Add($"{screen}: 找不到简洁面板的三种还原操作");
                 }
                 else
                 {
-                    var boxes = new[] { TryBounds(stats, window), TryBounds(apply, window), TryBounds(clear, window) };
-                    if (boxes.Any(box => box is null || box.Value.Width <= 0 || box.Value.Height <= 0) ||
-                        boxes.Any(box => Math.Abs((box!.Value.Top + box.Value.Height / 2) -
-                            (boxes[0]!.Value.Top + boxes[0]!.Value.Height / 2)) > 1.5))
-                    {
-                        failures.Add($"{screen}: 简洁状态栏统计与操作没有在同一行居中");
-                    }
+                    var boxes = buttons.Select(button => TryBounds(button!, window)).ToArray();
+                    if (boxes.Any(box => box is null || box.Value.Width < 32 || box.Value.Height < 32) ||
+                        boxes.Any(box => Math.Abs(box!.Value.Top - boxes[0]!.Value.Top) > 1.5))
+                        failures.Add($"{screen}: 简洁面板还原操作没有对齐或点击区域过小");
                 }
             }
         }

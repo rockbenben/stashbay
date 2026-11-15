@@ -35,6 +35,16 @@ public sealed class SettingsServiceTests : IDisposable
     }
 
     [Fact]
+    public void ImportStartupPreference_FirstRun_PreservesExistingAdministratorTask()
+    {
+        _service.Load();
+        _service.ImportStartupPreference(true, administrator: true);
+        _service.Load();
+        Assert.True(_service.Current.StartWithWindows);
+        Assert.True(_service.Current.StartWithWindowsAsAdministrator);
+    }
+
+    [Fact]
     public void ImportStartupPreference_SavedOptOut_IsPreserved()
     {
         _service.Save(new AppSettings { StartWithWindows = false });
@@ -59,6 +69,8 @@ public sealed class SettingsServiceTests : IDisposable
         _service.Load();
 
         Assert.Equal(ConflictPolicy.Ask, _service.Current.DefaultConflictPolicy);
+        Assert.False(_service.Current.StartWithWindowsAsAdministrator);
+        Assert.Equal(3, _service.Current.AdministratorStartupDelaySeconds);
         Assert.True(_service.Current.SkipIdentical);
         Assert.True(_service.Current.BackupBeforeOverwrite);
         Assert.True(_service.Current.RemoveAfterDragExport);

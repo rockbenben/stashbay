@@ -939,7 +939,7 @@
     <value>Beim Ziehen von Dateien Maus schütteln, um die Ablage am Zeiger zu öffnen</value>
   </data>
   <data name="SectionDeveloperOptions" xml:space="preserve">
-    <value>Erweiterte &amp; Entwickler-Optionen (Git)</value>
+    <value>Git-Integration</value>
   </data>
   <data name="DeveloperOptionsHint" xml:space="preserve">
     <value>Gilt nur für Dateien in einem Git-Repository. Das allgemeine Zwischenspeichern und Wiederherstellen von Dateien bleibt völlig unabhängig.</value>
@@ -957,7 +957,7 @@
     <value>Globaler Kurzbefehl (Dateien aus Zwischenablage einfügen)</value>
   </data>
   <data name="HotkeyRecordingHint" xml:space="preserve">
-    <value>Klicken und Tastenkombination drücken, um aufzunehmen. Esc zum Abbrechen.</value>
+    <value>Feld anklicken, Tastenkombination drücken (z. B. Ctrl+Alt+S) und speichern. Backspace/Delete löscht; Esc beendet die Aufnahme.</value>
   </data>
   <data name="HotkeyClearButton" xml:space="preserve">
     <value>Löschen</value>
@@ -985,4 +985,85 @@
   <data name="KeepCurrentConfirm" xml:space="preserve"><value>Aktuelle Datei behalten und Wiederherstellung dieses Eintrags beenden?
 {0}</value></data>
   <data name="ElevatedRetryConfirm" xml:space="preserve"><value>Vollständige Ziele, Aktionen und Hashwerte prüfen. Nur diese fehlgeschlagenen Einträge werden wiederholt.</value></data>
+  <data name="ShellIntegrationFailedMessage" xml:space="preserve">
+    <value>Die Einstellungen wurden gespeichert, aber die Windows-Integration (einschließlich Autostart) konnte nicht vollständig angewendet werden. Prüfen Sie das Anwendungsprotokoll, beheben Sie Berechtigungsprobleme und speichern Sie erneut.</value>
+  </data>
+  <data name="StartupAdminLabel" xml:space="preserve">
+    <value>Mit Administratorrechten starten (optional)</value>
+  </data>
+  <data name="StartupAdminHint" xml:space="preserve">
+    <value>Standardrechte sind die Vorgabe. Gilt ab der nächsten Anmeldung; bestätigen Sie die UAC mit Ihrem aktuellen Administratorkonto. Portable Versionen werden unterstützt.</value>
+  </data>
+  <data name="StartupRepair" xml:space="preserve">
+    <value>Autostart reparieren</value>
+  </data>
+  <data name="StartupRefresh" xml:space="preserve">
+    <value>Status aktualisieren</value>
+  </data>
+  <data name="StartupStatusDisabled" xml:space="preserve">
+    <value>Autostart: aus</value>
+  </data>
+  <data name="StartupStatusPlain" xml:space="preserve">
+    <value>Autostart: Standardrechte</value>
+  </data>
+  <data name="StartupStatusElevated" xml:space="preserve">
+    <value>Autostart: Administratorrechte</value>
+  </data>
+  <data name="StartupStatusRepair" xml:space="preserve">
+    <value>Autostart: Reparatur erforderlich</value>
+  </data>
+  <data name="StartupStatusConflict" xml:space="preserve">
+    <value>Autostart: fremder Aufgabenbesitzer; Protokoll prüfen</value>
+  </data>
+  <data name="StartupStatusUnknown" xml:space="preserve">
+    <value>Autostart: unbestätigt; vor erneutem Versuch aktualisieren</value>
+  </data>
+  <data name="StartupStatusSuppressed" xml:space="preserve">
+    <value>Autostart: Systemzugriff im Test unterdrückt</value>
+  </data>
+  <data name="StartupStatusBusy" xml:space="preserve">
+    <value>Autostart wird eingerichtet; UAC bestätigen…</value>
+  </data>
+  <data name="StartupCancelled" xml:space="preserve">
+    <value>UAC abgebrochen. Autostart-Einstellungen wurden nicht gespeichert.</value>
+  </data>
+  <data name="StartupFailedMessage" xml:space="preserve">
+    <value>Registrierung, Entfernung oder Speichern fehlgeschlagen. Prüfen Sie die Protokolle unter {0}, aktualisieren Sie den Status und versuchen Sie es erneut.</value>
+  </data>
+  <data name="StartupUncertainMessage" xml:space="preserve">
+    <value>Das Ergebnis ist unbestätigt; der Helfer läuft möglicherweise noch. Aktualisieren Sie den Status später. Vor der Bestätigung wird der Vorgang nicht wiederholt.</value>
+  </data>
+  <data name="StartupAttention" xml:space="preserve">
+    <value>Autostart prüfen. Öffnen Sie die Einstellungen und reparieren Sie ihn bei Bedarf. Die App erhöht Rechte oder wechselt zu Standardrechten nicht automatisch.</value>
+  </data>
+  <data name="StartupAccountMessage" xml:space="preserve">
+    <value>Bestätigen Sie UAC mit Ihrem aktuellen Administratorkonto. Andere Administratorkonten werden für die Registrierung nicht unterstützt. Protokolle: {0}.</value>
+  </data>
+  <data name="StartupDeniedMessage" xml:space="preserve">
+    <value>Zugriff auf Autostart verweigert. Prüfen Sie Aufgaben- oder Registrierungsrechte und lokale Richtlinien. Protokolle: {0}.</value>
+  </data>
+  <data name="StartupConflictMessage" xml:space="preserve">
+    <value>Die gleichnamige Aufgabe gehört zu einer anderen App und wurde nicht verändert. Prüfen Sie {0} und beheben Sie den Konflikt.</value>
+  </data>
+  <data name="StartupRollbackMessage" xml:space="preserve">
+    <value>Autostart fehlgeschlagen; der alte Zustand wurde nicht vollständig wiederhergestellt. Prüfen Sie {0}, aktualisieren Sie den Status und reparieren Sie ihn. Der bisherige Autostart ist nicht garantiert.</value>
+  </data>
+  <data name="StartupDelayLabel" xml:space="preserve">
+    <value>Anmeldeverzögerung als Administrator (Sekunden)</value>
+  </data>
+  <data name="StartupDelayRange" xml:space="preserve">
+    <value>Geben Sie eine ganze Zahl von 0 bis 300 ein; 0 bedeutet keine Verzögerung. Gilt nur für die Administrator-Anmeldeaufgabe.</value>
+  </data>
+  <data name="ShelfDropPrompt" xml:space="preserve"><value>Dateien hier ablegen</value></data>
+  <data name="ShelfRestoreMenu" xml:space="preserve"><value>Wiederherstellen ▾</value></data>
+  <data name="ShelfRetentionLabel" xml:space="preserve"><value>Aufbewahrung geschlossener Ablagen in Tagen (0 = unbegrenzt)</value></data>
+  <data name="TrayNewShelf" xml:space="preserve"><value>Neue Ablage</value></data>
+  <data name="ShelfDragPrompt" xml:space="preserve"><value>Dateien herausziehen</value></data>
+  <data name="ShelfCountFormat" xml:space="preserve"><value>{0} Elemente abgelegt</value></data>
+  <data name="ToastDismissCountdown" xml:space="preserve"><value>Schließt in {0} Sekunden; pausiert bei Mauszeiger oder Tastaturfokus</value></data>
+  <data name="ShelfCleanupHint" xml:space="preserve"><value>Leere temporäre Ablagen werden automatisch entfernt. Die Standardablage und Ablagen mit Inhalt bleiben erhalten.</value></data>
+  <data name="SettingsAppearance" xml:space="preserve"><value>Darstellung</value></data>
+  <data name="SettingsShelf" xml:space="preserve"><value>Ablage</value></data>
+  <data name="SettingsFiles" xml:space="preserve"><value>Dateiverarbeitung</value></data>
+  <data name="SettingsShortcuts" xml:space="preserve"><value>Tastenkürzel</value></data>
 </root>

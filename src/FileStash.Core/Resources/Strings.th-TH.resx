@@ -186,4 +186,5 @@
   <data name="RecoveryNeedsReview" xml:space="preserve"><value>ต้องตรวจสอบผลการเขียน ตรวจสอบปลายทางแล้วเลือกเก็บไฟล์ปัจจุบัน</value></data>
   <data name="RecoveryNotCommitted" xml:space="preserve"><value>ยังไม่ได้ยืนยันการเขียน โปรดตรวจสอบก่อนลองใหม่</value></data>
   <data name="RetryAuthorizationChanged" xml:space="preserve"><value>ไฟล์หรือขอบเขตการลองใหม่เปลี่ยนไป โปรดตรวจสอบอีกครั้ง</value></data>
+  <data name="DefaultGroupName" xml:space="preserve"><value>พื้นที่จัดเก็บชั่วคราวเริ่มต้น</value></data>
 </root>

@@ -49,6 +49,38 @@ public sealed class StashServiceTests : IAsyncLifetime
         return ValueTask.CompletedTask;
     }
 
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task SourceStatusMustDetectAddedFileOrEmptyDirectory(bool emptyDirectory)
+    {
+        var folder = Path.Combine(_workspace.Root, "source");
+        Directory.CreateDirectory(folder);
+        _workspace.CreateFile("source/a.txt", "a");
+        await _service.AddAsync(_groupId, [folder], null, TestContext.Current.CancellationToken);
+        if (emptyDirectory) Directory.CreateDirectory(Path.Combine(folder, "new"));
+        else _workspace.CreateFile("source/new.txt", "new");
+        var statuses = await _service.CheckSourceStatusAsync(_groupId, TestContext.Current.CancellationToken);
+        Assert.Equal(ItemSourceState.Modified, statuses.Single().State);
+    }
+
+
+    [Fact]
+    public async Task SourceStatusMustIgnoreExcludedAdditions()
+    {
+        var folder = Path.Combine(_workspace.Root, "source");
+        Directory.CreateDirectory(folder);
+        _workspace.CreateFile("source/a.txt", "a");
+        var settings = new SettingsService(_workspace.Paths);
+        settings.Current.ExcludeGlobs = ["**/*.tmp"];
+        var service = new StashService(_groups, _items, _entries, _blobStore, new GitService(), settings);
+        await service.AddAsync(_groupId, [folder], null, TestContext.Current.CancellationToken);
+        _workspace.CreateFile("source/ignored.tmp", "ignored");
+        Assert.Equal(ItemSourceState.Unchanged,
+            (await service.CheckSourceStatusAsync(_groupId, TestContext.Current.CancellationToken)).Single().State);
+    }
+
     [Fact]
     public async Task AddAsync_WithFile_ShouldCreateItemWithOneEntry()
     {

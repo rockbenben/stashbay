@@ -28,7 +28,7 @@ public sealed class SettingsService : ISettingsService
     public AppSettings Current { get; private set; }
 
     /// <summary>首次运行时接纳安装器已创建的启动项，不覆盖用户保存过的偏好。</summary>
-    public void ImportStartupPreference(bool enabled)
+    public void ImportStartupPreference(bool enabled, bool administrator = false)
     {
         if (!enabled || File.Exists(_settingsPath))
         {
@@ -36,6 +36,7 @@ public sealed class SettingsService : ISettingsService
         }
 
         Current.StartWithWindows = true;
+        Current.StartWithWindowsAsAdministrator = administrator;
         Save(Current);
     }
 
@@ -64,8 +65,6 @@ public sealed class SettingsService : ISettingsService
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        Current = settings;
-
         var directory = Path.GetDirectoryName(_settingsPath);
         if (!string.IsNullOrEmpty(directory))
         {
@@ -76,6 +75,7 @@ public sealed class SettingsService : ISettingsService
         var temporaryPath = _settingsPath + ".tmp";
         File.WriteAllText(temporaryPath, JsonSerializer.Serialize(settings, JsonOptions));
         File.Move(temporaryPath, _settingsPath, overwrite: true);
+        Current = settings;
     }
 
     private void TryBackupCorruptFile()

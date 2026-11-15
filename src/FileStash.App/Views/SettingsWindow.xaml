@@ -1,258 +1,344 @@
-<Window x:Class="FileStash.App.Views.SettingsWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:app="clr-namespace:FileStash.App.Resources"
-        xmlns:ctrl="clr-namespace:FileStash.App.Controls"
-        Title="{x:Static app:Strings.SettingsTitle}"
-        Icon="pack://application:,,,/Resources/app.ico"
-        Width="620"
-        Height="640"
-        MinWidth="480"
-        MinHeight="320"
-        ShowInTaskbar="False"
-        WindowStartupLocation="CenterOwner"
-        Background="{DynamicResource Brush.Surface}">
-
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:app="clr-namespace:FileStash.App.Resources" xmlns:ctrl="clr-namespace:FileStash.App.Controls" x:Class="FileStash.App.Views.SettingsWindow" Title="{x:Static app:Strings.SettingsTitle}" Icon="pack://application:,,,/Resources/app.ico" Width="800" Height="680" MinWidth="640" MinHeight="360" ShowInTaskbar="False" WindowStartupLocation="CenterOwner" Background="{DynamicResource Brush.Surface}" FontFamily="{DynamicResource Font.UI}" FontSize="{DynamicResource Font.Size.Body}">
+    <Window.Resources>
+        <Style x:Key="Settings.Hint" TargetType="TextBlock" BasedOn="{StaticResource Text.Caption}">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+        <Style x:Key="Settings.SectionTitle" TargetType="TextBlock" BasedOn="{StaticResource Text.Title}">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
+        </Style>
+        <Style x:Key="Settings.Card" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource Brush.SurfaceAlt}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="18,10"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
+        </Style>
+        <Style TargetType="TabItem">
+            <Setter Property="Foreground" Value="{DynamicResource Brush.TextSecondary}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="12,11"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusRing}"/>
+            <Setter Property="HeaderTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="Tab" Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header" RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Tab" Property="Background" Value="{DynamicResource Brush.Surface}"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Tab" Property="Background" Value="{DynamicResource Brush.Accent}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource Brush.AccentText}"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-
-        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
-                      Background="Transparent" ctrl:WheelScroll.IsEnabled="True">
-            <StackPanel Margin="16,16,16,12">
-                <TextBlock Style="{StaticResource Text.Title}" Text="{x:Static app:Strings.SectionGeneral}" />
-
-                <Grid Margin="0,10,0,0">
-                    <Grid.ColumnDefinitions>
-                        <!-- 标签列跟着最长的标签走：写死 140 在德语下会把
-                             「Standard-Konfliktstrategie」直接压进下拉框。 -->
-                        <ColumnDefinition Width="Auto" MinWidth="140" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static app:Strings.LanguageLabel}" VerticalAlignment="Center" />
-                    <ComboBox Grid.Row="0" Grid.Column="1"
-                              Width="140"
-                              ItemsSource="{Binding Languages}"
-                              Style="{StaticResource ComboBox.Start}"
-                              DisplayMemberPath="Label"
-                              SelectedValuePath="Value"
-                              SelectedValue="{Binding Settings.Language, Mode=TwoWay}" />
-
-                    <!-- 外观紧跟语言：两个都是"这台机器想要什么样子"。
-                         宽度用 MinWidth 而不是写死 140 —— 德语「Dem System folgen」比中文长出一倍，
-                         写死会把选项裁成半截。 -->
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static app:Strings.ThemeLabel}" VerticalAlignment="Center" />
-                    <ComboBox Grid.Row="1" Grid.Column="1"
-                              MinWidth="140"
-                              ItemsSource="{Binding Themes}"
-                              Style="{StaticResource ComboBox.Start}"
-                              DisplayMemberPath="Label"
-                              SelectedValuePath="Value"
-                              SelectedValue="{Binding Settings.Theme, Mode=TwoWay}" />
-
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static app:Strings.DefaultConflictPolicyLabel}" VerticalAlignment="Center" />
-                    <ComboBox Grid.Row="2" Grid.Column="1"
-                              Width="140"
-                              ItemsSource="{Binding Policies}"
-                              Style="{StaticResource ComboBox.Start}"
-                              DisplayMemberPath="Label"
-                              SelectedValuePath="Value"
-                              SelectedValue="{Binding Settings.DefaultConflictPolicy, Mode=TwoWay}" />
-
-                    <CheckBox Grid.Row="3" Grid.Column="1" Margin="0,8,0,0"
-                              Content="{x:Static app:Strings.SkipIdenticalLabel}"
-                              IsChecked="{Binding Settings.SkipIdentical}" />
-
-                    <CheckBox Grid.Row="4" Grid.Column="1" Margin="0,8,0,0"
-                              Content="{x:Static app:Strings.BackupBeforeOverwriteLabel}"
-                              IsChecked="{Binding Settings.BackupBeforeOverwrite}" />
-
-                    <StackPanel Grid.Row="5" Grid.Column="1" Margin="0,8,0,0">
-                        <CheckBox
-                              Content="{x:Static app:Strings.RemoveAfterDragExportLabel}"
-                              ToolTip="{x:Static app:Strings.RemoveAfterDragExportTooltip}"
-                              IsChecked="{Binding Settings.RemoveAfterDragExport}" />
-                        <CheckBox Margin="0,6,0,0"
-                                  Content="{x:Static app:Strings.AutoDismissWhenEmptyLabel}"
-                                  ToolTip="{x:Static app:Strings.AutoDismissWhenEmptyTooltip}"
-                                  IsChecked="{Binding Settings.AutoDismissWhenEmpty}" />
-                        <CheckBox Margin="0,6,0,0"
-                                  Content="{x:Static app:Strings.SummonAtCursorLabel}"
-                                  ToolTip="{x:Static app:Strings.SummonAtCursorTooltip}"
-                                  IsChecked="{Binding Settings.SummonAtCursor}" />
-                        <CheckBox Margin="0,6,0,0"
-                                  Content="{x:Static app:Strings.EnableShakeToSummonLabel}"
-                                  ToolTip="{x:Static app:Strings.EnableShakeToSummonTooltip}"
-                                  IsChecked="{Binding Settings.EnableShakeToSummon}" />
-                    </StackPanel>
-
-                    <!-- 说明文字占 *、输入框占 Auto：写成横向 StackPanel 时说明文字按无限宽测量，
-                         法语/意大利语/俄语实测把 60 DIP 的输入框整颗顶出窗口右缘（最多 41 DIP）。 -->
-                    <Grid Grid.Row="6" Grid.Column="1" Margin="0,8,0,0">
+        <TabControl x:Name="SettingsTabs" Grid.Row="0" TabStripPlacement="Left" SelectedIndex="0" BorderThickness="0" Background="Transparent" KeyboardNavigation.TabNavigation="Continue">
+            <TabControl.Style>
+                <Style TargetType="TabControl">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsStartupBusy}" Value="True">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TabControl.Style>
+            <TabControl.Template>
+                <ControlTemplate TargetType="TabControl">
+                    <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="174"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0"
-                                   Text="{x:Static app:Strings.HistoryRetentionLabel}"
-                                   TextWrapping="Wrap"
-                                   VerticalAlignment="Center" />
-                        <TextBox Grid.Column="1" Width="60" Margin="10,0,0,0"
-                                 Text="{Binding Settings.HistoryRetentionDays, Mode=TwoWay}" />
+                        <Border Background="{DynamicResource Brush.SurfaceAlt}" BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,0,1,0" Padding="12,16">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                <TabPanel IsItemsHost="True" KeyboardNavigation.TabIndex="1" KeyboardNavigation.DirectionalNavigation="Contained"/>
+                            </ScrollViewer>
+                        </Border>
+                        <ContentPresenter x:Name="PART_SelectedContentHost" Grid.Column="1" ContentSource="SelectedContent"/>
                     </Grid>
-                </Grid>
-
-
-
-                <TextBlock Margin="0,20,0,0" Style="{StaticResource Text.Title}" Text="{x:Static app:Strings.SectionExcludes}" />
-
-                <TextBlock Margin="0,10,0,0" Style="{StaticResource Text.Caption}"
-                           Text="{x:Static app:Strings.ExcludeHint}" />
-
-                <TextBox Height="80"
-                         Margin="0,6,0,0"
-                         AcceptsReturn="True"
-                         VerticalScrollBarVisibility="Auto"
-                         Text="{Binding ExcludeGlobsText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                <TextBlock Margin="0,20,0,0" Style="{StaticResource Text.Title}" Text="{x:Static app:Strings.SectionWindowsIntegration}" />
-
-                <CheckBox Margin="0,10,0,0"
-                          Content="{x:Static app:Strings.ContextMenuLabel}"
-                          IsChecked="{Binding Settings.ContextMenuEnabled}" />
-
-                <CheckBox Margin="0,8,0,0"
-                          Content="{x:Static app:Strings.StartWithWindowsLabel}"
-                          IsChecked="{Binding Settings.StartWithWindows}" />
-
-                <CheckBox Margin="0,8,0,0"
-                          Content="{x:Static app:Strings.CloseToTrayLabel}"
-                          IsChecked="{Binding Settings.CloseToTray}" />
-
-                <CheckBox Margin="0,8,0,0"
-                          Content="{x:Static app:Strings.StartMinimizedLabel}"
-                          IsChecked="{Binding Settings.MinimizeToTray}" />
-
-                <!-- 全局快捷键 1：呼出搁架 / 加入暂存 -->
-                <Grid Margin="0,12,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="{x:Static app:Strings.HotkeyLabel}"
-                               TextWrapping="Wrap"
-                               VerticalAlignment="Center" />
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
-                        <ctrl:HotkeyBox x:Name="HotkeyAddBox" Width="120"
-                                        Text="{Binding Settings.GlobalHotkeyAdd, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        <Button Content="{x:Static app:Strings.HotkeyClearButton}"
-                                Style="{StaticResource Button.Ghost}"
-                                Margin="4,0,0,0"
-                                Padding="8,2"
-                                Click="OnClearHotkeyAddClick" />
+                </ControlTemplate>
+            </TabControl.Template>
+            <TabItem Header="{x:Static app:Strings.SectionGeneral}" x:Name="GeneralSettingsTab">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" ctrl:WheelScroll.IsEnabled="True" Padding="24,20,24,20" Foreground="{DynamicResource Brush.TextPrimary}" FontWeight="Normal">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource Settings.SectionTitle}" Text="{x:Static app:Strings.SectionGeneral}"/>
+                        <Border Style="{StaticResource Settings.Card}">
+                            <StackPanel>
+                                <Grid Margin="0,8,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{x:Static app:Strings.LanguageLabel}" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,16,0"/>
+                                    <ComboBox Grid.Column="1" Width="185" ItemsSource="{Binding Languages}" DisplayMemberPath="Label" SelectedValuePath="Value" SelectedValue="{Binding Settings.Language, Mode=TwoWay}" AutomationProperties.Name="{x:Static app:Strings.LanguageLabel}"/>
+                                </Grid>
+                                <Grid Margin="0,8,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{x:Static app:Strings.ThemeLabel}" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,16,0"/>
+                                    <ComboBox Grid.Column="1" Width="185" ItemsSource="{Binding Themes}" DisplayMemberPath="Label" SelectedValuePath="Value" SelectedValue="{Binding Settings.Theme, Mode=TwoWay}" AutomationProperties.Name="{x:Static app:Strings.ThemeLabel}"/>
+                                </Grid>
+                                <Border BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,1,0,0" Margin="0,8,0,4"/>
+                                <StackPanel Margin="0,8,0,8">
+                                    <CheckBox Content="{x:Static app:Strings.CloseToTrayLabel}" IsChecked="{Binding Settings.CloseToTray, Mode=TwoWay}"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,8,0,8">
+                                    <CheckBox Content="{x:Static app:Strings.StartMinimizedLabel}" IsChecked="{Binding Settings.MinimizeToTray, Mode=TwoWay}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Settings.Card}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Settings.SectionTitle}" Text="{x:Static app:Strings.SettingsShortcuts}" FontSize="14" Margin="0,4,0,8"/>
+                                <TextBlock Style="{StaticResource Settings.Hint}" Text="{x:Static app:Strings.HotkeyRecordingHint}"/>
+                                <Grid Margin="0,6,0,6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{x:Static app:Strings.HotkeyLabel}" TextWrapping="Wrap" Margin="0,0,12,0" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <ctrl:HotkeyBox Style="{StaticResource {x:Type TextBox}}" x:Name="HotkeyAddBox" MinHeight="32" Text="{Binding Settings.GlobalHotkeyAdd, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="{x:Static app:Strings.HotkeyLabel}" Grid.Column="1" Width="160" ToolTip="{x:Static app:Strings.HotkeyRecordingHint}" AutomationProperties.HelpText="{x:Static app:Strings.HotkeyRecordingHint}"/>
+                                    <Button Grid.Column="2" Content="{x:Static app:Strings.HotkeyClearButton}" Style="{StaticResource Button.Ghost}" Margin="8,0,0,0" Click="OnClearHotkeyAddClick"/>
+                                </Grid>
+                                <Grid Margin="0,6,0,6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{x:Static app:Strings.HotkeyWorkbenchLabel}" TextWrapping="Wrap" Margin="0,0,12,0" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <ctrl:HotkeyBox Style="{StaticResource {x:Type TextBox}}" x:Name="HotkeyWorkbenchBox" MinHeight="32" Text="{Binding Settings.GlobalHotkeyWorkbench, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="{x:Static app:Strings.HotkeyWorkbenchLabel}" Grid.Column="1" Width="160" ToolTip="{x:Static app:Strings.HotkeyRecordingHint}" AutomationProperties.HelpText="{x:Static app:Strings.HotkeyRecordingHint}"/>
+                                    <Button Grid.Column="2" Content="{x:Static app:Strings.HotkeyClearButton}" Style="{StaticResource Button.Ghost}" Margin="8,0,0,0" Click="OnClearHotkeyWorkbenchClick"/>
+                                </Grid>
+                                <Grid Margin="0,6,0,6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{x:Static app:Strings.HotkeyPasteLabel}" TextWrapping="Wrap" Margin="0,0,12,0" Grid.Column="0" VerticalAlignment="Center"/>
+                                    <ctrl:HotkeyBox Style="{StaticResource {x:Type TextBox}}" x:Name="HotkeyPasteBox" MinHeight="32" Text="{Binding Settings.GlobalHotkeyPaste, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="{x:Static app:Strings.HotkeyPasteLabel}" Grid.Column="1" Width="160" ToolTip="{x:Static app:Strings.HotkeyRecordingHint}" AutomationProperties.HelpText="{x:Static app:Strings.HotkeyRecordingHint}"/>
+                                    <Button Grid.Column="2" Content="{x:Static app:Strings.HotkeyClearButton}" Style="{StaticResource Button.Ghost}" Margin="8,0,0,0" Click="OnClearHotkeyPasteClick"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
-                </Grid>
-
-                <!-- 全局快捷键 2：打开完整工作台 -->
-                <Grid Margin="0,8,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="{x:Static app:Strings.HotkeyWorkbenchLabel}"
-                               TextWrapping="Wrap"
-                               VerticalAlignment="Center" />
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
-                        <ctrl:HotkeyBox x:Name="HotkeyWorkbenchBox" Width="120"
-                                        Text="{Binding Settings.GlobalHotkeyWorkbench, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        <Button Content="{x:Static app:Strings.HotkeyClearButton}"
-                                Style="{StaticResource Button.Ghost}"
-                                Margin="4,0,0,0"
-                                Padding="8,2"
-                                Click="OnClearHotkeyWorkbenchClick" />
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="{x:Static app:Strings.SettingsShelf}" x:Name="ShelfSettingsTab">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" ctrl:WheelScroll.IsEnabled="True" Padding="24,20,24,20" Foreground="{DynamicResource Brush.TextPrimary}" FontWeight="Normal">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource Settings.SectionTitle}" Text="{x:Static app:Strings.SettingsShelf}"/>
+                        <Border Style="{StaticResource Settings.Card}">
+                            <StackPanel>
+                                <StackPanel Margin="0,8,0,8">
+                                    <CheckBox Content="{x:Static app:Strings.RemoveAfterDragExportLabel}" IsChecked="{Binding Settings.RemoveAfterDragExport, Mode=TwoWay}"/>
+                                    <TextBlock Style="{StaticResource Settings.Hint}" Margin="39,5,0,0" Text="{x:Static app:Strings.RemoveAfterDragExportTooltip}"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,8,0,8">
+                                    <CheckBox Content="{x:Static app:Strings.AutoDismissWhenEmptyLabel}" IsChecked="{Binding Settings.AutoDismissWhenEmpty, Mode=TwoWay}"/>
+                                    <TextBlock Style="{StaticResource Settings.Hint}" Margin="39,5,0,0" Text="{x:Static app:Strings.AutoDismissWhenEmptyTooltip}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Settings.Card}">
+                            <StackPanel>
+                                <StackPanel Margin="0,8,0,8">
+                                    <CheckBox Content="{x:Static app:Strings.SummonAtCursorLabel}" IsChecked="{Binding Settings.SummonAtCursor, Mode=TwoWay}"/>
+                                    <TextBlock Style="{StaticResource Settings.Hint}" Margin="39,5,0,0" Text="{x:Static app:Strings.SummonAtCursorTooltip}"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,8,0,8">
+                                    <CheckBox Content="{x:Static app:Strings.EnableShakeToSummonLabel}" IsChecked="{Binding Settings.EnableShakeToSummon, Mode=TwoWay}"/>
+                                    <TextBlock Style="{StaticResource Settings.Hint}" Margin="39,5,0,0" Text="{x:Static app:Strings.EnableShakeToSummonTooltip}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                        <TextBlock Style="{StaticResource Settings.Hint}" Text="{x:Static app:Strings.ShelfCleanupHint}"/>
                     </StackPanel>
-                </Grid>
-
-                <!-- 全局快捷键 3：剪贴板内容存入暂存 -->
-                <Grid Margin="0,8,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="{x:Static app:Strings.HotkeyPasteLabel}"
-                               TextWrapping="Wrap"
-                               VerticalAlignment="Center" />
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
-                        <ctrl:HotkeyBox x:Name="HotkeyPasteBox" Width="120"
-                                        Text="{Binding Settings.GlobalHotkeyPaste, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        <Button Content="{x:Static app:Strings.HotkeyClearButton}"
-                                Style="{StaticResource Button.Ghost}"
-                                Margin="4,0,0,0"
-                                Padding="8,2"
-                                Click="OnClearHotkeyPasteClick" />
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="{x:Static app:Strings.SettingsFiles}" x:Name="FilesSettingsTab">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" ctrl:WheelScroll.IsEnabled="True" Padding="24,20,24,20" Foreground="{DynamicResource Brush.TextPrimary}" FontWeight="Normal">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource Settings.SectionTitle}" Text="{x:Static app:Strings.SettingsFiles}"/>
+                        <Border Style="{StaticResource Settings.Card}">
+                            <StackPanel>
+                                <Grid Margin="0,8,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{x:Static app:Strings.DefaultConflictPolicyLabel}" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,16,0"/>
+                                    <ComboBox Grid.Column="1" Width="185" ItemsSource="{Binding Policies}" DisplayMemberPath="Label" SelectedValuePath="Value" SelectedValue="{Binding Settings.DefaultConflictPolicy, Mode=TwoWay}" AutomationProperties.Name="{x:Static app:Strings.DefaultConflictPolicyLabel}"/>
+                                </Grid>
+                                <StackPanel Margin="0,8,0,8">
+                                    <CheckBox Content="{x:Static app:Strings.SkipIdenticalLabel}" IsChecked="{Binding Settings.SkipIdentical, Mode=TwoWay}"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,8,0,8">
+                                    <CheckBox Content="{x:Static app:Strings.BackupBeforeOverwriteLabel}" IsChecked="{Binding Settings.BackupBeforeOverwrite, Mode=TwoWay}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Settings.Card}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Settings.SectionTitle}" Text="{x:Static app:Strings.SectionExcludes}"/>
+                                <TextBlock Style="{StaticResource Settings.Hint}" Text="{x:Static app:Strings.ExcludeHint}"/>
+                                <TextBox MinHeight="120" Margin="0,12,0,0" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AutomationProperties.Name="{x:Static app:Strings.SectionExcludes}" Text="{Binding ExcludeGlobsText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                        </Border>
+                        <Border x:Name="GitSettingsSection" Style="{StaticResource Settings.Card}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Settings.SectionTitle}" Text="{x:Static app:Strings.SectionDeveloperOptions}" FontSize="14" Margin="0,6,0,8"/>
+                                <TextBlock Style="{StaticResource Settings.Hint}" Text="{x:Static app:Strings.DeveloperOptionsHint}"/>
+                                <StackPanel Margin="0,8,0,8">
+                                    <CheckBox Content="{x:Static app:Strings.AutoGitAddLabel}" IsChecked="{Binding Settings.AutoGitAddAfterApply, Mode=TwoWay}"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,8,0,8">
+                                    <CheckBox Content="{x:Static app:Strings.WatchBranchLabel}" IsChecked="{Binding Settings.WatchGitBranchSwitch, Mode=TwoWay}"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,8,0,8">
+                                    <CheckBox Content="{x:Static app:Strings.RespectGitIgnoreLabel}" IsChecked="{Binding Settings.RespectGitIgnore, Mode=TwoWay}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
-                </Grid>
-
-                <TextBlock Margin="0,4,0,0"
-                           Style="{StaticResource Text.Caption}"
-                           Foreground="{DynamicResource Brush.TextTertiary}"
-                           Text="{x:Static app:Strings.HotkeyRecordingHint}" />
-
-                <TextBlock Margin="0,20,0,0" Style="{StaticResource Text.Title}" Text="{x:Static app:Strings.SectionStorage}" />
-
-                <TextBlock Margin="0,10,0,0" Style="{StaticResource Text.Caption}" Text="{Binding StorageText}" />
-                <TextBlock Margin="0,4,0,0" Style="{StaticResource Text.Caption}" Text="{Binding ExportText}" />
-                <TextBlock Margin="0,4,0,0" Style="{StaticResource Text.Caption}" Text="{Binding HistoryText}" />
-
-                <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
-                    <Button Content="{x:Static app:Strings.RefreshStorageButton}" Command="{Binding RefreshStorageCommand}" />
-                    <Button Content="{x:Static app:Strings.CleanupStorageButton}"
-                            Margin="6,0,0,0"
-                            Command="{Binding CleanupUnreferencedCommand}" />
-                    <Button Content="{x:Static app:Strings.ClearHistoryButton}"
-                            Margin="6,0,0,0"
-                            Command="{Binding ClearHistoryCommand}" />
-                </StackPanel>
-
-                <TextBlock Margin="0,20,0,0" Style="{StaticResource Text.Title}" Text="{x:Static app:Strings.SectionDeveloperOptions}" />
-
-                <TextBlock Margin="0,6,0,0" Style="{StaticResource Text.Caption}"
-                           Text="{x:Static app:Strings.DeveloperOptionsHint}"
-                           TextWrapping="Wrap" />
-
-                <CheckBox Margin="0,10,0,0"
-                          Content="{x:Static app:Strings.AutoGitAddLabel}"
-                          IsChecked="{Binding Settings.AutoGitAddAfterApply}" />
-
-                <CheckBox Margin="0,8,0,0"
-                          Content="{x:Static app:Strings.WatchBranchLabel}"
-                          IsChecked="{Binding Settings.WatchGitBranchSwitch}" />
-
-                <CheckBox Margin="0,8,0,0"
-                          Content="{x:Static app:Strings.RespectGitIgnoreLabel}"
-                          IsChecked="{Binding Settings.RespectGitIgnore}" />
-            </StackPanel>
-        </ScrollViewer>
-
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="{x:Static app:Strings.SectionWindowsIntegration}" x:Name="WindowsSettingsTab">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" ctrl:WheelScroll.IsEnabled="True" Padding="24,20,24,20" Foreground="{DynamicResource Brush.TextPrimary}" FontWeight="Normal">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource Settings.SectionTitle}" Text="{x:Static app:Strings.SectionWindowsIntegration}"/>
+                        <Border Style="{StaticResource Settings.Card}">
+                            <StackPanel>
+                                <StackPanel Margin="0,8,0,8">
+                                    <CheckBox x:Name="LogonStartupCheck" Content="{x:Static app:Strings.StartWithWindowsLabel}" IsChecked="{Binding Settings.StartWithWindows, Mode=TwoWay}"/>
+                                </StackPanel>
+                                <StackPanel Margin="16,0,0,0" IsEnabled="{Binding IsChecked, ElementName=LogonStartupCheck}">
+                                    <StackPanel Margin="0,8,0,8">
+                                        <CheckBox x:Name="AdministratorStartupCheck" Content="{x:Static app:Strings.StartupAdminLabel}" IsChecked="{Binding Settings.StartWithWindowsAsAdministrator, Mode=TwoWay}"/>
+                                        <TextBlock Style="{StaticResource Settings.Hint}" Margin="39,5,0,0" Text="{x:Static app:Strings.StartupAdminHint}"/>
+                                    </StackPanel>
+                                    <StackPanel IsEnabled="{Binding IsChecked, ElementName=AdministratorStartupCheck}">
+                                        <Grid Margin="0,8,0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{x:Static app:Strings.StartupDelayLabel}" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,16,0"/>
+                                            <TextBox Grid.Column="1" Width="72" Text="{Binding StartupDelayText, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="{x:Static app:Strings.StartupDelayLabel}" ToolTip="{x:Static app:Strings.StartupDelayRange}"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </StackPanel>
+                                <Border Background="{DynamicResource Brush.SurfaceAlt}" CornerRadius="8" Padding="12" Margin="0,12,0,0">
+                                    <StackPanel>
+                                        <TextBlock TextWrapping="Wrap" Text="{Binding StartupStatusText}" AutomationProperties.Name="{Binding StartupStatusText}"/>
+                                        <WrapPanel Margin="0,12,0,0">
+                                            <Button Content="{x:Static app:Strings.StartupRepair}" Margin="0,0,8,6" Command="{Binding RepairStartupCommand}" IsEnabled="{Binding IsChecked, ElementName=LogonStartupCheck}"/>
+                                            <Button Margin="0,0,8,8" Content="{x:Static app:Strings.StartupRefresh}" Command="{Binding RefreshStartupCommand}"/>
+                                        </WrapPanel>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Settings.Card}">
+                            <StackPanel>
+                                <StackPanel Margin="0,8,0,8">
+                                    <CheckBox Content="{x:Static app:Strings.ContextMenuLabel}" IsChecked="{Binding Settings.ContextMenuEnabled, Mode=TwoWay}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="{x:Static app:Strings.SectionStorage}" x:Name="StorageSettingsTab">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" ctrl:WheelScroll.IsEnabled="True" Padding="24,20,24,20" Foreground="{DynamicResource Brush.TextPrimary}" FontWeight="Normal">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource Settings.SectionTitle}" Text="{x:Static app:Strings.SectionStorage}"/>
+                        <Border Style="{StaticResource Settings.Card}">
+                            <StackPanel>
+                                <TextBlock Text="{Binding StorageText}" TextWrapping="Wrap" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                                <TextBlock Text="{Binding ExportText}" TextWrapping="Wrap" Margin="0,0,0,8"/>
+                                <TextBlock Text="{Binding HistoryText}" TextWrapping="Wrap"/>
+                                <WrapPanel Margin="0,16,0,0">
+                                    <Button Margin="0,0,8,8" Content="{x:Static app:Strings.RefreshStorageButton}" Command="{Binding RefreshStorageCommand}"/>
+                                    <Button Margin="0,0,8,8" Content="{x:Static app:Strings.CleanupStorageButton}" Command="{Binding CleanupUnreferencedCommand}"/>
+                                </WrapPanel>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Settings.Card}">
+                            <StackPanel>
+                                <Grid Margin="0,8,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{x:Static app:Strings.HistoryRetentionLabel}" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,16,0"/>
+                                    <TextBox Grid.Column="1" Width="72" Text="{Binding Settings.HistoryRetentionDays, Mode=TwoWay}" AutomationProperties.Name="{x:Static app:Strings.HistoryRetentionLabel}"/>
+                                </Grid>
+                                <WrapPanel Margin="0,12,0,0">
+                                    <Button Margin="0,0,8,8" Content="{x:Static app:Strings.ClearHistoryButton}" Command="{Binding ClearHistoryCommand}"/>
+                                </WrapPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
         <Border Grid.Row="1" Style="{StaticResource ActionBar}">
             <StackPanel Style="{StaticResource Actions.End}">
-                <Button Content="{x:Static app:Strings.SaveButton}" Style="{StaticResource Button.Primary}" Click="OnSave" />
-                <Button Content="{x:Static app:Strings.CancelButton}" Margin="8,0,0,0" IsCancel="True" Click="OnCancel" />
+                <Button Content="{x:Static app:Strings.SaveButton}" Click="OnSave" MinWidth="88">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource Button.Primary}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsStartupBusy}" Value="True">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding StartupUncertain}" Value="True">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button Content="{x:Static app:Strings.CancelButton}" Margin="8,0,0,0" MinWidth="88" IsCancel="True" Click="OnCancel">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsStartupBusy}" Value="True">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
             </StackPanel>
         </Border>
     </Grid>

@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
+using System.Windows.Shell;
 
 namespace FileStash.App.Controls;
 
@@ -57,6 +58,26 @@ internal static class WindowEffects
     private static extern IntPtr MonitorFromPoint(WinPoint pt, uint dwFlags);
 
     private const uint MonitorDefaultToNearest = 0x00000002;
+
+    /// <summary>Native rounded corners and the compositor shadow keep the shelf lightweight.</summary>
+    public static void SetShelfChrome(Window window, bool compact)
+    {
+        var chrome = WindowChrome.GetWindowChrome(window);
+        if (chrome is not null)
+        {
+            chrome.GlassFrameThickness = compact ? new Thickness(1) : new Thickness(0);
+            chrome.CornerRadius = compact ? new CornerRadius(12) : new CornerRadius(0);
+        }
+        var hwnd = new WindowInteropHelper(window).Handle;
+        if (hwnd == IntPtr.Zero) return;
+        // Windows 11 rounds the native surface; older systems use WindowChrome's radius.
+        var preference = compact ? 2 : 0; // DWMWCP_ROUND / DEFAULT
+        DwmSetWindowAttribute(hwnd, 33, ref preference, sizeof(int));
+        var border = -1; // DWMWA_COLOR_DEFAULT
+        if (compact && window.TryFindResource("Brush.ShelfBorder") is SolidColorBrush brush)
+            border = brush.Color.R | (brush.Color.G << 8) | (brush.Color.B << 16);
+        DwmSetWindowAttribute(hwnd, 34, ref border, sizeof(int));
+    }
 
     /// <summary>读当前的 cloak 状态，供自检断言用（DWMWA_CLOAKED 的签名是 out 不是 ref）。</summary>
     public static bool IsCloaked(Window window)
@@ -382,26 +403,38 @@ internal static class WindowEffects
             topmost, back, hwnd);
     }
 
-    /// <summary>深色模式下把标题栏也刷成深色，否则非客户区会是白的。</summary>
+    /// <summary>Apply native caption colours both before first show and to existing windows.</summary>
     public static void ApplyDarkTitleBar(Window window, bool dark)
     {
-        window.SourceInitialized += (_, _) =>
+        void Apply()
         {
             var hwnd = new WindowInteropHelper(window).Handle;
-            if (hwnd == IntPtr.Zero)
-            {
-                return;
-            }
-
+            if (hwnd == IntPtr.Zero) return;
             var value = dark ? 1 : 0;
-
-            // 属性 20 是 Win11 build 22000 起的编号，旧编号是 19；
-            // DwmSetWindowAttribute 对不认识的编号返回错误码、不抛异常，所以要靠返回值判断。
             if (DwmSetWindowAttribute(hwnd, DwmwaUseImmersiveDarkMode, ref value, sizeof(int)) != 0)
-            {
                 DwmSetWindowAttribute(hwnd, DwmwaUseImmersiveDarkModeLegacy, ref value, sizeof(int));
+
+            // Explicit colours also cover an app theme different from the Windows theme.
+            foreach (var (attribute, key) in new[] { (35, "Brush.Surface"), (36, "Brush.TextPrimary") })
+            {
+                if (window.TryFindResource(key) is not SolidColorBrush brush) continue;
+                var color = brush.Color.R | (brush.Color.G << 8) | (brush.Color.B << 16);
+                DwmSetWindowAttribute(hwnd, attribute, ref color, sizeof(int));
             }
-        };
+        }
+        if (new WindowInteropHelper(window).Handle == IntPtr.Zero)
+            window.SourceInitialized += (_, _) => Apply();
+        else Apply();
+    }
+
+    public static bool? IsTitleBarDark(Window window)
+    {
+        var hwnd = new WindowInteropHelper(window).Handle;
+        if (hwnd == IntPtr.Zero) return null;
+        if (DwmGetWindowAttribute(hwnd, DwmwaUseImmersiveDarkMode, out var value, sizeof(int)) == 0)
+            return value != 0;
+        return DwmGetWindowAttribute(hwnd, DwmwaUseImmersiveDarkModeLegacy, out value, sizeof(int)) == 0
+            ? value != 0 : null;
     }
 
     [StructLayout(LayoutKind.Sequential)]

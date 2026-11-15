@@ -9,7 +9,6 @@
     -->
     <h:TaskbarIcon x:Key="Tray"
                     Id="3D4A80BE-1BF8-4061-B9D1-5A8EFA062F8A"
-                    ToolTipText="{x:Static app:Strings.AppName}"
-                    IconSource="pack://application:,,,/Resources/app.ico" />
+                    ToolTipText="{x:Static app:Strings.AppName}" />
 
 </ResourceDictionary>

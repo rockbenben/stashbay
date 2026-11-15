@@ -46,12 +46,13 @@ public sealed partial class ApplyExecutor : IApplyExecutor
         IProgress<ProgressInfo>? progress,
         CancellationToken ct)
     {
+        var execution = ExecutionPlan.Capture(plan);
         await WriteLock.WaitAsync(ct);
 
         try
         {
             await using var processLock = await StorageWriteLease.AcquireAsync(_blobStore, ct);
-            return await ExecuteCoreAsync(plan, progress, ct);
+            return await ExecuteCoreAsync(execution, progress, ct);
         }
         finally
         {
@@ -60,7 +61,7 @@ public sealed partial class ApplyExecutor : IApplyExecutor
     }
 
     private async Task<Operation> ExecuteCoreAsync(
-        ApplyPlan plan,
+        ExecutionPlan plan,
         IProgress<ProgressInfo>? progress,
         CancellationToken ct)
     {
@@ -85,12 +86,6 @@ public sealed partial class ApplyExecutor : IApplyExecutor
         var total = plan.Entries.Count;
         var done = 0;
 
-        var destinations = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        foreach (var planned in plan.Entries)
-        {
-            if (planned.Action != PlannedAction.Skip && !destinations.Add(Path.GetFullPath(planned.TargetPath)))
-                planned.State = PlannedState.Invalid;
-        }
         var journal = plan.Entries.Select(planned => new OperationEntry
         {
             OperationId = operation.Id,
@@ -99,7 +94,9 @@ public sealed partial class ApplyExecutor : IApplyExecutor
                 ? PlannedAction.Skip : planned.Action,
             Action = planned.Action == PlannedAction.Skip || planned.State is PlannedState.Invalid or PlannedState.TypeConflict
                 ? EntryResult.Skipped : EntryResult.Failed,
-            NewSha256 = planned.Source.Sha256,
+            NewSha256 = planned.Sha256,
+            NewZoneIdentifier = planned.ZoneIdentifier,
+            PreviousZoneIdentifier = planned.ExpectedTargetZoneIdentifier,
             PreviousSha256 = planned.ExpectedTargetSha256,
             Error = planned.Action == PlannedAction.Skip ? null : Strings.RecoveryNotCommitted,
         }).ToList();
@@ -172,7 +169,7 @@ public sealed partial class ApplyExecutor : IApplyExecutor
     }
 
     /// <summary>写入后把成功写入的文件加入 git 暂存区（只限仓库内）。</summary>
-    private async Task TryGitAddAsync(ApplyPlan plan, IReadOnlyList<OperationEntry> entries)
+    private async Task TryGitAddAsync(ExecutionPlan plan, IReadOnlyList<OperationEntry> entries)
     {
         if (!_settings.Current.AutoGitAddAfterApply || _git is null || !_git.IsAvailable)
         {
@@ -208,7 +205,7 @@ public sealed partial class ApplyExecutor : IApplyExecutor
 
     private async Task<(OperationEntry Entry, bool Failed)> ExecuteEntryAsync(
         string operationId,
-        PlannedEntry planned,
+        ExecutionEntry planned,
         List<OperationEntry> entries,
         CancellationToken ct, OperationEntry? existing = null)
     {
@@ -223,7 +220,8 @@ public sealed partial class ApplyExecutor : IApplyExecutor
                 PlannedAction.Rename => EntryResult.Renamed,
                 _ => EntryResult.Skipped,
             },
-            NewSha256 = planned.Source.Sha256,
+            NewSha256 = planned.Sha256,
+            NewZoneIdentifier = planned.ZoneIdentifier,
             IntendedAction = planned.Action,
         };
 
@@ -244,12 +242,15 @@ public sealed partial class ApplyExecutor : IApplyExecutor
             return (entry, false);
         }
 
-        if (planned.Source.IsDirectory || planned.Source.Sha256 is null)
+        if (planned.IsDirectory || planned.Sha256 is null)
         {
             // 空目录：只要把目录建出来
             try
             {
+                using var directoryGuard = _writer.GuardTarget(planned.TargetPath);
                 EnsureDirectory(planned.TargetPath, entries, operationId);
+                await _operationEntries.AddManyAsync(entries.Where(created => created.Id == 0).ToList(), CancellationToken.None);
+                entry.Action = EntryResult.Skipped;
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
@@ -275,9 +276,13 @@ public sealed partial class ApplyExecutor : IApplyExecutor
             using var targetGuard = _writer.GuardTarget(planned.TargetPath);
             if (planned.Action == PlannedAction.Overwrite && !File.Exists(planned.TargetPath))
                 throw new FileNotFoundException(Strings.Format(Strings.TargetMissing, planned.TargetPath));
-            if (planned.Action == PlannedAction.Overwrite && planned.ExpectedTargetSha256 is not null
-                && !string.Equals(await HashUtil.ComputeFileSha256Async(planned.TargetPath, ct),
-                    planned.ExpectedTargetSha256, StringComparison.OrdinalIgnoreCase))
+            if (planned.Action == PlannedAction.Overwrite
+                && (planned.ExpectedTargetSha256 is null || !string.Equals(await HashUtil.ComputeFileSha256Async(planned.TargetPath, ct),
+                    planned.ExpectedTargetSha256, StringComparison.OrdinalIgnoreCase)))
+                throw new IOException(Strings.UncommittedChangesWarning);
+            if (planned.Action == PlannedAction.Overwrite
+                && !ZoneIdentifier.Matches(await ZoneIdentifier.ReadAsync(planned.TargetPath, ct),
+                    planned.ExpectedTargetZoneIdentifier))
                 throw new IOException(Strings.UncommittedChangesWarning);
 
             // 父目录（新建的要记进历史，撤销时删掉）
@@ -293,20 +298,30 @@ public sealed partial class ApplyExecutor : IApplyExecutor
             {
                 var (backupSha, _) = await _blobStore.PutFileAsync(planned.TargetPath, ct);
                 entry.BackupSha256 = backupSha;
+                entry.BackupZoneIdentifier = await ZoneIdentifier.ReadAsync(planned.TargetPath, ct);
             }
 
             var temporaryPath = CreateTemporaryPath(directory);
             try
             {
-                await _blobStore.CopyBlobToAsync(planned.Source.Sha256, temporaryPath, ct);
+                await _blobStore.CopyBlobToAsync(planned.Sha256, temporaryPath, ct);
                 if (!string.Equals(await HashUtil.ComputeFileSha256Async(temporaryPath, ct),
-                        planned.Source.Sha256, StringComparison.OrdinalIgnoreCase))
+                        planned.Sha256, StringComparison.OrdinalIgnoreCase))
                     throw new IOException(Strings.BlobIntegrityFailed);
 
+                // ReplaceFile merges streams missing from the replacement. An empty
+                // stream prevents inheriting an old origin when the snapshot has none.
+                var replacementZone = planned.ZoneIdentifier;
+                if (planned.Action == PlannedAction.Overwrite && replacementZone is null
+                    && planned.ExpectedTargetZoneIdentifier is not null)
+                    replacementZone = [];
+                await ZoneIdentifier.WriteAsync(temporaryPath, replacementZone, ct);
                 entry.WitnessPath = temporaryPath;
                 entry.WitnessIdentity = _writer.GetIdentity(temporaryPath);
                 entry.PreviousSha256 = File.Exists(planned.TargetPath)
                     ? await HashUtil.ComputeFileSha256Async(planned.TargetPath, ct) : null;
+                entry.PreviousZoneIdentifier = File.Exists(planned.TargetPath)
+                    ? await ZoneIdentifier.ReadAsync(planned.TargetPath, ct) : null;
                 entry.Pending = true;
                 entry.Action = EntryResult.Skipped;
                 if (entry.Id == 0)
@@ -315,7 +330,7 @@ public sealed partial class ApplyExecutor : IApplyExecutor
                     await _operationEntries.UpdateAsync(entry, CancellationToken.None);
 
                 if (planned.Action == PlannedAction.Overwrite)
-                    await WriteWithReadOnlyHandlingAsync(temporaryPath, planned.TargetPath, ct);
+                    await WriteWithReadOnlyHandlingAsync(temporaryPath, planned.TargetPath, planned.ZoneIdentifier, ct);
                 else if (!await _writer.CreateAsync(temporaryPath, planned.TargetPath, ct))
                     throw new IOException(Strings.WriteFailedDetail);
             }
@@ -348,7 +363,8 @@ public sealed partial class ApplyExecutor : IApplyExecutor
     /// <remarks>
     /// 顺序不能反：覆盖只读文件会返回 ERROR_ACCESS_DENIED，必须先清除。
     /// </remarks>
-    private async Task WriteWithReadOnlyHandlingAsync(string temporaryPath, string targetPath, CancellationToken ct)
+    private async Task WriteWithReadOnlyHandlingAsync(string temporaryPath, string targetPath,
+        byte[]? zoneIdentifier, CancellationToken ct)
     {
         var wasReadOnly = false;
 
@@ -371,6 +387,7 @@ public sealed partial class ApplyExecutor : IApplyExecutor
             {
                 throw new IOException($"Failed to atomically replace '{targetPath}'.");
             }
+            await ZoneIdentifier.WriteAsync(targetPath, zoneIdentifier, CancellationToken.None);
         }
         finally
         {
@@ -388,7 +405,7 @@ public sealed partial class ApplyExecutor : IApplyExecutor
     }
 
     /// <summary>确保目录存在，把新建的目录记进历史（撤销时按逆序删掉）。</summary>
-    private static void EnsureDirectory(string directory, List<OperationEntry> entries, string operationId)
+    private void EnsureDirectory(string directory, List<OperationEntry> entries, string operationId)
     {
         if (Directory.Exists(directory))
         {
@@ -423,6 +440,7 @@ public sealed partial class ApplyExecutor : IApplyExecutor
                 TargetPath = created,
                 Action = EntryResult.DirectoryCreated,
                 CreatedDirectory = true,
+                WitnessIdentity = _writer.GetIdentity(created),
             });
         }
     }
@@ -510,20 +528,28 @@ public sealed partial class ApplyExecutor : IApplyExecutor
             entry.UndoPending = true;
             await _operationEntries.UpdateAsync(entry, CancellationToken.None);
             var issuesBefore = counters.Failed + counters.Skipped;
-            switch (entry.Action)
+            try
             {
-                case EntryResult.DirectoryCreated:
-                    UndoDirectory(entry, counters);
-                    break;
+                switch (entry.Action)
+                {
+                    case EntryResult.DirectoryCreated:
+                        UndoDirectory(entry, counters);
+                        break;
 
-                case EntryResult.Created:
-                case EntryResult.Renamed:
-                    await UndoCreatedAsync(entry, counters, ct);
-                    break;
+                    case EntryResult.Created:
+                    case EntryResult.Renamed:
+                        await UndoCreatedAsync(entry, counters, ct);
+                        break;
 
-                case EntryResult.Overwritten:
-                    await UndoOverwrittenAsync(entry, counters, ct);
-                    break;
+                    case EntryResult.Overwritten:
+                        await UndoOverwrittenAsync(entry, counters, ct);
+                        break;
+                }
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                counters.Failed++;
+                counters.Messages.Add(Strings.Format(Strings.RestoreFailed, entry.TargetPath, ex.Message));
             }
             entry.Undone = counters.Failed + counters.Skipped == issuesBefore;
             entry.UndoPending = !entry.Undone;
@@ -560,13 +586,20 @@ public sealed partial class ApplyExecutor : IApplyExecutor
         public List<string> Messages { get; } = [];
     }
 
-    private static void UndoDirectory(OperationEntry entry, UndoCounters counters)
+    private void UndoDirectory(OperationEntry entry, UndoCounters counters)
     {
         if (!Directory.Exists(entry.TargetPath))
         {
             return;
         }
 
+        using var targetGuard = _writer.GuardTarget(entry.TargetPath);
+        if (entry.WitnessIdentity is null || _writer.GetIdentity(entry.TargetPath) != entry.WitnessIdentity)
+        {
+            counters.Skipped++;
+            counters.Messages.Add(Strings.RecoveryNeedsReview);
+            return;
+        }
         try
         {
             if (Directory.EnumerateFileSystemEntries(entry.TargetPath).Any())
@@ -576,7 +609,12 @@ public sealed partial class ApplyExecutor : IApplyExecutor
                 return;
             }
 
-            Directory.Delete(entry.TargetPath);
+            if (!_writer.DeleteDirectory(entry.TargetPath, entry.WitnessIdentity))
+            {
+                counters.Skipped++;
+                counters.Messages.Add(Strings.RecoveryNeedsReview);
+                return;
+            }
             counters.Deleted++;
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
@@ -661,7 +699,11 @@ public sealed partial class ApplyExecutor : IApplyExecutor
                 await _blobStore.CopyBlobToAsync(entry.BackupSha256, temporaryPath, ct);
                 if (await HashUtil.ComputeFileSha256Async(temporaryPath, ct) != entry.BackupSha256)
                     throw new IOException(Strings.BlobIntegrityFailed);
-                await WriteWithReadOnlyHandlingAsync(temporaryPath, entry.TargetPath, ct);
+                await ZoneIdentifier.WriteAsync(temporaryPath, entry.BackupZoneIdentifier
+                    ?? (entry.NewZoneIdentifier is not null ? [] : null), ct);
+                entry.UndoWitnessIdentity = _writer.GetIdentity(temporaryPath);
+                await _operationEntries.UpdateAsync(entry, CancellationToken.None);
+                await WriteWithReadOnlyHandlingAsync(temporaryPath, entry.TargetPath, entry.BackupZoneIdentifier, ct);
             }
             finally
             {
@@ -688,7 +730,8 @@ public sealed partial class ApplyExecutor : IApplyExecutor
 
         var sha256 = await HashUtil.ComputeFileSha256Async(entry.TargetPath, ct);
 
-        return string.Equals(sha256, entry.NewSha256, StringComparison.OrdinalIgnoreCase);
+        return string.Equals(sha256, entry.NewSha256, StringComparison.OrdinalIgnoreCase)
+            && ZoneIdentifier.Matches(await ZoneIdentifier.ReadAsync(entry.TargetPath, ct), entry.NewZoneIdentifier);
     }
 
     private static string BuildSummary(int created, int overwritten, int skipped, int failed) =>

@@ -74,6 +74,8 @@ public sealed class AtomicFileWriter : IAtomicFileWriter
                 if (new DirectoryInfo(ancestor).LinkTarget is not null)
                     throw new IOException(ancestor);
             }
+            if (Directory.Exists(path) && new DirectoryInfo(path).LinkTarget is not null)
+                throw new IOException(path);
             if (File.Exists(path))
             {
                 if (new FileInfo(path).LinkTarget is not null) throw new IOException(path);
@@ -104,13 +106,35 @@ public sealed class AtomicFileWriter : IAtomicFileWriter
     {
         try
         {
-            using var handle = File.OpenHandle(path, FileMode.Open, FileAccess.Read,
-                FileShare.ReadWrite | FileShare.Delete);
-            return GetFileInformationByHandle(handle, out var info)
-                ? $"{info.VolumeSerialNumber:x8}:{info.FileIndexHigh:x8}{info.FileIndexLow:x8}" : null;
+            using var handle = CreateFile(path, 0x80, 7, IntPtr.Zero, 3, 0x02200000, IntPtr.Zero);
+            return GetIdentity(handle);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { return null; }
     }
+
+    private static string? GetIdentity(Microsoft.Win32.SafeHandles.SafeFileHandle handle) =>
+        GetFileInformationByHandle(handle, out var info)
+            ? $"{info.VolumeSerialNumber:x8}:{info.FileIndexHigh:x8}{info.FileIndexLow:x8}" : null;
+
+    public bool DeleteDirectory(string path, string expectedIdentity)
+    {
+        using var guard = GuardTarget(path);
+        // DELETE + FILE_READ_ATTRIBUTES, with no delete sharing, prevents replacement
+        // between identity validation and deletion. OPEN_REPARSE_POINT avoids following links.
+        using var handle = CreateFile(path, 0x10080, 3, IntPtr.Zero, 3, 0x02200000, IntPtr.Zero);
+        if (handle.IsInvalid)
+            throw new IOException(path, Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+        if (GetIdentity(handle) != expectedIdentity) return false;
+        var disposition = 1;
+        if (!SetFileInformationByHandle(handle, 4, ref disposition, sizeof(int)))
+            throw new IOException(path, Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+        return true;
+    }
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool SetFileInformationByHandle(
+        Microsoft.Win32.SafeHandles.SafeFileHandle handle, int informationClass, ref int information, int size);
 
     [StructLayout(LayoutKind.Sequential)]
     private struct FileInformation

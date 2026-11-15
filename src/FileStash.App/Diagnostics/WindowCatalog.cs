@@ -55,7 +55,28 @@ internal static class WindowCatalog
                     await Pump(window);
                 }),
 
-            new("MainWindow.Compact.ViewList", () => CreateMainWindow(services, viewModel, compact: true),
+            new("MainWindow.Compact.Minimum", () => CreateMainWindow(services, viewModel, compact: true),
+                async (window, provider) =>
+                {
+                    await SelectGroup(window, provider, viewModel, defaultBox);
+                    window.Width = window.MinWidth;
+                    window.Height = window.MinHeight;
+                    await Pump(window);
+                }),
+
+            new("MainWindow.Compact.DropReady", () => CreateMainWindow(services, viewModel, compact: true),
+                async (window, provider) =>
+                {
+                    await SelectGroup(window, provider, viewModel, defaultBox);
+                    if (window.FindName("DropOverlay") is Border overlay)
+                    {
+                        overlay.Visibility = Visibility.Visible;
+                        overlay.Opacity = 1;
+                    }
+                    await Pump(window);
+                }),
+
+            new("MainWindow.Compact.LegacyListPreference", () => CreateMainWindow(services, viewModel, compact: true),
                 async (window, provider) =>
                 {
                     await SelectGroup(window, provider, viewModel, defaultBox);
@@ -66,12 +87,18 @@ internal static class WindowCatalog
             new("MainWindow.Compact.Empty", () => CreateMainWindow(services, viewModel, compact: true),
                 (window, provider) => SelectGroup(window, provider, viewModel, "空箱（还没放东西）")),
 
+            new("MainWindow.Compact.RestoreActions", () => CreateMainWindow(services, viewModel, compact: true),
+                (window, provider) => SelectGroup(window, provider, viewModel, defaultBox)),
+
             // 紧凑面板 + 长名：省略号到底生不生效，只有这一格量得出来
             new("MainWindow.Compact.LongName", () => CreateMainWindow(services, viewModel, compact: true),
                 (window, provider) => SelectGroup(window, provider, viewModel, "2026 年第三季度营销物料汇总与设计稿备份（归档勿动）")),
 
             new("MainWindow.Expanded", () => CreateMainWindow(services, viewModel, compact: false),
                 (window, provider) => SelectGroup(window, provider, viewModel, defaultBox)),
+
+            new("MainWindow.Expanded.Empty", () => CreateMainWindow(services, viewModel, compact: false),
+                (window, provider) => SelectGroup(window, provider, viewModel, "空箱（还没放东西）")),
 
             new("MainWindow.Expanded.Project", () => CreateMainWindow(services, viewModel, compact: false),
                 (window, provider) => SelectGroup(window, provider, viewModel, "项目 A · 前端")),
@@ -216,6 +243,20 @@ internal static class WindowCatalog
                     Strings.Format(Strings.StatusClipboardFilled, 3)))),
 
             new(
+                "ResultToast.Notice.HalfElapsed",
+                () => Task.FromResult<Window>(new ResultToast(Strings.AddToStashTitle,
+                    Strings.Format(Strings.StatusClipboardFilled, 3))),
+                async (window, _) =>
+                {
+                    var flags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
+                    var countdown = (FileStash.App.Controls.ToastCountdown)typeof(ResultToast)
+                        .GetField("_countdown", flags)!.GetValue(window)!;
+                    countdown.Advance(TimeSpan.FromSeconds(3), paused: false);
+                    typeof(ResultToast).GetMethod("UpdateCountdown", flags)!.Invoke(window, null);
+                    await Pump(window);
+                }),
+
+            new(
                 "HistoryWindow",
                 () => Task.FromResult<Window>(
                     ActivatorUtilities.CreateInstance<HistoryWindow>(services)),
@@ -234,6 +275,24 @@ internal static class WindowCatalog
 
             new("SettingsWindow", () => Task.FromResult<Window>(
                 ActivatorUtilities.CreateInstance<SettingsWindow>(services))),
+
+            new("SettingsWindow.Shelf", () => CreateSettingsPage(services, "ShelfSettingsTab")),
+            new("SettingsWindow.Files", () => CreateSettingsPage(services, "FilesSettingsTab")),
+            new("SettingsWindow.Windows", () => CreateSettingsPage(services, "WindowsSettingsTab")),
+            new("SettingsWindow.Storage", () => CreateSettingsPage(services, "StorageSettingsTab")),
+            new("SettingsWindow.Git", () => CreateSettingsPage(services, "FilesSettingsTab"),
+                (window, _) =>
+                {
+                    ((FrameworkElement)window.FindName("GitSettingsSection")).BringIntoView();
+                    return Pump(window);
+                }),
+
+            new("SettingsWindow.StartupElevated", () => CreateStartupSettings(services),
+                (window, _) => SetStartupStatus(window, Strings.StartupStatusElevated)),
+            new("SettingsWindow.StartupRepair", () => CreateStartupSettings(services),
+                (window, _) => SetStartupStatus(window, Strings.StartupStatusRepair)),
+            new("SettingsWindow.StartupUnknown", () => CreateStartupSettings(services),
+                (window, _) => SetStartupStatus(window, Strings.StartupStatusUnknown, uncertain: true)),
 
             new("RootPresetsWindow", () => Task.FromResult<Window>(
                 ActivatorUtilities.CreateInstance<RootPresetsWindow>(services))),
@@ -265,6 +324,31 @@ internal static class WindowCatalog
         };
 
         return shots;
+    }
+
+    private static Task<Window> CreateSettingsPage(IServiceProvider services, string page)
+    {
+        var window = ActivatorUtilities.CreateInstance<SettingsWindow>(services);
+        ((TabItem)window.FindName(page)).IsSelected = true;
+        return Task.FromResult<Window>(window);
+    }
+
+    private static Task<Window> CreateStartupSettings(IServiceProvider services)
+    {
+        var viewModel = ActivatorUtilities.CreateInstance<SettingsViewModel>(services);
+        viewModel.Settings.StartWithWindows = true;
+        viewModel.Settings.StartWithWindowsAsAdministrator = true;
+        var window = new SettingsWindow(viewModel);
+        ((TabItem)window.FindName("WindowsSettingsTab")).IsSelected = true;
+        return Task.FromResult<Window>(window);
+    }
+
+    private static Task SetStartupStatus(Window window, string text, bool uncertain = false)
+    {
+        var viewModel = (SettingsViewModel)window.DataContext;
+        viewModel.StartupStatusText = text;
+        viewModel.StartupUncertain = uncertain;
+        return Task.CompletedTask;
     }
 
     private static async Task<Window> CreateMainWindow(

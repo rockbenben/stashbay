@@ -49,7 +49,8 @@ public sealed class SingleInstanceCoordinator : IDisposable
         TimeSpan takeoverTimeout,
         bool skipInstanceCheck,
         string? mutexName = null,
-        TimeSpan? messageReadTimeout = null)
+        TimeSpan? messageReadTimeout = null,
+        bool wakePrimary = true)
     {
         _pipeName = pipeName;
         _mutexName = mutexName ?? MutexName;
@@ -72,7 +73,7 @@ public sealed class SingleInstanceCoordinator : IDisposable
         }
 
         // 先把参数发给老实例（叫醒它），再等它放手
-        SendToPrimary([]);
+        if (wakePrimary) SendToPrimary([]);
 
         try
         {

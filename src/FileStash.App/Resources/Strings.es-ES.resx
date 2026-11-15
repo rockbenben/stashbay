@@ -939,7 +939,7 @@
     <value>Agitar el ratón rápidamente al arrastrar archivos para desplegar el depósito</value>
   </data>
   <data name="SectionDeveloperOptions" xml:space="preserve">
-    <value>Opciones avanzadas y de desarrollador (Git)</value>
+    <value>Integración con Git</value>
   </data>
   <data name="DeveloperOptionsHint" xml:space="preserve">
     <value>Solo se aplica a archivos dentro de un repositorio Git. El almacenamiento y la restauración de archivos generales se mantienen completamente independientes.</value>
@@ -957,7 +957,7 @@
     <value>Atajo global (pegar archivos del portapapeles)</value>
   </data>
   <data name="HotkeyRecordingHint" xml:space="preserve">
-    <value>Haga clic y presione el atajo para grabar. Esc para cancelar.</value>
+    <value>Haz clic en un campo, pulsa una combinación (p. ej., Ctrl+Alt+S) y guarda para aplicarla. Backspace/Delete borra; Esc cancela la captura.</value>
   </data>
   <data name="HotkeyClearButton" xml:space="preserve">
     <value>Borrar</value>
@@ -985,4 +985,85 @@
   <data name="KeepCurrentConfirm" xml:space="preserve"><value>¿Conservar el archivo actual y finalizar la recuperación de esta entrada?
 {0}</value></data>
   <data name="ElevatedRetryConfirm" xml:space="preserve"><value>Confirme las rutas completas, acciones y hashes. Solo se reintentarán estas entradas fallidas.</value></data>
+  <data name="ShellIntegrationFailedMessage" xml:space="preserve">
+    <value>La configuración se guardó, pero la integración con Windows (incluido el inicio automático) no se pudo aplicar por completo. Revise el registro de la aplicación, resuelva los problemas de permisos y vuelva a guardar.</value>
+  </data>
+  <data name="StartupAdminLabel" xml:space="preserve">
+    <value>Iniciar con permisos de administrador (opcional)</value>
+  </data>
+  <data name="StartupAdminHint" xml:space="preserve">
+    <value>Se usan permisos estándar por defecto. Se aplica al próximo inicio de sesión; apruebe UAC con su cuenta de administrador actual. Compatible con versiones portátiles.</value>
+  </data>
+  <data name="StartupRepair" xml:space="preserve">
+    <value>Reparar inicio</value>
+  </data>
+  <data name="StartupRefresh" xml:space="preserve">
+    <value>Actualizar estado</value>
+  </data>
+  <data name="StartupStatusDisabled" xml:space="preserve">
+    <value>Inicio: desactivado</value>
+  </data>
+  <data name="StartupStatusPlain" xml:space="preserve">
+    <value>Inicio: permisos estándar</value>
+  </data>
+  <data name="StartupStatusElevated" xml:space="preserve">
+    <value>Inicio: permisos de administrador</value>
+  </data>
+  <data name="StartupStatusRepair" xml:space="preserve">
+    <value>Inicio: requiere reparación</value>
+  </data>
+  <data name="StartupStatusConflict" xml:space="preserve">
+    <value>Inicio: conflicto de propietario de tarea; revise el registro</value>
+  </data>
+  <data name="StartupStatusUnknown" xml:space="preserve">
+    <value>Inicio: sin confirmar; actualice antes de reintentar</value>
+  </data>
+  <data name="StartupStatusSuppressed" xml:space="preserve">
+    <value>Inicio: cambios del sistema desactivados para pruebas</value>
+  </data>
+  <data name="StartupStatusBusy" xml:space="preserve">
+    <value>Aplicando inicio; complete UAC…</value>
+  </data>
+  <data name="StartupCancelled" xml:space="preserve">
+    <value>UAC cancelado. No se guardó la configuración de inicio.</value>
+  </data>
+  <data name="StartupFailedMessage" xml:space="preserve">
+    <value>Error al registrar, quitar o guardar la configuración. Revise los registros en {0}, actualice el estado y reintente.</value>
+  </data>
+  <data name="StartupUncertainMessage" xml:space="preserve">
+    <value>El resultado no está confirmado; el asistente podría seguir activo. Actualice el estado más tarde. La operación no se repetirá antes de confirmarse.</value>
+  </data>
+  <data name="StartupAttention" xml:space="preserve">
+    <value>El inicio requiere revisión. Abra la configuración y repárelo si es necesario. La aplicación no elevará ni reducirá los permisos automáticamente.</value>
+  </data>
+  <data name="StartupAccountMessage" xml:space="preserve">
+    <value>Apruebe UAC con su cuenta de administrador actual. No se admite registrar con otra cuenta de administrador. Registros: {0}.</value>
+  </data>
+  <data name="StartupDeniedMessage" xml:space="preserve">
+    <value>Acceso al inicio denegado. Revise los permisos de la tarea o del registro y las políticas locales. Registros: {0}.</value>
+  </data>
+  <data name="StartupConflictMessage" xml:space="preserve">
+    <value>La tarea pertenece a otra aplicación y no se modificó ni eliminó. Revise {0} y resuelva el conflicto.</value>
+  </data>
+  <data name="StartupRollbackMessage" xml:space="preserve">
+    <value>El inicio falló y no se restauró por completo el estado anterior. Revise {0}, actualice el estado y repárelo. No asuma que el inicio anterior sigue funcionando.</value>
+  </data>
+  <data name="StartupDelayLabel" xml:space="preserve">
+    <value>Retraso de inicio de administrador (segundos)</value>
+  </data>
+  <data name="StartupDelayRange" xml:space="preserve">
+    <value>Introduzca un entero de 0 a 300; 0 indica sin retraso. Solo se aplica a la tarea de inicio de sesión de administrador.</value>
+  </data>
+  <data name="ShelfDropPrompt" xml:space="preserve"><value>Suelta tus archivos aquí</value></data>
+  <data name="ShelfRestoreMenu" xml:space="preserve"><value>Restaurar ▾</value></data>
+  <data name="ShelfRetentionLabel" xml:space="preserve"><value>Días de conservación de bandejas cerradas (0 = siempre)</value></data>
+  <data name="TrayNewShelf" xml:space="preserve"><value>Nueva bandeja</value></data>
+  <data name="ShelfDragPrompt" xml:space="preserve"><value>Arrastra los archivos fuera</value></data>
+  <data name="ShelfCountFormat" xml:space="preserve"><value>{0} elementos guardados</value></data>
+  <data name="ToastDismissCountdown" xml:space="preserve"><value>Se cierra en {0} segundos; se pausa al pasar el cursor o usar el teclado</value></data>
+  <data name="ShelfCleanupHint" xml:space="preserve"><value>Las bandejas temporales vacías se eliminan automáticamente. Se conservan la bandeja predeterminada y los depósitos con contenido.</value></data>
+  <data name="SettingsAppearance" xml:space="preserve"><value>Apariencia</value></data>
+  <data name="SettingsShelf" xml:space="preserve"><value>Bandeja</value></data>
+  <data name="SettingsFiles" xml:space="preserve"><value>Gestión de archivos</value></data>
+  <data name="SettingsShortcuts" xml:space="preserve"><value>Atajos</value></data>
 </root>

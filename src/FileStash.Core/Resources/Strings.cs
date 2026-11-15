@@ -16,14 +16,12 @@ public static class Strings
 {
     private static readonly ResourceManager ResourceManager =
         new("FileStash.Core.Resources.Strings", typeof(Strings).Assembly);
-    public static string BlobIntegrityFailed => Get(nameof(BlobIntegrityFailed));
-    public static string RecoveryNeedsReview => Get(nameof(RecoveryNeedsReview));
-    public static string RecoveryNotCommitted => Get(nameof(RecoveryNotCommitted));
-    public static string RetryAuthorizationChanged => Get(nameof(RetryAuthorizationChanged));
     public static string BackupExpired => Get(nameof(BackupExpired));
+    public static string BlobIntegrityFailed => Get(nameof(BlobIntegrityFailed));
     public static string BlobNotFound => Get(nameof(BlobNotFound));
     public static string BranchChangedText => Get(nameof(BranchChangedText));
     public static string Cancelled => Get(nameof(Cancelled));
+    public static string DefaultGroupName => Get(nameof(DefaultGroupName));
     public static string DeleteDirFailed => Get(nameof(DeleteDirFailed));
     public static string DeleteFileFailed => Get(nameof(DeleteFileFailed));
     public static string DirNotEmpty => Get(nameof(DirNotEmpty));
@@ -52,8 +50,11 @@ public static class Strings
     public static string PathNotFound => Get(nameof(PathNotFound));
     public static string PathNotUnderRoot => Get(nameof(PathNotUnderRoot));
     public static string PathWithError => Get(nameof(PathWithError));
+    public static string RecoveryNeedsReview => Get(nameof(RecoveryNeedsReview));
+    public static string RecoveryNotCommitted => Get(nameof(RecoveryNotCommitted));
     public static string RenameTargetWarning => Get(nameof(RenameTargetWarning));
     public static string RestoreFailed => Get(nameof(RestoreFailed));
+    public static string RetryAuthorizationChanged => Get(nameof(RetryAuthorizationChanged));
     public static string ShellLegacyShortcutName => Get(nameof(ShellLegacyShortcutName));
     public static string ShellMenuAddToStash => Get(nameof(ShellMenuAddToStash));
     public static string ShellMenuApplyHere => Get(nameof(ShellMenuApplyHere));

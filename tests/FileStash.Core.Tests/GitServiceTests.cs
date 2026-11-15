@@ -18,6 +18,60 @@ public sealed class GitServiceTests : IAsyncLifetime
 
     private GitService Git => new();
 
+
+    [Fact]
+    public async Task DetachedHeadMustReturnShortCommit()
+    {
+        if (!GitHelper.IsAvailable) return;
+        var repo = Path.Combine(_context.Workspace.Root, "repo");
+        Directory.CreateDirectory(repo);
+        GitHelper.InitRepository(repo);
+        _context.Workspace.CreateFile("repo/a.txt", "a");
+        GitHelper.CommitAll(repo, "initial");
+        GitHelper.Checkout(repo, "--detach");
+        var branch = await Git.GetCurrentBranchAsync(repo, TestContext.Current.CancellationToken);
+        var commit = await Git.GetHeadCommitAsync(repo, TestContext.Current.CancellationToken);
+        Assert.NotNull(branch);
+        Assert.StartsWith(branch, commit!);
+    }
+
+    [Fact]
+    public async Task NestedModifiedTargetMustHaveWarning()
+    {
+        if (!GitHelper.IsAvailable) return;
+        var repo = Path.Combine(_context.Workspace.Root, "repo");
+        Directory.CreateDirectory(repo);
+        GitHelper.InitRepository(repo);
+        var file = _context.Workspace.CreateFile("repo/sub/a.txt", "original");
+        GitHelper.CommitAll(repo, "initial");
+        var group = await _context.CreateGroupAsync();
+        var added = await _context.Stash.AddAsync(group, [file], null, TestContext.Current.CancellationToken);
+        File.WriteAllText(file, "edited");
+        var plan = await _context.Planner.BuildPlanAsync(added.Added,
+            new TargetSpec(TargetMode.OriginalLocation, null, StructureMode.FullRelative),
+            ConflictPolicy.Ask, TestContext.Current.CancellationToken);
+        Assert.Equal(FileStash.Core.Resources.Strings.UncommittedChangesWarning, plan.Entries.Single().Warning);
+    }
+
+    [Fact]
+    public async Task NestedGitIgnoredFilesMustBeExcluded()
+    {
+        if (!GitHelper.IsAvailable) return;
+        var repo = Path.Combine(_context.Workspace.Root, "repo");
+        Directory.CreateDirectory(repo);
+        GitHelper.InitRepository(repo);
+        _context.Workspace.CreateFile("repo/.gitignore", "ignored/\n");
+        _context.Workspace.CreateFile("repo/ignored/a.txt", "ignored");
+        var keep = _context.Workspace.CreateFile("repo/sub/keep.txt", "keep");
+        _context.Settings.Current.RespectGitIgnore = true;
+        var group = await _context.CreateGroupAsync();
+        var added = await _context.Stash.AddAsync(group, [repo], null, TestContext.Current.CancellationToken);
+        Assert.Equal(2, added.Added.Single().FileCount);
+        File.WriteAllText(Path.Combine(repo, "ignored/a.txt"), "modified");
+        var statuses = await _context.Stash.CheckSourceStatusAsync(group, TestContext.Current.CancellationToken);
+        Assert.Equal(ItemSourceState.Unchanged, statuses.Single().State);
+    }
+
     [Fact]
     public void ParsePorcelain_ShouldReadSimpleEntries()
     {

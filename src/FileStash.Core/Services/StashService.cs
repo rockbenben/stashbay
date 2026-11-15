@@ -31,14 +31,23 @@ public sealed class StashService : IStashService
         _settings = settings;
     }
 
-    public async Task<StashGroup> CreateGroupAsync(string name)
+    public event Action? GroupsChanged;
+
+    public async Task<StashGroup> CreateGroupAsync(string name, StashGroupKind kind = StashGroupKind.Saved)
     {
+        await using var storageLease = await StorageWriteLease.AcquireAsync(_blobStore, CancellationToken.None);
+        if (kind == StashGroupKind.Default)
+        {
+            var existing = (await _groups.GetAllAsync(CancellationToken.None)).FirstOrDefault(group => group.Kind == StashGroupKind.Default);
+            if (existing is not null) return existing;
+        }
         var now = DateTimeOffset.UtcNow;
 
         var group = new StashGroup
         {
             Id = Guid.NewGuid().ToString("N"),
             Name = string.IsNullOrWhiteSpace(name) ? Strings.NewGroupName : name.Trim(),
+            Kind = kind,
             CreatedAt = now,
             UpdatedAt = now,
         };
@@ -49,6 +58,7 @@ public sealed class StashService : IStashService
 
     public async Task RenameGroupAsync(string groupId, string name)
     {
+        await using var storageLease = await StorageWriteLease.AcquireAsync(_blobStore, CancellationToken.None);
         var group = await _groups.GetAsync(groupId, CancellationToken.None);
 
         if (group is null)
@@ -62,7 +72,11 @@ public sealed class StashService : IStashService
         await _groups.UpdateAsync(group, CancellationToken.None);
     }
 
-    public Task DeleteGroupAsync(string groupId) => _groups.DeleteAsync(groupId, CancellationToken.None);
+    public async Task DeleteGroupAsync(string groupId)
+    {
+        await using var storageLease = await StorageWriteLease.AcquireAsync(_blobStore, CancellationToken.None);
+        await _groups.DeleteAsync(groupId, CancellationToken.None);
+    }
 
     public async Task<AddResult> AddAsync(
         string groupId,
@@ -71,6 +85,17 @@ public sealed class StashService : IStashService
         CancellationToken ct)
     {
         await using var storageLease = await StorageWriteLease.AcquireAsync(_blobStore, ct);
+        if (await _groups.GetAsync(groupId, ct) is null)
+        {
+            var fallback = (await _groups.GetAllAsync(ct)).FirstOrDefault(group => group.Kind == StashGroupKind.Default);
+            if (fallback is null)
+            {
+                fallback = new StashGroup { Id = Guid.NewGuid().ToString("N"), Name = Strings.DefaultGroupName,
+                    Kind = StashGroupKind.Default, CreatedAt = DateTimeOffset.UtcNow, UpdatedAt = DateTimeOffset.UtcNow };
+                await _groups.AddAsync(fallback, ct);
+            }
+            groupId = fallback.Id;
+        }
         var added = new List<StashItem>();
         var duplicates = new List<string>();
         var warnings = new List<string>();
@@ -137,7 +162,7 @@ public sealed class StashService : IStashService
         var relativePath = PathUtil.GetRelative(root, sourcePath);
 
         var enumerated = isDirectory
-            ? FolderEnumerator.Enumerate(root, sourcePath, _settings.Current.ExcludeGlobs)
+            ? await FolderEnumerator.EnumerateAsync(root, sourcePath, _settings.Current.ExcludeGlobs, ct)
             : new EnumerationResult(
                 [new EnumeratedEntry(relativePath, sourcePath, false, SafeLength(sourcePath), SafeLastWrite(sourcePath))],
                 []);
@@ -174,6 +199,7 @@ public sealed class StashService : IStashService
 
             try
             {
+                var zone = await ZoneIdentifier.ReadAsync(entry.FullPath, ct);
                 var (sha256, size) = await _blobStore.PutFileAsync(entry.FullPath, ct);
 
                 entries.Add(new StashEntry
@@ -182,6 +208,7 @@ public sealed class StashService : IStashService
                     RelativePath = entry.RelativePath,
                     IsDirectory = false,
                     Sha256 = sha256,
+                    ZoneIdentifier = zone,
                     Size = size,
                     SourceLastWriteUtc = new DateTimeOffset(DateTime.SpecifyKind(entry.LastWriteTimeUtc, DateTimeKind.Utc)),
                 });
@@ -282,7 +309,7 @@ public sealed class StashService : IStashService
             var warnings = new List<string>();
 
             var enumerated = isDirectory
-                ? FolderEnumerator.Enumerate(root, sourcePath, _settings.Current.ExcludeGlobs)
+                ? await FolderEnumerator.EnumerateAsync(root, sourcePath, _settings.Current.ExcludeGlobs, ct)
                 : new EnumerationResult(
                     [
                         new EnumeratedEntry(
@@ -321,6 +348,7 @@ public sealed class StashService : IStashService
 
                 try
                 {
+                    var zone = await ZoneIdentifier.ReadAsync(entry.FullPath, ct);
                     var (sha256, size) = await _blobStore.PutFileAsync(entry.FullPath, ct);
 
                     entries.Add(new StashEntry
@@ -329,6 +357,7 @@ public sealed class StashService : IStashService
                         RelativePath = entry.RelativePath,
                         IsDirectory = false,
                         Sha256 = sha256,
+                        ZoneIdentifier = zone,
                         Size = size,
                         SourceLastWriteUtc = new DateTimeOffset(DateTime.SpecifyKind(entry.LastWriteTimeUtc, DateTimeKind.Utc)),
                     });
@@ -345,6 +374,7 @@ public sealed class StashService : IStashService
             if (warnings.Count > 0)
                 throw new IOException(string.Join(Environment.NewLine, warnings));
 
+            item.Kind = isDirectory ? StashItemKind.Folder : StashItemKind.File;
             item.FileCount = fileCount;
             item.TotalSize = totalSize;
             item.SnapshotAt = DateTimeOffset.UtcNow;
@@ -397,18 +427,57 @@ public sealed class StashService : IStashService
         }
     }
 
-    public Task RemoveItemsAsync(IReadOnlyList<string> itemIds) =>
-        _items.DeleteManyAsync(itemIds, CancellationToken.None);
+    public async Task RemoveItemsAsync(IReadOnlyList<string> itemIds)
+    {
+        var removedGroup = false;
+        await using (var lease = await StorageWriteLease.AcquireAsync(_blobStore, CancellationToken.None))
+        {
+            var items = await _items.GetByIdsAsync(itemIds, CancellationToken.None);
+            await _items.DeleteManyAsync(itemIds, CancellationToken.None);
+            foreach (var id in items.Select(item => item.GroupId).Distinct())
+                removedGroup |= await _groups.DeleteEmptyTemporaryAsync(id, CancellationToken.None);
+        }
+        if (removedGroup) GroupsChanged?.Invoke();
+    }
 
     public async Task MoveItemsAsync(IReadOnlyList<string> itemIds, string targetGroupId)
     {
-        var items = await _items.GetByIdsAsync(itemIds, CancellationToken.None);
-
-        foreach (var item in items)
+        var removedGroup = false;
+        await using (var lease = await StorageWriteLease.AcquireAsync(_blobStore, CancellationToken.None))
         {
-            item.GroupId = targetGroupId;
-            await _items.UpdateAsync(item, CancellationToken.None);
+            var items = await _items.GetByIdsAsync(itemIds, CancellationToken.None);
+            var sources = items.Select(item => item.GroupId).Distinct().ToArray();
+            foreach (var item in items)
+            {
+                item.GroupId = targetGroupId;
+                await _items.UpdateAsync(item, CancellationToken.None);
+            }
+            foreach (var id in sources)
+                removedGroup |= await _groups.DeleteEmptyTemporaryAsync(id, CancellationToken.None);
         }
+        if (removedGroup) GroupsChanged?.Invoke();
+    }
+
+    public async Task<bool> DeleteEmptyTemporaryGroupAsync(string groupId)
+    {
+        bool removed;
+        await using (var lease = await StorageWriteLease.AcquireAsync(_blobStore, CancellationToken.None))
+            removed = await _groups.DeleteEmptyTemporaryAsync(groupId, CancellationToken.None);
+        if (removed) GroupsChanged?.Invoke();
+        return removed;
+    }
+
+    public async Task<int> DeleteEmptyTemporaryGroupsAsync(IReadOnlyCollection<string> excludedGroupIds, CancellationToken ct = default)
+    {
+        var removed = 0;
+        await using (var lease = await StorageWriteLease.AcquireAsync(_blobStore, ct))
+        {
+            foreach (var group in await _groups.GetAllAsync(ct))
+                if (group.Kind == StashGroupKind.Temporary && !excludedGroupIds.Contains(group.Id)
+                    && await _groups.DeleteEmptyTemporaryAsync(group.Id, ct)) removed++;
+        }
+        if (removed > 0) GroupsChanged?.Invoke();
+        return removed;
     }
 
     public async Task<IReadOnlyList<ItemSourceStatus>> CheckSourceStatusAsync(string groupId, CancellationToken ct)
@@ -427,7 +496,19 @@ public sealed class StashService : IStashService
             }
 
             var entries = await _entries.GetByItemAsync(item.Id, ct);
-            var modified = false;
+            var isDirectory = Directory.Exists(item.SourcePath);
+            var modified = isDirectory != (item.Kind == StashItemKind.Folder);
+            if (isDirectory && !modified)
+            {
+                var enumerated = await FolderEnumerator.EnumerateAsync(item.RootPath, item.SourcePath, _settings.Current.ExcludeGlobs, ct);
+                if (enumerated.Warnings.Count > 0)
+                    throw new IOException(string.Join(Environment.NewLine, enumerated.Warnings));
+                var candidates = await FilterCandidatesAsync(enumerated.Entries, item.GitRepoRoot, ct);
+                var currentPaths = candidates.Select(entry => entry.RelativePath + (entry.IsDirectory ? "\\" : string.Empty))
+                    .ToHashSet(StringComparer.OrdinalIgnoreCase);
+                modified = !currentPaths.SetEquals(entries.Select(entry =>
+                    entry.RelativePath + (entry.IsDirectory ? "\\" : string.Empty)));
+            }
 
             foreach (var entry in entries)
             {
@@ -444,6 +525,11 @@ public sealed class StashService : IStashService
                     break;
                 }
 
+                if (!ZoneIdentifier.Matches(await ZoneIdentifier.ReadAsync(fullPath, ct), entry.ZoneIdentifier))
+                {
+                    modified = true;
+                    break;
+                }
                 var info = new FileInfo(fullPath);
 
                 if (info.Length != entry.Size)
@@ -483,8 +569,10 @@ public sealed class StashService : IStashService
         var ignored = await _git.FilterIgnoredAsync(repo,
             entries.Where(entry => !entry.IsDirectory)
                 .Select(entry => PathUtil.GetRelative(repo, entry.FullPath)).ToList(), ct);
+        var ignoredPaths = ignored.Select(path => Path.GetFullPath(Path.Combine(repo, path)))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
         return entries.Where(entry => entry.IsDirectory
-            || !ignored.Contains(PathUtil.GetRelative(repo, entry.FullPath))).ToList();
+            || !ignoredPaths.Contains(Path.GetFullPath(entry.FullPath))).ToList();
     }
 
     private static long SafeLength(string path)

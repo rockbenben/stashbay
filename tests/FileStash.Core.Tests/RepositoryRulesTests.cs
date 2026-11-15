@@ -167,15 +167,16 @@ public sealed class RepositoryRulesTests
         var iconPath = Path.Combine(RepositoryRoot, "src", "FileStash.App", "Resources", "app.ico");
         Assert.True(File.Exists(iconPath), $"托盘图标文件不存在：{iconPath}");
 
-        // Tray.xaml 里的 pack URI 必须指向真实存在的文件
-        var trayXaml = Path.Combine(RepositoryRoot, "src", "FileStash.App", "Resources", "Tray.xaml");
-        var text = File.ReadAllText(trayXaml);
+        // The synchronous loader owns the icon so WPF does not rescale an ICO
+        // frame asynchronously. Its pack URI must still resolve to a real file.
+        var loader = Path.Combine(RepositoryRoot, "src", "FileStash.App", "Controls", "TrayIconService.cs");
+        var text = File.ReadAllText(loader);
 
         var match = System.Text.RegularExpressions.Regex.Match(
             text,
             @"pack://application:,,,/(?<path>[^""]+)");
 
-        Assert.True(match.Success, "Tray.xaml 里没有找到 IconSource 的 pack URI");
+        Assert.True(match.Success, "TrayIconService 里没有找到图标的 pack URI");
 
         var referenced = Path.Combine(
             RepositoryRoot,

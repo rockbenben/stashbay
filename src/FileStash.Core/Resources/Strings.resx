@@ -186,4 +186,5 @@
   <data name="RecoveryNeedsReview" xml:space="preserve"><value>写入结果待核对，请检查目标文件；确认后可选择保留当前文件。</value></data>
   <data name="RecoveryNotCommitted" xml:space="preserve"><value>写入尚未提交，可以重新确认后重试。</value></data>
   <data name="RetryAuthorizationChanged" xml:space="preserve"><value>重试范围或文件已变化，请重新确认。</value></data>
+  <data name="DefaultGroupName" xml:space="preserve"><value>默认暂存</value></data>
 </root>

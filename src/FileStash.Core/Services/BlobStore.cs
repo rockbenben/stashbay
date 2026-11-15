@@ -23,6 +23,10 @@ public sealed class BlobStore : IBlobStore
     /// </remarks>
     public static readonly TimeSpan DefaultCleanupGracePeriod = TimeSpan.FromHours(1);
 
+    // Serialize publication metadata across store instances. Application-level
+    // StorageWriteLease provides the corresponding cross-process coordination.
+    private static readonly SemaphoreSlim PublicationLock = new(1, 1);
+
     private readonly string _blobDirectory;
     private readonly string _tempDirectory;
     private readonly TimeSpan _cleanupGracePeriod;
@@ -58,64 +62,78 @@ public sealed class BlobStore : IBlobStore
 
         try
         {
-            await using (var source = new FileStream(
-                             sourcePath,
-                             FileMode.Open,
-                             FileAccess.Read,
-                             FileShare.ReadWrite | FileShare.Delete,
-                             HashUtil.BufferSize,
-                             useAsync: true))
-            await using (var target = new FileStream(
-                             tempPath,
-                             FileMode.CreateNew,
-                             FileAccess.Write,
-                             FileShare.None,
-                             HashUtil.BufferSize,
-                             useAsync: true))
-            {
-                var buffer = ArrayPool<byte>.Shared.Rent(HashUtil.BufferSize);
-                int read;
+            await using var source = new FileStream(
+                sourcePath, FileMode.Open, FileAccess.Read,
+                FileShare.ReadWrite | FileShare.Delete, HashUtil.BufferSize, useAsync: true);
+            await using var target = new FileStream(
+                tempPath, FileMode.CreateNew, FileAccess.Write,
+                FileShare.None, HashUtil.BufferSize, useAsync: true);
+            var buffer = ArrayPool<byte>.Shared.Rent(HashUtil.BufferSize);
+            int read;
 
-                try
+            try
+            {
+                while ((read = await source.ReadAsync(buffer.AsMemory(0, HashUtil.BufferSize), ct)) > 0)
                 {
-                    while ((read = await source.ReadAsync(buffer.AsMemory(0, HashUtil.BufferSize), ct)) > 0)
-                    {
-                        hasher.AppendData(buffer, 0, read);
-                        await target.WriteAsync(buffer.AsMemory(0, read), ct);
-                        total += read;
-                    }
-                }
-                finally
-                {
-                    ArrayPool<byte>.Shared.Return(buffer);
+                    hasher.AppendData(buffer, 0, read);
+                    await target.WriteAsync(buffer.AsMemory(0, read), ct);
+                    total += read;
                 }
             }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(buffer);
+            }
+
+            // Release the source once hashed, but keep the staged copy exclusive
+            // throughout any publication wait so its verified bytes cannot change.
+            await source.DisposeAsync();
 
             var sha256 = Convert.ToHexStringLower(hasher.GetHashAndReset());
             var finalPath = GetBlobPath(sha256);
 
-            Directory.CreateDirectory(Path.GetDirectoryName(finalPath)!);
+            await PublicationLock.WaitAsync(ct);
+            try
+            {
+                // Finish flushing and close only inside the publication critical
+                // section; Windows replacement requires the staging handle closed.
+                await target.DisposeAsync();
+                Directory.CreateDirectory(Path.GetDirectoryName(finalPath)!);
 
-            if (File.Exists(finalPath))
-            {
-                // 同样的内容已经存过了：临时文件直接丢
-                File.Delete(tempPath);
-            }
-            else
-            {
                 try
                 {
                     File.Move(tempPath, finalPath);
                 }
                 catch (IOException) when (File.Exists(finalPath))
                 {
-                    // 并发写入同一内容：别人先落地了，丢掉自己这份即可
-                    File.Delete(tempPath);
+                    // The fresh temporary copy has already been hashed. Publish those
+                    // bytes atomically instead of rereading and hashing the previous blob.
+                    var wasReadOnly = File.GetAttributes(finalPath).HasFlag(FileAttributes.ReadOnly);
+                    try
+                    {
+                        ClearReadOnly(finalPath);
+                        try { File.Replace(tempPath, finalPath, destinationBackupFileName: null); }
+                        catch (Exception ex) when ((ex is IOException or UnauthorizedAccessException)
+                            && File.Exists(finalPath))
+                        {
+                            // External readers may deny replacement. Retain an existing
+                            // blob only after independently verifying all of its content.
+                            if (!string.Equals(await HashUtil.ComputeFileSha256Async(finalPath, ct),
+                                    sha256, StringComparison.OrdinalIgnoreCase))
+                                throw;
+                            File.Delete(tempPath);
+                        }
+                    }
+                    finally
+                    {
+                        if (wasReadOnly) MarkReadOnly(finalPath);
+                    }
                 }
-            }
 
-            MarkReadOnly(finalPath);
-            return (sha256, total);
+                MarkReadOnly(finalPath);
+                return (sha256, total);
+            }
+            finally { PublicationLock.Release(); }
         }
         catch
         {
@@ -139,36 +157,34 @@ public sealed class BlobStore : IBlobStore
             Directory.CreateDirectory(directory);
         }
 
-        // 手工复制而不是 File.Copy：File.Copy 会把源文件的只读属性一起带过去，
-        // 落地的目标就变成只读文件了 —— blob 的只读只是"别误改"的保护，不该传染给目标。
-        await using (var input = new FileStream(
-                         source,
-                         FileMode.Open,
-                         FileAccess.Read,
-                         FileShare.ReadWrite | FileShare.Delete,
-                         HashUtil.BufferSize,
-                         useAsync: true))
-        await using (var output = new FileStream(
-                         destinationPath,
-                         FileMode.Create,
-                         FileAccess.Write,
-                         FileShare.None,
-                         HashUtil.BufferSize,
-                         useAsync: true))
+        using var hasher = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        var destinationOpened = false;
+        try
         {
+            await using var input = new FileStream(source, FileMode.Open, FileAccess.Read,
+                FileShare.ReadWrite | FileShare.Delete, HashUtil.BufferSize, useAsync: true);
+            await using var output = new FileStream(destinationPath, FileMode.Create, FileAccess.Write,
+                FileShare.None, HashUtil.BufferSize, useAsync: true);
+            destinationOpened = true;
             var buffer = ArrayPool<byte>.Shared.Rent(HashUtil.BufferSize);
             try
             {
                 int bytesRead;
                 while ((bytesRead = await input.ReadAsync(buffer.AsMemory(0, HashUtil.BufferSize), ct)) > 0)
                 {
+                    hasher.AppendData(buffer, 0, bytesRead);
                     await output.WriteAsync(buffer.AsMemory(0, bytesRead), ct);
                 }
             }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(buffer);
-            }
+            finally { ArrayPool<byte>.Shared.Return(buffer); }
+            if (!string.Equals(Convert.ToHexStringLower(hasher.GetHashAndReset()), sha256,
+                    StringComparison.OrdinalIgnoreCase))
+                throw new IOException(Strings.BlobIntegrityFailed);
+        }
+        catch
+        {
+            if (destinationOpened) TryDelete(destinationPath);
+            throw;
         }
 
         ClearReadOnly(destinationPath);

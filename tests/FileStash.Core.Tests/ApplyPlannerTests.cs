@@ -24,6 +24,60 @@ public sealed class ApplyPlannerTests : IAsyncLifetime
         return (groupId, result.Added[0]);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task UnreadableTargetOriginMustRequireANewPreview(bool removeOriginAfterPreview)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var (_, item) = await AddFileAsync("source/a.txt", "snapshot");
+        var target = _context.Workspace.CreateFile("out/a.txt", "snapshot");
+        var zone = new byte[] { 1, 2, 3 };
+        await FileStash.Core.Utils.ZoneIdentifier.WriteAsync(target, zone, ct);
+        ApplyPlan plan;
+        await using (var locked = new FileStream(target + ":Zone.Identifier", FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+            plan = await _context.Planner.BuildPlanAsync([item],
+                new TargetSpec(TargetMode.SpecifiedPath, Path.GetDirectoryName(target), StructureMode.Flatten),
+                ConflictPolicy.Overwrite, ct, skipIdentical: false);
+        if (removeOriginAfterPreview) await FileStash.Core.Utils.ZoneIdentifier.WriteAsync(target, null, ct);
+        var operation = await _context.Executor.ExecuteAsync(plan, null, ct);
+        var entry = Assert.Single(plan.Entries);
+        Assert.Equal(OperationStatus.PartiallyFailed, operation.Status);
+        Assert.Equal(PlannedState.Overwrite, entry.State);
+        Assert.Null(entry.ExpectedTargetSha256);
+        Assert.Equal("snapshot", File.ReadAllText(target));
+        Assert.Equal(removeOriginAfterPreview ? null : zone,
+            await FileStash.Core.Utils.ZoneIdentifier.ReadAsync(target, ct));
+    }
+
+    [Theory]
+    [InlineData("snapshot", PlannedState.Identical)]
+    [InlineData("modified", PlannedState.Overwrite)]
+    [InlineData("longer modified content", PlannedState.Overwrite)]
+    public async Task PreviewObservationMustFreezeTargetContentAndOrigin(string targetContent, PlannedState expectedState)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var (_, item) = await AddFileAsync("source/a.txt", "snapshot");
+        var target = _context.Workspace.CreateFile("out/a.txt", targetContent);
+        var zone = new byte[] { 1, 2, 3, 0 };
+        await FileStash.Core.Utils.ZoneIdentifier.WriteAsync(target, zone, ct);
+        var sourceEntry = (await _context.Entries.GetByItemAsync(item.Id, ct)).Single();
+        sourceEntry.ZoneIdentifier = zone;
+        await _context.Entries.DeleteByItemAsync(item.Id, ct);
+        await _context.Entries.AddManyAsync([sourceEntry], ct);
+        var plan = await _context.Planner.BuildPlanAsync([item],
+            new TargetSpec(TargetMode.SpecifiedPath, Path.GetDirectoryName(target), StructureMode.Flatten),
+            ConflictPolicy.Overwrite, ct, skipIdentical: false);
+        var planned = Assert.Single(plan.Entries);
+        Assert.Equal(expectedState, planned.State);
+        Assert.Equal(await FileStash.Core.Utils.HashUtil.ComputeFileSha256Async(target, ct), planned.ExpectedTargetSha256);
+        Assert.Equal(zone, planned.ExpectedTargetZoneIdentifier);
+        File.WriteAllText(target, "edited after preview");
+        var operation = await _context.Executor.ExecuteAsync(plan, null, ct);
+        Assert.Equal(OperationStatus.PartiallyFailed, operation.Status);
+        Assert.Equal("edited after preview", File.ReadAllText(target));
+    }
+
     [Fact]
     public async Task BuildPlanAsync_NewTarget_ShouldBeCreate()
     {

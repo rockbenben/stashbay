@@ -1,11 +1,15 @@
 namespace FileStash.Core.Models;
 
+public enum StashGroupKind { Legacy = 0, Saved = 1, Default = 2, Temporary = 3 }
+
 /// <summary>暂存组。</summary>
 public sealed class StashGroup
 {
     public string Id { get; set; } = string.Empty;
 
     public string Name { get; set; } = string.Empty;
+
+    public StashGroupKind Kind { get; set; } = StashGroupKind.Saved;
 
     public string? Note { get; set; }
 
@@ -16,6 +20,9 @@ public sealed class StashGroup
     public DateTimeOffset CreatedAt { get; set; }
 
     public DateTimeOffset UpdatedAt { get; set; }
+
+    /// <summary>关闭暂存窗口的时间；null 表示尚未关闭或正在使用。</summary>
+    public DateTimeOffset? ClosedAt { get; set; }
 }
 
 /// <summary>一个暂存项：用户选择的一个文件或文件夹。</summary>
@@ -73,6 +80,8 @@ public sealed class StashEntry
 
     /// <summary>目录为 null。</summary>
     public string? Sha256 { get; set; }
+
+    public byte[]? ZoneIdentifier { get; set; }
 
     public long Size { get; set; }
 
@@ -150,6 +159,11 @@ public sealed class OperationEntry
 
     /// <summary>被覆盖前的内容（用于撤销）。</summary>
     public string? BackupSha256 { get; set; }
+
+    public byte[]? NewZoneIdentifier { get; set; }
+    public byte[]? BackupZoneIdentifier { get; set; }
+    public byte[]? PreviousZoneIdentifier { get; set; }
+    public string? UndoWitnessIdentity { get; set; }
 
     /// <summary>本次是否新建了该目录。</summary>
     public bool CreatedDirectory { get; set; }

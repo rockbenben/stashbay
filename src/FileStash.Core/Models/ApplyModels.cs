@@ -40,6 +40,7 @@ public sealed class PlannedEntry : System.ComponentModel.INotifyPropertyChanged
 
     public string? ExpectedTargetSha256 { get; init; }
     public bool RequireBackup { get; init; }
+    public byte[]? ExpectedTargetZoneIdentifier { get; init; }
 
     /// <summary>用户可在预览中修改。</summary>
     private PlannedAction _action;
@@ -134,4 +135,32 @@ public sealed class UndoResult
 
 /// <summary>A frozen selection presented for explicit retry approval.</summary>
 public sealed record RetryEntry(long Id, string TargetPath, PlannedAction Action, string Sha256,
-    string? CurrentSha256, string? CurrentIdentity, bool TargetInspected = true);
+    string? CurrentSha256, string? CurrentIdentity, bool TargetInspected = true,
+    byte[]? ZoneIdentifier = null, byte[]? CurrentZoneIdentifier = null);
+
+// Execution owns these values. No mutable preview or snapshot objects cross this boundary.
+internal sealed record ExecutionEntry(string TargetPath, PlannedAction Action, PlannedState State,
+    string? Sha256, bool IsDirectory, string? ExpectedTargetSha256, bool RequireBackup,
+    byte[]? ZoneIdentifier, byte[]? ExpectedTargetZoneIdentifier)
+{
+    public static ExecutionEntry Capture(PlannedEntry entry) => new(
+        Path.GetFullPath(entry.TargetPath), entry.Action, entry.State, entry.Source.Sha256,
+        entry.Source.IsDirectory, entry.ExpectedTargetSha256, entry.RequireBackup,
+        entry.Source.ZoneIdentifier?.ToArray(), entry.ExpectedTargetZoneIdentifier?.ToArray());
+}
+
+internal sealed record ExecutionPlan(TargetSpec Target, IReadOnlyList<ExecutionEntry> Entries, GitContext? GitContext)
+{
+    public static ExecutionPlan Capture(ApplyPlan plan)
+    {
+        var destinations = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var entries = plan.Entries.Select(ExecutionEntry.Capture).ToArray();
+        for (var index = 0; index < entries.Length; index++)
+        {
+            var entry = entries[index];
+            if (entry.Action != PlannedAction.Skip && !destinations.Add(entry.TargetPath))
+                entries[index] = entry with { State = PlannedState.Invalid, Action = PlannedAction.Skip };
+        }
+        return new(plan.Target, entries, plan.GitContext);
+    }
+}

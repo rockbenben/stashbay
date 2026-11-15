@@ -186,4 +186,5 @@
   <data name="RecoveryNeedsReview" xml:space="preserve"><value>The write needs review. Check the target, then choose Keep current file to resolve it.</value></data>
   <data name="RecoveryNotCommitted" xml:space="preserve"><value>The write was not committed. Review it before retrying.</value></data>
   <data name="RetryAuthorizationChanged" xml:space="preserve"><value>The retry scope or file changed. Review it again.</value></data>
+  <data name="DefaultGroupName" xml:space="preserve"><value>Default stash</value></data>
 </root>

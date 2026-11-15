@@ -1,7 +1,7 @@
-#Requires -Version 5.1
+﻿#Requires -Version 7.4
 <#
 .SYNOPSIS
-    发布 StashBay：四份 pubxml + 校验和清单。
+    发布 StashBay：四份 pubxml + Inno Setup 安装包 + 校验和清单。
 
 .DESCRIPTION
     产出到 artifacts\：
@@ -9,11 +9,14 @@
       publish-x64-needs-dotnet10\     框架依赖单文件（体积小）
       publish-arm64\                  自包含单文件（ARM）
       publish-arm64-needs-dotnet10\   框架依赖单文件（ARM）
-      StashBay-<版本>-<平台>.zip     打包好的资产
+      StashBay-v<版本>-setup.exe       Inno Setup 安装包
+      StashBay-v<版本>-<平台>.zip    打包好的资产
       SHA256SUMS.txt                  校验和清单
 
     SHA256SUMS.txt **必须是 LF 换行**：CRLF 会让 sha256sum -c 把 \r 当成文件名的一部分，
     逐行报 "No such file or directory"。
+
+    打包与校验调用 tools/package-release.ps1，在隔离沙箱中执行双向解包核对与 --smoke 冒烟。
 #>
 [CmdletBinding()]
 param(
@@ -89,6 +92,9 @@ if (-not $Version) {
     }
 }
 
+$iscc = Find-InnoCompiler
+if (-not $iscc) { throw '需要 Inno Setup 6。安装编译器，或设 ISCC_PATH 指向 ISCC.exe。' }
+
 Write-Host '==> 还原与构建'
 Invoke-Checked 'dotnet' @('build', $project, '-c', 'Release', '-v', 'minimal', "-p:Version=$Version") '构建'
 
@@ -153,75 +159,27 @@ foreach ($profile in $profiles) {
     # 引用工程（Core / Infrastructure）的 pdb 还是会生成，发布产物里不需要
     Get-ChildItem $published -Filter '*.pdb' -ErrorAction SilentlyContinue | Remove-Item -Force
 
-    if (-not $SkipSmoke -and $profile.Archive -like 'win-x64*') {
-        # WPF 的 XAML 是懒加载的，坏掉的 XAML 不开窗口就不报错 —— 发布产物必须再冒烟一次
-        Write-Host '==> 对发布产物跑 --smoke'
-        $exe = Join-Path $published 'StashBay.exe'
-        $report = Join-Path ([System.IO.Path]::GetTempPath()) 'filestash-smoke.txt'
-
-        if (Test-Path $report) {
-            Remove-Item $report -Force
-        }
-
-        $smokeHome = Join-Path ([System.IO.Path]::GetTempPath()) ('stashbay-release-' + [guid]::NewGuid().ToString('N'))
-        $savedHome = $env:STASHBAY_HOME
-        $savedShell = $env:STASHBAY_NO_SHELL_INTEGRATION
-        try {
-            $env:STASHBAY_HOME = $smokeHome
-            $env:STASHBAY_NO_SHELL_INTEGRATION = '1'
-            $process = Start-Process -FilePath $exe -ArgumentList '--smoke' -PassThru -WindowStyle Hidden
-            if (-not $process.WaitForExit(90000)) {
-                $process.Kill()
-                $process.WaitForExit()
-                throw "发布产物的 smoke 超时：$($profile.Name)"
-            }
-        } finally {
-            $env:STASHBAY_HOME = $savedHome
-            $env:STASHBAY_NO_SHELL_INTEGRATION = $savedShell
-            if (Test-Path -LiteralPath $smokeHome) {
-                Remove-Item -LiteralPath $smokeHome -Recurse -Force
-            }
-        }
-
-        if (-not (Test-Path $report) -or (Get-Content $report -Raw) -ne 'OK') {
-            $detail = if (Test-Path $report) { Get-Content $report -Raw } else { '(没有生成报告)' }
-            throw "发布产物的 smoke 没通过：$detail"
-        }
-
-        Write-Host '    smoke 通过'
-    }
-
-    $archive = Join-Path $artifacts ("StashBay-{0}-{1}.zip" -f $version, $profile.Archive)
-    Compress-Archive -Path (Join-Path $published '*') -DestinationPath $archive -Force
 }
 
 Write-Host '==> 编译安装包'
-$iscc = Find-InnoCompiler
 
 if ($iscc) {
     $issFile = Join-Path $repositoryRoot 'tools\installer\FileStash.iss'
 
     # 版本号是预处理器宏：/DAppVersion=...
-    & $iscc "/DAppVersion=$version" $issFile
+    # /F 显式传入带 'v' 前缀的文件名，与 ZIP 资产命名规则保持统一
+    & $iscc "/DAppVersion=$version" "/FStashBay-v$version-setup" $issFile
     if ($LASTEXITCODE -ne 0) {
         throw "编译安装包失败（退出码 $LASTEXITCODE）"
     }
-} else {
-    Write-Host '    跳过：找不到 Inno Setup（ISCC.exe）。'
-    Write-Host '    装一个：winget install JRSoftware.InnoSetup'
-    Write-Host '    或者设 ISCC_PATH 指向 ISCC.exe。'
 }
+$installer = Join-Path $artifacts "StashBay-v$version-setup.exe"
+if (-not (Test-Path -LiteralPath $installer -PathType Leaf)) { throw '安装包未生成' }
 
-Write-Host '==> 生成校验和清单（LF 换行）'
-$sums = Join-Path $artifacts 'SHA256SUMS.txt'
-$lines = foreach ($file in Get-ChildItem $artifacts -File | Where-Object { $_.Name -like '*.zip' -or $_.Name -like '*-setup.exe' } | Sort-Object Name) {
-    $hash = (Get-FileHash $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
-    # 用 "a + "`n" 明确写 LF：Set-Content 默认在 Windows 上写 CRLF，
-    # 而 CRLF 会让 sha256sum -c 逐行报 "No such file or directory"
-    $hash + '  ' + $file.Name + "`n"
-}
-
-[System.IO.File]::WriteAllText($sums, ($lines -join ''), [System.Text.UTF8Encoding]::new($false))
+# 调用通用打包与验证逻辑（与 CI 共用）：PE 架构、外置 SQLite、ZIP 双向比对、沙箱隔离冒烟与 LF 校验和
+& (Join-Path $PSScriptRoot 'package-release.ps1') -AppName StashBay -Tag "v$Version" `
+    -PublishRoot $artifacts -Installer $installer -OutputDirectory $artifacts `
+    -SkipArm64:$SkipArm64 -SkipSmoke:$SkipSmoke
 
 Write-Host ''
 Write-Host '==> 产出'

@@ -63,11 +63,11 @@ public sealed class RepositoryTests : IAsyncLifetime
     [Fact]
     public async Task MigrateAsync_ShouldBeIdempotent()
     {
-        Assert.Equal(3, await _migrator.MigrateAsync(TestContext.Current.CancellationToken));
-        Assert.Equal(3, await _migrator.MigrateAsync(TestContext.Current.CancellationToken));
+        Assert.Equal(Migrations.All.Max(migration => migration.Version), await _migrator.MigrateAsync(TestContext.Current.CancellationToken));
+        Assert.Equal(Migrations.All.Max(migration => migration.Version), await _migrator.MigrateAsync(TestContext.Current.CancellationToken));
 
         var versions = await _migrator.GetAppliedVersionsAsync(TestContext.Current.CancellationToken);
-        Assert.Equal([1, 2, 3], versions);
+        Assert.Equal(Migrations.All.Select(migration => migration.Version), versions);
     }
 
     [Fact]
@@ -75,11 +75,11 @@ public sealed class RepositoryTests : IAsyncLifetime
     {
         var migrator = new DatabaseMigrator(_workspace.ConnectionFactory);
 
-        Assert.Equal(3, await migrator.EnsureReadyAsync(TestContext.Current.CancellationToken));
-        Assert.Equal(3, await migrator.EnsureReadyAsync(TestContext.Current.CancellationToken));
+        Assert.Equal(Migrations.All.Max(migration => migration.Version), await migrator.EnsureReadyAsync(TestContext.Current.CancellationToken));
+        Assert.Equal(Migrations.All.Max(migration => migration.Version), await migrator.EnsureReadyAsync(TestContext.Current.CancellationToken));
 
         var versions = await migrator.GetAppliedVersionsAsync(TestContext.Current.CancellationToken);
-        Assert.Equal([1, 2, 3], versions);
+        Assert.Equal(Migrations.All.Select(migration => migration.Version), versions);
     }
 
     [Fact]

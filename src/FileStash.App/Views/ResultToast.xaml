@@ -28,19 +28,27 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <TextBlock x:Name="TitleText"
-                       Grid.Row="0"
-                       TextWrapping="Wrap"
-                       FontWeight="SemiBold"
-                       Text="{x:Static app:Strings.ToastSucceeded}" />
-
-            <Button x:Name="NoticeCloseButton" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Top"
-                    Width="20" Height="20" Padding="0" Style="{StaticResource Button.Ghost}"
-                    Visibility="Collapsed" ToolTip="{x:Static app:Strings.CloseButton}"
-                    AutomationProperties.Name="{x:Static app:Strings.CloseButton}" Click="OnClose">
-                <Path Data="M4 4L16 16M16 4L4 16" Stroke="{DynamicResource Brush.TextSecondary}"
-                      StrokeThickness="1.5" Width="10" Height="10" Stretch="Uniform" />
-            </Button>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="TitleText" VerticalAlignment="Center" TextWrapping="Wrap"
+                           FontWeight="SemiBold" Text="{x:Static app:Strings.ToastSucceeded}" />
+                <Button x:Name="NoticeCloseButton" Grid.Column="1" VerticalAlignment="Center"
+                        Width="32" Height="32" Padding="2" BorderThickness="0" Margin="10,0,0,0" Style="{StaticResource Button.Ghost}"
+                        ToolTip="{x:Static app:Strings.CloseButton}"
+                        AutomationProperties.Name="{x:Static app:Strings.CloseButton}" Click="OnClose">
+                    <Grid Width="28" Height="28" IsHitTestVisible="False">
+                        <Grid x:Name="DismissCountdown" Visibility="Collapsed">
+                            <Path x:Name="CountdownArc" Stroke="{DynamicResource Brush.TextSecondary}" StrokeThickness="1.8"
+                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
+                        </Grid>
+                        <Path Data="M4 4L16 16M16 4L4 16" Stroke="{DynamicResource Brush.TextSecondary}"
+                              StrokeThickness="1.5" Width="9" Height="9" Stretch="Uniform"
+                              HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Grid>
+                </Button>
+            </Grid>
 
             <TextBlock x:Name="SummaryText"
                        Grid.Row="1"
@@ -65,7 +73,6 @@
                             Margin="6,0,0,0"
                             Style="{StaticResource Button.Primary}"
                             Click="OnUndo" />
-                    <Button Content="{x:Static app:Strings.CloseButton}" Margin="6,0,0,0" Click="OnClose" />
                 </StackPanel>
             </StackPanel>
         </Grid>

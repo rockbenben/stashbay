@@ -939,7 +939,7 @@
     <value>حرك الفأرة يمينًا ويسارًا بسرعة أثناء سحب الملفات لإظهار الرف المؤقت</value>
   </data>
   <data name="SectionDeveloperOptions" xml:space="preserve">
-    <value>خيارات متقدمة وللمطورين (تكامل Git)</value>
+    <value>تكامل Git</value>
   </data>
   <data name="DeveloperOptionsHint" xml:space="preserve">
     <value>ينطبق فقط على الملفات الموجودة داخل مستودع Git. يظل التخزين المؤقت العام للملفات واستعادتها مستقلاً تماماً.</value>
@@ -957,7 +957,7 @@
     <value>اختصار عام (لصق ملفات الحافظة)</value>
   </data>
   <data name="HotkeyRecordingHint" xml:space="preserve">
-    <value>انقر واضغط على تركيبة المفاتيح للتسجيل. اضغط على Esc للإلغاء.</value>
+    <value>انقر الحقل واضغط اختصار مفاتيح (مثل Ctrl+Alt+S)، ثم احفظ لتطبيقها. Backspace/Delete للمسح، وEsc لإلغاء التسجيل.</value>
   </data>
   <data name="HotkeyClearButton" xml:space="preserve">
     <value>مسح</value>
@@ -985,4 +985,85 @@
   <data name="KeepCurrentConfirm" xml:space="preserve"><value>هل تريد الاحتفاظ بالملف الحالي وإنهاء استعادة هذا العنصر؟
 {0}</value></data>
   <data name="ElevatedRetryConfirm" xml:space="preserve"><value>أكد المسارات الكاملة والإجراءات والبصمات أدناه. ستتم إعادة محاولة هذه العناصر الفاشلة فقط.</value></data>
+  <data name="ShellIntegrationFailedMessage" xml:space="preserve">
+    <value>تم حفظ الإعدادات، لكن تعذر تطبيق تكامل Windows بالكامل (بما في ذلك بدء التشغيل التلقائي). راجع سجل التطبيق، وعالج مشكلات الأذونات، ثم احفظ مرة أخرى.</value>
+  </data>
+  <data name="StartupAdminLabel" xml:space="preserve">
+    <value>بدء التشغيل بصلاحيات المسؤول (اختياري)</value>
+  </data>
+  <data name="StartupAdminHint" xml:space="preserve">
+    <value>الصلاحيات العادية هي الافتراضية. يسري عند تسجيل الدخول التالي؛ وافق على UAC بحساب المسؤول الحالي. الإصدارات المحمولة مدعومة.</value>
+  </data>
+  <data name="StartupRepair" xml:space="preserve">
+    <value>إصلاح بدء التشغيل</value>
+  </data>
+  <data name="StartupRefresh" xml:space="preserve">
+    <value>تحديث الحالة</value>
+  </data>
+  <data name="StartupStatusDisabled" xml:space="preserve">
+    <value>بدء التشغيل: متوقف</value>
+  </data>
+  <data name="StartupStatusPlain" xml:space="preserve">
+    <value>بدء التشغيل: صلاحيات عادية</value>
+  </data>
+  <data name="StartupStatusElevated" xml:space="preserve">
+    <value>بدء التشغيل: صلاحيات المسؤول</value>
+  </data>
+  <data name="StartupStatusRepair" xml:space="preserve">
+    <value>بدء التشغيل: يحتاج إلى إصلاح</value>
+  </data>
+  <data name="StartupStatusConflict" xml:space="preserve">
+    <value>بدء التشغيل: تعارض ملكية المهمة؛ راجع السجل</value>
+  </data>
+  <data name="StartupStatusUnknown" xml:space="preserve">
+    <value>بدء التشغيل: غير مؤكد؛ حدّث قبل المحاولة</value>
+  </data>
+  <data name="StartupStatusSuppressed" xml:space="preserve">
+    <value>بدء التشغيل: تغييرات النظام معطلة للاختبار</value>
+  </data>
+  <data name="StartupStatusBusy" xml:space="preserve">
+    <value>جارٍ تطبيق الإعدادات؛ أكمل طلب UAC…</value>
+  </data>
+  <data name="StartupCancelled" xml:space="preserve">
+    <value>تم إلغاء UAC. لم تُحفظ إعدادات بدء التشغيل.</value>
+  </data>
+  <data name="StartupFailedMessage" xml:space="preserve">
+    <value>فشل التسجيل أو الإزالة أو حفظ الإعدادات. راجع السجلات في {0} وحدّث الحالة ثم حاول مجددًا.</value>
+  </data>
+  <data name="StartupUncertainMessage" xml:space="preserve">
+    <value>النتيجة غير مؤكدة؛ قد يظل المساعد قيد التشغيل. حدّث الحالة لاحقًا. لن تتكرر العملية قبل التأكيد.</value>
+  </data>
+  <data name="StartupAttention" xml:space="preserve">
+    <value>يحتاج بدء التشغيل إلى مراجعة. افتح الإعدادات وافحص الحالة وأصلحها عند الحاجة. لن يغيّر التطبيق مستوى الصلاحيات تلقائيًا.</value>
+  </data>
+  <data name="StartupAccountMessage" xml:space="preserve">
+    <value>وافق على UAC بحساب المسؤول الحالي. التسجيل باستخدام حساب مسؤول آخر غير مدعوم. السجلات: {0}.</value>
+  </data>
+  <data name="StartupDeniedMessage" xml:space="preserve">
+    <value>رُفض الوصول لبدء التشغيل. افحص أذونات المهمة أو السجل والسياسة المحلية. السجلات: {0}.</value>
+  </data>
+  <data name="StartupConflictMessage" xml:space="preserve">
+    <value>المهمة تخص تطبيقًا آخر؛ لم يتم استبدالها أو حذفها. راجع {0} وعالج التعارض.</value>
+  </data>
+  <data name="StartupRollbackMessage" xml:space="preserve">
+    <value>فشل بدء التشغيل ولم تُستعد الحالة السابقة بالكامل. راجع {0} وحدّث الحالة وأصلحها. لا تفترض أن الإعداد السابق ما زال يعمل.</value>
+  </data>
+  <data name="StartupDelayLabel" xml:space="preserve">
+    <value>تأخير دخول المسؤول (بالثواني)</value>
+  </data>
+  <data name="StartupDelayRange" xml:space="preserve">
+    <value>أدخل عددًا صحيحًا من 0 إلى 300؛ يعني 0 دون تأخير. ينطبق فقط على مهمة دخول المسؤول.</value>
+  </data>
+  <data name="ShelfDropPrompt" xml:space="preserve"><value>أفلت ملفاتك هنا</value></data>
+  <data name="ShelfRestoreMenu" xml:space="preserve"><value>استعادة ▾</value></data>
+  <data name="ShelfRetentionLabel" xml:space="preserve"><value>مدة الاحتفاظ بالرفوف المغلقة بالأيام (0 = للأبد)</value></data>
+  <data name="TrayNewShelf" xml:space="preserve"><value>رف جديد</value></data>
+  <data name="ShelfDragPrompt" xml:space="preserve"><value>اسحب الملفات للخارج</value></data>
+  <data name="ShelfCountFormat" xml:space="preserve"><value>تم حفظ {0} من العناصر</value></data>
+  <data name="ToastDismissCountdown" xml:space="preserve"><value>يغلق خلال {0} ثانية؛ يتوقف عند تمرير المؤشر أو تركيز لوحة المفاتيح</value></data>
+  <data name="ShelfCleanupHint" xml:space="preserve"><value>تُحذف الرفوف المؤقتة الفارغة تلقائيًا. يُحتفظ بالرف الافتراضي والمخازن التي تحتوي على عناصر.</value></data>
+  <data name="SettingsAppearance" xml:space="preserve"><value>المظهر</value></data>
+  <data name="SettingsShelf" xml:space="preserve"><value>الرف</value></data>
+  <data name="SettingsFiles" xml:space="preserve"><value>معالجة الملفات</value></data>
+  <data name="SettingsShortcuts" xml:space="preserve"><value>اختصارات لوحة المفاتيح</value></data>
 </root>

@@ -18,6 +18,9 @@ internal static class TrayIconService
     [DllImport("user32.dll", EntryPoint = "FindWindowW", CharSet = CharSet.Unicode, SetLastError = true)]
     private static extern IntPtr FindWindow(string? lpClassName, string? lpWindowName);
 
+    [DllImport("user32.dll")]
+    private static extern int GetSystemMetrics(int index);
+
     /// <summary>当前会话是否有任务栏（Shell_TrayWnd）。自动化/无头/非交互会话下可能为 false。</summary>
     public static bool IsTaskbarAvailable
     {
@@ -40,9 +43,9 @@ internal static class TrayIconService
 
         if (!tray.IsCreated)
         {
-            // H.NotifyIcon 的 IconSource 是通过 async void ToIconAsync 异步转换的，
-            // 如果在此期间立刻调用 ForceCreate，Icon 句柄尚为 null 会导致 Win32 Shell_NotifyIcon 抛 TryCreate failed。
-            // 兜底同步载入图标资源，确保句柄已就绪。
+            // Load the ICO synchronously, selecting the native small-icon frame.
+            // IconSource's asynchronous WPF conversion can resample an arbitrary
+            // frame and later replace this handle; keep one owner of the icon.
             if (tray.Icon is null)
             {
                 try
@@ -52,11 +55,14 @@ internal static class TrayIconService
                     if (streamInfo is not null)
                     {
                         using var stream = streamInfo.Stream;
-                        tray.Icon = new System.Drawing.Icon(stream);
+                        var width = Math.Max(16, GetSystemMetrics(49)); // SM_CXSMICON
+                        var height = Math.Max(16, GetSystemMetrics(50)); // SM_CYSMICON
+                        tray.Icon = new System.Drawing.Icon(stream, width, height);
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Serilog.Log.Warning(ex, "Failed to load the tray icon resource");
                 }
             }
 

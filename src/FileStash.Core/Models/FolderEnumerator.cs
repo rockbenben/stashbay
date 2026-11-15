@@ -34,8 +34,16 @@ public sealed record EnumerationResult(IReadOnlyList<EnumeratedEntry> Entries, I
 /// </remarks>
 public static class FolderEnumerator
 {
-    public static EnumerationResult Enumerate(string root, string folderPath, IReadOnlyList<string>? excludeGlobs = null)
+    public static Task<EnumerationResult> EnumerateAsync(string root, string folderPath,
+        IReadOnlyList<string>? excludeGlobs = null, CancellationToken ct = default)
     {
+        var exclusions = excludeGlobs?.ToArray();
+        return Task.Run(() => Enumerate(root, folderPath, exclusions, ct), ct);
+    }
+
+    public static EnumerationResult Enumerate(string root, string folderPath, IReadOnlyList<string>? excludeGlobs = null, CancellationToken ct = default)
+    {
+        ct.ThrowIfCancellationRequested();
         var entries = new List<EnumeratedEntry>();
         var warnings = new List<string>();
         var visitedDirectories = new List<string>();
@@ -52,6 +60,7 @@ public static class FolderEnumerator
 
         while (stack.Count > 0)
         {
+            ct.ThrowIfCancellationRequested();
             var current = stack.Pop();
 
             string[] files;
@@ -70,6 +79,7 @@ public static class FolderEnumerator
 
             foreach (var file in files)
             {
+                ct.ThrowIfCancellationRequested();
                 try
                 {
                     var info = new FileInfo(file);
@@ -107,6 +117,7 @@ public static class FolderEnumerator
 
             foreach (var directory in directories)
             {
+                ct.ThrowIfCancellationRequested();
                 try
                 {
                     var info = new DirectoryInfo(directory);
@@ -142,18 +153,18 @@ public static class FolderEnumerator
             }
         }
 
-        // 空目录：下面一个条目都没有的目录，记成一条目录项（应用时会创建出来）
-        // 按深度从深到浅处理：只含空子目录的父目录，要等子目录先成为条目，它才算"有内容"
+        // Propagate content from each child to its immediate parent. Processing
+        // deepest directories first preserves empty-leaf semantics without
+        // scanning the entire entry list for every directory.
+        var populatedDirectories = entries.Select(entry => Path.GetDirectoryName(entry.RelativePath) ?? string.Empty)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
         foreach (var directory in visitedDirectories
                      .OrderByDescending(path => path.Count(character => character == '\\')))
         {
-            var prefix = directory + "\\";
-            var hasContent = entries.Any(entry => entry.RelativePath.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
-
-            if (!hasContent)
-            {
+            ct.ThrowIfCancellationRequested();
+            if (!populatedDirectories.Contains(directory))
                 entries.Add(new EnumeratedEntry(directory, Path.Combine(root, directory), true, 0, DateTime.MinValue));
-            }
+            populatedDirectories.Add(Path.GetDirectoryName(directory) ?? string.Empty);
         }
 
         if (entries.Count == 0 && warnings.Count == 0)

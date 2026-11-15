@@ -939,7 +939,7 @@
     <value>สะบัดเมาส์ไปมาอย่างรวดเร็วขณะลากไฟล์เพื่อเปิดชั้นวางพักไฟล์</value>
   </data>
   <data name="SectionDeveloperOptions" xml:space="preserve">
-    <value>ตัวเลือกขั้นสูงและสำหรับนักพัฒนา (Git)</value>
+    <value>การทำงานร่วมกับ Git</value>
   </data>
   <data name="DeveloperOptionsHint" xml:space="preserve">
     <value>มีผลเฉพาะเมื่อพักไฟล์ภายในที่เก็บ Git เท่านั้น การพักและกู้คืนไฟล์ทั่วไปจะทำงานอย่างอิสระโดยสมบูรณ์</value>
@@ -957,7 +957,7 @@
     <value>ปุ่มลัดส่วนกลาง (วางไฟล์จากคลิปบอร์ด)</value>
   </data>
   <data name="HotkeyRecordingHint" xml:space="preserve">
-    <value>คลิกและกดปุ่มลัดเพื่อบันทึก กด Esc เพื่อยกเลิก</value>
+    <value>คลิกช่องแล้วกดชุดปุ่ม (เช่น Ctrl+Alt+S) จากนั้นบันทึกเพื่อใช้ Backspace/Delete ล้างค่า และ Esc ยกเลิกการบันทึกปุ่ม</value>
   </data>
   <data name="HotkeyClearButton" xml:space="preserve">
     <value>ล้าง</value>
@@ -985,4 +985,85 @@
   <data name="KeepCurrentConfirm" xml:space="preserve"><value>เก็บไฟล์ปัจจุบันและจบการกู้คืนรายการนี้หรือไม่?
 {0}</value></data>
   <data name="ElevatedRetryConfirm" xml:space="preserve"><value>ยืนยันเส้นทางเต็ม การกระทำ และแฮชด้านล่าง จะลองใหม่เฉพาะรายการที่ล้มเหลวในรายการนี้</value></data>
+  <data name="ShellIntegrationFailedMessage" xml:space="preserve">
+    <value>บันทึกการตั้งค่าแล้ว แต่ไม่สามารถใช้การผสานกับ Windows (รวมถึงการเริ่มอัตโนมัติ) ได้ครบถ้วน โปรดตรวจสอบบันทึกของแอป แก้ไขปัญหาสิทธิ์ แล้วบันทึกอีกครั้ง</value>
+  </data>
+  <data name="StartupAdminLabel" xml:space="preserve">
+    <value>เริ่มด้วยสิทธิ์ผู้ดูแลระบบ (ตัวเลือก)</value>
+  </data>
+  <data name="StartupAdminHint" xml:space="preserve">
+    <value>ค่าเริ่มต้นคือสิทธิ์ปกติ มีผลเมื่อเข้าสู่ระบบครั้งถัดไป โปรดยืนยัน UAC ด้วยบัญชีผู้ดูแลระบบปัจจุบัน รองรับรุ่นพกพา</value>
+  </data>
+  <data name="StartupRepair" xml:space="preserve">
+    <value>ซ่อมแซมการเริ่มอัตโนมัติ</value>
+  </data>
+  <data name="StartupRefresh" xml:space="preserve">
+    <value>รีเฟรชสถานะ</value>
+  </data>
+  <data name="StartupStatusDisabled" xml:space="preserve">
+    <value>เริ่มอัตโนมัติ: ปิด</value>
+  </data>
+  <data name="StartupStatusPlain" xml:space="preserve">
+    <value>เริ่มอัตโนมัติ: สิทธิ์ปกติ</value>
+  </data>
+  <data name="StartupStatusElevated" xml:space="preserve">
+    <value>เริ่มอัตโนมัติ: สิทธิ์ผู้ดูแลระบบ</value>
+  </data>
+  <data name="StartupStatusRepair" xml:space="preserve">
+    <value>เริ่มอัตโนมัติ: ต้องซ่อมแซม</value>
+  </data>
+  <data name="StartupStatusConflict" xml:space="preserve">
+    <value>เริ่มอัตโนมัติ: เจ้าของงานขัดแย้ง โปรดดูบันทึก</value>
+  </data>
+  <data name="StartupStatusUnknown" xml:space="preserve">
+    <value>เริ่มอัตโนมัติ: ยังไม่ยืนยัน โปรดรีเฟรชก่อนลองอีกครั้ง</value>
+  </data>
+  <data name="StartupStatusSuppressed" xml:space="preserve">
+    <value>เริ่มอัตโนมัติ: งดเปลี่ยนระบบระหว่างทดสอบ</value>
+  </data>
+  <data name="StartupStatusBusy" xml:space="preserve">
+    <value>กำลังใช้การตั้งค่า โปรดยืนยัน UAC…</value>
+  </data>
+  <data name="StartupCancelled" xml:space="preserve">
+    <value>ยกเลิก UAC แล้ว ไม่ได้บันทึกการตั้งค่าเริ่มอัตโนมัติ</value>
+  </data>
+  <data name="StartupFailedMessage" xml:space="preserve">
+    <value>ลงทะเบียน ลบ หรือบันทึกการตั้งค่าไม่สำเร็จ ตรวจสอบบันทึกที่ {0} รีเฟรชสถานะ แล้วลองอีกครั้ง</value>
+  </data>
+  <data name="StartupUncertainMessage" xml:space="preserve">
+    <value>ยังไม่ยืนยันผล ผู้ช่วยอาจยังทำงานอยู่ โปรดรีเฟรชภายหลัง จะไม่ทำงานซ้ำก่อนยืนยัน</value>
+  </data>
+  <data name="StartupAttention" xml:space="preserve">
+    <value>โปรดตรวจสอบการเริ่มอัตโนมัติในหน้าตั้งค่าและซ่อมแซมหากจำเป็น แอปจะไม่เปลี่ยนระดับสิทธิ์โดยอัตโนมัติ</value>
+  </data>
+  <data name="StartupAccountMessage" xml:space="preserve">
+    <value>โปรดยืนยัน UAC ด้วยบัญชีผู้ดูแลระบบปัจจุบัน ไม่รองรับการลงทะเบียนด้วยบัญชีผู้ดูแลระบบอื่น ดูบันทึกที่ {0}</value>
+  </data>
+  <data name="StartupDeniedMessage" xml:space="preserve">
+    <value>การเข้าถึงถูกปฏิเสธ ตรวจสอบสิทธิ์ของงานหรือรีจิสทรีและนโยบายเครื่อง ดูบันทึกที่ {0}</value>
+  </data>
+  <data name="StartupConflictMessage" xml:space="preserve">
+    <value>งานนี้เป็นของแอปอื่น จึงไม่ได้เขียนทับหรือลบ ตรวจสอบ {0} และแก้ไขความขัดแย้ง</value>
+  </data>
+  <data name="StartupRollbackMessage" xml:space="preserve">
+    <value>การเริ่มอัตโนมัติล้มเหลวและกู้คืนสถานะเดิมได้ไม่ครบ ตรวจสอบ {0} รีเฟรชและซ่อมแซม อย่าสันนิษฐานว่าการตั้งค่าเดิมยังใช้งานได้</value>
+  </data>
+  <data name="StartupDelayLabel" xml:space="preserve">
+    <value>หน่วงเวลาเข้าสู่ระบบผู้ดูแล (วินาที)</value>
+  </data>
+  <data name="StartupDelayRange" xml:space="preserve">
+    <value>ป้อนจำนวนเต็ม 0–300 โดย 0 คือไม่หน่วงเวลา ใช้กับงานเข้าสู่ระบบผู้ดูแลเท่านั้น</value>
+  </data>
+  <data name="ShelfDropPrompt" xml:space="preserve"><value>วางไฟล์ของคุณที่นี่</value></data>
+  <data name="ShelfRestoreMenu" xml:space="preserve"><value>คืนค่า ▾</value></data>
+  <data name="ShelfRetentionLabel" xml:space="preserve"><value>จำนวนวันที่เก็บชั้นวางที่ปิด (0 = ตลอดไป)</value></data>
+  <data name="TrayNewShelf" xml:space="preserve"><value>ชั้นวางใหม่</value></data>
+  <data name="ShelfDragPrompt" xml:space="preserve"><value>ลากไฟล์ออก</value></data>
+  <data name="ShelfCountFormat" xml:space="preserve"><value>พักไว้ {0} รายการ</value></data>
+  <data name="ToastDismissCountdown" xml:space="preserve"><value>ปิดใน {0} วินาที พักเมื่อวางเมาส์หรือโฟกัสด้วยแป้นพิมพ์</value></data>
+  <data name="ShelfCleanupHint" xml:space="preserve"><value>ชั้นพักชั่วคราวที่ว่างจะถูกลบอัตโนมัติ ชั้นพักเริ่มต้นและกล่องพักที่มีเนื้อหาจะถูกเก็บไว้</value></data>
+  <data name="SettingsAppearance" xml:space="preserve"><value>รูปลักษณ์</value></data>
+  <data name="SettingsShelf" xml:space="preserve"><value>ชั้นวาง</value></data>
+  <data name="SettingsFiles" xml:space="preserve"><value>การจัดการไฟล์</value></data>
+  <data name="SettingsShortcuts" xml:space="preserve"><value>ปุ่มลัด</value></data>
 </root>

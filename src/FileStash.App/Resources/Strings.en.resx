@@ -939,7 +939,7 @@
     <value>Shake cursor rapidly while dragging files to expand stash shelf at cursor</value>
   </data>
   <data name="SectionDeveloperOptions" xml:space="preserve">
-    <value>Advanced &amp; Developer Options (Git)</value>
+    <value>Git integration</value>
   </data>
   <data name="DeveloperOptionsHint" xml:space="preserve">
     <value>Applies only when stashing files within a Git repository. General file stash and restore remains completely independent.</value>
@@ -957,7 +957,7 @@
     <value>Global hotkey (paste clipboard files)</value>
   </data>
   <data name="HotkeyRecordingHint" xml:space="preserve">
-    <value>Click to focus and press keyboard shortcut to record. Press Esc to cancel.</value>
+    <value>Click a field and press a key combination (e.g. Ctrl+Alt+S), then Save to apply. Backspace/Delete clears; Esc cancels recording.</value>
   </data>
   <data name="HotkeyClearButton" xml:space="preserve">
     <value>Clear</value>
@@ -985,4 +985,85 @@
   <data name="KeepCurrentConfirm" xml:space="preserve"><value>Keep the current file and finish recovery for this entry?
 {0}</value></data>
   <data name="ElevatedRetryConfirm" xml:space="preserve"><value>Confirm the full targets, actions and content hashes below. Only these failed entries will be retried.</value></data>
+  <data name="ShellIntegrationFailedMessage" xml:space="preserve">
+    <value>Settings were saved, but Windows integration (including startup) could not be fully applied. Check the application log, resolve any permission issues, then save again.</value>
+  </data>
+  <data name="StartupAdminLabel" xml:space="preserve">
+    <value>Start with administrator privileges (optional)</value>
+  </data>
+  <data name="StartupAdminHint" xml:space="preserve">
+    <value>Standard privileges are the default. Applies at next logon; approve UAC using your current administrator account. Portable builds are supported.</value>
+  </data>
+  <data name="StartupRepair" xml:space="preserve">
+    <value>Repair startup</value>
+  </data>
+  <data name="StartupRefresh" xml:space="preserve">
+    <value>Refresh status</value>
+  </data>
+  <data name="StartupStatusDisabled" xml:space="preserve">
+    <value>System startup: off</value>
+  </data>
+  <data name="StartupStatusPlain" xml:space="preserve">
+    <value>System startup: standard privileges</value>
+  </data>
+  <data name="StartupStatusElevated" xml:space="preserve">
+    <value>System startup: administrator privileges</value>
+  </data>
+  <data name="StartupStatusRepair" xml:space="preserve">
+    <value>System startup: repair required</value>
+  </data>
+  <data name="StartupStatusConflict" xml:space="preserve">
+    <value>System startup: task ownership conflict; check the log</value>
+  </data>
+  <data name="StartupStatusUnknown" xml:space="preserve">
+    <value>System startup: unconfirmed; refresh before retrying</value>
+  </data>
+  <data name="StartupStatusSuppressed" xml:space="preserve">
+    <value>System startup: system changes suppressed for testing</value>
+  </data>
+  <data name="StartupStatusBusy" xml:space="preserve">
+    <value>Applying startup settings; complete the UAC prompt…</value>
+  </data>
+  <data name="StartupCancelled" xml:space="preserve">
+    <value>UAC was cancelled. Startup settings were not saved.</value>
+  </data>
+  <data name="StartupFailedMessage" xml:space="preserve">
+    <value>Startup registration, removal or settings save failed. Check logs at {0}, refresh status, then retry.</value>
+  </data>
+  <data name="StartupUncertainMessage" xml:space="preserve">
+    <value>The startup result is unconfirmed; the helper may still be running. Refresh status later. The operation will not be replayed before confirmation.</value>
+  </data>
+  <data name="StartupAttention" xml:space="preserve">
+    <value>Startup needs attention. Open settings to inspect system status and repair if needed. The app will not automatically elevate or switch to standard privileges.</value>
+  </data>
+  <data name="StartupAccountMessage" xml:space="preserve">
+    <value>Approve UAC with your current administrator account. Registering startup under another administrator account is not supported. See logs at {0}.</value>
+  </data>
+  <data name="StartupDeniedMessage" xml:space="preserve">
+    <value>Startup access was denied. Check task or registry permissions and local policy, then consult logs at {0} before retrying.</value>
+  </data>
+  <data name="StartupConflictMessage" xml:space="preserve">
+    <value>The task name belongs to another application; it was not overwritten or removed. Check logs at {0} and resolve the conflict.</value>
+  </data>
+  <data name="StartupRollbackMessage" xml:space="preserve">
+    <value>Startup failed and the previous state could not be fully restored. Check logs at {0}, refresh system status and repair. Do not assume the previous startup still works.</value>
+  </data>
+  <data name="StartupDelayLabel" xml:space="preserve">
+    <value>Administrator logon delay (seconds)</value>
+  </data>
+  <data name="StartupDelayRange" xml:space="preserve">
+    <value>Enter an integer from 0 to 300; 0 means no delay. Applies only to the administrator logon task.</value>
+  </data>
+  <data name="ShelfDropPrompt" xml:space="preserve"><value>Drop your files here</value></data>
+  <data name="ShelfRestoreMenu" xml:space="preserve"><value>Restore ▾</value></data>
+  <data name="ShelfRetentionLabel" xml:space="preserve"><value>Closed shelf retention in days (0 = forever)</value></data>
+  <data name="TrayNewShelf" xml:space="preserve"><value>New shelf</value></data>
+  <data name="ShelfDragPrompt" xml:space="preserve"><value>Drag files out</value></data>
+  <data name="ShelfCountFormat" xml:space="preserve"><value>{0} items stashed</value></data>
+  <data name="ToastDismissCountdown" xml:space="preserve"><value>Closes in {0} seconds; pauses on hover or keyboard focus</value></data>
+  <data name="ShelfCleanupHint" xml:space="preserve"><value>Empty temporary shelves are removed automatically. The default shelf and stashes with contents are kept.</value></data>
+  <data name="SettingsAppearance" xml:space="preserve"><value>Appearance</value></data>
+  <data name="SettingsShelf" xml:space="preserve"><value>Shelf</value></data>
+  <data name="SettingsFiles" xml:space="preserve"><value>File handling</value></data>
+  <data name="SettingsShortcuts" xml:space="preserve"><value>Shortcuts</value></data>
 </root>

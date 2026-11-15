@@ -939,7 +939,7 @@
     <value>ファイルドラッグ中にマウスを左右に振ることでスタッシュ棚を展開します</value>
   </data>
   <data name="SectionDeveloperOptions" xml:space="preserve">
-    <value>高度な設定と開発者オプション (Git)</value>
+    <value>Git 連携</value>
   </data>
   <data name="DeveloperOptionsHint" xml:space="preserve">
     <value>Git リポジトリ内のファイルを退避する場合にのみ適用されます。通常のファイル退避と復元は完全に独立して動作します。</value>
@@ -957,7 +957,7 @@
     <value>グローバルホットキー（クリップボードのファイルを貼り付け）</value>
   </data>
   <data name="HotkeyRecordingHint" xml:space="preserve">
-    <value>入力欄をクリックしてキーを押すと登録できます。Esc でキャンセル。</value>
+    <value>入力欄をクリックしてキーの組み合わせ（例：Ctrl+Alt+S）を押し、保存して適用します。Backspace/Delete で消去、Esc で入力を中止します。</value>
   </data>
   <data name="HotkeyClearButton" xml:space="preserve">
     <value>クリア</value>
@@ -985,4 +985,85 @@
   <data name="KeepCurrentConfirm" xml:space="preserve"><value>現在のファイルを保持して、この項目の復旧を終了しますか？
 {0}</value></data>
   <data name="ElevatedRetryConfirm" xml:space="preserve"><value>以下の完全なパス、操作、ハッシュを確認してください。この一覧の失敗項目だけを再試行します。</value></data>
+  <data name="ShellIntegrationFailedMessage" xml:space="preserve">
+    <value>設定は保存されましたが、Windows 統合（自動起動を含む）を完全に適用できませんでした。アプリのログを確認し、権限の問題を解決してから再度保存してください。</value>
+  </data>
+  <data name="StartupAdminLabel" xml:space="preserve">
+    <value>管理者権限で自動起動（任意）</value>
+  </data>
+  <data name="StartupAdminHint" xml:space="preserve">
+    <value>既定は通常権限です。次回ログオン時から有効になります。登録には現在の管理者アカウントで UAC の承認が必要です。ポータブル版も対応しています。</value>
+  </data>
+  <data name="StartupRepair" xml:space="preserve">
+    <value>自動起動を修復</value>
+  </data>
+  <data name="StartupRefresh" xml:space="preserve">
+    <value>状態を更新</value>
+  </data>
+  <data name="StartupStatusDisabled" xml:space="preserve">
+    <value>自動起動：無効</value>
+  </data>
+  <data name="StartupStatusPlain" xml:space="preserve">
+    <value>自動起動：通常権限</value>
+  </data>
+  <data name="StartupStatusElevated" xml:space="preserve">
+    <value>自動起動：管理者権限</value>
+  </data>
+  <data name="StartupStatusRepair" xml:space="preserve">
+    <value>自動起動：修復が必要</value>
+  </data>
+  <data name="StartupStatusConflict" xml:space="preserve">
+    <value>自動起動：タスクの所有者が競合しています。ログを確認してください</value>
+  </data>
+  <data name="StartupStatusUnknown" xml:space="preserve">
+    <value>自動起動：未確認。更新してから再試行してください</value>
+  </data>
+  <data name="StartupStatusSuppressed" xml:space="preserve">
+    <value>自動起動：テストのためシステムへの変更を抑止</value>
+  </data>
+  <data name="StartupStatusBusy" xml:space="preserve">
+    <value>自動起動を設定中です。UAC の確認を完了してください…</value>
+  </data>
+  <data name="StartupCancelled" xml:space="preserve">
+    <value>UAC がキャンセルされました。自動起動設定は保存されていません。</value>
+  </data>
+  <data name="StartupFailedMessage" xml:space="preserve">
+    <value>自動起動の登録、削除、または設定の保存に失敗しました。{0} のログを確認し、状態を更新してから再試行してください。</value>
+  </data>
+  <data name="StartupUncertainMessage" xml:space="preserve">
+    <value>結果が未確認です。ヘルパーがまだ実行中の可能性があります。後で状態を更新してください。確認前に操作は繰り返しません。</value>
+  </data>
+  <data name="StartupAttention" xml:space="preserve">
+    <value>自動起動の確認が必要です。設定で状態を確認し、必要に応じて修復してください。自動的な権限昇格や通常権限への変更は行いません。</value>
+  </data>
+  <data name="StartupAccountMessage" xml:space="preserve">
+    <value>現在の管理者アカウントで UAC を承認してください。別の管理者アカウントでの登録には対応していません。ログ：{0}。</value>
+  </data>
+  <data name="StartupDeniedMessage" xml:space="preserve">
+    <value>自動起動へのアクセスが拒否されました。タスクやレジストリの権限とローカルポリシーを確認してください。ログ：{0}。</value>
+  </data>
+  <data name="StartupConflictMessage" xml:space="preserve">
+    <value>同名タスクは別のアプリのものです。上書きも削除もしていません。ログ {0} を確認し競合を解決してください。</value>
+  </data>
+  <data name="StartupRollbackMessage" xml:space="preserve">
+    <value>失敗後に以前の状態を完全に復元できませんでした。ログ {0} を確認し、状態を更新して修復してください。以前の自動起動が有効とは限りません。</value>
+  </data>
+  <data name="StartupDelayLabel" xml:space="preserve">
+    <value>管理者ログオンの遅延（秒）</value>
+  </data>
+  <data name="StartupDelayRange" xml:space="preserve">
+    <value>0～300 の整数を入力してください。0 は遅延なしです。管理者ログオンタスクのみに適用されます。</value>
+  </data>
+  <data name="ShelfDropPrompt" xml:space="preserve"><value>ここにファイルをドロップ</value></data>
+  <data name="ShelfRestoreMenu" xml:space="preserve"><value>復元 ▾</value></data>
+  <data name="ShelfRetentionLabel" xml:space="preserve"><value>閉じたシェルフの保存日数（0 = 無期限）</value></data>
+  <data name="TrayNewShelf" xml:space="preserve"><value>新しいシェルフ</value></data>
+  <data name="ShelfDragPrompt" xml:space="preserve"><value>ファイルをドラッグして取り出す</value></data>
+  <data name="ShelfCountFormat" xml:space="preserve"><value>{0} 件を一時保存</value></data>
+  <data name="ToastDismissCountdown" xml:space="preserve"><value>{0} 秒後に閉じます。マウスやキーボードの操作中は一時停止します</value></data>
+  <data name="ShelfCleanupHint" xml:space="preserve"><value>空の一時保管棚は自動削除されます。既定の棚と内容がある保管ボックスは保持されます。</value></data>
+  <data name="SettingsAppearance" xml:space="preserve"><value>外観</value></data>
+  <data name="SettingsShelf" xml:space="preserve"><value>一時保管</value></data>
+  <data name="SettingsFiles" xml:space="preserve"><value>ファイル処理</value></data>
+  <data name="SettingsShortcuts" xml:space="preserve"><value>ショートカット</value></data>
 </root>

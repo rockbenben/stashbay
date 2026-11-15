@@ -20,6 +20,8 @@ public enum AppTheme
 /// </remarks>
 internal static class ThemeService
 {
+    private static bool _windowHandlerRegistered;
+
     public static AppTheme Current { get; private set; } = AppTheme.Light;
 
     public static bool IsDark => Current == AppTheme.Dark;
@@ -39,6 +41,17 @@ internal static class ThemeService
         if (app is null)
         {
             return;
+        }
+
+        if (!_windowHandlerRegistered)
+        {
+            _windowHandlerRegistered = true;
+            EventManager.RegisterClassHandler(typeof(Window), FrameworkElement.LoadedEvent,
+                new RoutedEventHandler((sender, args) =>
+                {
+                    if (ReferenceEquals(sender, args.OriginalSource) && sender is Window window)
+                        WindowEffects.ApplyDarkTitleBar(window, IsDark);
+                }));
         }
 
         var dictionaries = app.Resources.MergedDictionaries;
@@ -65,6 +78,13 @@ internal static class ThemeService
         }
 
         Current = theme;
+        if (app.Dispatcher.CheckAccess())
+            foreach (Window window in app.Windows)
+            {
+                WindowEffects.ApplyDarkTitleBar(window, IsDark);
+                if (window is FileStash.App.Views.MainWindow shelf)
+                    WindowEffects.SetShelfChrome(shelf, shelf.ViewModel.IsCompact);
+            }
     }
 
     private static int FindTheme(IList<ResourceDictionary> dictionaries, string fileName)

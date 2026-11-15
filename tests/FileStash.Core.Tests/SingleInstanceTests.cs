@@ -13,6 +13,32 @@ namespace FileStash.Core.Tests;
 public sealed class SingleInstanceTests
 {
     [Fact]
+    public async Task LogonTakeoverCanWaitForOldInstanceWithoutImplicitWakeOrForwarding()
+    {
+        var suffix = Guid.NewGuid().ToString("N");
+        var pipe = $@"\\.\pipe\filestash-logon-test-{suffix}";
+        var mutex = $@"Local\filestash-logon-test-{suffix}";
+        using var primary = new CoordinatorOnOwnThread(pipe, TimeSpan.Zero, mutex);
+        var received = new ConcurrentQueue<string[]>();
+        var quit = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var server = primary.Coordinator.RunServerAsync(args =>
+        {
+            received.Enqueue(args);
+            if (args.SequenceEqual(["--quit"])) quit.TrySetResult();
+            return Task.CompletedTask;
+        }, TestContext.Current.CancellationToken);
+        await primary.Coordinator.ServerReady.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
+        using var next = new CoordinatorOnOwnThread(pipe, TimeSpan.FromMilliseconds(50), mutex, wakePrimary: false);
+        Assert.False(next.Coordinator.IsPrimary);
+        Assert.True(await next.Coordinator.SendToPrimaryAsync(["--quit"], attempts: 1));
+        await quit.Task.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
+        Assert.Single(received);
+        primary.Dispose();
+        next.Run(coordinator => Assert.True(coordinator.TryTakeover(TimeSpan.FromSeconds(2))));
+        await server;
+    }
+
+    [Fact]
     public async Task SecondInstance_ShouldForwardArgumentsToPrimary()
     {
         var suffix = Guid.NewGuid().ToString("N");
@@ -516,7 +542,8 @@ public sealed class SingleInstanceTests
             string pipeName,
             TimeSpan takeoverTimeout,
             string mutexName,
-            TimeSpan? messageReadTimeout = null)
+            TimeSpan? messageReadTimeout = null,
+            bool wakePrimary = true)
         {
             _thread = new Thread(() =>
             {
@@ -527,7 +554,8 @@ public sealed class SingleInstanceTests
                         takeoverTimeout,
                         skipInstanceCheck: false,
                         mutexName,
-                        messageReadTimeout);
+                        messageReadTimeout,
+                        wakePrimary);
                 }
                 catch (Exception ex)
                 {

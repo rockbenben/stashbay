@@ -939,7 +939,7 @@
     <value>Secouer la souris en glissant des fichiers pour faire apparaître la réserve au curseur</value>
   </data>
   <data name="SectionDeveloperOptions" xml:space="preserve">
-    <value>Options avancées et développeur (Git)</value>
+    <value>Intégration Git</value>
   </data>
   <data name="DeveloperOptionsHint" xml:space="preserve">
     <value>S'applique uniquement aux fichiers dans un dépôt Git. Le stockage temporaire et la restauration générale restent entièrement indépendants.</value>
@@ -957,7 +957,7 @@
     <value>Raccourci global (coller les fichiers du presse-papiers)</value>
   </data>
   <data name="HotkeyRecordingHint" xml:space="preserve">
-    <value>Cliquez et appuyez sur une combinaison pour l'enregistrer. Échap pour annuler.</value>
+    <value>Cliquez sur un champ, appuyez sur une combinaison (ex. Ctrl+Alt+S), puis enregistrez. Backspace/Delete efface ; Échap annule la saisie.</value>
   </data>
   <data name="HotkeyClearButton" xml:space="preserve">
     <value>Effacer</value>
@@ -985,4 +985,85 @@
   <data name="KeepCurrentConfirm" xml:space="preserve"><value>Conserver le fichier actuel et terminer la récupération de cette entrée ?
 {0}</value></data>
   <data name="ElevatedRetryConfirm" xml:space="preserve"><value>Confirmez les chemins complets, actions et empreintes ci-dessous. Seules ces entrées en échec seront réessayées.</value></data>
+  <data name="ShellIntegrationFailedMessage" xml:space="preserve">
+    <value>Les paramètres ont été enregistrés, mais l’intégration Windows (dont le démarrage automatique) n’a pas pu être entièrement appliquée. Consultez le journal de l’application, corrigez les problèmes d’autorisation, puis enregistrez à nouveau.</value>
+  </data>
+  <data name="StartupAdminLabel" xml:space="preserve">
+    <value>Démarrer avec les droits administrateur (facultatif)</value>
+  </data>
+  <data name="StartupAdminHint" xml:space="preserve">
+    <value>Les droits standard sont utilisés par défaut. Effectif à la prochaine connexion ; validez l’UAC avec votre compte administrateur actuel. Les versions portables sont prises en charge.</value>
+  </data>
+  <data name="StartupRepair" xml:space="preserve">
+    <value>Réparer le démarrage</value>
+  </data>
+  <data name="StartupRefresh" xml:space="preserve">
+    <value>Actualiser l’état</value>
+  </data>
+  <data name="StartupStatusDisabled" xml:space="preserve">
+    <value>Démarrage : désactivé</value>
+  </data>
+  <data name="StartupStatusPlain" xml:space="preserve">
+    <value>Démarrage : droits standard</value>
+  </data>
+  <data name="StartupStatusElevated" xml:space="preserve">
+    <value>Démarrage : droits administrateur</value>
+  </data>
+  <data name="StartupStatusRepair" xml:space="preserve">
+    <value>Démarrage : réparation nécessaire</value>
+  </data>
+  <data name="StartupStatusConflict" xml:space="preserve">
+    <value>Démarrage : conflit de propriétaire de tâche ; consultez le journal</value>
+  </data>
+  <data name="StartupStatusUnknown" xml:space="preserve">
+    <value>Démarrage : non confirmé ; actualisez avant de réessayer</value>
+  </data>
+  <data name="StartupStatusSuppressed" xml:space="preserve">
+    <value>Démarrage : accès système désactivé pour les tests</value>
+  </data>
+  <data name="StartupStatusBusy" xml:space="preserve">
+    <value>Application du démarrage ; validez l’UAC…</value>
+  </data>
+  <data name="StartupCancelled" xml:space="preserve">
+    <value>UAC annulée. Les paramètres de démarrage n’ont pas été enregistrés.</value>
+  </data>
+  <data name="StartupFailedMessage" xml:space="preserve">
+    <value>Échec de l’enregistrement, de la suppression ou de la sauvegarde. Consultez les journaux dans {0}, actualisez l’état puis réessayez.</value>
+  </data>
+  <data name="StartupUncertainMessage" xml:space="preserve">
+    <value>Résultat non confirmé ; l’assistant est peut-être encore actif. Actualisez l’état plus tard. L’opération ne sera pas répétée avant confirmation.</value>
+  </data>
+  <data name="StartupAttention" xml:space="preserve">
+    <value>Le démarrage nécessite une vérification. Ouvrez les paramètres et réparez si nécessaire. L’application ne change pas automatiquement de niveau de privilèges.</value>
+  </data>
+  <data name="StartupAccountMessage" xml:space="preserve">
+    <value>Validez l’UAC avec votre compte administrateur actuel. L’enregistrement avec un autre compte administrateur n’est pas pris en charge. Journaux : {0}.</value>
+  </data>
+  <data name="StartupDeniedMessage" xml:space="preserve">
+    <value>Accès au démarrage refusé. Vérifiez les autorisations de tâche ou du registre et les stratégies locales. Journaux : {0}.</value>
+  </data>
+  <data name="StartupConflictMessage" xml:space="preserve">
+    <value>La tâche appartient à une autre application ; elle n’a été ni remplacée ni supprimée. Consultez {0} et résolvez le conflit.</value>
+  </data>
+  <data name="StartupRollbackMessage" xml:space="preserve">
+    <value>Échec du démarrage ; l’état précédent n’a pas pu être entièrement restauré. Consultez {0}, actualisez l’état et réparez. Ne supposez pas que l’ancien démarrage fonctionne encore.</value>
+  </data>
+  <data name="StartupDelayLabel" xml:space="preserve">
+    <value>Délai de connexion administrateur (secondes)</value>
+  </data>
+  <data name="StartupDelayRange" xml:space="preserve">
+    <value>Saisissez un entier de 0 à 300 ; 0 signifie sans délai. S’applique uniquement à la tâche de connexion administrateur.</value>
+  </data>
+  <data name="ShelfDropPrompt" xml:space="preserve"><value>Déposez vos fichiers ici</value></data>
+  <data name="ShelfRestoreMenu" xml:space="preserve"><value>Restaurer ▾</value></data>
+  <data name="ShelfRetentionLabel" xml:space="preserve"><value>Conservation des étagères fermées en jours (0 = illimitée)</value></data>
+  <data name="TrayNewShelf" xml:space="preserve"><value>Nouvelle étagère</value></data>
+  <data name="ShelfDragPrompt" xml:space="preserve"><value>Glissez les fichiers dehors</value></data>
+  <data name="ShelfCountFormat" xml:space="preserve"><value>{0} éléments déposés</value></data>
+  <data name="ToastDismissCountdown" xml:space="preserve"><value>Fermeture dans {0} secondes ; pause au survol ou au focus clavier</value></data>
+  <data name="ShelfCleanupHint" xml:space="preserve"><value>Les étagères temporaires vides sont supprimées automatiquement. L’étagère par défaut et les dépôts contenant des éléments sont conservés.</value></data>
+  <data name="SettingsAppearance" xml:space="preserve"><value>Apparence</value></data>
+  <data name="SettingsShelf" xml:space="preserve"><value>Zone de dépôt</value></data>
+  <data name="SettingsFiles" xml:space="preserve"><value>Gestion des fichiers</value></data>
+  <data name="SettingsShortcuts" xml:space="preserve"><value>Raccourcis</value></data>
 </root>

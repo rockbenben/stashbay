@@ -99,22 +99,27 @@ public sealed class CleanupService : ICleanupService
         return await _blobStore.DeleteUnreferencedAsync(referenced, ct);
     }
 
-    public Task<int> DeleteExpiredExportsAsync(TimeSpan maxAge, CancellationToken ct) =>
-        Task.FromResult(DeleteExpiredDirectories(_paths.ExportDirectory, maxAge));
-
-    public Task<int> DeleteStaleTemporaryFilesAsync(TimeSpan maxAge, CancellationToken ct)
+    public async Task<int> DeleteExpiredExportsAsync(TimeSpan maxAge, CancellationToken ct)
     {
+        await using var storageLease = await StorageWriteLease.AcquireAsync(_blobStore, ct);
+        return DeleteExpiredDirectories(_paths.ExportDirectory, maxAge, ct);
+    }
+
+    public async Task<int> DeleteStaleTemporaryFilesAsync(TimeSpan maxAge, CancellationToken ct)
+    {
+        await using var storageLease = await StorageWriteLease.AcquireAsync(_blobStore, ct);
         var deleted = 0;
 
         if (!Directory.Exists(_paths.BlobTempDirectory))
         {
-            return Task.FromResult(0);
+            return 0;
         }
 
         var cutoff = DateTime.UtcNow - maxAge;
 
         foreach (var file in Directory.EnumerateFiles(_paths.BlobTempDirectory))
         {
+            ct.ThrowIfCancellationRequested();
             try
             {
                 if (maxAge > TimeSpan.Zero && new FileInfo(file).LastWriteTimeUtc >= cutoff)
@@ -138,7 +143,7 @@ public sealed class CleanupService : ICleanupService
             }
         }
 
-        return Task.FromResult(deleted);
+        return deleted;
     }
 
     public Task<StorageStats> GetStorageStatsAsync(CancellationToken ct)
@@ -173,7 +178,7 @@ public sealed class CleanupService : ICleanupService
         return Task.FromResult(new StorageStats(stashBytes, 0, exportBytes));
     }
 
-    private static int DeleteExpiredDirectories(string root, TimeSpan maxAge)
+    private static int DeleteExpiredDirectories(string root, TimeSpan maxAge, CancellationToken ct)
     {
         if (!Directory.Exists(root))
         {
@@ -185,6 +190,7 @@ public sealed class CleanupService : ICleanupService
 
         foreach (var directory in Directory.EnumerateDirectories(root))
         {
+            ct.ThrowIfCancellationRequested();
             try
             {
                 if (maxAge > TimeSpan.Zero && new DirectoryInfo(directory).LastWriteTimeUtc >= cutoff)
@@ -192,7 +198,7 @@ public sealed class CleanupService : ICleanupService
                     continue;
                 }
 
-                ClearReadOnlyRecursively(directory);
+                ClearReadOnlyRecursively(directory, ct);
                 Directory.Delete(directory, recursive: true);
                 deleted++;
             }
@@ -205,10 +211,11 @@ public sealed class CleanupService : ICleanupService
         return deleted;
     }
 
-    private static void ClearReadOnlyRecursively(string directory)
+    private static void ClearReadOnlyRecursively(string directory, CancellationToken ct)
     {
         foreach (var file in Directory.EnumerateFiles(directory, "*", SearchOption.AllDirectories))
         {
+            ct.ThrowIfCancellationRequested();
             try
             {
                 var attributes = File.GetAttributes(file);

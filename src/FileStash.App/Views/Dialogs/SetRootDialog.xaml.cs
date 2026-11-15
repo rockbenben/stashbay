@@ -27,11 +27,11 @@ public partial class SetRootDialog : Window
 
     public void SetSource(string sourcePath)
     {
+        SelectedRoot = null;
+        ConfirmButton.IsEnabled = false;
         var options = new List<AncestorOption>();
 
-        var directory = Directory.Exists(sourcePath)
-            ? sourcePath
-            : Path.GetDirectoryName(sourcePath);
+        var directory = Path.GetDirectoryName(Path.TrimEndingDirectorySeparator(sourcePath));
 
         var current = directory;
 
@@ -66,6 +66,7 @@ public partial class SetRootDialog : Window
         }
 
         SelectedRoot = option.Path;
+        ConfirmButton.IsEnabled = true;
         PreviewText.Text = Strings.NewRelativePathLabel + option.Preview;
     }
 

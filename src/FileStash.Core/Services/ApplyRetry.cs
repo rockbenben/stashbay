@@ -27,7 +27,9 @@ public sealed partial class ApplyExecutor
                 var hash = inspectTargets && File.Exists(entry.TargetPath)
                     ? await HashUtil.ComputeFileSha256Async(entry.TargetPath, ct) : null;
                 selection.Add(new RetryEntry(entry.Id, entry.TargetPath, entry.IntendedAction.Value,
-                    entry.NewSha256!, hash, inspectTargets ? _writer.GetIdentity(entry.TargetPath) : null, inspectTargets));
+                    entry.NewSha256!, hash, inspectTargets ? _writer.GetIdentity(entry.TargetPath) : null, inspectTargets,
+                    entry.NewZoneIdentifier?.ToArray(), inspectTargets && File.Exists(entry.TargetPath)
+                        ? await ZoneIdentifier.ReadAsync(entry.TargetPath, ct) : null));
             }
             return selection.AsReadOnly();
         }
@@ -36,7 +38,11 @@ public sealed partial class ApplyExecutor
 
     public async Task<int> RetryApprovedAsync(string operationId, IReadOnlyList<RetryEntry> approved, CancellationToken ct)
     {
-        var selection = approved.ToArray();
+        var selection = approved.Select(entry => entry with
+        {
+            ZoneIdentifier = entry.ZoneIdentifier?.ToArray(),
+            CurrentZoneIdentifier = entry.CurrentZoneIdentifier?.ToArray()
+        }).ToArray();
         if (selection.Length == 0) return 0;
         if (selection.Select(entry => entry.Id).Distinct().Count() != selection.Length)
             throw new InvalidOperationException(Strings.RetryAuthorizationChanged);
@@ -53,14 +59,17 @@ public sealed partial class ApplyExecutor
                 var item = selection[index];
                 var row = entries.SingleOrDefault(entry => entry.Id == item.Id);
                 if (row is null || row.Action != EntryResult.Failed || row.Pending || row.UndoPending || row.Undone
-                    || row.TargetPath != item.TargetPath || row.IntendedAction != item.Action || row.NewSha256 != item.Sha256)
+                    || row.TargetPath != item.TargetPath || row.IntendedAction != item.Action || row.NewSha256 != item.Sha256
+                    || !ZoneIdentifier.Matches(row.NewZoneIdentifier, item.ZoneIdentifier))
                     throw new InvalidOperationException(Strings.RetryAuthorizationChanged);
                 var hash = File.Exists(item.TargetPath)
                     ? await HashUtil.ComputeFileSha256Async(item.TargetPath, ct) : null;
                 var identity = _writer.GetIdentity(item.TargetPath);
-                if (item.TargetInspected && (hash != item.CurrentSha256 || identity != item.CurrentIdentity))
+                var zone = File.Exists(item.TargetPath) ? await ZoneIdentifier.ReadAsync(item.TargetPath, ct) : null;
+                if (item.TargetInspected && (hash != item.CurrentSha256 || identity != item.CurrentIdentity
+                    || !ZoneIdentifier.Matches(zone, item.CurrentZoneIdentifier)))
                     throw new InvalidOperationException(Strings.RetryAuthorizationChanged);
-                selection[index] = item with { CurrentSha256 = hash, CurrentIdentity = identity, TargetInspected = true };
+                selection[index] = item with { CurrentSha256 = hash, CurrentIdentity = identity, CurrentZoneIdentifier = zone, TargetInspected = true };
             }
             var succeeded = 0;
             foreach (var item in selection)
@@ -69,18 +78,19 @@ public sealed partial class ApplyExecutor
                 var entry = entries.Single(entry => entry.Id == item.Id);
                 var planned = new PlannedEntry
                 {
-                    Source = new StashEntry { Sha256 = item.Sha256 },
+                    Source = new StashEntry { Sha256 = item.Sha256, ZoneIdentifier = item.ZoneIdentifier },
                     Action = item.Action,
                     TargetPath = item.TargetPath,
                     State = item.Action == PlannedAction.Overwrite ? PlannedState.Overwrite : PlannedState.New,
                     ExpectedTargetSha256 = item.CurrentSha256,
+                    ExpectedTargetZoneIdentifier = item.CurrentZoneIdentifier,
                     RequireBackup = true,
                 };
                 var created = new List<OperationEntry>();
                 entry.Action = item.Action == PlannedAction.Overwrite ? EntryResult.Overwritten
                     : item.Action == PlannedAction.Rename ? EntryResult.Renamed : EntryResult.Created;
                 entry.Error = null;
-                await ExecuteEntryAsync(operationId, planned, created, ct, entry);
+                await ExecuteEntryAsync(operationId, ExecutionEntry.Capture(planned), created, ct, entry);
                 await _operationEntries.UpdateAsync(entry, CancellationToken.None);
                 await _operationEntries.AddManyAsync(created.Where(row => row.Id == 0).ToList(), CancellationToken.None);
                 if (entry.Action is EntryResult.Created or EntryResult.Overwritten or EntryResult.Renamed) succeeded++;

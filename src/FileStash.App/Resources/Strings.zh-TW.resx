@@ -939,7 +939,7 @@
     <value>拖曳檔案時快速左右晃動游標即可在目前位置展開暫存箱</value>
   </data>
   <data name="SectionDeveloperOptions" xml:space="preserve">
-    <value>進階與開發者選項（Git 協同）</value>
+    <value>Git 整合</value>
   </data>
   <data name="DeveloperOptionsHint" xml:space="preserve">
     <value>僅在 Git 倉庫內暫存檔案時生效；一般檔案暫存與覆蓋還原保持純粹獨立。</value>
@@ -957,7 +957,7 @@
     <value>全域快捷鍵（貼上剪貼簿檔案）</value>
   </data>
   <data name="HotkeyRecordingHint" xml:space="preserve">
-    <value>按一下輸入框並按下鍵盤按鍵即可錄製，按 Esc 取消</value>
+    <value>點擊輸入框後按快捷鍵（如 Ctrl+Alt+S），再點擊儲存生效。Backspace/Delete 清空，Esc 取消錄製。</value>
   </data>
   <data name="HotkeyClearButton" xml:space="preserve">
     <value>清除</value>
@@ -985,4 +985,85 @@
   <data name="KeepCurrentConfirm" xml:space="preserve"><value>保留目前檔案並結束此項目的復原？
 {0}</value></data>
   <data name="ElevatedRetryConfirm" xml:space="preserve"><value>請確認以下完整目標、動作及內容雜湊。僅執行此清單中的失敗項目。</value></data>
+  <data name="ShellIntegrationFailedMessage" xml:space="preserve">
+    <value>設定已儲存，但 Windows 整合（包括開機自啟）未能完整套用。請查看應用程式記錄，排除權限問題後再次儲存。</value>
+  </data>
+  <data name="StartupAdminLabel" xml:space="preserve">
+    <value>以管理員權限自啟（選用）</value>
+  </data>
+  <data name="StartupAdminHint" xml:space="preserve">
+    <value>預設使用一般權限。此選項於下次登入生效；註冊需使用目前管理員帳戶同意 UAC，也支援可攜版。</value>
+  </data>
+  <data name="StartupRepair" xml:space="preserve">
+    <value>修復自啟</value>
+  </data>
+  <data name="StartupRefresh" xml:space="preserve">
+    <value>重新整理狀態</value>
+  </data>
+  <data name="StartupStatusDisabled" xml:space="preserve">
+    <value>系統自啟：已關閉</value>
+  </data>
+  <data name="StartupStatusPlain" xml:space="preserve">
+    <value>系統自啟：一般權限</value>
+  </data>
+  <data name="StartupStatusElevated" xml:space="preserve">
+    <value>系統自啟：管理員權限</value>
+  </data>
+  <data name="StartupStatusRepair" xml:space="preserve">
+    <value>系統自啟：需要修復</value>
+  </data>
+  <data name="StartupStatusConflict" xml:space="preserve">
+    <value>系統自啟：工作歸屬衝突，請查看記錄</value>
+  </data>
+  <data name="StartupStatusUnknown" xml:space="preserve">
+    <value>系統自啟：狀態未確認，請重新整理後重試</value>
+  </data>
+  <data name="StartupStatusSuppressed" xml:space="preserve">
+    <value>系統自啟：測試模式未存取系統設定</value>
+  </data>
+  <data name="StartupStatusBusy" xml:space="preserve">
+    <value>正在套用自啟設定，請完成 UAC 提示…</value>
+  </data>
+  <data name="StartupCancelled" xml:space="preserve">
+    <value>已取消 UAC，自啟設定未儲存。</value>
+  </data>
+  <data name="StartupFailedMessage" xml:space="preserve">
+    <value>自啟註冊、關閉或設定儲存失敗。請查看記錄 {0}，重新整理狀態後重試。</value>
+  </data>
+  <data name="StartupUncertainMessage" xml:space="preserve">
+    <value>自啟操作結果尚未確認，助手可能仍在執行。請稍後重新整理狀態；確認前不會重複執行。</value>
+  </data>
+  <data name="StartupAttention" xml:space="preserve">
+    <value>自啟設定需要檢查。請開啟設定查看系統狀態，必要時修復；不會自動提升或降為一般權限。</value>
+  </data>
+  <data name="StartupAccountMessage" xml:space="preserve">
+    <value>請使用目前管理員帳戶同意 UAC；不支援借用另一管理員帳戶註冊自啟。請查看記錄 {0}。</value>
+  </data>
+  <data name="StartupDeniedMessage" xml:space="preserve">
+    <value>自啟操作遭拒。請檢查工作或登錄權限及本機原則，查看記錄 {0} 後重試。</value>
+  </data>
+  <data name="StartupConflictMessage" xml:space="preserve">
+    <value>同名工作不屬於本應用程式，未覆寫或移除。請查看記錄 {0} 並解決衝突。</value>
+  </data>
+  <data name="StartupRollbackMessage" xml:space="preserve">
+    <value>自啟操作失敗，舊狀態未能完整還原。請查看記錄 {0}，重新整理系統狀態後修復；不要假定舊自啟仍有效。</value>
+  </data>
+  <data name="StartupDelayLabel" xml:space="preserve">
+    <value>管理員登入延遲（秒）</value>
+  </data>
+  <data name="StartupDelayRange" xml:space="preserve">
+    <value>請輸入 0–300 的整數；0 表示不延遲。僅影響管理員登入工作。</value>
+  </data>
+  <data name="ShelfDropPrompt" xml:space="preserve"><value>將檔案拖到這裡</value></data>
+  <data name="ShelfRestoreMenu" xml:space="preserve"><value>還原 ▾</value></data>
+  <data name="ShelfRetentionLabel" xml:space="preserve"><value>關閉的暫存箱保留天數（0 = 永久）</value></data>
+  <data name="TrayNewShelf" xml:space="preserve"><value>新增暫存箱</value></data>
+  <data name="ShelfDragPrompt" xml:space="preserve"><value>拖出檔案</value></data>
+  <data name="ShelfCountFormat" xml:space="preserve"><value>已暫存 {0} 項</value></data>
+  <data name="ToastDismissCountdown" xml:space="preserve"><value>{0} 秒後關閉，懸停或鍵盤操作時暫停</value></data>
+  <data name="ShelfCleanupHint" xml:space="preserve"><value>空的臨時暫存區會自動刪除；預設暫存區和仍有內容的暫存區會保留。</value></data>
+  <data name="SettingsAppearance" xml:space="preserve"><value>外觀</value></data>
+  <data name="SettingsShelf" xml:space="preserve"><value>暫存區</value></data>
+  <data name="SettingsFiles" xml:space="preserve"><value>檔案處理</value></data>
+  <data name="SettingsShortcuts" xml:space="preserve"><value>快捷鍵</value></data>
 </root>

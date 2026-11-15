@@ -13,8 +13,8 @@ public sealed partial class ApplyExecutor
         {
             await using var lease = await StorageWriteLease.AcquireAsync(_blobStore, ct);
             var recovered = 0;
-            foreach (var operation in await _operations.GetAllAsync(ct))
-                recovered += await RecoverOperationCoreAsync(operation.Id, ct);
+            foreach (var operationId in await _operations.GetRecoveryCandidateIdsAsync(ct))
+                recovered += await RecoverOperationCoreAsync(operationId, ct);
             return recovered;
         }
         finally { WriteLock.Release(); }
@@ -37,7 +37,9 @@ public sealed partial class ApplyExecutor
                     var deletionCompleted = entry.Action is EntryResult.Created or EntryResult.Renamed
                         && !File.Exists(entry.TargetPath) && !Directory.Exists(entry.TargetPath);
                     var restorationCompleted = entry.Action == EntryResult.Overwritten
-                        && entry.BackupSha256 is not null && currentHash == entry.BackupSha256;
+                        && entry.BackupSha256 is not null && currentHash == entry.BackupSha256
+                        && await MatchesRecoveredZoneAsync(entry.TargetPath, entry.BackupZoneIdentifier,
+                            entry.UndoWitnessIdentity, ct);
                     var directoryRemoved = entry.Action == EntryResult.DirectoryCreated
                         && !Directory.Exists(entry.TargetPath);
                     if (deletionCompleted || restorationCompleted || directoryRemoved)
@@ -47,8 +49,11 @@ public sealed partial class ApplyExecutor
                         entry.Error = null;
                     }
                     else if ((currentHash == entry.NewSha256 && currentHash is not null
-                            && (entry.WitnessIdentity is null || _writer.GetIdentity(entry.TargetPath) == entry.WitnessIdentity))
+                            && (entry.WitnessIdentity is null || _writer.GetIdentity(entry.TargetPath) == entry.WitnessIdentity)
+                            && ZoneIdentifier.Matches(await ZoneIdentifier.ReadAsync(entry.TargetPath, ct), entry.NewZoneIdentifier))
                         || (entry.Action == EntryResult.DirectoryCreated && Directory.Exists(entry.TargetPath)
+                            && entry.WitnessIdentity is not null
+                            && _writer.GetIdentity(entry.TargetPath) == entry.WitnessIdentity
                             && !Directory.EnumerateFileSystemEntries(entry.TargetPath).Any()))
                     {
                         // The interrupted undo has not changed the file yet.
@@ -58,7 +63,8 @@ public sealed partial class ApplyExecutor
                     else entry.Error = Strings.RecoveryNeedsReview;
                 }
                 else if (entry.WitnessIdentity is not null && currentHash == entry.NewSha256
-                    && _writer.GetIdentity(entry.TargetPath) == entry.WitnessIdentity)
+                    && _writer.GetIdentity(entry.TargetPath) == entry.WitnessIdentity
+                    && await MatchesRecoveredZoneAsync(entry.TargetPath, entry.NewZoneIdentifier, entry.WitnessIdentity, ct))
                 {
                     entry.Action = entry.IntendedAction switch
                     {
@@ -73,6 +79,8 @@ public sealed partial class ApplyExecutor
                 else if (entry.WitnessIdentity is not null && entry.WitnessPath is not null
                     && _writer.GetIdentity(entry.WitnessPath) == entry.WitnessIdentity
                     && currentHash == entry.PreviousSha256
+                    && ZoneIdentifier.Matches(File.Exists(entry.TargetPath)
+                        ? await ZoneIdentifier.ReadAsync(entry.TargetPath, ct) : null, entry.PreviousZoneIdentifier)
                     && await HashUtil.ComputeFileSha256Async(entry.WitnessPath, ct) == entry.NewSha256)
                 {
                     entry.Action = EntryResult.Failed;
@@ -103,6 +111,21 @@ public sealed partial class ApplyExecutor
             await _operations.UpdateAsync(operation, CancellationToken.None);
         }
         return changed;
+    }
+
+    private async Task<bool> MatchesRecoveredZoneAsync(string path, byte[]? expected,
+        string? witnessIdentity, CancellationToken ct)
+    {
+        var actual = await ZoneIdentifier.ReadAsync(path, ct);
+        if (ZoneIdentifier.Matches(actual, expected)) return true;
+        // Complete the journaled removal of the empty stream used to suppress
+        // ReplaceFile's stream merging. Only our committed file may be changed.
+        if (expected is not null || actual is not { Length: 0 } || witnessIdentity is null)
+            return false;
+        using var guard = _writer.GuardTarget(path);
+        if (_writer.GetIdentity(path) != witnessIdentity) return false;
+        await ZoneIdentifier.WriteAsync(path, null, ct);
+        return true;
     }
 
     public async Task KeepCurrentAsync(string operationId, long entryId, CancellationToken ct)

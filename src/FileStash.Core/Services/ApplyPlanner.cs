@@ -57,6 +57,8 @@ public sealed class ApplyPlanner : IApplyPlanner
 
             var targetPath = _mapper.Map(item, entry, target, context);
             var state = PlannedState.New;
+            string? targetHash = null;
+            byte[]? targetZone = null;
 
             if (treatAsFileNameNotAllowed)
             {
@@ -69,7 +71,7 @@ public sealed class ApplyPlanner : IApplyPlanner
             }
             else
             {
-                state = await DetermineStateAsync(targetPath, entry, ct);
+                (state, targetHash, targetZone) = await InspectTargetAsync(targetPath, entry, ct);
             }
 
             var action = DetermineAction(state, policy, skipIdentical);
@@ -78,8 +80,8 @@ public sealed class ApplyPlanner : IApplyPlanner
                 Source = entry,
                 TargetPath = targetPath,
                 State = state,
-                ExpectedTargetSha256 = state == PlannedState.Overwrite
-                    ? await TryGetTargetHashAsync(targetPath, ct) : null,
+                ExpectedTargetSha256 = targetHash,
+                ExpectedTargetZoneIdentifier = targetZone,
                 Action = action,
                 Warning = BuildWarning(targetPath, state),
                 ItemId = item.Id,
@@ -138,9 +140,9 @@ public sealed class ApplyPlanner : IApplyPlanner
 
             foreach (var entry in status)
             {
-                if (entry.IsModified || entry.IsUntracked)
+                if (entry.Status != "!!")
                 {
-                    dirty.Add(entry.Path);
+                    dirty.Add(Path.GetFullPath(Path.Combine(repoRoot!, entry.Path)));
                 }
             }
         }
@@ -161,9 +163,7 @@ public sealed class ApplyPlanner : IApplyPlanner
             return false;
         }
 
-        var relative = PathUtil.GetRelative(item.GitRepoRoot, targetPath);
-
-        return dirtyPaths.Contains(relative);
+        return dirtyPaths.Contains(Path.GetFullPath(targetPath));
     }
 
     /// <summary>越过界检查：算出来的目标必须在目标根之下；剥离段数不能超过子路径段数。</summary>
@@ -207,46 +207,32 @@ public sealed class ApplyPlanner : IApplyPlanner
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { return null; }
     }
 
-    private static async Task<PlannedState> DetermineStateAsync(string targetPath, StashEntry entry, CancellationToken ct)
+    private static async Task<(bool Readable, byte[]? Data)> TryGetTargetZoneAsync(string path, CancellationToken ct)
+    {
+        try { return (true, await ZoneIdentifier.ReadAsync(path, ct)); }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { return (false, null); }
+    }
+
+    private static async Task<(PlannedState State, string? Sha256, byte[]? ZoneIdentifier)> InspectTargetAsync(
+        string targetPath, StashEntry entry, CancellationToken ct)
     {
         if (Directory.Exists(targetPath))
-        {
-            // 目标是目录：写目录没问题，写文件就是类型冲突
-            return entry.IsDirectory ? PlannedState.New : PlannedState.TypeConflict;
-        }
-
+            return (entry.IsDirectory ? PlannedState.New : PlannedState.TypeConflict, null, null);
         if (!File.Exists(targetPath))
-        {
-            return PlannedState.New;
-        }
+            return (PlannedState.New, null, null);
 
-        var info = new FileInfo(targetPath);
-
-        if (info.Length != entry.Size)
-        {
-            return PlannedState.Overwrite;
-        }
-
-        // 大小相同才算哈希
-        string sha256;
-
-        try
-        {
-            sha256 = await HashUtil.ComputeFileSha256Async(targetPath, ct);
-        }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
-        {
-            // 读不了 —— 多半是被别的程序独占锁着（正开在 Excel 里）。
-            // 这里不能把异常抛出去：计划阶段一炸，整个写回就没了，
-            // 用户看到的是一个"出错了"的弹窗，而不是"这个文件正被谁占着"。
-            // 读不了就没法确认是不是同一份，按"要覆盖"算；
-            // 到底写不写得进去由执行阶段说了算，那时会把占用者的名字报出来。
-            return PlannedState.Overwrite;
-        }
-
-        return string.Equals(sha256, entry.Sha256, StringComparison.OrdinalIgnoreCase)
-            ? PlannedState.Identical
-            : PlannedState.Overwrite;
+        var size = new FileInfo(targetPath).Length;
+        // Classification and the approval witness must use the same observation.
+        // Unreadable content keeps a null witness, so execution cannot approve an overwrite.
+        var sha256 = await TryGetTargetHashAsync(targetPath, ct);
+        var (originReadable, zone) = await TryGetTargetZoneAsync(targetPath, ct);
+        if (!originReadable)
+            return (PlannedState.Overwrite, null, null);
+        var state = size == entry.Size && sha256 is not null
+            && string.Equals(sha256, entry.Sha256, StringComparison.OrdinalIgnoreCase)
+            && ZoneIdentifier.Matches(zone, entry.ZoneIdentifier)
+            ? PlannedState.Identical : PlannedState.Overwrite;
+        return (state, sha256, zone);
     }
 
     private static PlannedAction DetermineAction(PlannedState state, ConflictPolicy policy, bool skipIdentical) => state switch

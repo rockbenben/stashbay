@@ -16,6 +16,84 @@ public sealed class DragExportTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task CleanupMustWaitForActiveMaterialization()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var group = await _context.CreateGroupAsync();
+        var source = _context.Workspace.CreateFile("a.txt", "a");
+        var items = (await _context.Stash.AddAsync(group, [source], null, ct)).Added;
+        var copied = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var blobs = new AfterCopyBlobStore(_context.BlobStore, async () =>
+        {
+            copied.SetResult();
+            await release.Task;
+        });
+        var exporting = new DragExportService(_context.Entries, blobs, _context.Paths).MaterializeAsync(items, ct);
+        await copied.Task.WaitAsync(ct);
+        var cleanup = new CleanupService(_context.Entries, _context.OperationEntries, _context.Operations,
+            _context.BlobStore, _context.Paths).DeleteExpiredExportsAsync(TimeSpan.Zero, ct);
+        var premature = cleanup.IsCompleted;
+        release.SetResult();
+        try { await exporting; }
+        catch (FileNotFoundException) when (premature) { }
+        await cleanup;
+        Assert.False(premature);
+    }
+
+    [Fact]
+    public async Task CancelledMaterializationMustRemovePartialFiles()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var group = await _context.CreateGroupAsync();
+        var source = _context.Workspace.CreateFile("a.txt", "a");
+        var items = (await _context.Stash.AddAsync(group, [source], null, ct)).Added;
+        using var cancellation = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        var blobs = new AfterCopyBlobStore(_context.BlobStore, () =>
+        {
+            cancellation.Cancel();
+            cancellation.Token.ThrowIfCancellationRequested();
+            return Task.CompletedTask;
+        });
+        var export = new DragExportService(_context.Entries, blobs, _context.Paths);
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => export.MaterializeAsync(items, cancellation.Token));
+        Assert.Empty(Directory.EnumerateDirectories(_context.Paths.ExportDirectory));
+        Assert.Single(await _context.Items.GetByGroupAsync(group, ct));
+    }
+
+    private sealed class AfterCopyBlobStore(FileStash.Core.Abstractions.IBlobStore inner, Func<Task> afterCopy)
+        : FileStash.Core.Abstractions.IBlobStore
+    {
+        public Task<(string Sha256, long Size)> PutFileAsync(string path, CancellationToken ct) => inner.PutFileAsync(path, ct);
+        public string GetBlobPath(string hash) => inner.GetBlobPath(hash);
+        public bool Exists(string hash) => inner.Exists(hash);
+        public long GetTotalSize() => inner.GetTotalSize();
+        public Task<int> DeleteUnreferencedAsync(IReadOnlySet<string> referenced, CancellationToken ct) =>
+            inner.DeleteUnreferencedAsync(referenced, ct);
+        public async Task CopyBlobToAsync(string hash, string destination, CancellationToken ct)
+        {
+            await inner.CopyBlobToAsync(hash, destination, ct);
+            await afterCopy();
+        }
+    }
+
+    [Fact]
+    public async Task FailedExportMustRemoveItsPartialDirectoryAndKeepSnapshot()
+    {
+        var group = await _context.CreateGroupAsync();
+        var first = _context.Workspace.CreateFile("a.txt", "first");
+        var second = _context.Workspace.CreateFile("b.txt", "second");
+        var items = (await _context.Stash.AddAsync(group, [first, second], null, TestContext.Current.CancellationToken)).Added;
+        var entry = (await _context.Entries.GetByItemAsync(items[1].Id, TestContext.Current.CancellationToken)).Single();
+        File.SetAttributes(_context.BlobStore.GetBlobPath(entry.Sha256!), FileAttributes.Normal);
+        File.Delete(_context.BlobStore.GetBlobPath(entry.Sha256!));
+        var export = new DragExportService(_context.Entries, _context.BlobStore, _context.Paths);
+        await Assert.ThrowsAsync<FileNotFoundException>(() => export.MaterializeAsync(items, TestContext.Current.CancellationToken));
+        Assert.Empty(Directory.EnumerateDirectories(_context.Paths.ExportDirectory));
+        Assert.Equal(2, (await _context.Items.GetByGroupAsync(group, TestContext.Current.CancellationToken)).Count);
+    }
+
+    [Fact]
     public async Task MaterializeAsync_WithFolderAndFile_ShouldReturnTopLevelPaths()
     {
         var groupId = await _context.CreateGroupAsync();

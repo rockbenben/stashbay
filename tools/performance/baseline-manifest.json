@@ -1,0 +1,8 @@
+{
+  "name": "before-integrity-optimization-2026-11-14",
+  "description": "Frozen full-integrity BlobStore/ApplyPlanner before optimization; current executor, models and dependencies. Not a historical binary or a no-check baseline.",
+  "files": {
+    "BaselineBlobStore.cs": "9be1e887dbb4f1be62524ff99e767aba3aa5d752e1275b63cdb9520ffdef6e24",
+    "BaselineApplyPlanner.cs": "b6c5950929a589e11e93b2eb12c2df5633e8ce06ee4c4bb3b50f4f974f6a5974"
+  }
+}

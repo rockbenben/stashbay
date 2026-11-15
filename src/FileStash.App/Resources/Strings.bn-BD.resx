@@ -939,7 +939,7 @@
     <value>ফাইল টানার সময় মাউস দ্রুত নাড়াচাড়া করে কার্সারের কাছে শেলফ খুলুন</value>
   </data>
   <data name="SectionDeveloperOptions" xml:space="preserve">
-    <value>উন্নত এবং বিকাশকারী বিকল্পগুলি (Git)</value>
+    <value>Git সমন্বয়</value>
   </data>
   <data name="DeveloperOptionsHint" xml:space="preserve">
     <value>কেবলমাত্র যখন Git সংগ্রহস্থলের ফাইল স্ট্যাশ করা হয় তখন প্রযোজ্য। সাধারণ ফাইল স্ট্যাশ এবং পুনরুদ্ধার সম্পূর্ণ স্বাধীন থাকে।</value>
@@ -957,7 +957,7 @@
     <value>গ্লোবাল হটকি (ক্লিপবোর্ডের ফাইল পেস্ট)</value>
   </data>
   <data name="HotkeyRecordingHint" xml:space="preserve">
-    <value>রেকর্ড করতে ক্লিক করে শর্টকাট চাপুন। বাতিল করতে Esc চাপুন।</value>
+    <value>ঘরে ক্লিক করে কী সমন্বয় চাপুন (যেমন Ctrl+Alt+S), তারপর সংরক্ষণ করুন। Backspace/Delete মুছে দেয়; Esc রেকর্ডিং বাতিল করে।</value>
   </data>
   <data name="HotkeyClearButton" xml:space="preserve">
     <value>পরিষ্কার করুন</value>
@@ -985,4 +985,85 @@
   <data name="KeepCurrentConfirm" xml:space="preserve"><value>বর্তমান ফাইল রেখে এই এন্ট্রির পুনরুদ্ধার শেষ করবেন?
 {0}</value></data>
   <data name="ElevatedRetryConfirm" xml:space="preserve"><value>নিচের সম্পূর্ণ পথ, কাজ এবং হ্যাশ নিশ্চিত করুন। শুধু এই ব্যর্থ এন্ট্রিগুলোতে আবার চেষ্টা করা হবে।</value></data>
+  <data name="ShellIntegrationFailedMessage" xml:space="preserve">
+    <value>সেটিংস সংরক্ষিত হয়েছে, কিন্তু Windows সমন্বয় (স্বয়ংক্রিয় চালু সহ) পুরোপুরি প্রয়োগ করা যায়নি। অ্যাপের লগ দেখুন, অনুমতির সমস্যা সমাধান করে আবার সংরক্ষণ করুন।</value>
+  </data>
+  <data name="StartupAdminLabel" xml:space="preserve">
+    <value>প্রশাসক অধিকার দিয়ে শুরু করুন (ঐচ্ছিক)</value>
+  </data>
+  <data name="StartupAdminHint" xml:space="preserve">
+    <value>ডিফল্ট হলো সাধারণ অধিকার। পরের লগইন থেকে কার্যকর হবে; বর্তমান প্রশাসক অ্যাকাউন্ট দিয়ে UAC অনুমোদন করুন। পোর্টেবল সংস্করণও সমর্থিত।</value>
+  </data>
+  <data name="StartupRepair" xml:space="preserve">
+    <value>স্বয়ংক্রিয় চালু মেরামত</value>
+  </data>
+  <data name="StartupRefresh" xml:space="preserve">
+    <value>অবস্থা হালনাগাদ</value>
+  </data>
+  <data name="StartupStatusDisabled" xml:space="preserve">
+    <value>স্বয়ংক্রিয় চালু: বন্ধ</value>
+  </data>
+  <data name="StartupStatusPlain" xml:space="preserve">
+    <value>স্বয়ংক্রিয় চালু: সাধারণ অধিকার</value>
+  </data>
+  <data name="StartupStatusElevated" xml:space="preserve">
+    <value>স্বয়ংক্রিয় চালু: প্রশাসক অধিকার</value>
+  </data>
+  <data name="StartupStatusRepair" xml:space="preserve">
+    <value>স্বয়ংক্রিয় চালু: মেরামত প্রয়োজন</value>
+  </data>
+  <data name="StartupStatusConflict" xml:space="preserve">
+    <value>স্বয়ংক্রিয় চালু: টাস্কের মালিকানা বিরোধ; লগ দেখুন</value>
+  </data>
+  <data name="StartupStatusUnknown" xml:space="preserve">
+    <value>স্বয়ংক্রিয় চালু: নিশ্চিত নয়; আবার চেষ্টার আগে হালনাগাদ করুন</value>
+  </data>
+  <data name="StartupStatusSuppressed" xml:space="preserve">
+    <value>স্বয়ংক্রিয় চালু: পরীক্ষায় সিস্টেম পরিবর্তন বন্ধ</value>
+  </data>
+  <data name="StartupStatusBusy" xml:space="preserve">
+    <value>সেটিংস প্রয়োগ হচ্ছে; UAC অনুমোদন সম্পূর্ণ করুন…</value>
+  </data>
+  <data name="StartupCancelled" xml:space="preserve">
+    <value>UAC বাতিল হয়েছে। স্বয়ংক্রিয় চালুর সেটিংস সংরক্ষিত হয়নি।</value>
+  </data>
+  <data name="StartupFailedMessage" xml:space="preserve">
+    <value>নিবন্ধন, অপসারণ বা সেটিংস সংরক্ষণ ব্যর্থ। {0}-এ লগ দেখুন, অবস্থা হালনাগাদ করে আবার চেষ্টা করুন।</value>
+  </data>
+  <data name="StartupUncertainMessage" xml:space="preserve">
+    <value>ফল নিশ্চিত নয়; সহায়ক এখনও চলতে পারে। পরে অবস্থা হালনাগাদ করুন। নিশ্চিত হওয়ার আগে কাজের পুনরাবৃত্তি হবে না।</value>
+  </data>
+  <data name="StartupAttention" xml:space="preserve">
+    <value>স্বয়ংক্রিয় চালু পরীক্ষা করুন। সেটিংসে সিস্টেমের অবস্থা দেখুন ও প্রয়োজনে মেরামত করুন। অ্যাপ নিজে থেকে অধিকারের স্তর বদলাবে না।</value>
+  </data>
+  <data name="StartupAccountMessage" xml:space="preserve">
+    <value>বর্তমান প্রশাসক অ্যাকাউন্ট দিয়ে UAC অনুমোদন করুন। অন্য প্রশাসক অ্যাকাউন্ট দিয়ে নিবন্ধন সমর্থিত নয়। লগ: {0}।</value>
+  </data>
+  <data name="StartupDeniedMessage" xml:space="preserve">
+    <value>স্বয়ংক্রিয় চালুর প্রবেশাধিকার প্রত্যাখ্যাত। টাস্ক বা রেজিস্ট্রির অনুমতি ও স্থানীয় নীতি পরীক্ষা করুন। লগ: {0}।</value>
+  </data>
+  <data name="StartupConflictMessage" xml:space="preserve">
+    <value>টাস্ক অন্য অ্যাপের; এটি বদলানো বা সরানো হয়নি। {0} দেখে বিরোধ সমাধান করুন।</value>
+  </data>
+  <data name="StartupRollbackMessage" xml:space="preserve">
+    <value>স্বয়ংক্রিয় চালু ব্যর্থ এবং আগের অবস্থা সম্পূর্ণ পুনরুদ্ধার হয়নি। {0} দেখুন, অবস্থা হালনাগাদ করে মেরামত করুন। পুরোনো ব্যবস্থা এখনও কাজ করে ধরে নেবেন না।</value>
+  </data>
+  <data name="StartupDelayLabel" xml:space="preserve">
+    <value>প্রশাসক লগইন বিলম্ব (সেকেন্ড)</value>
+  </data>
+  <data name="StartupDelayRange" xml:space="preserve">
+    <value>0 থেকে 300 পর্যন্ত পূর্ণসংখ্যা দিন; 0 মানে বিলম্ব নেই। শুধু প্রশাসক লগইন টাস্কে প্রযোজ্য।</value>
+  </data>
+  <data name="ShelfDropPrompt" xml:space="preserve"><value>আপনার ফাইল এখানে রাখুন</value></data>
+  <data name="ShelfRestoreMenu" xml:space="preserve"><value>পুনরুদ্ধার ▾</value></data>
+  <data name="ShelfRetentionLabel" xml:space="preserve"><value>বন্ধ শেল্ফ রাখার দিন (0 = চিরকাল)</value></data>
+  <data name="TrayNewShelf" xml:space="preserve"><value>নতুন শেল্ফ</value></data>
+  <data name="ShelfDragPrompt" xml:space="preserve"><value>ফাইল বাইরে টেনে আনুন</value></data>
+  <data name="ShelfCountFormat" xml:space="preserve"><value>{0}টি আইটেম রাখা হয়েছে</value></data>
+  <data name="ToastDismissCountdown" xml:space="preserve"><value>{0} সেকেন্ডে বন্ধ হবে; মাউস রাখলে বা কীবোর্ড ফোকাসে বিরতি</value></data>
+  <data name="ShelfCleanupHint" xml:space="preserve"><value>খালি অস্থায়ী তাক স্বয়ংক্রিয়ভাবে মুছে যায়। ডিফল্ট তাক এবং সামগ্রী থাকা সংরক্ষণস্থল রাখা হয়।</value></data>
+  <data name="SettingsAppearance" xml:space="preserve"><value>চেহারা</value></data>
+  <data name="SettingsShelf" xml:space="preserve"><value>অস্থায়ী তাক</value></data>
+  <data name="SettingsFiles" xml:space="preserve"><value>ফাইল পরিচালনা</value></data>
+  <data name="SettingsShortcuts" xml:space="preserve"><value>শর্টকাট</value></data>
 </root>

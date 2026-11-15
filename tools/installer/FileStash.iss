@@ -17,6 +17,7 @@ VersionInfoVersion={#AppVersion}
 DefaultDirName={localappdata}\Programs\{#AppName}
 DefaultGroupName={#AppName}
 DisableProgramGroupPage=yes
+; 默认输出文件名（release.ps1 会通过 ISCC /F 显式指定 StashBay-v<version>-setup 保持 'v' 前缀统一）
 OutputBaseFilename=StashBay-{#AppVersion}-setup
 OutputDir=..\..\artifacts
 Compression=lzma2
@@ -59,10 +60,6 @@ Name: "{group}\{#AppName}"; Filename: "{app}\{#AppExeName}"
 Name: "{group}\{#AppName} (requires .NET 10)"; Filename: "{app}-needs-dotnet10\{#AppExeName}"
 Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#AppExeName}"; Tasks: desktopicon
 
-[Registry]
-; 开机自启（应用自己也会写一份，卸载时清掉）
-Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "{#AppName}"; ValueData: """{app}\{#AppExeName}"" --minimized"; Flags: uninsdeletevalue; Tasks: startwithwindows
-
 [Run]
 Filename: "{app}\{#AppExeName}"; Description: "Launch {#AppName}"; Flags: nowait postinstall skipifsilent
 
@@ -76,6 +73,36 @@ Type: files; Name: "{userappdata}\Microsoft\Windows\SendTo\FileStash 暂存.lnk"
 Type: files; Name: "{userappdata}\StashBay\settings.json"
 Type: files; Name: "{userappdata}\FileStash\settings.json"
 
-[UninstallRun]
-; 先让应用自己注销一遍注册表项
-Filename: "{app}\{#AppExeName}"; Parameters: "--unregister-shell"; Flags: runhidden waituntilterminated; RunOnceId: "UnregisterShell"
+[Code]
+procedure CurStepChanged(CurStep: TSetupStep);
+var
+  StartupExitCode: Integer;
+  StartupApplied: Boolean;
+begin
+  if (CurStep = ssPostInstall) and WizardIsTaskSelected('startwithwindows') then begin
+    StartupApplied := Exec(ExpandConstant('{app}\{#AppExeName}'), '--install-startup', '',
+      SW_HIDE, ewWaitUntilTerminated, StartupExitCode);
+    if StartupApplied then
+      StartupApplied := StartupExitCode = 0;
+    if not StartupApplied then begin
+      Log('Windows startup registration failed; existing administrator startup was not intentionally replaced.');
+      if not WizardSilent then
+        MsgBox('Windows startup could not be configured. Open StashBay settings, refresh startup status and repair it. See the application logs for details.', mbError, MB_OK);
+    end;
+  end;
+end;
+
+function InitializeUninstall(): Boolean;
+var
+  ExitCode: Integer;
+begin
+  Result := Exec(ExpandConstant('{app}\{#AppExeName}'), '--unregister-shell', '',
+    SW_HIDE, ewWaitUntilTerminated, ExitCode);
+  if Result then
+    Result := ExitCode = 0;
+  if not Result then begin
+    Log('Startup cleanup failed or was cancelled. Uninstall stopped before deleting files.');
+    if not UninstallSilent then
+      MsgBox('Startup cleanup could not be completed. Approve UAC using the same administrator account, or repair startup in StashBay settings and try uninstalling again. No application files have been removed.', mbError, MB_OK);
+  end;
+end;

@@ -1,4 +1,8 @@
 using System.Windows;
+using System.Diagnostics;
+using System.ComponentModel;
+using System.Windows.Media.Animation;
+using System.Windows.Media;
 using System.Windows.Threading;
 using FileStash.App.Controls;
 using FileStash.App.Resources;
@@ -18,6 +22,17 @@ namespace FileStash.App.Views;
 /// </remarks>
 public partial class ResultToast : Window
 {
+    private ToastStack? _stack;
+    private double _stackTargetTop = double.NaN;
+    private int _stackMoveVersion;
+    internal bool IsPresentedInStack { get; private set; }
+    private bool _closing;
+    private bool _closeReady;
+    private static bool CanAnimate => !App.InSmoke;
+    private DispatcherTimer? _lifeTimer;
+    private ToastCountdown? _countdown;
+    private long _lastLifeTick;
+    private int _displayedSeconds = -1;
     private readonly Operation? _operation;
     private readonly IReadOnlyList<OperationEntry>? _entries;
 
@@ -69,11 +84,9 @@ public partial class ResultToast : Window
 
         Title = title;
         TitleText.Text = title;
-        TitleText.Margin = new Thickness(0, 0, 28, 0);
         SummaryText.Text = summary;
         MinHeight = 0;
         ActionPanel.Visibility = Visibility.Collapsed;
-        NoticeCloseButton.Visibility = Visibility.Visible;
 
         DetailsButton.Visibility = Visibility.Collapsed;
         UndoButton.Visibility = Visibility.Collapsed;
@@ -90,29 +103,190 @@ public partial class ResultToast : Window
         PlaceAtBottomRight();
 
         // 高度由内容定（SizeToContent），所以尺寸一变就要重新贴边
-        SizeChanged += (_, _) => PlaceAtBottomRight();
-
-        if (seconds <= 0)
+        SizeChanged += (_, _) =>
         {
-            return;
-        }
-
-        // 自查模式（probe / shots / smoke）要把这块板逐屏量和逐屏拍：
-        // 自隐的定时器会在量到一半时把窗口收走 —— 德语那一轮实测量到 0 个可见元素，
-        // 被"没量到东西"的自证判成不通过。产品行为不变，只是不自隐。
-        if (App.InSmoke)
-        {
-            return;
-        }
-
-        var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(seconds) };
-        timer.Tick += (_, _) =>
-        {
-            timer.Stop();
-            Close();
+            if (_stack is null) PlaceAtBottomRight();
+            else _stack.Refresh();
         };
 
-        timer.Start();
+        if (seconds > 0)
+        {
+            _countdown = new ToastCountdown(TimeSpan.FromSeconds(seconds));
+            DismissCountdown.Visibility = Visibility.Visible;
+            UpdateCountdown();
+        }
+
+        // Headless captures remain fully opaque and do not expire during a matrix.
+        if (App.InSmoke) return;
+        if (seconds > 0)
+        {
+            _lifeTimer = new DispatcherTimer(DispatcherPriority.Background)
+            {
+                Interval = TimeSpan.FromMilliseconds(33)
+            };
+            _lifeTimer.Tick += OnLifeTick;
+        }
+        Opacity = 0;
+        Loaded += OnToastLoaded;
+        Closed += OnToastClosed;
+    }
+
+    private void OnToastLoaded(object sender, RoutedEventArgs e)
+    {
+        if (_closing || _stack is not null || !ReferenceEquals(e.OriginalSource, this)) return;
+        _stack = ToastStack.Current;
+        _stack.Add(this);
+    }
+
+    internal void PlaceInStack(Rect bounds, Rect workArea)
+    {
+        var entering = !IsPresentedInStack;
+        if (!entering && Math.Abs(_stackTargetTop - bounds.Top) < 0.1 && Math.Abs(Left - bounds.Left) < 0.1)
+            return;
+        var currentTop = Top;
+        _stackTargetTop = bounds.Top;
+        var version = ++_stackMoveVersion;
+        Left = bounds.Left;
+        if (!entering && CanAnimate && Math.Abs(currentTop - bounds.Top) > 0.5
+            && currentTop >= workArea.Top && currentTop + ActualHeight <= workArea.Bottom)
+        {
+            // Preserve the currently displayed position while replacing an in-flight animation.
+            SetCurrentValue(TopProperty, currentTop);
+            var move = new DoubleAnimation(currentTop, bounds.Top, TimeSpan.FromMilliseconds(220))
+            {
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut }
+            };
+            move.Completed += (_, _) =>
+            {
+                if (version != _stackMoveVersion) return;
+                SetCurrentValue(TopProperty, bounds.Top);
+                BeginAnimation(TopProperty, null);
+            };
+            BeginAnimation(TopProperty, move);
+            return;
+        }
+        SetCurrentValue(TopProperty, bounds.Top);
+        BeginAnimation(TopProperty, null);
+        if (!entering) return;
+        IsPresentedInStack = true;
+        if (!IsVisible) Show();
+        BeginEntrance();
+    }
+
+    internal void WaitForStackSlot()
+    {
+        if (_closing) return;
+        IsPresentedInStack = false;
+        _lifeTimer?.Stop();
+        BeginAnimation(OpacityProperty, null);
+        Opacity = 0;
+        if (IsVisible) Hide();
+    }
+
+    private void BeginEntrance()
+    {
+        if (_closing) return;
+        if (!CanAnimate)
+        {
+            Opacity = 1;
+            StartCountdown();
+            return;
+        }
+        var fade = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(160))
+        {
+            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+        };
+        fade.Completed += (_, _) => StartCountdown();
+        BeginAnimation(OpacityProperty, fade);
+    }
+
+    private void StartCountdown()
+    {
+        if (_closing || !IsVisible || _lifeTimer is null) return;
+        _lastLifeTick = Stopwatch.GetTimestamp();
+        _lifeTimer.Start();
+    }
+
+    protected override void OnClosing(CancelEventArgs e)
+    {
+        base.OnClosing(e);
+        if (e.Cancel || _closeReady) return;
+        _lifeTimer?.Stop();
+        if (!CanAnimate || App.IsShuttingDown || !IsVisible || Dispatcher.HasShutdownStarted) return;
+        e.Cancel = true;
+        if (_closing) return;
+        _closing = true;
+        IsHitTestVisible = false;
+        var fade = new DoubleAnimation(Opacity, 0, TimeSpan.FromMilliseconds(180))
+        {
+            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut }
+        };
+        fade.Completed += (_, _) =>
+        {
+            _closeReady = true;
+            Close();
+        };
+        BeginAnimation(OpacityProperty, fade);
+    }
+
+    private void OnToastClosed(object? sender, EventArgs e)
+    {
+        if (_lifeTimer is not null)
+        {
+            _lifeTimer.Stop();
+            _lifeTimer.Tick -= OnLifeTick;
+        }
+        BeginAnimation(OpacityProperty, null);
+        _stackMoveVersion++;
+        BeginAnimation(TopProperty, null);
+        IsPresentedInStack = false;
+        _stack?.Remove(this);
+        Loaded -= OnToastLoaded;
+        Closed -= OnToastClosed;
+    }
+
+    private void OnLifeTick(object? sender, EventArgs e)
+    {
+        if (_countdown is null) return;
+        var now = Stopwatch.GetTimestamp();
+        _countdown.Advance(Stopwatch.GetElapsedTime(_lastLifeTick, now),
+            IsMouseOver || IsKeyboardFocusWithin);
+        _lastLifeTick = now;
+        UpdateCountdown();
+        if (_countdown.IsElapsed) Close();
+    }
+
+    private void UpdateCountdown()
+    {
+        if (_countdown is null) return;
+        var seconds = (int)Math.Ceiling(_countdown.Remaining.TotalSeconds);
+        if (seconds != _displayedSeconds)
+        {
+            _displayedSeconds = seconds;
+            var hint = Strings.Format(Strings.ToastDismissCountdown, seconds);
+            NoticeCloseButton.ToolTip = hint;
+            System.Windows.Automation.AutomationProperties.SetHelpText(NoticeCloseButton, hint);
+        }
+        var fraction = _countdown.Fraction;
+        Geometry geometry;
+        if (fraction >= 1)
+            geometry = new EllipseGeometry(new Point(14, 14), 12, 12);
+        else if (fraction <= 0)
+            geometry = Geometry.Empty;
+        else
+        {
+            var angle = (1 - fraction) * 2 * Math.PI - Math.PI / 2;
+            var arc = new StreamGeometry();
+            using (var context = arc.Open())
+            {
+                context.BeginFigure(new Point(14 + 12 * Math.Cos(angle), 14 + 12 * Math.Sin(angle)), false, false);
+                context.ArcTo(new Point(14, 2),
+                    new Size(12, 12), 0, fraction > 0.5, SweepDirection.Clockwise, true, false);
+            }
+            arc.Freeze();
+            geometry = arc;
+        }
+        CountdownArc.Data = geometry;
     }
 
     /// <summary>撤销请求（由调用方处理）。</summary>
@@ -161,7 +335,10 @@ public partial class ResultToast : Window
     {
         // 按"窗口自己那块屏"的工作区贴右下角，不是主屏的 ——
         // 主窗口在副屏时，用主屏的 WorkArea 会把 Toast 贴到主屏去（用户看不见它）。
-        var workArea = WindowEffects.GetWindowWorkArea(this);
+        var anchor = Application.Current?.Windows.OfType<Window>()
+            .FirstOrDefault(window => window is not ResultToast && window.IsActive)
+            ?? (Application.Current?.MainWindow is ResultToast ? null : Application.Current?.MainWindow);
+        var workArea = WindowEffects.GetWindowWorkArea(anchor ?? this);
 
         // 高度改成 SizeToContent 之后，Width/Height 这两个属性在量出来之前是 NaN，
         // 必须用 Actual*，否则框会被贴到屏幕外
@@ -191,6 +368,7 @@ public partial class ResultToast : Window
 
     private void OnUndo(object sender, RoutedEventArgs e)
     {
+        if (_closing) return;
         UndoRequested?.Invoke();
         Close();
     }
@@ -198,6 +376,7 @@ public partial class ResultToast : Window
     /// <summary>以管理员身份重试失败的条目（拉起一个提权进程）。</summary>
     private void OnRetry(object sender, RoutedEventArgs e)
     {
+        if (_closing) return;
         if (_operation is null || !ElevatedRetryLauncher.Launch(_operation.Id))
         {
             new WpfDialogService().ShowInfo(Strings.AppName, Strings.ToastElevatedFailed);

@@ -20,6 +20,7 @@ namespace FileStash.App.ViewModels;
 public sealed partial class MainViewModel : ObservableObject
 {
     private readonly IStashService _stash;
+    private readonly ShelfLifetimeService? _lifetime;
     private readonly IStashGroupRepository _groups;
     private readonly IStashItemRepository _items;
     private readonly IStashEntryRepository _entries;
@@ -36,6 +37,7 @@ public sealed partial class MainViewModel : ObservableObject
 
     /// <summary>当前正在跑的长任务（加入暂存），用来中止。</summary>
     private CancellationTokenSource? _currentOperation;
+    private readonly SemaphoreSlim _addLock = new(1, 1);
 
     public MainViewModel(
         IStashService stash,
@@ -50,9 +52,11 @@ public sealed partial class MainViewModel : ObservableObject
         IOperationRepository operations,
         IOperationEntryRepository operationEntries,
         IDialogService dialogs,
-        AppPaths paths)
+        AppPaths paths,
+        ShelfLifetimeService? lifetime = null)
     {
         _stash = stash;
+        _lifetime = lifetime;
         _groups = groups;
         _items = items;
         _entries = entries;
@@ -189,10 +193,13 @@ public sealed partial class MainViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasSelectedGroup))]
     [NotifyPropertyChangedFor(nameof(CompactHeader))]
+    [NotifyPropertyChangedFor(nameof(ShelfHeader))]
     private GroupViewModel? _selectedGroup;
 
     /// <summary>紧凑抬头念当前是哪个箱：只写"暂存区"时，多个箱看不出在看哪一个。</summary>
     public string CompactHeader => SelectedGroup?.DisplayName ?? Strings.CompactTitle;
+    public string ShelfHeader => SelectedGroup?.Group.Kind == StashGroupKind.Default
+        ? Strings.CompactTitle : CompactHeader;
 
     /// <summary>
     /// 紧凑模式：窗口缩成一个小小的"暂存区"，只管一件事 —— 把东西拖出去存到别处。
@@ -221,7 +228,7 @@ public sealed partial class MainViewModel : ObservableObject
     public void ShowCompactPanel()
     {
         IsCompact = true;
-        var window = Application.Current?.MainWindow;
+        var window = OwnWindow;
 
         if (window is not null)
         {
@@ -331,6 +338,8 @@ public sealed partial class MainViewModel : ObservableObject
     }
 
     /// <summary>小搁架一键拖出全部的徽章文案：短小精炼，防止挤压标题与操作按钮。</summary>
+    public string ShelfCountText => Strings.Format(Strings.ShelfCountFormat, Items.Count);
+
     public string DragAllBadgeText => Items.Count.ToString(System.Globalization.CultureInfo.CurrentCulture);
 
     /// <summary>台面是不是空的（空台面要给个邀请，别留一片白）。</summary>
@@ -427,6 +436,7 @@ public sealed partial class MainViewModel : ObservableObject
     /// <summary>切换组就换一份暂存项。</summary>
     partial void OnSelectedGroupChanged(GroupViewModel? value)
     {
+        if (_suppressSelectionLoad) return;
         SyncGroupSelection();
 
         // 记住在哪个箱：下次开应用回到同一个界面
@@ -434,9 +444,12 @@ public sealed partial class MainViewModel : ObservableObject
 
         if (value is null)
         {
+            _itemLoadVersion++;
+            CancelSourceStatus();
             Items.Clear();
             OnPropertyChanged(nameof(StatusSummary));
             OnPropertyChanged(nameof(DragAllBadgeText));
+            OnPropertyChanged(nameof(ShelfCountText));
             OnPropertyChanged(nameof(HasNoItems));
             UpdateDestinationPreview();
             return;
@@ -446,20 +459,41 @@ public sealed partial class MainViewModel : ObservableObject
     }
 
     /// <summary>启动时加载组与暂存项。</summary>
+    internal bool IsRebuildingGroups { get; private set; }
+    private bool _suppressSelectionLoad;
+    private int _groupLoadVersion;
+    private int _itemLoadVersion;
+    private int _sourceStatusVersion;
+    private CancellationTokenSource? _sourceStatusCancellation;
+    private Task? _initialization;
     public async Task InitializeAsync()
     {
+        var initialization = _initialization ??= InitializeCoreAsync();
+        try { await initialization; }
+        catch
+        {
+            if (ReferenceEquals(_initialization, initialization)) _initialization = null;
+            throw;
+        }
+    }
+
+    private async Task InitializeCoreAsync()
+    {
+        var lastGroupId = _settings.Current.LastGroupId;
+        await ShelfGroupMigration.AdoptLegacyAsync(_groups);
         await LoadGroupsAsync();
 
-        if (Groups.Count == 0)
+        if (!Groups.Any(group => group.Group.Kind == StashGroupKind.Default))
         {
             // 第一次运行：建一个默认组，否则界面是空的、"加入暂存"也没地方放
-            await _stash.CreateGroupAsync(Strings.DefaultGroupName);
+            await _stash.CreateGroupAsync(Strings.DefaultGroupName, StashGroupKind.Default);
             await LoadGroupsAsync();
         }
 
         // 上次在哪个箱就开哪个箱；那个箱被删了则回落到第一个
-        SelectedGroup = Groups.FirstOrDefault(group => group.Id == _settings.Current.LastGroupId)
-            ?? Groups.FirstOrDefault();
+        SelectedGroup = Groups.FirstOrDefault(group => group.Id == lastGroupId)
+            ?? Groups.FirstOrDefault(group => group.Group.Kind == StashGroupKind.Default) ?? Groups.FirstOrDefault();
+        await LoadItemsAsync(SelectedGroup);
     }
 
     [RelayCommand]
@@ -547,7 +581,7 @@ public sealed partial class MainViewModel : ObservableObject
                     await _stash.DeleteGroupAsync(group.Id);
                 }
 
-                await _stash.CreateGroupAsync(Strings.DefaultGroupName);
+                await _stash.CreateGroupAsync(Strings.DefaultGroupName, StashGroupKind.Default);
             });
             await LoadGroupsAsync();
             SelectedGroup = Groups.FirstOrDefault();
@@ -568,7 +602,8 @@ public sealed partial class MainViewModel : ObservableObject
             return;
         }
 
-        if (!_dialogs.Confirm(Strings.ClearBoxButton, Strings.Format(Strings.ClearBoxConfirm, SelectedGroup.DisplayName)))
+        var clearedGroupName = SelectedGroup.DisplayName;
+        if (!_dialogs.Confirm(Strings.ClearBoxButton, Strings.Format(Strings.ClearBoxConfirm, clearedGroupName)))
         {
             return;
         }
@@ -582,7 +617,7 @@ public sealed partial class MainViewModel : ObservableObject
             await LoadItemsAsync(SelectedGroup);
         }
 
-        _dialogs.ShowInfo(Strings.ClearBoxButton, Strings.Format(Strings.ClearBoxDone, SelectedGroup?.DisplayName ?? string.Empty));
+        _dialogs.ShowInfo(Strings.ClearBoxButton, Strings.Format(Strings.ClearBoxDone, clearedGroupName));
     }
 
     /// <summary>清空当前暂存区中的所有文件（不弹模态确认，直接生效）。</summary>
@@ -621,6 +656,14 @@ public sealed partial class MainViewModel : ObservableObject
         }
     }
 
+    public async Task RemoveExportedItemsAsync(IReadOnlyList<string> itemIds)
+    {
+        if (itemIds.Count == 0) return;
+        await _stash.RemoveItemsAsync(itemIds.ToArray());
+        await LoadGroupsAsync(loadSelection: false);
+        await LoadItemsAsync(SelectedGroup);
+    }
+
     [RelayCommand]
     private Task AddItemsAsync() => AddPathsAsync(_dialogs.PickStashPaths());
 
@@ -639,16 +682,17 @@ public sealed partial class MainViewModel : ObservableObject
             return;
         }
 
+        await AddPathsToGroupAsync(SelectedGroup.Id, paths);
+    }
+
+    public async Task AddPathsToGroupAsync(string groupId, IReadOnlyList<string> paths)
+    {
+        if (paths.Count == 0) return;
+        await _addLock.WaitAsync();
         IsBusy = true;
         StatusText = Strings.Format(Strings.StatusAdding, 0, paths.Count);
 
-        // 记下组 ID：下面要重载分组列表，选中项会换成新的实例，
-        // 直接用重载之后的 SelectedGroup 容易拿到错的那个（甚至是 null）
-        var groupId = SelectedGroup.Id;
-
         // 几 GB 的文件要加好一会儿，得给用户一个中止的办法
-        _currentOperation?.Cancel();
-        _currentOperation?.Dispose();
         _currentOperation = new CancellationTokenSource();
 
         try
@@ -665,21 +709,25 @@ public sealed partial class MainViewModel : ObservableObject
             var result = await _stash.AddAsync(groupId, paths, progress, _currentOperation.Token);
 
             await LoadGroupsAsync();
-            await LoadItemsAsync(Groups.FirstOrDefault(group => group.Id == groupId));
+            await LoadItemsAsync(SelectedGroup);
 
             ReportAddResult(result);
         }
         catch (OperationCanceledException)
         {
+            await LoadGroupsAsync(loadSelection: false);
+            await LoadItemsAsync(SelectedGroup);
             StatusText = Strings.StatusAddAborted;
         }
         finally
         {
+            var cancelled = _currentOperation?.IsCancellationRequested == true;
             _currentOperation?.Dispose();
             _currentOperation = null;
             IsBusy = false;
             ClearProgress();
-            StatusText = Strings.StatusReady;
+            StatusText = cancelled ? Strings.StatusAddAborted : Strings.StatusReady;
+            _addLock.Release();
         }
     }
 
@@ -994,8 +1042,9 @@ public sealed partial class MainViewModel : ObservableObject
     /// <remarks>
     /// 拖出没有"写到目标"这一步（是资源管理器那边接手的），所以这条历史无法撤销，仅作记录。
     /// </remarks>
-    public async Task RecordDragExportAsync(IReadOnlyList<string> paths)
+    public async Task RecordDragExportAsync(IReadOnlyList<string> paths, DragDropEffects effect)
     {
+        if (effect == DragDropEffects.None || paths.Count == 0) return;
         var operation = new Operation
         {
             Id = Guid.NewGuid().ToString("N"),
@@ -1015,6 +1064,7 @@ public sealed partial class MainViewModel : ObservableObject
     [RelayCommand]
     public async Task ApplyOriginalAsync(ItemViewModel? singleItem = null)
     {
+        var consume = IsCompact;
         TargetMode = TargetMode.OriginalLocation;
         var targets = singleItem is not null
             ? [singleItem.Item]
@@ -1045,7 +1095,7 @@ public sealed partial class MainViewModel : ObservableObject
 
             if (dialog.ShowDialog() == true && dialog.Result is not null)
             {
-                await ShowResultAsync(dialog.Result);
+                await ShowResultAsync(dialog.Result, plan, targets, consume);
             }
 
             return;
@@ -1062,7 +1112,7 @@ public sealed partial class MainViewModel : ObservableObject
             });
 
             var operation = await _executor.ExecuteAsync(plan, progress, CancellationToken.None);
-            await ShowResultAsync(operation);
+            await ShowResultAsync(operation, plan, targets, consume);
         }
         finally
         {
@@ -1080,7 +1130,7 @@ public sealed partial class MainViewModel : ObservableObject
     }
 
     /// <summary>切到某个组（--group）。</summary>
-    public async Task SelectGroupAsync(string groupName)
+    public async Task<string> SelectGroupAsync(string groupName)
     {
         await LoadGroupsAsync();
 
@@ -1094,12 +1144,14 @@ public sealed partial class MainViewModel : ObservableObject
         }
 
         SelectedGroup = Groups.FirstOrDefault(candidate => candidate.Id == group.Id);
+        await LoadItemsAsync(SelectedGroup);
+        return group.Id;
     }
 
     /// <summary>打开主窗口（托盘 / 快捷键用）。</summary>
     public void ShowMainWindow()
     {
-        var window = Application.Current?.MainWindow;
+        var window = OwnWindow;
 
         if (window is null)
         {
@@ -1112,6 +1164,44 @@ public sealed partial class MainViewModel : ObservableObject
         }
 
         WindowEffects.BringToFront(window);
+    }
+
+    private Window? OwnWindow => Application.Current?.Windows.OfType<MainWindow>()
+        .FirstOrDefault(window => ReferenceEquals(window.ViewModel, this));
+
+    /// <summary>Creates a separately persisted transit shelf without a naming dialog.</summary>
+    public async Task CreateShelfAsync()
+    {
+        await InitializeAsync();
+        var name = $"{Strings.CompactTitle} · {DateTime.Now:MM-dd HH:mm:ss}";
+        var group = _lifetime is null ? await _stash.CreateGroupAsync(name, StashGroupKind.Temporary)
+            : await _lifetime.CreateTemporaryAsync(this, name);
+        await LoadGroupsAsync();
+        SelectedGroup = Groups.First(candidate => candidate.Id == group.Id);
+        await LoadItemsAsync(SelectedGroup);
+        IsCompact = true;
+    }
+
+    public event Action? NewShelfRequested;
+
+    [RelayCommand]
+    private void NewShelf() => NewShelfRequested?.Invoke();
+
+    [RelayCommand]
+    private async Task RestoreToFolderAsync()
+    {
+        var folder = _dialogs.PickFolder();
+        if (folder is not null) await ApplyHereAsync(folder);
+    }
+
+    [RelayCommand]
+    private async Task RestoreToRootAsync()
+    {
+        var folder = _dialogs.PickFolder();
+        if (folder is null) return;
+        TargetMode = TargetMode.AnotherRoot;
+        TargetPath = folder;
+        await PreviewAsync();
     }
 
     /// <summary>当前目标描述。</summary>
@@ -1136,6 +1226,7 @@ public sealed partial class MainViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanWrite))]
     private async Task PreviewAsync()
     {
+        var consume = IsCompact;
         var items = await ResolveTargetItemsAsync();
 
         if (items.Count == 0)
@@ -1158,7 +1249,7 @@ public sealed partial class MainViewModel : ObservableObject
 
         if (dialog.ShowDialog() == true && dialog.Result is not null)
         {
-            await ShowResultAsync(dialog.Result);
+            await ShowResultAsync(dialog.Result, plan, items, consume);
         }
     }
 
@@ -1168,6 +1259,7 @@ public sealed partial class MainViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanWrite))]
     private async Task ApplyAsync()
     {
+        var consume = IsCompact;
         var items = await ResolveTargetItemsAsync();
 
         if (items.Count == 0)
@@ -1195,7 +1287,7 @@ public sealed partial class MainViewModel : ObservableObject
 
             if (dialog.ShowDialog() == true && dialog.Result is not null)
             {
-                await ShowResultAsync(dialog.Result);
+                await ShowResultAsync(dialog.Result, plan, items, consume);
             }
 
             return;
@@ -1212,7 +1304,7 @@ public sealed partial class MainViewModel : ObservableObject
             });
 
             var operation = await _executor.ExecuteAsync(plan, progress, CancellationToken.None);
-            await ShowResultAsync(operation);
+            await ShowResultAsync(operation, plan, items, consume);
         }
         finally
         {
@@ -1250,38 +1342,112 @@ public sealed partial class MainViewModel : ObservableObject
         _dialogs.ShowInfo(Strings.UndoButton, message);
     }
 
-    private async Task ShowResultAsync(Operation operation)
-    {
-        var entries = await _operationEntries.GetByOperationAsync(operation.Id, CancellationToken.None);
+    /// <summary>The current transit queue is drained; the owning compact window can dismiss.</summary>
+    public event Action? RestoreSucceeded;
 
-        var toast = new ResultToast(operation, entries);
-        toast.UndoRequested += async () => await _executor.UndoAsync(operation.Id, CancellationToken.None);
-        toast.Show();
+    private async Task ShowResultAsync(Operation operation, ApplyPlan plan,
+        IReadOnlyList<StashItem> targets, bool consume)
+    {
+        var originalGroupId = targets.FirstOrDefault()?.GroupId;
+        var selectedAtCompletion = SelectedGroup?.Id;
+        var entries = await _operationEntries.GetByOperationAsync(operation.Id, CancellationToken.None);
+        if (consume && operation.Status == OperationStatus.Succeeded)
+            await ConsumeRestoredItemsAsync(plan, targets);
+
+        if (!App.InSmoke && Application.Current?.Dispatcher.CheckAccess() == true)
+        {
+            var toast = new ResultToast(operation, entries);
+            toast.UndoRequested += async () => await _executor.UndoAsync(operation.Id, CancellationToken.None);
+            toast.Show();
+        }
+        if (consume && operation.Status == OperationStatus.Succeeded && originalGroupId is not null
+            && selectedAtCompletion == originalGroupId
+            && (await _items.GetByGroupAsync(originalGroupId, CancellationToken.None)).Count == 0)
+            RestoreSucceeded?.Invoke();
     }
 
-    private async Task LoadGroupsAsync()
+    private async Task ConsumeRestoredItemsAsync(ApplyPlan plan, IReadOnlyList<StashItem> targets)
+    {
+        // A skipped conflict is still pending work. Identical files are already delivered.
+        var delivered = targets.Where(item =>
+        {
+            var planned = plan.Entries.Where(entry => entry.ItemId == item.Id).ToArray();
+            return planned.Length > 0 && planned.All(entry =>
+                entry.State is not (PlannedState.Invalid or PlannedState.TypeConflict) &&
+                (entry.Action != PlannedAction.Skip || entry.State == PlannedState.Identical));
+        }).ToDictionary(item => item.Id);
+        if (delivered.Count == 0) return;
+
+        await _addLock.WaitAsync();
+        try
+        {
+            // Never consume a newer snapshot, an item moved to another shelf, or later additions.
+            var current = await _items.GetByIdsAsync(delivered.Keys.ToArray(), CancellationToken.None);
+            var ids = current.Where(item => delivered.TryGetValue(item.Id, out var captured)
+                    && item.GroupId == captured.GroupId && item.SnapshotAt == captured.SnapshotAt)
+                .Select(item => item.Id).ToArray();
+            if (ids.Length == 0) return;
+            await _stash.RemoveItemsAsync(ids);
+            await LoadGroupsAsync(loadSelection: false);
+            await LoadItemsAsync(SelectedGroup);
+        }
+        finally { _addLock.Release(); }
+    }
+
+    public async Task RefreshAfterGroupCleanupAsync()
+    {
+        var selectedId = SelectedGroup?.Id;
+        await LoadGroupsAsync(loadSelection: false);
+        if (SelectedGroup?.Id == selectedId && SelectedGroup is not null)
+        {
+            // Another window's cleanup only changes our sidebar. Preserve file selection,
+            // expanded rows and an in-progress drag when this shelf's snapshots are unchanged.
+            var current = await _items.GetByGroupAsync(selectedId!, CancellationToken.None);
+            if (SelectedGroup?.Id != selectedId) return;
+            var displayed = Items.ToDictionary(item => item.Id, item => item.Item.SnapshotAt);
+            if (current.Count == displayed.Count && current.All(item =>
+                displayed.TryGetValue(item.Id, out var snapshotAt) && snapshotAt == item.SnapshotAt)) return;
+        }
+        await LoadItemsAsync(SelectedGroup);
+    }
+
+    private async Task LoadGroupsAsync(bool loadSelection = true)
     {
         // 记住选中的那个：Groups.Clear() 会让列表框的选中项变成 null，
         // 双向绑定随之把 SelectedGroup 也置成 null ——
         // 不还原的话，之后按组取东西全炸（LoadItemsAsync 拿到 null 直接 NRE），
         // 而且"加入暂存"这类操作在第一次之后就再也不生效了。
-        var selectedId = SelectedGroup?.Id;
+        var version = ++_groupLoadVersion;
+        var selectedAtStart = SelectedGroup;
+        var selectedId = selectedAtStart?.Id;
 
         var groups = await _groups.GetAllAsync(CancellationToken.None);
 
-        Groups.Clear();
-
+        var loadedGroups = new List<GroupViewModel>();
         foreach (var group in groups)
         {
             var viewModel = new GroupViewModel(group);
             var items = await _items.GetByGroupAsync(group.Id, CancellationToken.None);
             viewModel.ItemCount = items.Count;
             viewModel.FileCount = items.Sum(item => item.FileCount);
-            Groups.Add(viewModel);
+            loadedGroups.Add(viewModel);
         }
 
-        // 选中的那个换到新实例上；它要是没了（被删了），退回到第一个
-        SelectedGroup = Groups.FirstOrDefault(group => group.Id == selectedId) ?? Groups.FirstOrDefault();
+        // Batch removal reloads items explicitly after restoring selection.
+        // ListBox's null write-back must not trigger an intermediate reload.
+        if (version != _groupLoadVersion) return;
+        if (!ReferenceEquals(SelectedGroup, selectedAtStart)) selectedId = SelectedGroup?.Id;
+        _suppressSelectionLoad = !loadSelection;
+        IsRebuildingGroups = true;
+        try
+        {
+            Groups.Clear();
+            foreach (var group in loadedGroups) Groups.Add(group);
+            SelectedGroup = Groups.FirstOrDefault(group => group.Id == selectedId) ?? Groups.FirstOrDefault(group => group.Group.Kind == StashGroupKind.Default) ?? Groups.FirstOrDefault();
+        }
+        finally { _suppressSelectionLoad = false; IsRebuildingGroups = false; }
+        OnPropertyChanged(nameof(SelectedGroup));
+        _settings.Current.LastGroupId = SelectedGroup?.Id;
 
         SyncGroupSelection();
     }
@@ -1297,6 +1463,8 @@ public sealed partial class MainViewModel : ObservableObject
 
     private async Task LoadItemsAsync(GroupViewModel? group)
     {
+        var version = ++_itemLoadVersion;
+        CancelSourceStatus();
         // 没有组可看：把台面清空，别拿上一次的内容接着显示
         if (group is null)
         {
@@ -1324,6 +1492,7 @@ public sealed partial class MainViewModel : ObservableObject
                 loadedItems.Add(viewModel);
             }
 
+            if (version != _itemLoadVersion || SelectedGroup?.Id != group.Id) return;
             _loadingItems = true;
             try
             {
@@ -1341,11 +1510,13 @@ public sealed partial class MainViewModel : ObservableObject
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
+            if (version != _itemLoadVersion) return;
             StatusText = Strings.Format(Strings.StatusLoadFailed, ex.Message);
         }
 
         OnPropertyChanged(nameof(StatusSummary));
         OnPropertyChanged(nameof(DragAllBadgeText));
+        OnPropertyChanged(nameof(ShelfCountText));
         OnPropertyChanged(nameof(HasNoItems));
         RaiseWriteCommands();
         UpdateDestinationPreview();
@@ -1403,11 +1574,22 @@ public sealed partial class MainViewModel : ObservableObject
         : Strings.WillWrite;
 
     /// <summary>源状态是异步算的，别挡住界面。</summary>
+    private void CancelSourceStatus()
+    {
+        _sourceStatusVersion++;
+        _sourceStatusCancellation?.Cancel();
+    }
+
     private async Task RefreshSourceStatusAsync(GroupViewModel group)
     {
+        CancelSourceStatus();
+        var version = _sourceStatusVersion;
+        using var cancellation = new CancellationTokenSource();
+        _sourceStatusCancellation = cancellation;
         try
         {
-            var statuses = await _stash.CheckSourceStatusAsync(group.Id, CancellationToken.None);
+            var statuses = await _stash.CheckSourceStatusAsync(group.Id, cancellation.Token);
+            if (version != _sourceStatusVersion || SelectedGroup?.Id != group.Id) return;
 
             foreach (var status in statuses)
             {
@@ -1430,9 +1612,15 @@ public sealed partial class MainViewModel : ObservableObject
                 item.SourceState = status.State;
             }
         }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
-            StatusText = Strings.Format(Strings.StatusSourceStateFailed, ex.Message);
+            if (version == _sourceStatusVersion)
+                StatusText = Strings.Format(Strings.StatusSourceStateFailed, ex.Message);
+        }
+        finally
+        {
+            if (ReferenceEquals(_sourceStatusCancellation, cancellation)) _sourceStatusCancellation = null;
         }
     }
 

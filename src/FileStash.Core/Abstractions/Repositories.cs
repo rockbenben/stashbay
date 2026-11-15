@@ -4,6 +4,8 @@ namespace FileStash.Core.Abstractions;
 
 public interface IStashGroupRepository
 {
+    Task<bool> DeleteEmptyTemporaryAsync(string id, CancellationToken ct);
+
     Task<IReadOnlyList<StashGroup>> GetAllAsync(CancellationToken ct);
 
     Task<StashGroup?> GetAsync(string id, CancellationToken ct);
@@ -76,6 +78,9 @@ public interface IOperationRepository
     Task DeleteAsync(string id, CancellationToken ct);
 
     Task DeleteOlderThanAsync(DateTimeOffset cutoff, CancellationToken ct);
+
+    /// <summary>Running operations and unresolved journals, excluding fully undone operations.</summary>
+    Task<IReadOnlyList<string>> GetRecoveryCandidateIdsAsync(CancellationToken ct);
 }
 
 public interface IOperationEntryRepository

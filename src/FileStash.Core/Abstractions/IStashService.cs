@@ -7,7 +7,13 @@ namespace FileStash.Core.Abstractions;
 /// <summary>暂存服务：组的增删改、加入暂存、刷新快照、设置根目录、移动、源状态检查。</summary>
 public interface IStashService
 {
-    Task<StashGroup> CreateGroupAsync(string name);
+    event Action? GroupsChanged;
+
+    Task<StashGroup> CreateGroupAsync(string name, StashGroupKind kind = StashGroupKind.Saved);
+
+    Task<bool> DeleteEmptyTemporaryGroupAsync(string groupId);
+
+    Task<int> DeleteEmptyTemporaryGroupsAsync(IReadOnlyCollection<string> excludedGroupIds, CancellationToken ct = default);
 
     Task RenameGroupAsync(string groupId, string name);
 

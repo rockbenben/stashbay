@@ -57,19 +57,29 @@ internal static class ShotsRunner
             Directory.CreateDirectory(outputDirectory);
             File.Delete(Path.Combine(outputDirectory, "shots-size.tsv"));
 
+            // Focused shelf reviews still use the same fixture, themes, sizes and hash guard.
+            var compactOnly = args.Contains("--shots-compact-only", StringComparer.OrdinalIgnoreCase);
+            var settingsOnly = args.Contains("--shots-settings-only", StringComparer.OrdinalIgnoreCase);
+            var workbenchOnly = args.Contains("--shots-workbench-only", StringComparer.OrdinalIgnoreCase);
+            var includeToasts = args.Contains("--shots-include-toasts", StringComparer.OrdinalIgnoreCase);
             foreach (var theme in new[] { AppTheme.Light, AppTheme.Dark })
             {
                 ThemeService.Apply(theme);
 
-                foreach (var shot in WindowCatalog.All(services))
+                foreach (var shot in WindowCatalog.All(services).Where(shot =>
+                    (!settingsOnly || shot.Name.StartsWith("SettingsWindow", StringComparison.Ordinal)) &&
+                    (!workbenchOnly || shot.Name.StartsWith("MainWindow.Expanded", StringComparison.Ordinal)) &&
+                    (!compactOnly || shot.Name.StartsWith("MainWindow.Compact", StringComparison.Ordinal) ||
+                    (includeToasts && shot.Name.StartsWith("ResultToast", StringComparison.Ordinal)))))
                 {
-                    foreach (var height in WorkAreaHeights)
+                    foreach (var height in compactOnly || settingsOnly || workbenchOnly ? new[] { WorkAreaHeights[0], WorkAreaHeights[^1] } : WorkAreaHeights)
                     {
                         var name = $"{shot.Name}.{theme}";
 
                         try
                         {
-                            await ShotAsync(name, shot, height, outputDirectory, services);
+                            await ShotAsync(name, shot, height, outputDirectory, services,
+                                minimumWidth: (settingsOnly || workbenchOnly) && height == WorkAreaHeights[0]);
                         }
                         catch (Exception ex)
                         {
@@ -105,9 +115,12 @@ internal static class ShotsRunner
         WindowCatalog.Shot shot,
         double workAreaHeight,
         string outputDirectory,
-        IServiceProvider services)
+        IServiceProvider services,
+        bool minimumWidth = false)
     {
         var window = await shot.Factory();
+
+        if (minimumWidth && window.MinWidth > 0) window.Width = window.MinWidth;
 
         window.WindowStartupLocation = WindowStartupLocation.Manual;
         window.Left = -32000;

@@ -26,6 +26,190 @@ public sealed class WriteSafetyRegressionTests : IAsyncLifetime
         items, new TargetSpec(TargetMode.SpecifiedPath, Path.Combine(_context.Workspace.Root, "out"), StructureMode.Flatten),
         ConflictPolicy.Ask, _ct);
 
+    private sealed class CountingProgress(Action<ProgressInfo> report) : IProgress<ProgressInfo>
+    {
+        public void Report(ProgressInfo value) => report(value);
+    }
+
+    [Theory]
+    [InlineData("move")]
+    [InlineData("remove")]
+    [InlineData("delete-group")]
+    public async Task MetadataMutationMustWaitForActiveStorageWriter(string action)
+    {
+        var item = await AddAsync("source/a.txt", "a");
+        var targetGroup = await _context.CreateGroupAsync();
+        Task mutation;
+        bool completed;
+        using (File.Open(Path.Combine(_context.Paths.RootDirectory, "write.lock"),
+                   FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+        {
+            mutation = action switch
+            {
+                "move" => _context.Stash.MoveItemsAsync([item.Id], targetGroup),
+                "remove" => _context.Stash.RemoveItemsAsync([item.Id]),
+                _ => _context.Stash.DeleteGroupAsync(item.GroupId)
+            };
+            completed = mutation.IsCompleted;
+        }
+        await mutation;
+        Assert.False(completed);
+    }
+
+    [Fact]
+    public async Task EmptyDirectoryApplyMustRejectJunctionAncestor()
+    {
+        var source = Path.Combine(_context.Workspace.Root, "source/box/empty");
+        Directory.CreateDirectory(source);
+        var group = await _context.CreateGroupAsync();
+        var folder = Path.GetDirectoryName(source)!;
+        var item = (await _context.Stash.AddAsync(group, [folder], null, _ct)).Added.Single();
+        var outside = Path.Combine(_context.Workspace.Root, "outside");
+        Directory.CreateDirectory(outside);
+        Directory.CreateDirectory(Path.Combine(_context.Workspace.Root, "out"));
+        var junction = Path.Combine(_context.Workspace.Root, "out/box");
+        var start = new System.Diagnostics.ProcessStartInfo("pwsh")
+        {
+            UseShellExecute = false, CreateNoWindow = true
+        };
+        start.ArgumentList.Add("-NoProfile");
+        start.ArgumentList.Add("-Command");
+        start.ArgumentList.Add("New-Item -ItemType Junction -Path $env:TEST_LINK -Target $env:TEST_TARGET | Out-Null");
+        start.Environment["TEST_LINK"] = junction;
+        start.Environment["TEST_TARGET"] = outside;
+        using var process = System.Diagnostics.Process.Start(start)!;
+        await process.WaitForExitAsync(_ct);
+        Assert.Equal(0, process.ExitCode);
+        try
+        {
+            var plan = await _context.Planner.BuildPlanAsync([item],
+                new TargetSpec(TargetMode.SpecifiedPath, Path.Combine(_context.Workspace.Root, "out"), StructureMode.ItemOnly),
+                ConflictPolicy.Overwrite, _ct);
+            var operation = await _context.Executor.ExecuteAsync(plan, null, _ct);
+            Assert.Equal(OperationStatus.PartiallyFailed, operation.Status);
+            Assert.False(Directory.Exists(Path.Combine(outside, "empty")));
+        }
+        finally { Directory.Delete(junction); }
+    }
+
+    [Fact]
+    public async Task IdenticalOverwriteMustRejectEditAfterPreview()
+    {
+        var item = await AddAsync("source/report.txt", "snapshot");
+        var target = _context.Workspace.CreateFile("out/report.txt", "snapshot");
+        var plan = await _context.Planner.BuildPlanAsync([item],
+            new TargetSpec(TargetMode.SpecifiedPath, Path.GetDirectoryName(target), StructureMode.Flatten),
+            ConflictPolicy.Overwrite, _ct, skipIdentical: false);
+        File.WriteAllText(target, "edited after preview");
+        var operation = await _context.Executor.ExecuteAsync(plan, null, _ct);
+        Assert.Equal("edited after preview", File.ReadAllText(target));
+        Assert.Equal(OperationStatus.PartiallyFailed, operation.Status);
+    }
+
+    [Fact]
+    public async Task ExecutingPlanMustIgnoreLaterPreviewChanges()
+    {
+        var first = await AddAsync("source/a.txt", "a");
+        var second = await AddAsync("source/b.txt", "b");
+        _context.Workspace.CreateFile("out/b.txt", "old");
+        var plan = await PlanAsync(first, second);
+        var progress = new CountingProgress(info =>
+        {
+            if (info.Done == 1)
+            {
+                plan.Entries[1].Action = PlannedAction.Rename;
+                plan.Entries[1].Source.Sha256 = plan.Entries[0].Source.Sha256;
+            }
+        });
+        var operation = await _context.Executor.ExecuteAsync(plan, progress, _ct);
+        Assert.Equal("b", File.ReadAllText(Path.Combine(_context.Workspace.Root, "out/b.txt")));
+        Assert.False(File.Exists(Path.Combine(_context.Workspace.Root, "out/b (2).txt")));
+        await _context.Executor.UndoAsync(operation.Id, _ct);
+        Assert.Equal("old", File.ReadAllText(Path.Combine(_context.Workspace.Root, "out/b.txt")));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task RefreshMustPersistChangedSourceType(bool startsAsDirectory)
+    {
+        var source = Path.Combine(_context.Workspace.Root, "source", "shape");
+        Directory.CreateDirectory(Path.GetDirectoryName(source)!);
+        if (startsAsDirectory)
+        {
+            Directory.CreateDirectory(source);
+            File.WriteAllText(Path.Combine(source, "old.txt"), "old");
+        }
+        else File.WriteAllText(source, "old");
+        var group = await _context.CreateGroupAsync();
+        var item = (await _context.Stash.AddAsync(group, [source], null, _ct)).Added.Single();
+        if (startsAsDirectory) Directory.Delete(source, true);
+        else File.Delete(source);
+        if (startsAsDirectory) File.WriteAllText(source, "new");
+        else
+        {
+            Directory.CreateDirectory(source);
+            File.WriteAllText(Path.Combine(source, "a.txt"), "a");
+            File.WriteAllText(Path.Combine(source, "b.txt"), "b");
+        }
+        await _context.Stash.RefreshSnapshotAsync([item.Id], null, _ct);
+        item = (await _context.Items.GetByIdsAsync([item.Id], _ct)).Single();
+        Assert.Equal(startsAsDirectory ? StashItemKind.File : StashItemKind.Folder, item.Kind);
+        var export = new DragExportService(_context.Entries, _context.BlobStore, _context.Paths);
+        var path = (await export.MaterializeAsync([item], _ct)).Single();
+        if (startsAsDirectory) Assert.Equal("new", File.ReadAllText(path));
+        else
+        {
+            Assert.Equal("a", File.ReadAllText(Path.Combine(path, "a.txt")));
+            Assert.Equal("b", File.ReadAllText(Path.Combine(path, "b.txt")));
+        }
+    }
+
+    [Fact]
+    public async Task ExportMustRejectInconsistentFileSnapshot()
+    {
+        var item = await AddAsync("source/a.txt", "a");
+        var entry = (await _context.Entries.GetByItemAsync(item.Id, _ct)).Single();
+        entry.RelativePath = "source/b.txt";
+        entry.Id = 0;
+        await _context.Entries.AddManyAsync([entry], _ct);
+        var export = new DragExportService(_context.Entries, _context.BlobStore, _context.Paths);
+        await Assert.ThrowsAsync<IOException>(() => export.MaterializeAsync([item], _ct));
+    }
+
+    [Fact]
+    public async Task LockedUndoMustContinueWithOtherFiles()
+    {
+        var a = await AddAsync("source/a.txt", "a");
+        var b = await AddAsync("source/b.txt", "b");
+        var operation = await _context.Executor.ExecuteAsync(await PlanAsync(a, b), null, _ct);
+        using (File.Open(Path.Combine(_context.Workspace.Root, "out/b.txt"),
+                   FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+        {
+            var result = await _context.Executor.UndoAsync(operation.Id, _ct);
+            Assert.True(result.HasIssues);
+            Assert.False(File.Exists(Path.Combine(_context.Workspace.Root, "out/a.txt")));
+        }
+        await _context.Executor.UndoAsync(operation.Id, _ct);
+        Assert.False(File.Exists(Path.Combine(_context.Workspace.Root, "out/b.txt")));
+    }
+
+    [Fact]
+    public async Task DirectoryUndoMustPreserveReplacementDirectory()
+    {
+        var source = Path.Combine(_context.Workspace.Root, "empty");
+        Directory.CreateDirectory(source);
+        var group = await _context.CreateGroupAsync();
+        var item = (await _context.Stash.AddAsync(group, [source], null, _ct)).Added.Single();
+        var operation = await _context.Executor.ExecuteAsync(await PlanAsync(item), null, _ct);
+        var target = Path.Combine(_context.Workspace.Root, "out/empty");
+        Directory.Move(target, target + "-original");
+        Directory.CreateDirectory(target);
+        var result = await _context.Executor.UndoAsync(operation.Id, _ct);
+        Assert.True(Directory.Exists(target));
+        Assert.True(result.HasIssues);
+    }
+
     [Fact]
     public async Task PreviewRenameMustPreserveOriginalThroughUndo()
     {
@@ -159,7 +343,7 @@ public sealed class WriteSafetyRegressionTests : IAsyncLifetime
                 VALUES ('old', 'legacy.txt', 4, 'legacyhash');
                 """);
         }
-        Assert.Equal(3, await new DatabaseMigrator(workspace.ConnectionFactory).MigrateAsync(_ct));
+        Assert.Equal(Migrations.All.Max(migration => migration.Version), await new DatabaseMigrator(workspace.ConnectionFactory).MigrateAsync(_ct));
         var entry = Assert.Single(await new OperationEntryRepository(workspace.ConnectionFactory).GetByOperationAsync("old", _ct));
         Assert.Null(entry.IntendedAction);
         Assert.False(entry.Pending);
@@ -268,6 +452,22 @@ public sealed class WriteSafetyRegressionTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task CorruptBackupMustNotReplaceAppliedContentDuringUndo()
+    {
+        var item = await AddAsync("source/report.txt", "snapshot");
+        var target = _context.Workspace.CreateFile("out/report.txt", "original");
+        var operation = await _context.Executor.ExecuteAsync(await PlanAsync(item), null, _ct);
+        var row = (await _context.OperationEntries.GetByOperationAsync(operation.Id, _ct))
+            .Single(entry => entry.Action == EntryResult.Overwritten);
+        var backup = _context.BlobStore.GetBlobPath(row.BackupSha256!);
+        File.SetAttributes(backup, FileAttributes.Normal);
+        File.WriteAllText(backup, "corrupted backup");
+        var result = await _context.Executor.UndoAsync(operation.Id, _ct);
+        Assert.True(result.HasIssues);
+        Assert.Equal("snapshot", File.ReadAllText(target));
+    }
+
+    [Fact]
     public async Task CorruptBlobMustNotBeWrittenToApprovedTarget()
     {
         var item = await AddAsync("source/report.txt", "snapshot");
@@ -333,7 +533,7 @@ public sealed class WriteSafetyRegressionTests : IAsyncLifetime
                 VALUES ('v2', 'legacy.txt', 3, 1, 0);
                 """);
         }
-        Assert.Equal(3, await new DatabaseMigrator(workspace.ConnectionFactory).MigrateAsync(_ct));
+        Assert.Equal(Migrations.All.Max(migration => migration.Version), await new DatabaseMigrator(workspace.ConnectionFactory).MigrateAsync(_ct));
         var row = Assert.Single(await new OperationEntryRepository(workspace.ConnectionFactory).GetByOperationAsync("v2", _ct));
         Assert.True(row.Pending);
         Assert.Null(row.WitnessIdentity);

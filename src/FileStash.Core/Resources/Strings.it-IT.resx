@@ -186,4 +186,5 @@
   <data name="RecoveryNeedsReview" xml:space="preserve"><value>Verificare risultato e destinazione, poi scegliere di mantenere il file attuale.</value></data>
   <data name="RecoveryNotCommitted" xml:space="preserve"><value>Scrittura non confermata. Verificare prima di riprovare.</value></data>
   <data name="RetryAuthorizationChanged" xml:space="preserve"><value>File o ambito del tentativo modificato. Verificare di nuovo.</value></data>
+  <data name="DefaultGroupName" xml:space="preserve"><value>Deposito predefinito</value></data>
 </root>

@@ -3,6 +3,7 @@ using FileStash.Core.Models;
 using FileStash.Core.Services;
 using FileStash.Core.Utils;
 using FileStash.Infrastructure.Data;
+using FileStash.Infrastructure.Shell;
 
 namespace FileStash.Core.Tests;
 
@@ -21,6 +22,8 @@ public sealed class SettingsViewModelTests : IAsyncLifetime
     private readonly RecordingDialogService _dialogs = new();
     private readonly SettingsService _settings;
     private readonly SettingsViewModel _viewModel;
+    private bool _shellIntegrationSucceeds = true;
+    private readonly StartupStub _startup = new();
 
     public async ValueTask InitializeAsync() =>
         await new DatabaseMigrator(_workspace.ConnectionFactory).MigrateAsync(TestContext.Current.CancellationToken);
@@ -52,29 +55,239 @@ public sealed class SettingsViewModelTests : IAsyncLifetime
                 paths),
             blobStore,
             operations,
-            _dialogs);
+            _dialogs,
+            _ => _shellIntegrationSucceeds,
+            _startup);
+    }
+
+
+
+    [Fact]
+    public async Task CancelledDelayChangeRestoresSavedValueAndReadsBackAgainstIt()
+    {
+        _settings.Save(new AppSettings { StartWithWindows = true, StartWithWindowsAsAdministrator = true });
+        _viewModel.Settings.StartWithWindows = true;
+        _viewModel.Settings.StartWithWindowsAsAdministrator = true;
+        _startup.State = LogonStartupState.Elevated;
+        _startup.Outcome = StartupOutcome.Cancelled;
+        _viewModel.StartupDelayText = "17";
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+        Assert.Equal(3, _startup.LastReadDelay);
+        Assert.Equal("3", _viewModel.StartupDelayText);
+        Assert.Equal(3, _settings.Current.AdministratorStartupDelaySeconds);
+        Assert.False(_viewModel.LastSaveSucceeded);
     }
 
     [Fact]
-    public void Save_语言没动_不重启()
+    public async Task InvalidSavedDelayCanBeCorrectedWithoutAnUnknownStateDeadlock()
+    {
+        _viewModel.Settings.AdministratorStartupDelaySeconds = 1000;
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
+        Assert.Equal(3, _startup.LastReadDelay);
+        Assert.True(_viewModel.SaveCommand.CanExecute(null));
+        _viewModel.StartupDelayText = "17";
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
+        Assert.Equal(17, _startup.LastReadDelay);
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+        Assert.True(_viewModel.LastSaveSucceeded);
+        Assert.Equal(17, _settings.Current.AdministratorStartupDelaySeconds);
+    }
+
+    [Fact]
+    public async Task DelayIsValidatedBeforeStartupChangesAndPersistedAfterSuccess()
+    {
+        foreach (string invalid in new[] { "-1", "301", "1.5", "", "abc" })
+        {
+            _viewModel.StartupDelayText = invalid;
+            await _viewModel.SaveCommand.ExecuteAsync(null);
+            Assert.Equal(0, _startup.Calls);
+            Assert.False(_viewModel.LastSaveSucceeded);
+            Assert.Equal(3, _settings.Current.AdministratorStartupDelaySeconds);
+        }
+        _viewModel.Settings.StartWithWindows = true;
+        _viewModel.Settings.StartWithWindowsAsAdministrator = true;
+        _viewModel.StartupDelayText = "17";
+        await _viewModel.RepairStartupCommand.ExecuteAsync(null);
+        _settings.Load();
+        Assert.Equal(17, _startup.LastDelay);
+        Assert.Equal(17, _settings.Current.AdministratorStartupDelaySeconds);
+        _viewModel.StartupDelayText = "30";
+        _viewModel.CancelCommand.Execute(null);
+        Assert.Equal("17", _viewModel.StartupDelayText);
+    }
+
+    [Fact]
+    public async Task AdministratorChoicePersistsOnlyAfterConfirmedRegistration()
+    {
+        _viewModel.Settings.StartWithWindows = true;
+        _viewModel.Settings.StartWithWindowsAsAdministrator = true;
+        _startup.Outcome = StartupOutcome.Cancelled;
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+        Assert.False(_settings.Current.StartWithWindowsAsAdministrator);
+        Assert.False(_viewModel.LastSaveSucceeded);
+        Assert.False(_viewModel.Settings.StartWithWindows);
+        Assert.Empty(_dialogs.Warnings);
+
+        _viewModel.Settings.StartWithWindows = true;
+        _viewModel.Settings.StartWithWindowsAsAdministrator = true;
+        _startup.Outcome = StartupOutcome.Applied;
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+        _settings.Load();
+        Assert.True(_settings.Current.StartWithWindowsAsAdministrator);
+        Assert.True(_viewModel.LastSaveSucceeded);
+    }
+
+    [Fact]
+    public async Task FailedRemovalKeepsAdministratorChoiceAndDoesNotReportSuccess()
+    {
+        _settings.Save(new AppSettings { StartWithWindows = true, StartWithWindowsAsAdministrator = true });
+        _startup.State = LogonStartupState.Elevated;
+        _startup.Outcome = StartupOutcome.Failed;
+        _viewModel.Settings.StartWithWindows = false;
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+        Assert.True(_settings.Current.StartWithWindowsAsAdministrator);
+        Assert.True(_viewModel.Settings.StartWithWindows);
+        Assert.True(_viewModel.Settings.StartWithWindowsAsAdministrator);
+        Assert.Single(_dialogs.Warnings);
+        Assert.Empty(_dialogs.Infos);
+        Assert.False(_viewModel.LastSaveSucceeded);
+    }
+
+    [Fact]
+    public async Task UncertainResultBlocksReplayUntilExplicitSuccessfulRefresh()
+    {
+        _startup.Outcome = StartupOutcome.Uncertain;
+        _startup.IsPending = true;
+        _viewModel.Settings.StartWithWindows = true;
+        _viewModel.Settings.StartWithWindowsAsAdministrator = true;
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+        Assert.False(_viewModel.SaveCommand.CanExecute(null));
+        Assert.False(_viewModel.RepairStartupCommand.CanExecute(null));
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+        Assert.Equal(1, _startup.Calls);
+        Assert.False(_settings.Current.StartWithWindowsAsAdministrator);
+        _startup.IsPending = false;
+        _startup.State = LogonStartupState.Elevated;
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
+        Assert.True(_viewModel.SaveCommand.CanExecute(null));
+        _startup.Outcome = StartupOutcome.Unchanged;
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+        Assert.True(_settings.Current.StartWithWindowsAsAdministrator);
+    }
+
+    [Fact]
+    public async Task RepairUsesTheSelectedPrivilegeAndPreservesConcurrentWindowState()
+    {
+        _viewModel.Settings.StartWithWindows = true;
+        _viewModel.Settings.StartWithWindowsAsAdministrator = true;
+        _settings.Current.LastGroupId = "changed-during-edit";
+        await _viewModel.RepairStartupCommand.ExecuteAsync(null);
+        Assert.True(_startup.LastRepair);
+        Assert.Equal(LogonStartupState.Elevated, _startup.State);
+        Assert.Equal("changed-during-edit", _settings.Current.LastGroupId);
+    }
+
+    [Fact]
+    public async Task FailedStartupSyncWarnsAndAllowsRetryBeforeLanguageRestart()
+    {
+        _shellIntegrationSucceeds = false;
+        var restarts = 0;
+        _viewModel.LanguageChangeRequested += () => restarts++;
+        _viewModel.Settings.Language = AppLanguage.English;
+        _viewModel.Settings.StartWithWindows = true;
+
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+
+        Assert.Single(_dialogs.Warnings);
+        Assert.False(_viewModel.LastSaveSucceeded);
+        Assert.Empty(_dialogs.Infos);
+        Assert.Equal(0, restarts);
+        Assert.True(_settings.Current.StartWithWindows);
+        _shellIntegrationSucceeds = true;
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+        Assert.Equal(1, restarts);
+        Assert.True(_viewModel.LastSaveSucceeded);
+    }
+
+    [Fact]
+    public void SettingsCopyMustDetachArraysAndWindowBounds()
+    {
+        var original = new AppSettings
+        {
+            ExcludeGlobs = ["original"],
+            WindowBounds = new WindowBounds { X = 10 }
+        };
+        var copy = original.Clone();
+        copy.ExcludeGlobs[0] = "edited";
+        copy.WindowBounds!.X = 20;
+        Assert.Equal("original", original.ExcludeGlobs[0]);
+        Assert.Equal(10, original.WindowBounds.X);
+    }
+
+    [Fact]
+    public void EditingMustLeaveLiveSettingsAndNestedValuesUnchanged()
+    {
+        _viewModel.Settings.BackupBeforeOverwrite = false;
+        _viewModel.Settings.ExcludeGlobs = ["changed"];
+        Assert.True(_settings.Current.BackupBeforeOverwrite);
+        Assert.Empty(_settings.Current.ExcludeGlobs);
+    }
+
+    [Fact]
+    public void CancelMustPreserveConcurrentRuntimeChanges()
+    {
+        _viewModel.Settings.BackupBeforeOverwrite = false;
+        _settings.Current.LastGroupId = "other-group";
+        _viewModel.CancelCommand.Execute(null);
+        Assert.True(_settings.Current.BackupBeforeOverwrite);
+        Assert.Equal("other-group", _settings.Current.LastGroupId);
+    }
+
+    [Fact]
+    public async Task SaveMustPreserveRuntimeStateAndDetachCommittedSettings()
+    {
+        _settings.Current.LastGroupId = "other-group";
+        _settings.Current.CompactIconView = false;
+        _viewModel.Settings.BackupBeforeOverwrite = false;
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+        Assert.Equal("other-group", _settings.Current.LastGroupId);
+        Assert.False(_settings.Current.CompactIconView);
+        Assert.False(_settings.Current.BackupBeforeOverwrite);
+        _viewModel.Settings.BackupBeforeOverwrite = true;
+        Assert.False(_settings.Current.BackupBeforeOverwrite);
+    }
+
+    [Fact]
+    public async Task LanguageSaveMustRequestRestartOnce()
+    {
+        var count = 0;
+        _viewModel.LanguageChangeRequested += () => count++;
+        _viewModel.Settings.Language = AppLanguage.English;
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+        Assert.Equal(1, count);
+    }
+
+    [Fact]
+    public async Task Save_语言没动_不重启()
     {
         var restarted = false;
         _viewModel.LanguageChangeRequested += () => restarted = true;
 
-        _viewModel.SaveCommand.Execute(null);
+        await _viewModel.SaveCommand.ExecuteAsync(null);
 
         Assert.False(restarted);
         Assert.Single(_dialogs.Infos);
     }
 
     [Fact]
-    public void Save_语言变了_必须重启()
+    public async Task Save_语言变了_必须重启()
     {
         var restarted = false;
         _viewModel.LanguageChangeRequested += () => restarted = true;
 
         _viewModel.Settings.Language = AppLanguage.English;
-        _viewModel.SaveCommand.Execute(null);
+        await _viewModel.SaveCommand.ExecuteAsync(null);
 
         Assert.True(restarted);
 
@@ -83,12 +296,12 @@ public sealed class SettingsViewModelTests : IAsyncLifetime
     }
 
     [Fact]
-    public void Save_语言必须落到设置文件里()
+    public async Task Save_语言必须落到设置文件里()
     {
         // 不落盘的话，重启后的新实例读到的还是旧语言 —— 界面看着换了，
         // 下次启动又变回去，比不换还让人困惑。
         _viewModel.Settings.Language = AppLanguage.English;
-        _viewModel.SaveCommand.Execute(null);
+        await _viewModel.SaveCommand.ExecuteAsync(null);
 
         _settings.Load();
 
@@ -120,5 +333,30 @@ public sealed class SettingsViewModelTests : IAsyncLifetime
         _viewModel.CancelCommand.Execute(null);
 
         Assert.Equal(originalGitAdd, _settings.Current.AutoGitAddAfterApply);
+    }
+
+    private sealed class StartupStub : ILogonStartupService
+    {
+        public StartupOutcome Outcome = StartupOutcome.Applied;
+        public LogonStartupState State = LogonStartupState.Disabled;
+        public bool IsPending { get; set; }
+        public bool LastRepair;
+        public int Calls;
+        public int LastDelay;
+        public int? LastReadDelay;
+        public Task<LogonStartupStatus> ReadAsync(int? delaySeconds = null)
+        {
+            LastReadDelay = delaySeconds;
+            return Task.FromResult(new LogonStartupStatus(IsPending ? LogonStartupState.Unknown : State));
+        }
+        public Task<StartupResult> ChangeAsync(bool enabled, bool elevated, bool repair = false, int delaySeconds = 3)
+        {
+            Calls++;
+            LastDelay = delaySeconds;
+            LastRepair = repair;
+            if (Outcome is StartupOutcome.Applied or StartupOutcome.Unchanged)
+                State = !enabled ? LogonStartupState.Disabled : elevated ? LogonStartupState.Elevated : LogonStartupState.Plain;
+            return Task.FromResult(new StartupResult(Outcome));
+        }
     }
 }

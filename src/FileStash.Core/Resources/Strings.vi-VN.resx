@@ -186,4 +186,5 @@
   <data name="RecoveryNeedsReview" xml:space="preserve"><value>Cần kiểm tra kết quả ghi. Kiểm tra đích rồi chọn giữ tệp hiện tại.</value></data>
   <data name="RecoveryNotCommitted" xml:space="preserve"><value>Chưa hoàn tất ghi. Hãy kiểm tra trước khi thử lại.</value></data>
   <data name="RetryAuthorizationChanged" xml:space="preserve"><value>Tệp hoặc phạm vi thử lại đã thay đổi. Hãy kiểm tra lại.</value></data>
+  <data name="DefaultGroupName" xml:space="preserve"><value>Tạm trữ mặc định</value></data>
 </root>

@@ -939,7 +939,7 @@
     <value>Lắc nhẹ chuột qua lại khi đang kéo tệp để mở ngăn chứa tạm tại con trỏ</value>
   </data>
   <data name="SectionDeveloperOptions" xml:space="preserve">
-    <value>Tùy chọn nâng cao &amp; dành cho nhà phát triển (Git)</value>
+    <value>Tích hợp Git</value>
   </data>
   <data name="DeveloperOptionsHint" xml:space="preserve">
     <value>Chỉ áp dụng khi lưu tạm tệp trong kho lưu trữ Git. Lưu tạm và khôi phục tệp thông thường hoàn toàn độc lập.</value>
@@ -957,7 +957,7 @@
     <value>Phím tắt toàn cục (dán tệp từ bộ nhớ tạm)</value>
   </data>
   <data name="HotkeyRecordingHint" xml:space="preserve">
-    <value>Nhấp và nhấn tổ hợp phím để ghi lại. Nhấn Esc để hủy.</value>
+    <value>Nhấp vào ô, nhấn tổ hợp phím (ví dụ Ctrl+Alt+S), rồi lưu để áp dụng. Backspace/Delete để xóa; Esc để hủy ghi phím.</value>
   </data>
   <data name="HotkeyClearButton" xml:space="preserve">
     <value>Xóa</value>
@@ -985,4 +985,85 @@
   <data name="KeepCurrentConfirm" xml:space="preserve"><value>Giữ tệp hiện tại và kết thúc khôi phục mục này?
 {0}</value></data>
   <data name="ElevatedRetryConfirm" xml:space="preserve"><value>Xác nhận đường dẫn đầy đủ, thao tác và mã băm. Chỉ thử lại các mục lỗi trong danh sách này.</value></data>
+  <data name="ShellIntegrationFailedMessage" xml:space="preserve">
+    <value>Đã lưu cài đặt nhưng chưa thể áp dụng đầy đủ tích hợp Windows (bao gồm khởi động tự động). Hãy kiểm tra nhật ký ứng dụng, khắc phục vấn đề quyền truy cập rồi lưu lại.</value>
+  </data>
+  <data name="StartupAdminLabel" xml:space="preserve">
+    <value>Khởi động với quyền quản trị (tùy chọn)</value>
+  </data>
+  <data name="StartupAdminHint" xml:space="preserve">
+    <value>Mặc định dùng quyền thông thường. Có hiệu lực ở lần đăng nhập sau; chấp thuận UAC bằng tài khoản quản trị hiện tại. Hỗ trợ bản di động.</value>
+  </data>
+  <data name="StartupRepair" xml:space="preserve">
+    <value>Sửa khởi động</value>
+  </data>
+  <data name="StartupRefresh" xml:space="preserve">
+    <value>Làm mới trạng thái</value>
+  </data>
+  <data name="StartupStatusDisabled" xml:space="preserve">
+    <value>Khởi động: tắt</value>
+  </data>
+  <data name="StartupStatusPlain" xml:space="preserve">
+    <value>Khởi động: quyền thông thường</value>
+  </data>
+  <data name="StartupStatusElevated" xml:space="preserve">
+    <value>Khởi động: quyền quản trị</value>
+  </data>
+  <data name="StartupStatusRepair" xml:space="preserve">
+    <value>Khởi động: cần sửa</value>
+  </data>
+  <data name="StartupStatusConflict" xml:space="preserve">
+    <value>Khởi động: xung đột chủ sở hữu tác vụ; xem nhật ký</value>
+  </data>
+  <data name="StartupStatusUnknown" xml:space="preserve">
+    <value>Khởi động: chưa xác nhận; làm mới trước khi thử lại</value>
+  </data>
+  <data name="StartupStatusSuppressed" xml:space="preserve">
+    <value>Khởi động: không thay đổi hệ thống khi kiểm thử</value>
+  </data>
+  <data name="StartupStatusBusy" xml:space="preserve">
+    <value>Đang áp dụng cài đặt; hãy hoàn tất UAC…</value>
+  </data>
+  <data name="StartupCancelled" xml:space="preserve">
+    <value>Đã hủy UAC. Cài đặt khởi động chưa được lưu.</value>
+  </data>
+  <data name="StartupFailedMessage" xml:space="preserve">
+    <value>Đăng ký, gỡ bỏ hoặc lưu cài đặt thất bại. Xem nhật ký tại {0}, làm mới trạng thái rồi thử lại.</value>
+  </data>
+  <data name="StartupUncertainMessage" xml:space="preserve">
+    <value>Chưa xác nhận kết quả; trình hỗ trợ có thể vẫn đang chạy. Hãy làm mới sau. Thao tác sẽ không lặp lại trước khi xác nhận.</value>
+  </data>
+  <data name="StartupAttention" xml:space="preserve">
+    <value>Cần kiểm tra khởi động. Mở cài đặt để xem trạng thái và sửa nếu cần. Ứng dụng sẽ không tự đổi mức quyền.</value>
+  </data>
+  <data name="StartupAccountMessage" xml:space="preserve">
+    <value>Chấp thuận UAC bằng tài khoản quản trị hiện tại. Không hỗ trợ đăng ký bằng tài khoản quản trị khác. Nhật ký: {0}.</value>
+  </data>
+  <data name="StartupDeniedMessage" xml:space="preserve">
+    <value>Truy cập khởi động bị từ chối. Kiểm tra quyền tác vụ hoặc sổ đăng ký và chính sách máy. Nhật ký: {0}.</value>
+  </data>
+  <data name="StartupConflictMessage" xml:space="preserve">
+    <value>Tác vụ thuộc ứng dụng khác nên chưa bị ghi đè hoặc xóa. Xem {0} và giải quyết xung đột.</value>
+  </data>
+  <data name="StartupRollbackMessage" xml:space="preserve">
+    <value>Khởi động thất bại và chưa khôi phục đầy đủ trạng thái cũ. Xem {0}, làm mới trạng thái rồi sửa. Không nên cho rằng khởi động cũ vẫn hoạt động.</value>
+  </data>
+  <data name="StartupDelayLabel" xml:space="preserve">
+    <value>Độ trễ đăng nhập quản trị (giây)</value>
+  </data>
+  <data name="StartupDelayRange" xml:space="preserve">
+    <value>Nhập số nguyên từ 0 đến 300; 0 là không trễ. Chỉ áp dụng cho tác vụ đăng nhập quản trị.</value>
+  </data>
+  <data name="ShelfDropPrompt" xml:space="preserve"><value>Thả tệp của bạn vào đây</value></data>
+  <data name="ShelfRestoreMenu" xml:space="preserve"><value>Khôi phục ▾</value></data>
+  <data name="ShelfRetentionLabel" xml:space="preserve"><value>Số ngày giữ kệ đã đóng (0 = mãi mãi)</value></data>
+  <data name="TrayNewShelf" xml:space="preserve"><value>Kệ mới</value></data>
+  <data name="ShelfDragPrompt" xml:space="preserve"><value>Kéo tệp ra ngoài</value></data>
+  <data name="ShelfCountFormat" xml:space="preserve"><value>Đã lưu tạm {0} mục</value></data>
+  <data name="ToastDismissCountdown" xml:space="preserve"><value>Đóng sau {0} giây; tạm dừng khi di chuột hoặc dùng bàn phím</value></data>
+  <data name="ShelfCleanupHint" xml:space="preserve"><value>Kệ tạm trống được tự động xóa. Kệ mặc định và các kho tạm có nội dung được giữ lại.</value></data>
+  <data name="SettingsAppearance" xml:space="preserve"><value>Giao diện</value></data>
+  <data name="SettingsShelf" xml:space="preserve"><value>Khay tạm</value></data>
+  <data name="SettingsFiles" xml:space="preserve"><value>Xử lý tệp</value></data>
+  <data name="SettingsShortcuts" xml:space="preserve"><value>Phím tắt</value></data>
 </root>

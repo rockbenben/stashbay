@@ -46,7 +46,8 @@
         <StackPanel Grid.Row="3"
                     Margin="0,16,0,0"
                     Style="{StaticResource Actions.End}">
-            <Button Content="{x:Static app:Strings.OkButton}"
+            <Button x:Name="ConfirmButton" Content="{x:Static app:Strings.OkButton}"
+                    IsEnabled="False"
                     IsDefault="True"
                     Click="OnConfirm"
                     Style="{StaticResource Button.Primary}" />

@@ -6,6 +6,17 @@ namespace FileStash.Core.Tests;
 public sealed class CommandLineTests
 {
     [Fact]
+    public void LogonFlagsDoNotBecomeFileIntakeOrElevatedRetryRequests()
+    {
+        var plain = CommandLine.Parse(["--logon-startup"]);
+        var elevated = CommandLine.Parse(["--elevated-logon"]);
+        Assert.True(plain.LogonStartup);
+        Assert.False(plain.ElevatedLogon);
+        Assert.True(elevated.ElevatedLogon);
+        Assert.Empty(elevated.AddPaths);
+        Assert.Null(elevated.ElevatedRetryOperationId);
+    }
+    [Fact]
     public void ElevatedHomeMustOnlyApplyToRetryProcess()
     {
         Assert.Null(CommandLine.Parse(["--elevated-home", @"C:\fixture"]).RetryHome);

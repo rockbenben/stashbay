@@ -66,6 +66,12 @@ function Run-TestProcess([string]$exe, [string[]]$arguments) {
 
 $legacy = Build-TestInstaller ([IO.Path]::GetFullPath($BaselineRepository)) $BaselinePackages '1.0.0'
 $current = Build-TestInstaller $repository $CurrentPackages '1.0.1'
+$expectedApplicationVersion = [Diagnostics.FileVersionInfo]::GetVersionInfo(
+    (Join-Path ([IO.Path]::GetFullPath($CurrentPackages)) 'publish-x64/StashBay.exe')).ProductVersion
+if (-not $expectedApplicationVersion) { throw 'Current application has no product version' }
+if (([Diagnostics.FileVersionInfo]::GetVersionInfo($current).ProductVersion).Trim() -ne '1.0.1') {
+    throw 'Current installer has an unexpected upgrade version'
+}
 $results = @()
 foreach ($scenario in 'fresh', 'upgrade') {
     $install = Join-Path $outRoot $scenario
@@ -76,7 +82,7 @@ foreach ($scenario in 'fresh', 'upgrade') {
     foreach ($file in $sentinels) { [IO.File]::WriteAllText($file, 'User-owned content must survive') }
     if ($scenario -eq 'upgrade') { Run-TestProcess $current ($arguments + "/LOG=$outRoot/$scenario-update.log") }
     $version = [Diagnostics.FileVersionInfo]::GetVersionInfo((Join-Path $install 'StashBay.exe')).ProductVersion
-    if (-not $version.StartsWith('1.0.1')) { throw "Unexpected installed version: $version" }
+    if ($version -ne $expectedApplicationVersion) { throw "Unexpected installed version: $version" }
     Run-TestProcess (Join-Path $install 'unins000.exe') @('/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', "/LOG=$outRoot/$scenario-uninstall.log")
     $preserved = @($sentinels | Where-Object { (Test-Path -LiteralPath $_) -and [IO.File]::ReadAllText($_) -eq 'User-owned content must survive' }).Count
     # Inno's final helper deletes its own temporary/uninstall files after the

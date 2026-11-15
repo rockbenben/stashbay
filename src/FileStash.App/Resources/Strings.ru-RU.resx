@@ -939,7 +939,7 @@
     <value>Быстро покачайте курсор при перетаскивании файлов, чтобы вызвать панель</value>
   </data>
   <data name="SectionDeveloperOptions" xml:space="preserve">
-    <value>Расширенные настройки и параметры разработчика (Git)</value>
+    <value>Интеграция с Git</value>
   </data>
   <data name="DeveloperOptionsHint" xml:space="preserve">
     <value>Применяется только к файлам в репозитории Git. Обычное временное хранилище и восстановление файлов остаются полностью независимыми.</value>
@@ -957,7 +957,7 @@
     <value>Глобальная клавиша (вставить файлы из буфера обмена)</value>
   </data>
   <data name="HotkeyRecordingHint" xml:space="preserve">
-    <value>Нажмите и нажмите комбинацию клавиш для записи. Esc для отмены.</value>
+    <value>Нажмите поле, введите сочетание (например, Ctrl+Alt+S) и сохраните. Backspace/Delete очищает; Esc отменяет запись.</value>
   </data>
   <data name="HotkeyClearButton" xml:space="preserve">
     <value>Очистить</value>
@@ -985,4 +985,85 @@
   <data name="KeepCurrentConfirm" xml:space="preserve"><value>Сохранить текущий файл и завершить восстановление этой записи?
 {0}</value></data>
   <data name="ElevatedRetryConfirm" xml:space="preserve"><value>Подтвердите полные пути, действия и хеши. Будут повторены только эти неудачные записи.</value></data>
+  <data name="ShellIntegrationFailedMessage" xml:space="preserve">
+    <value>Настройки сохранены, но интеграция с Windows (включая автозапуск) применена не полностью. Проверьте журнал приложения, устраните проблемы с разрешениями и сохраните снова.</value>
+  </data>
+  <data name="StartupAdminLabel" xml:space="preserve">
+    <value>Запуск с правами администратора (необязательно)</value>
+  </data>
+  <data name="StartupAdminHint" xml:space="preserve">
+    <value>По умолчанию используются обычные права. Действует со следующего входа; подтвердите UAC в текущей учётной записи администратора. Переносная версия поддерживается.</value>
+  </data>
+  <data name="StartupRepair" xml:space="preserve">
+    <value>Исправить автозапуск</value>
+  </data>
+  <data name="StartupRefresh" xml:space="preserve">
+    <value>Обновить состояние</value>
+  </data>
+  <data name="StartupStatusDisabled" xml:space="preserve">
+    <value>Автозапуск: выключен</value>
+  </data>
+  <data name="StartupStatusPlain" xml:space="preserve">
+    <value>Автозапуск: обычные права</value>
+  </data>
+  <data name="StartupStatusElevated" xml:space="preserve">
+    <value>Автозапуск: права администратора</value>
+  </data>
+  <data name="StartupStatusRepair" xml:space="preserve">
+    <value>Автозапуск: требуется исправление</value>
+  </data>
+  <data name="StartupStatusConflict" xml:space="preserve">
+    <value>Автозапуск: конфликт владельца задачи; см. журнал</value>
+  </data>
+  <data name="StartupStatusUnknown" xml:space="preserve">
+    <value>Автозапуск: не подтверждён; обновите перед повтором</value>
+  </data>
+  <data name="StartupStatusSuppressed" xml:space="preserve">
+    <value>Автозапуск: изменения системы отключены для тестов</value>
+  </data>
+  <data name="StartupStatusBusy" xml:space="preserve">
+    <value>Настройка автозапуска; подтвердите UAC…</value>
+  </data>
+  <data name="StartupCancelled" xml:space="preserve">
+    <value>UAC отменён. Настройки автозапуска не сохранены.</value>
+  </data>
+  <data name="StartupFailedMessage" xml:space="preserve">
+    <value>Не удалось зарегистрировать, удалить или сохранить настройки. Проверьте журналы в {0}, обновите состояние и повторите попытку.</value>
+  </data>
+  <data name="StartupUncertainMessage" xml:space="preserve">
+    <value>Результат не подтверждён; помощник может ещё работать. Обновите состояние позже. До подтверждения операция не повторяется.</value>
+  </data>
+  <data name="StartupAttention" xml:space="preserve">
+    <value>Проверьте автозапуск в настройках и исправьте при необходимости. Приложение не будет автоматически повышать или понижать права.</value>
+  </data>
+  <data name="StartupAccountMessage" xml:space="preserve">
+    <value>Подтвердите UAC в текущей учётной записи администратора. Регистрация от другой учётной записи не поддерживается. Журналы: {0}.</value>
+  </data>
+  <data name="StartupDeniedMessage" xml:space="preserve">
+    <value>Доступ к автозапуску запрещён. Проверьте разрешения задачи или реестра и локальные политики. Журналы: {0}.</value>
+  </data>
+  <data name="StartupConflictMessage" xml:space="preserve">
+    <value>Задача принадлежит другому приложению и не была изменена или удалена. Проверьте {0} и устраните конфликт.</value>
+  </data>
+  <data name="StartupRollbackMessage" xml:space="preserve">
+    <value>Ошибка автозапуска; предыдущее состояние восстановлено не полностью. Проверьте {0}, обновите состояние и исправьте его. Работа прежнего автозапуска не гарантируется.</value>
+  </data>
+  <data name="StartupDelayLabel" xml:space="preserve">
+    <value>Задержка входа администратора (секунды)</value>
+  </data>
+  <data name="StartupDelayRange" xml:space="preserve">
+    <value>Введите целое число от 0 до 300; 0 означает без задержки. Только для задачи входа администратора.</value>
+  </data>
+  <data name="ShelfDropPrompt" xml:space="preserve"><value>Перетащите файлы сюда</value></data>
+  <data name="ShelfRestoreMenu" xml:space="preserve"><value>Восстановить ▾</value></data>
+  <data name="ShelfRetentionLabel" xml:space="preserve"><value>Срок хранения закрытых полок в днях (0 = бессрочно)</value></data>
+  <data name="TrayNewShelf" xml:space="preserve"><value>Новая полка</value></data>
+  <data name="ShelfDragPrompt" xml:space="preserve"><value>Перетащите файлы наружу</value></data>
+  <data name="ShelfCountFormat" xml:space="preserve"><value>Сохранено элементов: {0}</value></data>
+  <data name="ToastDismissCountdown" xml:space="preserve"><value>Закроется через {0} с; пауза при наведении или фокусе клавиатуры</value></data>
+  <data name="ShelfCleanupHint" xml:space="preserve"><value>Пустые временные полки удаляются автоматически. Основная полка и хранилища с содержимым сохраняются.</value></data>
+  <data name="SettingsAppearance" xml:space="preserve"><value>Оформление</value></data>
+  <data name="SettingsShelf" xml:space="preserve"><value>Полка</value></data>
+  <data name="SettingsFiles" xml:space="preserve"><value>Обработка файлов</value></data>
+  <data name="SettingsShortcuts" xml:space="preserve"><value>Сочетания клавиш</value></data>
 </root>

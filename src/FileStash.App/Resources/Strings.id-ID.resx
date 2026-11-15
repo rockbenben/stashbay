@@ -939,7 +939,7 @@
     <value>Goyangkan mouse dengan cepat saat menarik berkas untuk membuka rak penyimpanan</value>
   </data>
   <data name="SectionDeveloperOptions" xml:space="preserve">
-    <value>Opsi Lanjutan &amp; Pengembang (Git)</value>
+    <value>Integrasi Git</value>
   </data>
   <data name="DeveloperOptionsHint" xml:space="preserve">
     <value>Hanya berlaku saat menyimpan sementara file di repositori Git. Penyimpanan sementara dan pemulihan file umum tetap sepenuhnya independen.</value>
@@ -957,7 +957,7 @@
     <value>Pintasan global (tempel file papan klip)</value>
   </data>
   <data name="HotkeyRecordingHint" xml:space="preserve">
-    <value>Klik dan tekan tombol pintas untuk merekam. Tekan Esc untuk membatalkan.</value>
+    <value>Klik kolom, tekan kombinasi tombol (mis. Ctrl+Alt+S), lalu simpan untuk menerapkan. Backspace/Delete menghapus; Esc membatalkan perekaman.</value>
   </data>
   <data name="HotkeyClearButton" xml:space="preserve">
     <value>Hapus</value>
@@ -985,4 +985,85 @@
   <data name="KeepCurrentConfirm" xml:space="preserve"><value>Pertahankan berkas saat ini dan akhiri pemulihan entri ini?
 {0}</value></data>
   <data name="ElevatedRetryConfirm" xml:space="preserve"><value>Konfirmasikan jalur lengkap, tindakan, dan hash. Hanya entri gagal ini yang akan dicoba lagi.</value></data>
+  <data name="ShellIntegrationFailedMessage" xml:space="preserve">
+    <value>Pengaturan disimpan, tetapi integrasi Windows (termasuk mulai otomatis) belum dapat diterapkan sepenuhnya. Periksa log aplikasi, atasi masalah izin, lalu simpan lagi.</value>
+  </data>
+  <data name="StartupAdminLabel" xml:space="preserve">
+    <value>Mulai dengan hak administrator (opsional)</value>
+  </data>
+  <data name="StartupAdminHint" xml:space="preserve">
+    <value>Hak standar adalah bawaan. Berlaku pada login berikutnya; setujui UAC dengan akun administrator saat ini. Versi portabel didukung.</value>
+  </data>
+  <data name="StartupRepair" xml:space="preserve">
+    <value>Perbaiki mulai otomatis</value>
+  </data>
+  <data name="StartupRefresh" xml:space="preserve">
+    <value>Segarkan status</value>
+  </data>
+  <data name="StartupStatusDisabled" xml:space="preserve">
+    <value>Mulai otomatis: mati</value>
+  </data>
+  <data name="StartupStatusPlain" xml:space="preserve">
+    <value>Mulai otomatis: hak standar</value>
+  </data>
+  <data name="StartupStatusElevated" xml:space="preserve">
+    <value>Mulai otomatis: hak administrator</value>
+  </data>
+  <data name="StartupStatusRepair" xml:space="preserve">
+    <value>Mulai otomatis: perlu perbaikan</value>
+  </data>
+  <data name="StartupStatusConflict" xml:space="preserve">
+    <value>Mulai otomatis: konflik pemilik tugas; periksa log</value>
+  </data>
+  <data name="StartupStatusUnknown" xml:space="preserve">
+    <value>Mulai otomatis: belum dikonfirmasi; segarkan sebelum mencoba lagi</value>
+  </data>
+  <data name="StartupStatusSuppressed" xml:space="preserve">
+    <value>Mulai otomatis: perubahan sistem dinonaktifkan untuk pengujian</value>
+  </data>
+  <data name="StartupStatusBusy" xml:space="preserve">
+    <value>Menerapkan pengaturan; selesaikan UAC…</value>
+  </data>
+  <data name="StartupCancelled" xml:space="preserve">
+    <value>UAC dibatalkan. Pengaturan mulai otomatis tidak disimpan.</value>
+  </data>
+  <data name="StartupFailedMessage" xml:space="preserve">
+    <value>Pendaftaran, penghapusan, atau penyimpanan gagal. Periksa log di {0}, segarkan status, lalu coba lagi.</value>
+  </data>
+  <data name="StartupUncertainMessage" xml:space="preserve">
+    <value>Hasil belum dikonfirmasi; pembantu mungkin masih berjalan. Segarkan nanti. Operasi tidak akan diulang sebelum konfirmasi.</value>
+  </data>
+  <data name="StartupAttention" xml:space="preserve">
+    <value>Mulai otomatis perlu diperiksa. Buka pengaturan untuk memeriksa status dan memperbaikinya. Aplikasi tidak akan mengubah tingkat hak secara otomatis.</value>
+  </data>
+  <data name="StartupAccountMessage" xml:space="preserve">
+    <value>Setujui UAC dengan akun administrator saat ini. Pendaftaran dengan akun administrator lain tidak didukung. Log: {0}.</value>
+  </data>
+  <data name="StartupDeniedMessage" xml:space="preserve">
+    <value>Akses mulai otomatis ditolak. Periksa izin tugas atau registri dan kebijakan lokal. Log: {0}.</value>
+  </data>
+  <data name="StartupConflictMessage" xml:space="preserve">
+    <value>Tugas dimiliki aplikasi lain; tidak ditimpa atau dihapus. Periksa {0} dan atasi konflik.</value>
+  </data>
+  <data name="StartupRollbackMessage" xml:space="preserve">
+    <value>Mulai otomatis gagal dan status sebelumnya belum pulih sepenuhnya. Periksa {0}, segarkan status lalu perbaiki. Jangan anggap pengaturan lama masih berfungsi.</value>
+  </data>
+  <data name="StartupDelayLabel" xml:space="preserve">
+    <value>Jeda login administrator (detik)</value>
+  </data>
+  <data name="StartupDelayRange" xml:space="preserve">
+    <value>Masukkan bilangan bulat 0–300; 0 berarti tanpa jeda. Hanya berlaku untuk tugas login administrator.</value>
+  </data>
+  <data name="ShelfDropPrompt" xml:space="preserve"><value>Letakkan berkas Anda di sini</value></data>
+  <data name="ShelfRestoreMenu" xml:space="preserve"><value>Pulihkan ▾</value></data>
+  <data name="ShelfRetentionLabel" xml:space="preserve"><value>Lama penyimpanan rak tertutup dalam hari (0 = selamanya)</value></data>
+  <data name="TrayNewShelf" xml:space="preserve"><value>Rak baru</value></data>
+  <data name="ShelfDragPrompt" xml:space="preserve"><value>Seret berkas keluar</value></data>
+  <data name="ShelfCountFormat" xml:space="preserve"><value>{0} item disimpan</value></data>
+  <data name="ToastDismissCountdown" xml:space="preserve"><value>Menutup dalam {0} detik; jeda saat disorot atau mendapat fokus papan ketik</value></data>
+  <data name="ShelfCleanupHint" xml:space="preserve"><value>Rak sementara yang kosong dihapus otomatis. Rak bawaan dan penyimpanan yang masih berisi item tetap disimpan.</value></data>
+  <data name="SettingsAppearance" xml:space="preserve"><value>Tampilan</value></data>
+  <data name="SettingsShelf" xml:space="preserve"><value>Rak sementara</value></data>
+  <data name="SettingsFiles" xml:space="preserve"><value>Pengelolaan berkas</value></data>
+  <data name="SettingsShortcuts" xml:space="preserve"><value>Pintasan</value></data>
 </root>

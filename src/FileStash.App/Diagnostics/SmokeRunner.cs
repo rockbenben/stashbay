@@ -18,6 +18,25 @@ namespace FileStash.App.Diagnostics;
 /// </remarks>
 internal static class SmokeRunner
 {
+    private static void AssertThemeMatchesSettings(IServiceProvider services)
+    {
+        var settings = services.GetRequiredService<ISettingsService>().Current;
+        var dark = FileStash.Core.Models.ThemeChoiceResolver.WantsDark(settings.Theme,
+            FileStash.Infrastructure.Native.SystemTheme.IsLight());
+        if (ThemeService.IsDark != dark) throw new InvalidOperationException("Startup theme choice was not applied");
+        var expected = new ResourceDictionary
+        {
+            Source = new Uri($"/StashBay;component/Resources/Themes/{(dark ? "Dark" : "Light")}.xaml", UriKind.Relative)
+        };
+        foreach (var key in new[] { "Brush.Surface", "Brush.ShelfSurface", "Brush.ShelfText" })
+        {
+            var actual = Application.Current.TryFindResource(key) as System.Windows.Media.SolidColorBrush;
+            var brush = expected[key] as System.Windows.Media.SolidColorBrush;
+            if (actual?.Color != brush?.Color)
+                throw new InvalidOperationException($"Startup theme resource {key} was overridden");
+        }
+    }
+
     public static async Task<int> RunAsync(IServiceProvider services)
     {
         // 异常处理器据此改成"记 marker 并退出"，不再弹模态框把 CI 的进程吊住
@@ -34,6 +53,7 @@ internal static class SmokeRunner
         try
         {
             AssertLanguageMatchesSettings(services);
+            AssertThemeMatchesSettings(services);
 
             foreach (var shot in WindowCatalog.All(services))
             {
@@ -67,6 +87,9 @@ internal static class SmokeRunner
                 }
 
                 Serilog.Log.Debug("smoke: 已布局 {Name}（{W}x{H}）", shot.Name, window.ActualWidth, window.ActualHeight);
+
+                if (WindowEffects.IsTitleBarDark(window) is bool titleBarDark && titleBarDark != ThemeService.IsDark)
+                    throw new InvalidOperationException($"{shot.Name}: native title bar does not match the app theme");
 
                 // 不只"没抛"：必须断言真的布局出了尺寸。Window.Show() 在应用已开始关闭时会静默空转
                 // （不抛、hwnd=0、ActualWidth=0），只判异常的 smoke 在那种状态下照样绿灯——

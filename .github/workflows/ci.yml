@@ -28,13 +28,13 @@ jobs:
 
       - uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: '10.0.403'
+          global-json-file: global.json
 
       - name: Verify SDK
         run: dotnet --version
 
       - name: Test (Core)
-        run: dotnet test tests/FileStash.Core.Tests -c Release --nologo -- --minimum-expected-tests 1
+        run: dotnet test --project tests/FileStash.Core.Tests -c Release --minimum-expected-tests 503
 
       - name: Build (App)
         run: dotnet build src/FileStash.App -c Release --nologo
@@ -76,7 +76,7 @@ jobs:
 
       - uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: '10.0.403'
+          global-json-file: global.json
 
       - name: Verify SDK
         run: dotnet --version
@@ -171,71 +171,34 @@ jobs:
           timestamp-rfc3161: http://timestamp.acs.microsoft.com
           timestamp-digest: SHA256
 
-      - name: Package + SHA256
+      - name: Verify configured signatures
+        if: vars.AZURE_CLIENT_ID != ''
         shell: pwsh
         run: |
-          $v = $env:TAG.Substring(1)
-          $pub = 'artifacts'
-          $assets = @()
-
-          # 1. 官方安装包
-          $installer = "artifacts/StashBay-$v-setup.exe"
-          if (Test-Path $installer) {
-            $destInstaller = "StashBay-$env:TAG-setup.exe"
-            Copy-Item $installer $destInstaller
-            $assets += $destInstaller
-          } else {
-            Write-Error "Installer $installer not found"
-            exit 1
+          $files = @(foreach ($profile in 'x64', 'x64-needs-dotnet10', 'arm64', 'arm64-needs-dotnet10') { Get-Item "artifacts/publish-$profile/StashBay.exe" }) + @(Get-Item $env:STASHBAY_INSTALLER)
+          if ($files.Count -ne 5) { throw 'Expected four signed applications and one installer' }
+          foreach ($file in $files) {
+            if ((Get-AuthenticodeSignature -LiteralPath $file.FullName).Status -ne 'Valid') { throw "Invalid signature: $($file.FullName)" }
           }
 
-          # 2. 便携与框架依赖压缩包
-          foreach ($arch in 'x64', 'arm64') {
-            foreach ($form in '', '-needs-dotnet10') {
-              $zip = "StashBay-$env:TAG-win-$arch$form.zip"
-              # Framework-dependent builds also require the native SQLite DLL.
-              $sourceDirectory = "$pub/publish-$arch$form"
-              if ($form -and -not (Test-Path "$sourceDirectory/e_sqlite3.dll")) {
-                throw "Missing native SQLite library: $sourceDirectory"
-              }
-              Compress-Archive -Path "$sourceDirectory/*" -DestinationPath $zip -Force
-              $assets += $zip
-            }
-          }
-
-          # 校验和清单必须 LF 换行
-          $lines = Get-FileHash $assets -Algorithm SHA256 |
-            ForEach-Object { "{0}  {1}" -f $_.Hash.ToLower(), (Split-Path $_.Path -Leaf) }
-          [System.IO.File]::WriteAllText("$PWD/SHA256SUMS.txt", ($lines -join "`n") + "`n")
-
-      - name: Verify packaged SQLite runtime (x64)
+      - name: Package + verify + SHA256
         shell: pwsh
         run: |
-          $validationRoot = Join-Path $env:RUNNER_TEMP 'stashbay-package-check'
-          $packageDirectory = Join-Path $validationRoot 'app'
-          Expand-Archive "StashBay-$env:TAG-win-x64-needs-dotnet10.zip" $packageDirectory
-          $env:STASHBAY_HOME = Join-Path $validationRoot 'home'
-          $env:TEMP = Join-Path $validationRoot 'temp'
-          $env:TMP = $env:TEMP
-          New-Item -ItemType Directory -Force $env:TEMP | Out-Null
-          $p = Start-Process (Join-Path $packageDirectory 'StashBay.exe') -ArgumentList '--inspect' -PassThru -WindowStyle Hidden
-          if (-not $p.WaitForExit(30000)) {
-            $p.Kill()
-            throw 'Packaged SQLite runtime check timed out'
-          }
-          $marker = Join-Path $env:TEMP 'filestash-smoke.txt'
-          if (-not (Test-Path $marker) -or (Get-Content $marker -Raw).Trim() -ne 'OK') {
-            throw 'Packaged application failed to initialize and query SQLite'
-          }
+          ./tools/package-release.ps1 -AppName StashBay -Tag $env:TAG `
+            -PublishRoot artifacts -Installer $env:STASHBAY_INSTALLER `
+            -RequireSigning:($env:REQUIRE_SIGNING -eq 'true')
+        env:
+          REQUIRE_SIGNING: ${{ vars.AZURE_CLIENT_ID != '' }}
 
       - uses: actions/attest@v4
         with:
           subject-checksums: SHA256SUMS.txt
 
-      - name: Upload to draft release
+      - name: Publish release
         uses: softprops/action-gh-release@v3
         with:
-          draft: true
+          draft: false
+          make_latest: legacy
           fail_on_unmatched_files: true
           files: |
             StashBay-${{ github.ref_name }}-setup.exe
@@ -251,22 +214,23 @@ jobs:
             - `StashBay-…-win-x64.zip` — Portable edition with .NET runtime included; unzip and run. / 自包含便携版（含运行环境），解压即用。
             - `StashBay-…-win-arm64.zip` — Same portable edition for Windows on Arm (Snapdragon / Surface Pro). / ARM 版 Windows 便携版。
             - `StashBay-…-win-x64-needs-dotnet10.zip` — Compact edition (needs .NET 10 Desktop Runtime). / 框架依赖精简版，需已装 .NET 10 桌面运行时。
+            - `StashBay-…-win-arm64-needs-dotnet10.zip` — Compact ARM64 edition (needs ARM64 .NET 10 Desktop Runtime). / ARM64 框架依赖版，需 ARM64 .NET 10 桌面运行时。
 
             Verify / 校验：`sha256sum -c SHA256SUMS.txt` or `gh attestation verify <file> -R ${{ github.repository }}`
           generate_release_notes: true
 
-  publish:
+  verify:
     needs: release
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      contents: write
+      contents: read
     env:
       TAG: ${{ github.ref_name }}
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
     steps:
-      - name: Verify draft assets
+      - name: Verify published assets
         run: |
           gh release download "$TAG" --dir dl
           cd dl
@@ -281,9 +245,3 @@ jobs:
           cut -c67- SHA256SUMS.txt | sort > ../checksummed-assets.txt
           diff -u ../expected-assets.txt ../checksummed-assets.txt
           sha256sum -c SHA256SUMS.txt
-
-      - name: Publish and mark latest
-        run: |
-          gh release edit "$TAG" --draft=false --latest
-          latest=$(gh api "repos/$GH_REPO/releases/latest" --jq .tag_name)
-          test "$latest" = "$TAG" || { echo "::error::releases/latest is $latest, expected $TAG"; exit 1; }

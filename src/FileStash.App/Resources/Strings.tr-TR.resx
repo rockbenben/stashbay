@@ -939,7 +939,7 @@
     <value>Dosyaları sürüklerken imleci hızlıca sallayarak kasayı imleç konumunda açın</value>
   </data>
   <data name="SectionDeveloperOptions" xml:space="preserve">
-    <value>Gelişmiş ve Geliştirici Seçenekleri (Git)</value>
+    <value>Git entegrasyonu</value>
   </data>
   <data name="DeveloperOptionsHint" xml:space="preserve">
     <value>Yalnızca bir Git deposundaki dosyaları geçici olarak depolarken geçerlidir. Genel dosya depolama ve geri yükleme tamamen bağımsız kalır.</value>
@@ -957,7 +957,7 @@
     <value>Genel kısayol (pano dosyalarını yapıştır)</value>
   </data>
   <data name="HotkeyRecordingHint" xml:space="preserve">
-    <value>Kaydetmek için tıklayın ve kısayola basın. İptal için Esc tuşuna basın.</value>
+    <value>Alana tıklayıp bir tuş birleşimine basın (ör. Ctrl+Alt+S), ardından kaydedin. Backspace/Delete temizler; Esc kaydı iptal eder.</value>
   </data>
   <data name="HotkeyClearButton" xml:space="preserve">
     <value>Temizle</value>
@@ -985,4 +985,85 @@
   <data name="KeepCurrentConfirm" xml:space="preserve"><value>Mevcut dosya korunsun ve bu kaydın kurtarılması bitirilsin mi?
 {0}</value></data>
   <data name="ElevatedRetryConfirm" xml:space="preserve"><value>Aşağıdaki tam yolları, işlemleri ve karmaları onaylayın. Yalnızca bu başarısız kayıtlar yeniden denenecek.</value></data>
+  <data name="ShellIntegrationFailedMessage" xml:space="preserve">
+    <value>Ayarlar kaydedildi, ancak Windows bütünleştirmesi (otomatik başlatma dahil) tam olarak uygulanamadı. Uygulama günlüğünü inceleyin, izin sorunlarını giderin ve yeniden kaydedin.</value>
+  </data>
+  <data name="StartupAdminLabel" xml:space="preserve">
+    <value>Yönetici yetkileriyle başlat (isteğe bağlı)</value>
+  </data>
+  <data name="StartupAdminHint" xml:space="preserve">
+    <value>Varsayılan standart yetkilerdir. Sonraki oturum açılışında geçerlidir; mevcut yönetici hesabınızla UAC onayı verin. Taşınabilir sürümler desteklenir.</value>
+  </data>
+  <data name="StartupRepair" xml:space="preserve">
+    <value>Başlangıcı onar</value>
+  </data>
+  <data name="StartupRefresh" xml:space="preserve">
+    <value>Durumu yenile</value>
+  </data>
+  <data name="StartupStatusDisabled" xml:space="preserve">
+    <value>Başlangıç: kapalı</value>
+  </data>
+  <data name="StartupStatusPlain" xml:space="preserve">
+    <value>Başlangıç: standart yetkiler</value>
+  </data>
+  <data name="StartupStatusElevated" xml:space="preserve">
+    <value>Başlangıç: yönetici yetkileri</value>
+  </data>
+  <data name="StartupStatusRepair" xml:space="preserve">
+    <value>Başlangıç: onarım gerekli</value>
+  </data>
+  <data name="StartupStatusConflict" xml:space="preserve">
+    <value>Başlangıç: görev sahipliği çakışması; günlüğe bakın</value>
+  </data>
+  <data name="StartupStatusUnknown" xml:space="preserve">
+    <value>Başlangıç: doğrulanmadı; yeniden denemeden önce yenileyin</value>
+  </data>
+  <data name="StartupStatusSuppressed" xml:space="preserve">
+    <value>Başlangıç: testte sistem değişiklikleri engellendi</value>
+  </data>
+  <data name="StartupStatusBusy" xml:space="preserve">
+    <value>Ayarlar uygulanıyor; UAC onayını tamamlayın…</value>
+  </data>
+  <data name="StartupCancelled" xml:space="preserve">
+    <value>UAC iptal edildi. Başlangıç ayarları kaydedilmedi.</value>
+  </data>
+  <data name="StartupFailedMessage" xml:space="preserve">
+    <value>Kaydetme, kaldırma veya ayarları yazma başarısız. {0} konumundaki günlükleri kontrol edin, durumu yenileyip tekrar deneyin.</value>
+  </data>
+  <data name="StartupUncertainMessage" xml:space="preserve">
+    <value>Sonuç doğrulanmadı; yardımcı hâlâ çalışıyor olabilir. Daha sonra yenileyin. Doğrulamadan önce işlem tekrarlanmaz.</value>
+  </data>
+  <data name="StartupAttention" xml:space="preserve">
+    <value>Başlangıcı kontrol edin. Ayarlardan sistem durumunu inceleyip gerekirse onarın. Uygulama yetki düzeyini otomatik değiştirmez.</value>
+  </data>
+  <data name="StartupAccountMessage" xml:space="preserve">
+    <value>Mevcut yönetici hesabınızla UAC onayı verin. Başka yönetici hesabıyla kayıt desteklenmez. Günlükler: {0}.</value>
+  </data>
+  <data name="StartupDeniedMessage" xml:space="preserve">
+    <value>Başlangıç erişimi reddedildi. Görev veya kayıt defteri izinlerini ve yerel ilkeyi denetleyin. Günlükler: {0}.</value>
+  </data>
+  <data name="StartupConflictMessage" xml:space="preserve">
+    <value>Görev başka uygulamaya aittir; üzerine yazılmadı veya kaldırılmadı. {0} konumunu inceleyip çakışmayı giderin.</value>
+  </data>
+  <data name="StartupRollbackMessage" xml:space="preserve">
+    <value>Başlangıç başarısız; önceki durum tam geri yüklenemedi. {0} konumunu inceleyin, durumu yenileyip onarın. Eski başlangıcın çalıştığını varsaymayın.</value>
+  </data>
+  <data name="StartupDelayLabel" xml:space="preserve">
+    <value>Yönetici oturum açma gecikmesi (saniye)</value>
+  </data>
+  <data name="StartupDelayRange" xml:space="preserve">
+    <value>0–300 arasında tam sayı girin; 0 gecikme olmamasıdır. Yalnızca yönetici oturum açma görevine uygulanır.</value>
+  </data>
+  <data name="ShelfDropPrompt" xml:space="preserve"><value>Dosyalarınızı buraya bırakın</value></data>
+  <data name="ShelfRestoreMenu" xml:space="preserve"><value>Geri yükle ▾</value></data>
+  <data name="ShelfRetentionLabel" xml:space="preserve"><value>Kapalı rafları saklama süresi, gün (0 = sonsuza kadar)</value></data>
+  <data name="TrayNewShelf" xml:space="preserve"><value>Yeni raf</value></data>
+  <data name="ShelfDragPrompt" xml:space="preserve"><value>Dosyaları dışarı sürükleyin</value></data>
+  <data name="ShelfCountFormat" xml:space="preserve"><value>{0} öğe saklandı</value></data>
+  <data name="ToastDismissCountdown" xml:space="preserve"><value>{0} saniye sonra kapanır; fareyle üzerine gelindiğinde veya klavye odağında duraklar</value></data>
+  <data name="ShelfCleanupHint" xml:space="preserve"><value>Boş geçici raflar otomatik olarak silinir. Varsayılan raf ve içeriği olan kutular korunur.</value></data>
+  <data name="SettingsAppearance" xml:space="preserve"><value>Görünüm</value></data>
+  <data name="SettingsShelf" xml:space="preserve"><value>Raf</value></data>
+  <data name="SettingsFiles" xml:space="preserve"><value>Dosya işleme</value></data>
+  <data name="SettingsShortcuts" xml:space="preserve"><value>Kısayollar</value></data>
 </root>

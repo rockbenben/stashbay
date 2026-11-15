@@ -14,6 +14,9 @@ public sealed class AppSettings
     /// <summary>历史与备份保留天数，0 = 永久。</summary>
     public int HistoryRetentionDays { get; set; } = 30;
 
+    /// <summary>旧设置文件兼容字段；空临时箱现已立即清理，有内容的箱不再按天数过期。</summary>
+    public int ShelfRetentionDays { get; set; } = 7;
+
     /// <summary>写回成功后自动将修改文件加入 Git 暂存区（git add）。</summary>
     public bool AutoGitAddAfterApply { get; set; }
 
@@ -38,8 +41,14 @@ public sealed class AppSettings
     /// <summary>将当前剪贴板内容直接加入暂存的全局快捷键，默认 Win+Alt+V。</summary>
     public string GlobalHotkeyPaste { get; set; } = "Win+Alt+V";
 
-    /// <summary>开机时自动启动 StashBay（写入 HKCU Run 注册表）。</summary>
+    /// <summary>用户登录时自动启动 StashBay。</summary>
     public bool StartWithWindows { get; set; }
+
+    /// <summary>可选管理员登录任务；默认普通权限，开启自启后才生效。</summary>
+    public bool StartWithWindowsAsAdministrator { get; set; }
+
+    /// <summary>管理员登录任务的延迟秒数，0–300，默认 3 秒。</summary>
+    public int AdministratorStartupDelaySeconds { get; set; } = 3;
 
     /// <summary>启动时最小化到系统托盘。</summary>
     public bool MinimizeToTray { get; set; } = true;
@@ -98,6 +107,19 @@ public sealed class AppSettings
     /// 想跟着系统走的用户自己在设置里选"跟随系统"。
     /// </summary>
     public ThemeChoice Theme { get; set; } = ThemeChoice.Light;
+
+    public AppSettings Clone()
+    {
+        var copy = (AppSettings)MemberwiseClone();
+        copy.ExcludeGlobs = ExcludeGlobs.ToArray();
+        if (WindowBounds is { } bounds)
+            copy.WindowBounds = new WindowBounds
+            {
+                X = bounds.X, Y = bounds.Y, Width = bounds.Width, Height = bounds.Height,
+                IsMaximized = bounds.IsMaximized
+            };
+        return copy;
+    }
 
     public WindowBounds? WindowBounds { get; set; }
 }

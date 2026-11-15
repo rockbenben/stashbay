@@ -53,6 +53,9 @@ public interface IAtomicFileWriter
 
     /// <summary>锁定并保护目标祖先目录与文件链，防止并发路径切换或符号链接竞态攻击。</summary>
     IDisposable? GuardTarget(string path) => null;
+
+    /// <summary>Delete an empty directory only while its verified identity is held open.</summary>
+    bool DeleteDirectory(string path, string expectedIdentity) => false;
 }
 
 /// <summary>查是谁占着这个文件。</summary>

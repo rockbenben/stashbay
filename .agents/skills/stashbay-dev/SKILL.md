@@ -17,7 +17,7 @@ This skill provides step-by-step procedures for building, testing, verifying, an
 # Build solution (0 warnings, 0 errors)
 dotnet build --nologo
 
-# Run all unit and integration tests (xUnit.v3)
+# Run all unit and integration tests (xUnit.v3, 366 test cases)
 dotnet test --nologo -v q
 ```
 
@@ -36,7 +36,7 @@ Before committing or releasing, verify the following invariants:
      base = maps[r'src/FileStash.App/Resources/Strings.resx']
      assert all(v == base for v in maps.values()), "i18n keys mismatch!"
      ```
-   - Note there is a **second, independent** resource set: `src/FileStash.Core/Resources/Strings.*.resx` (18 files, 54 keys each) for core error/status strings. Parity is required within each project, not across them.
+   - Note there is a **second, independent** resource set: `src/FileStash.Core/Resources/Strings.*.resx` (18 files, 55 keys each) for core error/status strings. Parity is required within each project, not across them.
 
 2. **DPI & Multi-Monitor**:
    - `WindowEffects.PlaceNearCursor` / `.GetWindowWorkArea` / `.FitToWorkArea` / `.PlaceAtBottomRight` / `.ClampToWorkArea` must use Win32 `GetMonitorInfo(MonitorFromWindow)` and divide by monitor DPI scale. **Never use `SystemParameters.WorkArea` directly for positioning** — it only reports the primary screen.
@@ -46,12 +46,12 @@ Before committing or releasing, verify the following invariants:
    - `WindowEffects.EnableAntiFlash` ensures DWM cloaks window until `ContentRendered`.
 
 4. **DropPoint Shelf Interactions**:
-   - `DragAllHandle` initiates bulk export of all stashed files.
+   - `ShelfExportSurface` initiates bulk export in compact mode; the workbench keeps its drag-all handle.
    - `AutoDismissWhenEmpty`: window automatically fades out when stash empties.
    - `SummonAtCursor`: window pops up adjacent to mouse pointer.
    - `EnableShakeToSummon`: `ShakeDetector` captures rapid mouse reversals when dragging files.
    - Floating Ball: expands shelf on click or short drag, snaps to edges on release.
-   - Action layout: title bar carries only `pin / add / expand / close`. Statistics and fixed-size `view / write back / clear all boxes` icons share a single status-bar row, including at the 260-DIP minimum width. Icons need localized tooltips and accessibility names; statistics trim with a full-text tooltip. Before adding a title-bar glyph, check whether the command already has another entry point.
+   - Action layout: empty shelves show only the drop prompt and close button; populated shelves show a single draggable stack and three restore icon buttons with localized tooltips. Compact mode defaults to 260×220 DIP with theme-specific pearl-grey / dark-graphite surfaces, a contrasting fine outline, rounded corners and native compositor shadow; drag-in shows one subtle dashed outline around the icon and prompt, without an inner solid frame; the default empty shelf has no dashed outline. Fully successful compact restores consume only the captured and fully delivered snapshots, then dismiss the empty shelf. Later additions, updated snapshots, skipped conflicts and cancelled/failed restores remain pending. Workbench restores retain reusable snapshots; source files and undo history are preserved. Double-click the file area or background to expand. Double-click the system tray icon creates an independent shelf window and group. Empty Temporary groups are collected after their last item is removed/moved, or their last empty window closes/switches away. Newly created drop targets are reserved until window registration; Default/Saved and populated groups never expire. The legacy ShelfRetentionDays JSON field no longer controls cleanup. Keep actions usable at 260 DIP, with localized labels and accessibility names. Check `ShelfLifetimeTests` and the independent-window ViewModel test before changing lifecycle behavior.
 
 5. **Named elements are witnesses, not cosmetics**:
    - `ItemTree` must stay a `TreeView` that has a `ContextMenu`, and the header row's grid must keep exactly four `ColumnDefinition`s. `ProbeRunner.IsColumnGrid` counts columns and `WindowCatalog` opens the context-menu variant by name; if either misses, the witness writes "没有量到东西" and **the run still exits 0**.
@@ -62,6 +62,16 @@ Before committing or releasing, verify the following invariants:
 6. **Segmented controls must write back**:
    - `EnumMatchConverter.ConvertBack` returns the parsed enum member when a segment is checked, `Binding.DoNothing` when unchecked. Returning `DoNothing` unconditionally makes every segmented control visually clickable and model-dead — which is what happened to the write-back mode switcher, and no test caught it because nothing clicked.
    - Pinned by `SegmentBindingTests` (real `RadioButton.IsChecked` round-trip on an STA thread) and `RepositoryRulesTests.EnumMatchSegments_ReferenceRealEnumMembers` (every `ConverterParameter` is a real member, and all `WorkbenchViewMode` members appear).
+
+7. **Release Packaging & Verification (`tools/package-release.ps1`)**:
+   - Release workflow requires PowerShell 7.4+ and Inno Setup 6 (`ISCC.exe`).
+   - `package-release.ps1` runs both locally (via `tools/release.ps1`) and in CI (`.github/workflows/ci.yml`).
+   - Validates PE machine architecture (x64 = `0x8664`, ARM64 = `0xaa64`).
+   - Framework-dependent packages (`*-needs-dotnet10`) must bundle `e_sqlite3.dll`.
+   - Packages are created via `tar`, immediately extracted to temporary sandboxes, and checked for 100% file list equivalence and SHA-256 match.
+   - Both x64 editions are unpack-smoke-tested with `--smoke` in isolated sandboxes (`STASHBAY_HOME` and `STASHBAY_NO_SHELL_INTEGRATION=1`).
+   - When code signing is active (`RequireSigning`), all 4 executables and the installer must possess valid Authenticode signatures.
+   - All checksum entries in `SHA256SUMS.txt` must use LF line endings.
 
 ## 3. Acceptance & Release Workflows
 
@@ -81,7 +91,7 @@ pwsh -File tools/recovery-checks.ps1
 # Verify installer upgrade and clean uninstallation
 pwsh -File tools/installer-checks.ps1 -Compiler "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" -CurrentPackages artifacts -BaselineRepository . -BaselinePackages artifacts
 
-# Build release distributions and Inno Setup installer
+# Build release distributions and Inno Setup installer (requires PowerShell 7.4+ and Inno Setup 6)
 pwsh -File tools/release.ps1
 ```
 
@@ -101,14 +111,27 @@ CI reads the smoke **marker file**, not the process exit code, because a WPF GUI
 
 An unseeded `--shots` run is a **silent success**: every PNG lands, the process exits 0, and the "with data" and "empty" variants hash identically — so the matrix proves the windows still construct, not that the UI looks right. `tools/shots.ps1` builds the fixture, seeds, renders, then asserts those variants differ; use it instead of running the flags by hand.
 
-Product CLI flags (see `Startup/CommandLine.cs`): `--add <paths...>`, `--apply-here <dir>`, `--apply-original`, `--group <name>`, `--minimized`, `--show`, `--quit`, `--unregister-shell`, `--elevated-retry <id>`.
+Product CLI flags (see `Startup/CommandLine.cs`): `--add <paths...>`, `--apply-here <dir>`, `--apply-original`, `--group <name>`, `--minimized`, `--show`, `--quit`, `--unregister-shell`, `--elevated-retry <id>`, `--elevated-home <dir>`.
 
 Release artifacts are generated in `artifacts/`:
-- `StashBay-<version>-setup.exe`: Inno Setup installer (per-user, no admin required)
-- `StashBay-<version>-win-x64.zip`: Self-contained 64-bit portable archive (runtime included)
-- `StashBay-<version>-win-arm64.zip`: Self-contained ARM64 portable archive
-- `StashBay-<version>-win-x64-needs-dotnet10.zip`: Framework-dependent 64-bit (small; needs the .NET 10 Desktop Runtime)
-- `StashBay-<version>-win-arm64-needs-dotnet10.zip`: Framework-dependent ARM64
+- `StashBay-v<version>-setup.exe`: Inno Setup installer (per-user, no admin required)
+- `StashBay-v<version>-win-x64.zip`: Self-contained 64-bit portable archive (runtime included)
+- `StashBay-v<version>-win-arm64.zip`: Self-contained ARM64 portable archive
+- `StashBay-v<version>-win-x64-needs-dotnet10.zip`: Framework-dependent 64-bit (small; needs the .NET 10 Desktop Runtime)
+- `StashBay-v<version>-win-arm64-needs-dotnet10.zip`: Framework-dependent ARM64
 - `SHA256SUMS.txt`: Cryptographic checksums — **must be LF line endings** (CRLF makes `sha256sum -c` treat `\r` as part of the filename and fail every line)
 
-The four zip flavors come from the four publish profiles in `src/FileStash.App/Properties/PublishProfiles/` (`win-x64`, `win-x64-needs-dotnet10`, `win-arm64`, `win-arm64-needs-dotnet10`). `release.ps1` skips the installer when `ISCC.exe` is not found (set `ISCC_PATH` or `winget install JRSoftware.InnoSetup`); CI runs a tagged build and then publishes a **draft** release, verifying checksums and `releases/latest` before flipping it to public.
+The four zip flavors come from the four publish profiles in `src/FileStash.App/Properties/PublishProfiles/` (`win-x64`, `win-x64-needs-dotnet10`, `win-arm64`, `win-arm64-needs-dotnet10`). `release.ps1` compiles the installer via `ISCC.exe` (set `ISCC_PATH` or `winget install JRSoftware.InnoSetup`); CI runs a tagged build, verifies Authenticode signatures, packages and smoke-tests via `package-release.ps1`, generates GitHub checksum attestations, and publishes the release assets.
+
+
+## 5. Logon Startup
+
+The default is ordinary privilege. Optional administrator startup supports portable directories through a per-user interactive task; only same-account UAC is supported. `LogonStartupService` owns both Run names and the administrator task in one transaction; `Program` dispatches the fixed helper before WPF initialization. Application startup never automatically elevates or repairs tasks. See `docs/admin-startup.md`.
+
+```powershell
+pwsh -NoProfile -File tools/Test-ElevatedStartup.ps1 -ValidateXml -PublishSingleFile
+```
+
+This runs the actual registration engine against substitutes and parses an unregistered TaskDefinition. It does not register tasks, invoke UAC or validate a real logon. Keep actual UAC, account switching, task permissions and logon checks in an isolated account/VM. Both no-shell-integration environment aliases also suppress administrator task operations. Installer cleanup failure must stop uninstall before deleting files.
+
+After publishing both x64 forms, `pwsh -NoProfile -File tools/Test-StartupEntryPoints.ps1 -PublishRoot artifacts` validates the actual app entry point, both no-shell aliases and propagation of WPF failure exit codes. `Program` must use the return value from `Application.Run()`; the generated WPF `Main` discards it.

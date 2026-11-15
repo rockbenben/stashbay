@@ -15,14 +15,21 @@ public partial class SettingsWindow : Window
         WindowEffects.FitToWorkArea(this);
 
         DataContext = viewModel;
-        Loaded += async (_, _) => await viewModel.RefreshStorageAsync();
+        Loaded += async (_, _) =>
+        {
+            await viewModel.RefreshStartupCommand.ExecuteAsync(null);
+            await viewModel.RefreshStorageAsync();
+        };
+        Closing += (_, e) => { if (viewModel.IsStartupBusy) e.Cancel = true; };
     }
 
-    private void OnSave(object sender, RoutedEventArgs e)
+    private async void OnSave(object sender, RoutedEventArgs e)
     {
         if (DataContext is SettingsViewModel viewModel)
         {
-            viewModel.SaveCommand.Execute(null);
+            if (!viewModel.SaveCommand.CanExecute(null)) return;
+            await viewModel.SaveCommand.ExecuteAsync(null);
+            if (!viewModel.LastSaveSucceeded) return;
         }
 
         Close();
@@ -32,6 +39,7 @@ public partial class SettingsWindow : Window
     {
         if (DataContext is SettingsViewModel viewModel)
         {
+            if (viewModel.IsStartupBusy) return;
             viewModel.CancelCommand.Execute(null);
         }
 

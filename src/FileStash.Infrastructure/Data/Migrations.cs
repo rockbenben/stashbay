@@ -22,6 +22,18 @@ public static class Migrations
             ALTER TABLE OperationEntry ADD COLUMN UndoPending INTEGER NOT NULL DEFAULT 0;
             ALTER TABLE OperationEntry ADD COLUMN Undone INTEGER NOT NULL DEFAULT 0;
             """),
+        new Migration(4, """
+            ALTER TABLE StashEntry ADD COLUMN ZoneIdentifier BLOB;
+            ALTER TABLE OperationEntry ADD COLUMN NewZoneIdentifier BLOB;
+            ALTER TABLE OperationEntry ADD COLUMN BackupZoneIdentifier BLOB;
+            ALTER TABLE OperationEntry ADD COLUMN PreviousZoneIdentifier BLOB;
+            ALTER TABLE OperationEntry ADD COLUMN UndoWitnessIdentity TEXT;
+            """),
+        new Migration(5, "ALTER TABLE StashGroup ADD COLUMN ClosedAt TEXT;"),
+        new Migration(6, """
+            ALTER TABLE StashGroup ADD COLUMN Kind INTEGER NOT NULL DEFAULT 0;
+            CREATE UNIQUE INDEX UX_StashGroup_Default ON StashGroup(Kind) WHERE Kind = 2;
+            """),
     ];
 
     /// <summary>

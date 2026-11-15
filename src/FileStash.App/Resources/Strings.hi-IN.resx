@@ -939,7 +939,7 @@
     <value>फ़ाइलों को खींचते समय कर्सर को तेजी से हिलाकर संग्रह शेल्फ़ खोलें</value>
   </data>
   <data name="SectionDeveloperOptions" xml:space="preserve">
-    <value>उन्नत और डेवलपर विकल्प (Git)</value>
+    <value>Git एकीकरण</value>
   </data>
   <data name="DeveloperOptionsHint" xml:space="preserve">
     <value>केवल तभी लागू होता है जब Git रिपॉजिटरी में फ़ाइलें सहेजी जाती हैं। सामान्य फ़ाइल स्टैश और रीस्टोर पूरी तरह से स्वतंत्र रहता है।</value>
@@ -957,7 +957,7 @@
     <value>वैश्विक हॉटकी (क्लिपबोर्ड फ़ाइलें चिपकाएँ)</value>
   </data>
   <data name="HotkeyRecordingHint" xml:space="preserve">
-    <value>रिकॉर्ड करने के लिए क्लिक करें और शॉर्टकट दबाएं। रद्द करने के लिए Esc दबाएं।</value>
+    <value>फ़ील्ड पर क्लिक करके कुंजी संयोजन दबाएँ (जैसे Ctrl+Alt+S), फिर सहेजें। Backspace/Delete से साफ़ करें; Esc से रिकॉर्डिंग रद्द करें।</value>
   </data>
   <data name="HotkeyClearButton" xml:space="preserve">
     <value>साफ़ करें</value>
@@ -985,4 +985,85 @@
   <data name="KeepCurrentConfirm" xml:space="preserve"><value>वर्तमान फ़ाइल रखकर इस प्रविष्टि की पुनर्प्राप्ति पूरी करें?
 {0}</value></data>
   <data name="ElevatedRetryConfirm" xml:space="preserve"><value>नीचे पूर्ण पथ, क्रियाएँ और हैश की पुष्टि करें। केवल इन विफल प्रविष्टियों का पुनः प्रयास होगा।</value></data>
+  <data name="ShellIntegrationFailedMessage" xml:space="preserve">
+    <value>सेटिंग सहेजी गईं, लेकिन Windows एकीकरण (स्वतः प्रारंभ सहित) पूरी तरह लागू नहीं हो सका। ऐप लॉग जाँचें, अनुमति संबंधी समस्याएँ हल करें, फिर दोबारा सहेजें।</value>
+  </data>
+  <data name="StartupAdminLabel" xml:space="preserve">
+    <value>व्यवस्थापक अधिकारों से शुरू करें (वैकल्पिक)</value>
+  </data>
+  <data name="StartupAdminHint" xml:space="preserve">
+    <value>डिफ़ॉल्ट सामान्य अधिकार हैं। अगले लॉगिन से लागू होगा; वर्तमान व्यवस्थापक खाते से UAC स्वीकार करें। पोर्टेबल संस्करण भी समर्थित हैं।</value>
+  </data>
+  <data name="StartupRepair" xml:space="preserve">
+    <value>स्वतः प्रारंभ सुधारें</value>
+  </data>
+  <data name="StartupRefresh" xml:space="preserve">
+    <value>स्थिति ताज़ा करें</value>
+  </data>
+  <data name="StartupStatusDisabled" xml:space="preserve">
+    <value>स्वतः प्रारंभ: बंद</value>
+  </data>
+  <data name="StartupStatusPlain" xml:space="preserve">
+    <value>स्वतः प्रारंभ: सामान्य अधिकार</value>
+  </data>
+  <data name="StartupStatusElevated" xml:space="preserve">
+    <value>स्वतः प्रारंभ: व्यवस्थापक अधिकार</value>
+  </data>
+  <data name="StartupStatusRepair" xml:space="preserve">
+    <value>स्वतः प्रारंभ: सुधार आवश्यक</value>
+  </data>
+  <data name="StartupStatusConflict" xml:space="preserve">
+    <value>स्वतः प्रारंभ: कार्य स्वामित्व में टकराव; लॉग देखें</value>
+  </data>
+  <data name="StartupStatusUnknown" xml:space="preserve">
+    <value>स्वतः प्रारंभ: अपुष्ट; पुनः प्रयास से पहले ताज़ा करें</value>
+  </data>
+  <data name="StartupStatusSuppressed" xml:space="preserve">
+    <value>स्वतः प्रारंभ: परीक्षण के लिए सिस्टम बदलाव बंद</value>
+  </data>
+  <data name="StartupStatusBusy" xml:space="preserve">
+    <value>सेटिंग लागू हो रही हैं; UAC पूरा करें…</value>
+  </data>
+  <data name="StartupCancelled" xml:space="preserve">
+    <value>UAC रद्द हुआ। स्वतः प्रारंभ सेटिंग सहेजी नहीं गईं।</value>
+  </data>
+  <data name="StartupFailedMessage" xml:space="preserve">
+    <value>पंजीकरण, हटाना या सेटिंग सहेजना विफल हुआ। {0} में लॉग देखें, स्थिति ताज़ा करें और दोबारा प्रयास करें।</value>
+  </data>
+  <data name="StartupUncertainMessage" xml:space="preserve">
+    <value>परिणाम अपुष्ट है; सहायक अभी चल रहा हो सकता है। बाद में स्थिति ताज़ा करें। पुष्टि से पहले कार्य दोहराया नहीं जाएगा।</value>
+  </data>
+  <data name="StartupAttention" xml:space="preserve">
+    <value>स्वतः प्रारंभ जाँचें। सेटिंग में सिस्टम स्थिति देखें और ज़रूरत हो तो सुधारें। ऐप अधिकार स्तर अपने आप नहीं बदलेगा।</value>
+  </data>
+  <data name="StartupAccountMessage" xml:space="preserve">
+    <value>वर्तमान व्यवस्थापक खाते से UAC स्वीकार करें। दूसरे व्यवस्थापक खाते से पंजीकरण समर्थित नहीं है। लॉग: {0}।</value>
+  </data>
+  <data name="StartupDeniedMessage" xml:space="preserve">
+    <value>स्वतः प्रारंभ की पहुँच अस्वीकृत है। कार्य या रजिस्ट्री की अनुमतियाँ और स्थानीय नीति जाँचें। लॉग: {0}।</value>
+  </data>
+  <data name="StartupConflictMessage" xml:space="preserve">
+    <value>टास्क दूसरे ऐप का है; उसे बदला या हटाया नहीं गया। {0} देखें और टकराव हल करें।</value>
+  </data>
+  <data name="StartupRollbackMessage" xml:space="preserve">
+    <value>स्वतः प्रारंभ विफल हुआ और पुरानी स्थिति पूरी तरह बहाल नहीं हुई। {0} देखें, स्थिति ताज़ा करके सुधारें। पुराना प्रारंभ अभी भी काम करता है, ऐसा न मानें।</value>
+  </data>
+  <data name="StartupDelayLabel" xml:space="preserve">
+    <value>व्यवस्थापक लॉगिन विलंब (सेकंड)</value>
+  </data>
+  <data name="StartupDelayRange" xml:space="preserve">
+    <value>0 से 300 तक पूर्णांक दें; 0 का अर्थ कोई विलंब नहीं है। केवल व्यवस्थापक लॉगिन कार्य पर लागू होता है।</value>
+  </data>
+  <data name="ShelfDropPrompt" xml:space="preserve"><value>अपनी फ़ाइलें यहाँ छोड़ें</value></data>
+  <data name="ShelfRestoreMenu" xml:space="preserve"><value>पुनर्स्थापित करें ▾</value></data>
+  <data name="ShelfRetentionLabel" xml:space="preserve"><value>बंद शेल्फ रखने के दिन (0 = हमेशा)</value></data>
+  <data name="TrayNewShelf" xml:space="preserve"><value>नई शेल्फ</value></data>
+  <data name="ShelfDragPrompt" xml:space="preserve"><value>फ़ाइलें बाहर खींचें</value></data>
+  <data name="ShelfCountFormat" xml:space="preserve"><value>{0} आइटम रखे गए</value></data>
+  <data name="ToastDismissCountdown" xml:space="preserve"><value>{0} सेकंड में बंद होगा; माउस रखने या कीबोर्ड फ़ोकस पर रुकेगा</value></data>
+  <data name="ShelfCleanupHint" xml:space="preserve"><value>खाली अस्थायी शेल्फ अपने आप हट जाते हैं। डिफ़ॉल्ट शेल्फ और सामग्री वाले भंडार बने रहते हैं।</value></data>
+  <data name="SettingsAppearance" xml:space="preserve"><value>दिखावट</value></data>
+  <data name="SettingsShelf" xml:space="preserve"><value>अस्थायी संग्रह</value></data>
+  <data name="SettingsFiles" xml:space="preserve"><value>फ़ाइल प्रबंधन</value></data>
+  <data name="SettingsShortcuts" xml:space="preserve"><value>शॉर्टकट</value></data>
 </root>
