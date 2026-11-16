@@ -657,6 +657,9 @@
   <data name="ContextMenuLabel" xml:space="preserve">
     <value>एक्सप्लोरर के संदर्भ मेन्यू में “अस्थायी भंडारण में जोड़ें” दिखाएँ</value>
   </data>
+  <data name="ContextMenuHint" xml:space="preserve">
+    <value>फ़ाइलों और फ़ोल्डरों के संदर्भ मेनू में स्टैश और पुनर्स्थापना क्रियाएं प्रदान करें, और "भेजें" मेनू में एक शॉर्टकट बनाएं।</value>
+  </data>
   <data name="StartWithWindowsLabel" xml:space="preserve">
     <value>Windows के साथ शुरू करें</value>
   </data>
@@ -898,7 +901,7 @@
   </data>
 
   <data name="RemoveAfterDragExportLabel" xml:space="preserve">
-    <value>बाहर खींचने के बाद स्टैश से स्वचालित रूप से हटाएँ (DropPoint व्यवहार)</value>
+    <value>बाहर खींचने के बाद स्टैश से स्वचालित रूप से हटाएँ</value>
   </data>
   <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
     <value>गंतव्य फ़ोल्डर में छोड़ने के बाद आइटम स्वचालित रूप से हटा दिए जाते हैं; बंद होने पर वे बने रहते हैं</value>

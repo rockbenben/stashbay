@@ -657,6 +657,9 @@
   <data name="ContextMenuLabel" xml:space="preserve">
     <value>إظهار «الإضافة إلى التخزين المؤقت» في قائمة السياق في مستكشف الملفات</value>
   </data>
+  <data name="ContextMenuHint" xml:space="preserve">
+    <value>توفير إجراءات الحفظ والاستعادة في قائمة سياق الملفات والمجلدات، وإنشاء اختصار في قائمة "إرسال إلى".</value>
+  </data>
   <data name="StartWithWindowsLabel" xml:space="preserve">
     <value>البدء مع Windows</value>
   </data>
@@ -898,7 +901,7 @@
   </data>
 
   <data name="RemoveAfterDragExportLabel" xml:space="preserve">
-    <value>الإزالة تلقائيًا من التخزين المؤقت بعد السحب للخارج (سلوك DropPoint)</value>
+    <value>الإزالة تلقائيًا من التخزين المؤقت بعد السحب للخارج</value>
   </data>
   <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
     <value>يزيل العناصر تلقائيًا بعد إفلاتها في المجلد الوجهة؛ عند التعطيل، يتم الاحتفاظ بها</value>

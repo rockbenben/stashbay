@@ -83,6 +83,7 @@ public static class Strings
     public static string CompareFailed => Get(nameof(CompareFailed));
     public static string ConflictAsk => Get(nameof(ConflictAsk));
     public static string ConflictLabel => Get(nameof(ConflictLabel));
+    public static string ContextMenuHint => Get(nameof(ContextMenuHint));
     public static string ContextMenuLabel => Get(nameof(ContextMenuLabel));
     public static string CopyFailedTitle => Get(nameof(CopyFailedTitle));
     public static string DataDirectoryLabel => Get(nameof(DataDirectoryLabel));

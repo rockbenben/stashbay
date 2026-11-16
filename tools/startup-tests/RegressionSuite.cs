@@ -3,7 +3,10 @@ using FileStash.Infrastructure.Shell;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Xml.Linq;
+using System.Security.Principal;
+
 namespace FileStash.StartupTests;
+
 public static class RegressionSuite
 {
     public static void Run()
@@ -31,6 +34,35 @@ public static class RegressionSuite
             return document.ToString();
         }
 
+        void WithShortcutFiles(Action<string, MemoryStore> test)
+        {
+            Exception? failure = null;
+            var thread = new Thread(() =>
+            {
+                try
+                {
+                    var directory = Directory.CreateTempSubdirectory("wpf-shortcut-files-");
+                    try { test(directory.FullName, new MemoryStore { ShortcutFiles = new(directory.FullName) }); }
+                    finally { directory.Delete(true); }
+                }
+                catch (Exception ex) { failure = ex; }
+            });
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            thread.Join();
+            if (failure is not null) System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failure).Throw();
+        }
+
+        Test("TaskScheduler task lookup preserves query failures and recognizes only missing task HRESULTs", () =>
+        {
+            foreach (Exception missing in new Exception[] { new FileNotFoundException(), new DirectoryNotFoundException(),
+                new COMException("missing task", unchecked((int)0x80070002)), new COMException("missing task", unchecked((int)0x80070003)) })
+                Check(WindowsStartupStore.ReadTaskXml(() => throw missing) is null);
+            foreach (Exception failure in new Exception[] { new UnauthorizedAccessException(), new IOException("query failed"),
+                new COMException("access denied", unchecked((int)0x80070005)), new COMException("service unavailable", unchecked((int)0x800706BA)) })
+                Check(ReferenceEquals(Error(() => WindowsStartupStore.ReadTaskXml(() => throw failure)), failure));
+            Check(WindowsStartupStore.ReadTaskXml(() => desired) == desired);
+        });
         Test("Chinese, spaces and XML metacharacters survive task XML", () =>
         {
             var xml = XDocument.Parse(desired);
@@ -139,6 +171,34 @@ public static class RegressionSuite
                 var node = changed.Descendants().Single(e => e.Name.LocalName == parent);
                 node.Add(new XElement(node.Name.Namespace + field, value));
                 Check(!ElevatedStartup.Matches(changed.ToString(), target), parent + "/" + field + "=" + value);
+            }
+        });
+        Test("registered account names and omitted defaults preserve SID isolation", () =>
+        {
+            using var identity = WindowsIdentity.GetCurrent();
+            var current = target with { UserSid = identity.User!.Value };
+            XNamespace ns = "http://schemas.microsoft.com/windows/2004/02/mit/task";
+            foreach (var (principalName, triggerName) in new[] { (true, false), (false, true), (true, true) })
+            {
+                var xml = XDocument.Parse(ElevatedStartup.TaskXml(current));
+                var principal = xml.Descendants(ns + "Principal").Single().Element(ns + "UserId")!;
+                var trigger = xml.Descendants(ns + "LogonTrigger").Single().Element(ns + "UserId")!;
+                if (principalName) principal.Value = identity.Name;
+                if (triggerName) trigger.Value = identity.Name;
+                xml.Descendants().Where(e => e.Name.LocalName is
+                    "Enabled" or "RunOnlyIfNetworkAvailable" or "RunOnlyIfIdle").Remove();
+                xml.Root!.Element(ns + "RegistrationInfo")!.Add(new XElement(ns + "URI", "\\" + current.TaskName));
+                Check(ElevatedStartup.Matches(xml.ToString(), current));
+
+                var otherSid = new SecurityIdentifier(identity.User.Value == "S-1-5-18" ? "S-1-5-19" : "S-1-5-18");
+                string otherAccount = ((NTAccount)otherSid.Translate(typeof(NTAccount))).Value;
+                principal.Value = otherAccount;
+                Check(!ElevatedStartup.Matches(xml.ToString(), current));
+                principal.Value = current.UserSid;
+                trigger.Value = otherAccount;
+                Check(!ElevatedStartup.Matches(xml.ToString(), current));
+                trigger.Value = "";
+                Check(!ElevatedStartup.Matches(xml.ToString(), current));
             }
         });
         Test("install verifies the task before removing plain startup", () =>
@@ -266,66 +326,193 @@ public static class RegressionSuite
             Check(store.Trace.Contains("WriteRun:previous") && store.Run == "previous");
         });
 
-        
-Test("configured delay and Normal priority survive generation and readback", () =>
-{
-    foreach (int seconds in new[] { 0, 3, 17, 300 })
-    {
-        var configured = target with { Options = target.Options with { LogonDelaySeconds = seconds } };
-        string xml = ElevatedStartup.TaskXml(configured);
-        Check(ElevatedStartup.Matches(xml, configured));
-        Check(XDocument.Parse(xml).Descendants().Single(e => e.Name.LocalName == "Priority").Value == "4");
-        Check(!ElevatedStartup.Matches(Changed(xml, "Priority", "7"), configured));
-        if (seconds != 0)
+        Test("configured delay and Normal priority survive generation and readback", () =>
         {
-            Check(!ElevatedStartup.Matches(Changed(xml, "Delay", "PT1H"), configured));
-            Check(!ElevatedStartup.Matches(Changed(xml, "Delay", "bad-duration"), configured));
-        }
-        var store = new MemoryStore { Task = desired };
-        ElevatedStartup.Apply(StartupOperation.Repair, configured, store);
-        Check(ElevatedStartup.Matches(store.Task, configured));
-    }
-});
-Test("helper accepts only bounded numeric delay and forwards the configured value", () =>
-{
-    foreach (string invalid in new[] { "-1", "301", "1.5", "arbitrary.exe", "--show" })
-        Error(() => ElevatedStartup.ParseHelper([ElevatedStartup.HelperSwitch, "install", target.UserSid, invalid], target.UserSid));
-    var configured = target with { Options = target.Options with { LogonDelaySeconds = 17 } };
-    var store = new MemoryStore { Task = ElevatedStartup.TaskXml(configured) };
-    var result = ElevatedStartup.Request(StartupOperation.Install, configured, info => {
-        Check(info.ArgumentList.SequenceEqual([ElevatedStartup.HelperSwitch, "install", target.UserSid, "17"]));
-        Check(ElevatedStartup.HelperDelay(info.ArgumentList.ToArray()) == 17);
-        return 0;
-    }, store);
-    Check(result.Outcome == StartupOutcome.Applied);
-    foreach (int invalid in new[] { -1, 301 })
-        Error(() => ElevatedStartup.Target(options with { LogonDelaySeconds = invalid }, target.Executable, target.UserSid));
-});
-Test("normal switch rolls back the task and both Run names together", () =>
-{
-    var configured = target with { Options = target.Options with { LegacyRunValueName = "Legacy.Tests" } };
-    var store = new MemoryStore { Task = desired, Run = "previous", Legacy = "legacy", FailLegacyOnce = true };
-    Error(() => ElevatedStartup.Apply(StartupOperation.Plain, configured, store));
-    Check(store.Task == desired && store.Run == "previous" && store.Legacy == "legacy");
-    ElevatedStartup.Apply(StartupOperation.Plain, configured, store);
-    Check(store.Task is null && store.Run == ElevatedStartup.PlainCommand(configured) && store.Legacy is null);
-});
-Test("overlong Run commands fail before changing either startup mechanism", () =>
-{
-    var longTarget = ElevatedStartup.Target(options, @"D:\" + new string('a', 260) + @"\Example.exe", target.UserSid);
-    var store = new MemoryStore { Task = desired, Run = "previous" };
-    Error(() => ElevatedStartup.Apply(StartupOperation.Plain, longTarget, store));
-    Check(store.Task == desired && store.Run == "previous" && store.Writes == 0);
-});
+            foreach (int seconds in new[] { 0, 3, 17, 300 })
+            {
+                var configured = target with { Options = target.Options with { LogonDelaySeconds = seconds } };
+                string xml = ElevatedStartup.TaskXml(configured);
+                Check(ElevatedStartup.Matches(xml, configured));
+                Check(XDocument.Parse(xml).Descendants().Single(e => e.Name.LocalName == "Priority").Value == "4");
+                Check(!ElevatedStartup.Matches(Changed(xml, "Priority", "7"), configured));
+                if (seconds != 0)
+                {
+                    Check(!ElevatedStartup.Matches(Changed(xml, "Delay", "PT1H"), configured));
+                    Check(!ElevatedStartup.Matches(Changed(xml, "Delay", "bad-duration"), configured));
+                }
+                var store = new MemoryStore { Task = desired };
+                ElevatedStartup.Apply(StartupOperation.Repair, configured, store);
+                Check(ElevatedStartup.Matches(store.Task, configured));
+            }
+        });
+        Test("helper accepts only bounded numeric delay and forwards the configured value", () =>
+        {
+            foreach (string invalid in new[] { "-1", "301", "1.5", "arbitrary.exe", "--show" })
+                Error(() => ElevatedStartup.ParseHelper([ElevatedStartup.HelperSwitch, "install", target.UserSid, invalid], target.UserSid));
+            var configured = target with { Options = target.Options with { LogonDelaySeconds = 17 } };
+            var store = new MemoryStore { Task = ElevatedStartup.TaskXml(configured) };
+            var result = ElevatedStartup.Request(StartupOperation.Install, configured, info => {
+                Check(info.ArgumentList.SequenceEqual([ElevatedStartup.HelperSwitch, "install", target.UserSid, "17"]));
+                Check(ElevatedStartup.HelperDelay(info.ArgumentList.ToArray()) == 17);
+                return 0;
+            }, store);
+            Check(result.Outcome == StartupOutcome.Applied);
+            foreach (int invalid in new[] { -1, 301 })
+                Error(() => ElevatedStartup.Target(options with { LogonDelaySeconds = invalid }, target.Executable, target.UserSid));
+        });
+        Test("normal switch rolls back the task and both Run names together", () =>
+        {
+            var configured = target with { Options = target.Options with { LegacyRunValueName = "Legacy.Tests" } };
+            var store = new MemoryStore { Task = desired, Run = "previous", Legacy = "legacy", FailLegacyOnce = true };
+            Error(() => ElevatedStartup.Apply(StartupOperation.Plain, configured, store));
+            Check(store.Task == desired && store.Run == "previous" && store.Legacy == "legacy");
+            ElevatedStartup.Apply(StartupOperation.Plain, configured, store);
+            Check(store.Task is null && store.Run == ElevatedStartup.PlainCommand(configured) && store.Legacy is null);
+        });
+        Test("overlong Run commands fail before changing either startup mechanism", () =>
+        {
+            var longTarget = ElevatedStartup.Target(options, @"D:\" + new string('a', 260) + @"\Example.exe", target.UserSid);
+            var store = new MemoryStore { Task = desired, Run = "previous" };
+            Error(() => ElevatedStartup.Apply(StartupOperation.Plain, longTarget, store));
+            Check(store.Task == desired && store.Run == "previous" && store.Writes == 0);
+        });
+        Test("portable plain autostart creates shortcut and cleans up Run entry", () =>
+        {
+            var portableTarget = target with { Options = target.Options with { UseStartupShortcut = true } };
+            var store = new MemoryStore { Run = "old run" };
+            var result = ElevatedStartup.Apply(StartupOperation.Plain, portableTarget, store);
+            Check(result.Outcome == StartupOutcome.Applied);
+            Check(store.Shortcut == ElevatedStartup.PlainShortcut(portableTarget));
+            Check(store.Run is null);
+            Check(store.Task is null);
+        });
+        Test("portable plain autostart rollback restores previous shortcut and Run entry", () =>
+        {
+            var portableTarget = target with { Options = target.Options with { UseStartupShortcut = true } };
+            var previous = new StartupShortcut(@"C:\old\Example.exe", "--old", @"C:\old-data");
+            var store = new MemoryStore { Run = "previous run", Shortcut = previous, FailShortcutOnce = true };
+            Error(() => ElevatedStartup.Apply(StartupOperation.Plain, portableTarget, store));
+            Check(store.Run == "previous run" && store.Shortcut == previous);
+        });
+        Test("installing elevated task cleans up both Run entry and portable shortcut", () =>
+        {
+            var portableTarget = target with { Options = target.Options with { UseStartupShortcut = true } };
+            var store = new MemoryStore { Run = "old run", Shortcut = ElevatedStartup.PlainShortcut(portableTarget) };
+            var result = ElevatedStartup.Apply(StartupOperation.Install, portableTarget, store);
+            Check(result.Outcome == StartupOutcome.Applied);
+            Check(ElevatedStartup.Matches(store.Task, portableTarget));
+            Check(store.Run is null && store.Shortcut is null);
+        });
+        Test("uninstalling clears task, Run entry, and portable shortcut", () =>
+        {
+            var portableTarget = target with { Options = target.Options with { UseStartupShortcut = true } };
+            var store = new MemoryStore { Task = desired, Run = "old run", Shortcut = ElevatedStartup.PlainShortcut(portableTarget) };
+            var result = ElevatedStartup.Apply(StartupOperation.Uninstall, portableTarget, store);
+            Check(result.Outcome == StartupOutcome.Applied);
+            Check(store.Task is null && store.Run is null && store.Shortcut is null);
+        });
+        Test("shortcut read failures stop every operation before any writes", () =>
+        {
+            foreach (var operation in Enum.GetValues<StartupOperation>())
+            {
+                var store = new MemoryStore { Task = desired, Run = "previous", FailShortcutRead = true };
+                var error = Error(() => ElevatedStartup.Apply(operation, target, store));
+                Check(error.Message.Contains("preflight") && ElevatedStartup.Classify(error) == StartupFailure.AccessDenied);
+                Check(store.Writes == 0 && store.Task == desired && store.Run == "previous");
+            }
+        });
+        Test("post-helper shortcut read failures preserve uncertainty", () =>
+        {
+            var store = new MemoryStore { Task = desired, FailShortcutRead = true };
+            var result = ElevatedStartup.Request(StartupOperation.Install, target, _ => 0, store);
+            Check(result.Outcome == StartupOutcome.Uncertain && result.Failure == StartupFailure.AccessDenied && store.Writes == 0);
+        });
+        Test("a stale shortcut working directory is repaired instead of reported unchanged", () =>
+        {
+            var portableTarget = target with { Options = options with { UseStartupShortcut = true } };
+            var expected = ElevatedStartup.PlainShortcut(portableTarget);
+            var store = new MemoryStore { Shortcut = expected with { WorkingDirectory = @"C:\old-data" } };
+            Check(ElevatedStartup.Apply(StartupOperation.Plain, portableTarget, store).Outcome == StartupOutcome.Applied);
+            Check(store.Shortcut == expected);
+        });
+        Test("post-helper readback checks the shortcut working directory", () =>
+        {
+            var portableTarget = target with { Options = options with { UseStartupShortcut = true } };
+            var store = new MemoryStore { Shortcut = ElevatedStartup.PlainShortcut(portableTarget) with { WorkingDirectory = @"C:\old-data" } };
+            Check(ElevatedStartup.Request(StartupOperation.Plain, portableTarget, _ => 0, store).Outcome == StartupOutcome.Uncertain);
+        });
+        Test("rollback reports an incorrectly restored shortcut working directory", () =>
+        {
+            var portableTarget = target with { Options = options with { UseStartupShortcut = true } };
+            var previous = new StartupShortcut(@"C:\old\Example.exe", "--old", @"C:\old-data");
+            var store = new MemoryStore { Shortcut = previous, FailShortcutOnce = true, CorruptShortcutWorkingDirectoryAtWrite = 2 };
+            var error = Error(() => ElevatedStartup.Apply(StartupOperation.Plain, portableTarget, store));
+            Check(error is StartupRollbackException && ElevatedStartup.Classify(error) == StartupFailure.RollbackIncomplete);
+            Check(store.Shortcut?.WorkingDirectory != previous.WorkingDirectory);
+        });
+        Test("shortcut startup supports arguments beyond the Run command limit", () =>
+        {
+            var portableTarget = target with { Options = options with { UseStartupShortcut = true, PlainArguments = new string('x', 300) } };
+            var store = new MemoryStore();
+            Check(ElevatedStartup.Apply(StartupOperation.Plain, portableTarget, store).Outcome == StartupOutcome.Applied);
+            Check(store.Shortcut == ElevatedStartup.PlainShortcut(portableTarget) && store.Run is null);
+            Check(ElevatedStartup.Request(StartupOperation.Plain, portableTarget, _ => 0, store).Outcome == StartupOutcome.Applied);
+        });
+        Test("native shortcut absence is distinct from a corrupt or locked file", () => WithShortcutFiles((directory, store) =>
+        {
+            string path = Path.Combine(directory, options.AppId + ".lnk");
+            Check(store.ReadShortcut(options.AppId) is null);
+            Check(ElevatedStartup.Apply(StartupOperation.Uninstall, target, store).Outcome == StartupOutcome.Unchanged);
+            byte[] corrupt = System.Text.Encoding.UTF8.GetBytes("invalid shortcut");
+            File.WriteAllBytes(path, corrupt);
+            Error(() => store.ReadShortcut(options.AppId));
+            var error = Error(() => ElevatedStartup.Apply(StartupOperation.Uninstall, target, store));
+            Check(error.Message.Contains("preflight") && store.Writes == 0 && File.ReadAllBytes(path).SequenceEqual(corrupt));
+            var previous = new StartupShortcut(Environment.ProcessPath!, "--old", Environment.GetFolderPath(Environment.SpecialFolder.Windows));
+            store.ShortcutFiles!.Write(options.AppId, previous);
+            using (var locked = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+            {
+                Error(() => store.ReadShortcut(options.AppId));
+                error = Error(() => ElevatedStartup.Apply(StartupOperation.Uninstall, target, store));
+                Check(error.Message.Contains("preflight") && store.Writes == 0);
+            }
+            Check(store.ReadShortcut(options.AppId) == previous);
+        }));
+        Test("native shortcut reads preserve long Unicode arguments and whitespace", () => WithShortcutFiles((_, store) =>
+        {
+            foreach (int length in new[] { 258, 259, 260, 300, 4096 })
+            {
+                var previous = new StartupShortcut(Environment.ProcessPath!, "  --name=\"中文 路径\" " + new string('x', length) + "  ",
+                    Environment.GetFolderPath(Environment.SpecialFolder.Windows));
+                store.ShortcutFiles!.Write(options.AppId, previous);
+                Check(store.ReadShortcut(options.AppId) == previous, "Shortcut data truncated at argument length " + length);
+            }
+        }));
+        Test("native shortcut rollback restores old arguments and working directory after a partial write", () => WithShortcutFiles((_, store) =>
+        {
+            var portableTarget = ElevatedStartup.Target(options with { UseStartupShortcut = true, ExecutableName = Path.GetFileName(Environment.ProcessPath!) },
+                Environment.ProcessPath!, target.UserSid);
+            var previous = new StartupShortcut(Environment.ProcessPath!, "--old=\"中文 路径\" " + new string('x', 300) + "  ",
+                Environment.GetFolderPath(Environment.SpecialFolder.Windows));
+            store.ShortcutFiles!.Write(options.AppId, previous);
+            store.Run = "previous run";
+            store.FailShortcutOnce = true;
+            var error = Error(() => ElevatedStartup.Apply(StartupOperation.Plain, portableTarget, store));
+            Check(error is not StartupRollbackException && error.Message.Contains("previous startup restored"));
+            Check(store.ReadShortcut(options.AppId) == previous && store.Run == "previous run" && store.Task is null);
+        }));
 
-Console.WriteLine($"{passed} isolated startup checks passed; no OS startup state accessed.");
-
+        Console.WriteLine($"{passed} isolated startup checks passed; no OS startup state accessed.");
     }
 }
+
 sealed class MemoryStore : IStartupStore
 {
     public string? Task, Run, Legacy;
-    public bool FailLegacyOnce;
+    public StartupShortcut? Shortcut;
+    public StartupShortcutStore? ShortcutFiles;
+    public bool FailLegacyOnce, FailShortcutOnce, FailShortcutRead;
+    public int ShortcutWrites, CorruptShortcutWorkingDirectoryAtWrite;
     public bool FailRead, FailWriteOnce, CorruptWriteOnce, FailRunOnce, FailDeleteOnce, FailDeleteAlways;
     public int Writes;
     public Action? BeforeWrite;
@@ -364,5 +551,21 @@ sealed class MemoryStore : IStartupStore
         }
         Run = command;
         if (FailRunOnce) { FailRunOnce = false; throw new IOException("registry write failed after mutation"); }
+    }
+    public StartupShortcut? ReadShortcut(string name)
+    {
+        if (FailShortcutRead) throw new UnauthorizedAccessException("shortcut read denied");
+        return ShortcutFiles is not null ? ShortcutFiles.Read(name) : Shortcut;
+    }
+    public void WriteShortcut(string name, StartupShortcut? shortcut)
+    {
+        Writes++;
+        ShortcutWrites++;
+        Trace.Add("WriteShortcut:" + (shortcut is not null ? "create" : "remove"));
+        if (ShortcutWrites == CorruptShortcutWorkingDirectoryAtWrite && shortcut is not null)
+            shortcut = shortcut with { WorkingDirectory = @"C:\wrong-directory" };
+        if (ShortcutFiles is not null) ShortcutFiles.Write(name, shortcut);
+        else Shortcut = shortcut;
+        if (FailShortcutOnce) { FailShortcutOnce = false; throw new IOException("shortcut write failed after mutation"); }
     }
 }

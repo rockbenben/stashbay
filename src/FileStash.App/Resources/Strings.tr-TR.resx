@@ -657,6 +657,9 @@
   <data name="ContextMenuLabel" xml:space="preserve">
     <value>Gezgin sağ tık menüsünde “Geçici depolamaya ekle” seçeneğini göster</value>
   </data>
+  <data name="ContextMenuHint" xml:space="preserve">
+    <value>Dosya ve klasör bağlam menüsünde saklama ve geri yükleme eylemleri sağlar ve "Gönder" menüsünde bir kısayol oluşturur.</value>
+  </data>
   <data name="StartWithWindowsLabel" xml:space="preserve">
     <value>Windows ile başlat</value>
   </data>
@@ -898,7 +901,7 @@
   </data>
 
   <data name="RemoveAfterDragExportLabel" xml:space="preserve">
-    <value>Dışarı sürüklendikten sonra geçici depolamadan otomatik kaldır (DropPoint davranışı)</value>
+    <value>Dışarı sürüklendikten sonra geçici depolamadan otomatik kaldır</value>
   </data>
   <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
     <value>Hedef klasöre bırakıldığında öğeleri otomatik kaldırır; kapatıldığında kutuda tutulur</value>

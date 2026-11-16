@@ -657,6 +657,9 @@
   <data name="ContextMenuLabel" xml:space="preserve">
     <value>エクスプローラーの右クリックメニューに「一時保管に追加」を表示します</value>
   </data>
+  <data name="ContextMenuHint" xml:space="preserve">
+    <value>ファイルやフォルダーの右クリックメニューで一時保管と復元操作を提供し、「送る」メニューにショートカットを作成します。</value>
+  </data>
   <data name="StartWithWindowsLabel" xml:space="preserve">
     <value>Windows と同時に起動</value>
   </data>
@@ -898,7 +901,7 @@
   </data>
 
   <data name="RemoveAfterDragExportLabel" xml:space="preserve">
-    <value>ドラッグして取り出した後に一時保管から自動削除（DropPoint 仕様）</value>
+    <value>ドラッグして取り出した後に一時保管から自動削除</value>
   </data>
   <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
     <value>対象フォルダーにドロップすると一時保管から自動的に削除されます。オフにすると保管されたままになります</value>

@@ -33,6 +33,10 @@ try {
             if ($LASTEXITCODE) { throw "Single-file publish (self-contained=$selfContained) exited $LASTEXITCODE" }
             & (Join-Path $published 'ElevatedStartup.Tests.exe')
             if ($LASTEXITCODE) { throw "Single-file regressions (self-contained=$selfContained) exited $LASTEXITCODE" }
+            if ($ValidateXml) {
+                & (Join-Path $published 'ElevatedStartup.Tests.exe') --validate-xml
+                if ($LASTEXITCODE) { throw "Single-file TaskScheduler adapter (self-contained=$selfContained) exited $LASTEXITCODE" }
+            }
         }
     }
 } finally {

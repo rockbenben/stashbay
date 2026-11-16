@@ -657,6 +657,9 @@
   <data name="ContextMenuLabel" xml:space="preserve">
     <value>在资源管理器右键菜单里显示「加入暂存」</value>
   </data>
+  <data name="ContextMenuHint" xml:space="preserve">
+    <value>在文件或文件夹的右键菜单中提供暂存与还原操作，并在「发送到」菜单中创建快捷方式。</value>
+  </data>
   <data name="StartWithWindowsLabel" xml:space="preserve">
     <value>开机自启</value>
   </data>
@@ -898,7 +901,7 @@
   </data>
 
   <data name="RemoveAfterDragExportLabel" xml:space="preserve">
-    <value>拖出后从暂存中自动移除（参考 DropPoint 行为）</value>
+    <value>拖出后从暂存中自动移除</value>
   </data>
   <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
     <value>拖到外部目标文件夹释放后自动移出暂存区，默认开启；关闭后拖出仍保留在暂存箱中</value>

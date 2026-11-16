@@ -657,6 +657,9 @@
   <data name="ContextMenuLabel" xml:space="preserve">
     <value>Tampilkan “Tambahkan ke Area Penyimpanan Sementara” di menu konteks Explorer</value>
   </data>
+  <data name="ContextMenuHint" xml:space="preserve">
+    <value>Menyediakan tindakan simpan dan pulihkan di menu konteks berkas dan folder, serta membuat pintasan di menu "Kirim ke".</value>
+  </data>
   <data name="StartWithWindowsLabel" xml:space="preserve">
     <value>Mulai dengan Windows</value>
   </data>
@@ -898,7 +901,7 @@
   </data>
 
   <data name="RemoveAfterDragExportLabel" xml:space="preserve">
-    <value>Hapus otomatis dari penyimpanan setelah diseret keluar (perilaku DropPoint)</value>
+    <value>Hapus otomatis dari penyimpanan setelah diseret keluar</value>
   </data>
   <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
     <value>Menghapus item secara otomatis setelah dijatuhkan ke folder tujuan; jika nonaktif, item tetap disimpan</value>

@@ -12,7 +12,7 @@ public interface ILogonStartupService
     Task<StartupResult> ChangeAsync(bool enabled, bool elevated, bool repair = false, int delaySeconds = 3);
 }
 
-/// <summary>One owner for normal Run entries and the opt-in administrator logon task.</summary>
+/// <summary>One owner for normal Run entries / Startup shortcuts and the opt-in administrator logon task.</summary>
 public sealed class LogonStartupService : ILogonStartupService
 {
     public static readonly StartupOptions Options = new("StashBay", "StashBay.exe",
@@ -24,18 +24,21 @@ public sealed class LogonStartupService : ILogonStartupService
     private readonly Func<StartupOperation, StartupOptions, Task<StartupResult>> _request;
     private readonly Func<bool> _pending;
     private readonly SemaphoreSlim _gate = new(1, 1);
+    private readonly StartupOptions _options;
 
     public LogonStartupService(bool disabled = false, IStartupStore? store = null, StartupTarget? target = null,
         Func<StartupOperation, Task<StartupResult>>? request = null, Func<bool>? pending = null, Func<int>? delay = null,
-        Func<StartupOperation, StartupOptions, Task<StartupResult>>? configuredRequest = null)
+        Func<StartupOperation, StartupOptions, Task<StartupResult>>? configuredRequest = null,
+        StartupOptions? options = null)
     {
         _disabled = disabled;
         _store = store ?? new WindowsStartupStore();
         _target = target;
         _delay = delay ?? (() => 3);
-        _request = configuredRequest ?? ((operation, options) => request is null
-            ? ElevatedStartup.ChangeAsync(operation, options) : request(operation));
+        _request = configuredRequest ?? ((operation, opt) => request is null
+            ? ElevatedStartup.ChangeAsync(operation, opt) : request(operation));
         _pending = pending ?? (() => ElevatedStartup.IsHelperPending);
+        _options = options ?? Options;
     }
 
     private StartupTarget Target => TargetFor(_delay());
@@ -45,7 +48,7 @@ public sealed class LogonStartupService : ILogonStartupService
         ElevatedStartup.ValidateDelay(seconds);
         if (_target is not null) return _target with { Options = _target.Options with { LogonDelaySeconds = seconds } };
         using var identity = WindowsIdentity.GetCurrent();
-        return ElevatedStartup.Target(Options with { LogonDelaySeconds = seconds }, Environment.ProcessPath ?? "", identity.User!.Value);
+        return ElevatedStartup.Target(_options with { LogonDelaySeconds = seconds }, Environment.ProcessPath ?? "", identity.User!.Value);
     }
 
     public bool IsPending => !_disabled && (_gate.CurrentCount == 0 || _pending());
@@ -60,14 +63,22 @@ public sealed class LogonStartupService : ILogonStartupService
             string? task = _store.ReadTask(target.TaskName);
             string? run = _store.ReadRun(target.Options.AppId);
             string? legacy = target.Options.LegacyRunValueName is { } name ? _store.ReadRun(name) : null;
+            var shortcut = _store.ReadShortcut(target.Options.AppId);
             if (task is not null)
             {
                 if (!ElevatedStartup.Owned(task, target)) return new(LogonStartupState.Conflict, target.TaskName);
-                return new(ElevatedStartup.Matches(task, target) && run is null && legacy is null
+                return new(ElevatedStartup.Matches(task, target) && run is null && legacy is null && shortcut is null
                     ? LogonStartupState.Elevated : LogonStartupState.ElevatedNeedsRepair, target.TaskName);
             }
-            return new(run is null && legacy is null ? LogonStartupState.Disabled :
-                run == ElevatedStartup.PlainCommand(target) && legacy is null ? LogonStartupState.Plain :
+            if (target.Options.UseStartupShortcut)
+            {
+                var expectedShortcut = ElevatedStartup.PlainShortcut(target);
+                return new(run is null && legacy is null && shortcut is null ? LogonStartupState.Disabled :
+                    run is null && legacy is null && shortcut == expectedShortcut ? LogonStartupState.Plain :
+                    LogonStartupState.PlainNeedsRepair);
+            }
+            return new(run is null && legacy is null && shortcut is null ? LogonStartupState.Disabled :
+                run == ElevatedStartup.PlainCommand(target) && legacy is null && shortcut is null ? LogonStartupState.Plain :
                 LogonStartupState.PlainNeedsRepair);
         }
         catch (Exception ex) { return new(LogonStartupState.Unknown, Diagnostic("query", ex)); }
@@ -94,7 +105,8 @@ public sealed class LogonStartupService : ILogonStartupService
                 // elevated task also needs no writes. Every actual task mutation uses the helper.
                 bool correctElevated = enabled && elevated && ElevatedStartup.Matches(task, target) &&
                     _store.ReadRun(target.Options.AppId) is null &&
-                    (target.Options.LegacyRunValueName is not { } legacy || _store.ReadRun(legacy) is null);
+                    (target.Options.LegacyRunValueName is not { } legacy || _store.ReadRun(legacy) is null) &&
+                    _store.ReadShortcut(target.Options.AppId) is null;
                 if (correctElevated) return new StartupResult(StartupOutcome.Unchanged);
                 if (task is null && operation is StartupOperation.Plain or StartupOperation.Uninstall)
                     return ElevatedStartup.Apply(operation, target, _store);

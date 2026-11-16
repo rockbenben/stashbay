@@ -657,6 +657,9 @@
   <data name="ContextMenuLabel" xml:space="preserve">
     <value>แสดง «เพิ่มเข้าพื้นที่จัดเก็บชั่วคราว» ในเมนูคลิกขวาของ File Explorer</value>
   </data>
+  <data name="ContextMenuHint" xml:space="preserve">
+    <value>จัดเตรียมการดำเนินการจัดเก็บและกู้คืนในเมนูบริบทของไฟล์และโฟลเดอร์ และสร้างทางลัดในเมนู "ส่งไปยัง"</value>
+  </data>
   <data name="StartWithWindowsLabel" xml:space="preserve">
     <value>เริ่มพร้อม Windows</value>
   </data>
@@ -898,7 +901,7 @@
   </data>
 
   <data name="RemoveAfterDragExportLabel" xml:space="preserve">
-    <value>ลบออกจากพื้นที่จัดเก็บชั่วคราวโดยอัตโนมัติหลังจากลากออก (พฤติกรรม DropPoint)</value>
+    <value>ลบออกจากพื้นที่จัดเก็บชั่วคราวโดยอัตโนมัติหลังจากลากออก</value>
   </data>
   <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
     <value>ลบรายการโดยอัตโนมัติเมื่อวางลงในโฟลเดอร์ปลายทาง หากปิด รายการจะยังคงอยู่ในกล่อง</value>

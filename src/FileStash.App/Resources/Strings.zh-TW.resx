@@ -657,6 +657,9 @@
   <data name="ContextMenuLabel" xml:space="preserve">
     <value>在檔案總管右鍵功能表中顯示「加入暫存」</value>
   </data>
+  <data name="ContextMenuHint" xml:space="preserve">
+    <value>在檔案或資料夾的右鍵選單中提供暫存與還原操作，並在「傳送到」選單中建立捷徑。</value>
+  </data>
   <data name="StartWithWindowsLabel" xml:space="preserve">
     <value>開機自動啟動</value>
   </data>
@@ -898,7 +901,7 @@
   </data>
 
   <data name="RemoveAfterDragExportLabel" xml:space="preserve">
-    <value>拖出後從暫存中自動移除（參考 DropPoint 行為）</value>
+    <value>拖出後從暫存中自動移除</value>
   </data>
   <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
     <value>拖到外部目標資料夾釋放後自動移出暫存區，預設開啟；關閉後拖出仍保留在暫存箱中</value>

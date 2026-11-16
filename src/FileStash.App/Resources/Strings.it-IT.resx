@@ -657,6 +657,9 @@
   <data name="ContextMenuLabel" xml:space="preserve">
     <value>Mostra «Aggiungi all'area di deposito» nel menu di scelta rapida di Esplora File</value>
   </data>
+  <data name="ContextMenuHint" xml:space="preserve">
+    <value>Fornisce azioni di archiviazione e ripristino nel menu contestuale di file e cartelle e crea un collegamento nel menu «Invia a».</value>
+  </data>
   <data name="StartWithWindowsLabel" xml:space="preserve">
     <value>Avvia con Windows</value>
   </data>
@@ -898,7 +901,7 @@
   </data>
 
   <data name="RemoveAfterDragExportLabel" xml:space="preserve">
-    <value>Rimuovi automaticamente dal deposito dopo il trascinamento all'esterno (comportamento DropPoint)</value>
+    <value>Rimuovi automaticamente dal deposito dopo il trascinamento all'esterno</value>
   </data>
   <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
     <value>Rimuove automaticamente gli elementi una volta rilasciati nella cartella di destinazione; se disattivato, vengono conservati</value>

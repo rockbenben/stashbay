@@ -657,6 +657,9 @@
   <data name="ContextMenuLabel" xml:space="preserve">
     <value>“Add to stash” appears in the Explorer context menu</value>
   </data>
+  <data name="ContextMenuHint" xml:space="preserve">
+    <value>Provide stash and restore actions in file and folder context menus, and create a shortcut in the "Send to" menu.</value>
+  </data>
   <data name="StartWithWindowsLabel" xml:space="preserve">
     <value>Start with Windows</value>
   </data>
@@ -898,7 +901,7 @@
   </data>
 
   <data name="RemoveAfterDragExportLabel" xml:space="preserve">
-    <value>Remove from stash after drag-out (DropPoint behavior)</value>
+    <value>Remove from stash after drag-out</value>
   </data>
   <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
     <value>Automatically remove items from stash once dropped into a destination; when off, items are kept in stash</value>

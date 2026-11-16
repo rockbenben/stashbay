@@ -657,6 +657,9 @@
   <data name="ContextMenuLabel" xml:space="preserve">
     <value>Hiện “Thêm vào khu vực tạm trữ” trong menu ngữ cảnh của Explorer</value>
   </data>
+  <data name="ContextMenuHint" xml:space="preserve">
+    <value>Cung cấp các thao tác lưu trữ và khôi phục trong menu ngữ cảnh của tệp và thư mục, đồng thời tạo lối tắt trong menu "Gửi tới".</value>
+  </data>
   <data name="StartWithWindowsLabel" xml:space="preserve">
     <value>Khởi động cùng Windows</value>
   </data>
@@ -898,7 +901,7 @@
   </data>
 
   <data name="RemoveAfterDragExportLabel" xml:space="preserve">
-    <value>Tự động xóa khỏi khu vực tạm trữ sau khi kéo ra ngoài (hành vi DropPoint)</value>
+    <value>Tự động xóa khỏi khu vực tạm trữ sau khi kéo ra ngoài</value>
   </data>
   <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
     <value>Tự động xóa các mục sau khi thả vào thư mục đích; nếu tắt, các mục sẽ được giữ lại</value>

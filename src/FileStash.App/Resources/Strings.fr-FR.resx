@@ -657,6 +657,9 @@
   <data name="ContextMenuLabel" xml:space="preserve">
     <value>Afficher « Ajouter à la zone de stockage temporaire » dans le menu contextuel de l’Explorateur Windows</value>
   </data>
+  <data name="ContextMenuHint" xml:space="preserve">
+    <value>Fournit des actions de mise en réserve et de restauration dans le menu contextuel des fichiers et dossiers, et crée un raccourci dans le menu « Envoyer vers ».</value>
+  </data>
   <data name="StartWithWindowsLabel" xml:space="preserve">
     <value>Démarrer avec Windows</value>
   </data>
@@ -898,7 +901,7 @@
   </data>
 
   <data name="RemoveAfterDragExportLabel" xml:space="preserve">
-    <value>Retirer automatiquement du stockage après l’exportation par glisser (comportement DropPoint)</value>
+    <value>Retirer automatiquement du stockage après l’exportation par glisser</value>
   </data>
   <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
     <value>Supprime automatiquement les éléments une fois déposés dans un dossier cible ; si désactivé, ils sont conservés</value>

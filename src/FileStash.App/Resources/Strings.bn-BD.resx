@@ -657,6 +657,9 @@
   <data name="ContextMenuLabel" xml:space="preserve">
     <value>এক্সপ্লোরারের রাইট-ক্লিক মেনুতে “অস্থায়ী সংরক্ষণে যোগ করুন” দেখান</value>
   </data>
+  <data name="ContextMenuHint" xml:space="preserve">
+    <value>ফাইল এবং ফোল্ডার প্রসঙ্গ মেনুতে সংরক্ষণ এবং পুনরুদ্ধার অ্যাকশন প্রদান করুন এবং "পাঠান" মেনুতে একটি শর্টকাট তৈরি করুন।</value>
+  </data>
   <data name="StartWithWindowsLabel" xml:space="preserve">
     <value>উইন্ডোজের সাথে চালু হোক</value>
   </data>
@@ -898,7 +901,7 @@
   </data>
 
   <data name="RemoveAfterDragExportLabel" xml:space="preserve">
-    <value>টেনে বের করার পরে স্ট্যাশ থেকে স্বয়ংক্রিয়ভাবে মুছুন (DropPoint আচরণ)</value>
+    <value>টেনে বের করার পরে স্ট্যাশ থেকে স্বয়ংক্রিয়ভাবে মুছুন</value>
   </data>
   <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
     <value>গন্তব্য ফোল্ডারে ফেলার পর উপাদানগুলি স্বয়ংক্রিয়ভাবে মুছে ফেলা হয়; বন্ধ থাকলে উপাদানগুলি থেকে যায়</value>

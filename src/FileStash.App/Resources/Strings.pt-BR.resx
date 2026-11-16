@@ -657,6 +657,9 @@
   <data name="ContextMenuLabel" xml:space="preserve">
     <value>Mostrar “Adicionar ao armazenamento temporário” no menu de contexto do Explorer</value>
   </data>
+  <data name="ContextMenuHint" xml:space="preserve">
+    <value>Fornece ações de armazenamento e restauração no menu de contexto de arquivos e pastas e cria um atalho no menu «Enviar para».</value>
+  </data>
   <data name="StartWithWindowsLabel" xml:space="preserve">
     <value>Iniciar com o Windows</value>
   </data>
@@ -898,7 +901,7 @@
   </data>
 
   <data name="RemoveAfterDragExportLabel" xml:space="preserve">
-    <value>Remover automaticamente do armazenamento após arrastar para fora (comportamento DropPoint)</value>
+    <value>Remover automaticamente do armazenamento após arrastar para fora</value>
   </data>
   <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
     <value>Remove itens automaticamente após soltá-los na pasta de destino; se desativado, eles são mantidos</value>

@@ -657,6 +657,9 @@
   <data name="ContextMenuLabel" xml:space="preserve">
     <value>„Zur Ablage hinzufügen" im Explorer-Kontextmenü anzeigen</value>
   </data>
+  <data name="ContextMenuHint" xml:space="preserve">
+    <value>Stellt Aktionen zum Ablegen und Wiederherstellen im Kontextmenü von Dateien und Ordnern bereit und erstellt eine Verknüpfung im Menü „Senden an“.</value>
+  </data>
   <data name="StartWithWindowsLabel" xml:space="preserve">
     <value>Mit Windows starten</value>
   </data>
@@ -898,7 +901,7 @@
   </data>
 
   <data name="RemoveAfterDragExportLabel" xml:space="preserve">
-    <value>Nach dem Herausziehen automatisch aus der Ablage entfernen (DropPoint-Verhalten)</value>
+    <value>Nach dem Herausziehen automatisch aus der Ablage entfernen</value>
   </data>
   <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
     <value>Entfernt Elemente automatisch nach dem Ablegen im Zielordner; wenn deaktiviert, bleiben sie in der Ablage</value>

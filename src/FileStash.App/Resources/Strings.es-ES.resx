@@ -657,6 +657,9 @@
   <data name="ContextMenuLabel" xml:space="preserve">
     <value>Mostrar «Añadir al almacenamiento temporal» en el menú contextual del Explorador de archivos</value>
   </data>
+  <data name="ContextMenuHint" xml:space="preserve">
+    <value>Proporciona acciones de guardado y restauración en el menú contextual de archivos y carpetas, y crea un acceso directo en el menú «Enviar a».</value>
+  </data>
   <data name="StartWithWindowsLabel" xml:space="preserve">
     <value>Iniciar con Windows</value>
   </data>
@@ -898,7 +901,7 @@
   </data>
 
   <data name="RemoveAfterDragExportLabel" xml:space="preserve">
-    <value>Eliminar automáticamente del almacenamiento tras arrastrar fuera (comportamiento DropPoint)</value>
+    <value>Eliminar automáticamente del almacenamiento tras arrastrar fuera</value>
   </data>
   <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
     <value>Elimina elementos automáticamente una vez soltados en la carpeta de destino; si se desactiva, se conservan</value>

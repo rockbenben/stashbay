@@ -1,5 +1,7 @@
 using FileStash.Infrastructure.Shell;
 using FileStash.StartupTests;
+using System.IO;
+using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Xml.Linq;
 
@@ -54,8 +56,9 @@ public sealed class ElevatedStartupTests
         Assert.Equal(reason, result.Failure);
     }
 
-    private static StartupTarget NewTarget() => ElevatedStartup.Target(
-        new("StashBay.Tests." + Guid.NewGuid().ToString("N"), "StashBay.exe", "--elevated-logon", "FileStash", "--logon-startup"),
+    private static StartupTarget NewTarget(bool useStartupShortcut = false) => ElevatedStartup.Target(
+        new("StashBay.Tests." + Guid.NewGuid().ToString("N"), "StashBay.exe", "--elevated-logon", "FileStash", "--logon-startup",
+            LogonDelaySeconds: 3, UseStartupShortcut: useStartupShortcut),
         @"D:\便携 & apps\StashBay.exe", "S-1-5-21-1-2-3-1001");
 
     [Fact]
@@ -178,12 +181,82 @@ public sealed class ElevatedStartupTests
         bool isAdmin = ElevatedStartup.IsAdministratorAccount();
         Assert.True(isAdmin || !isAdmin);
     }
+
+    [Fact]
+    public async Task PortablePlainAutostartUsesShortcutAndCleansUpRun()
+    {
+        var target = NewTarget(useStartupShortcut: true);
+        var store = new StartupTestStore();
+        store.Runs[target.Options.AppId] = "old run";
+        var service = new LogonStartupService(store: store, target: target,
+            request: _ => throw new Exception("UAC must not run"));
+
+        var applied = await service.ChangeAsync(true, false);
+        Assert.Equal(StartupOutcome.Applied, applied.Outcome);
+        Assert.Equal(ElevatedStartup.PlainShortcut(target), store.Shortcut);
+        Assert.Null(store.ReadRun(target.Options.AppId));
+
+        var status = await service.ReadAsync();
+        Assert.Equal(LogonStartupState.Plain, status.State);
+
+        var uninstalled = await service.ChangeAsync(false, false);
+        Assert.Equal(StartupOutcome.Applied, uninstalled.Outcome);
+        Assert.Null(store.Shortcut);
+        Assert.Null(store.ReadRun(target.Options.AppId));
+
+        var disabledStatus = await service.ReadAsync();
+        Assert.Equal(LogonStartupState.Disabled, disabledStatus.State);
+    }
+
+    [Fact]
+    public async Task ShortcutReadOrWriteFailurePropagatesOrRestoresState()
+    {
+        var target = NewTarget(useStartupShortcut: true);
+        var store = new StartupTestStore { FailShortcutRead = true };
+        var service = new LogonStartupService(store: store, target: target);
+
+        var status = await service.ReadAsync();
+        Assert.Equal(LogonStartupState.Unknown, status.State);
+
+        store.FailShortcutRead = false;
+        store.FailShortcutWriteOnce = true;
+        var changeResult = await service.ChangeAsync(true, false);
+        Assert.Equal(StartupOutcome.Failed, changeResult.Outcome);
+        Assert.Null(store.Shortcut);
+    }
+
+    [Fact]
+    public async Task StrayShortcutOrRunCausesPlainNeedsRepair()
+    {
+        var target = NewTarget(useStartupShortcut: false);
+        var store = new StartupTestStore();
+        store.WriteRun(target.Options.AppId, ElevatedStartup.PlainCommand(target));
+        store.Shortcut = new StartupShortcut(@"C:\other\app.exe", "", @"C:\other");
+        var service = new LogonStartupService(store: store, target: target);
+
+        var status = await service.ReadAsync();
+        Assert.Equal(LogonStartupState.PlainNeedsRepair, status.State);
+    }
+
+    [Fact]
+    public void TaskLookupRecognizesMissingTaskAndPreservesErrors()
+    {
+        Assert.Null(WindowsStartupStore.ReadTaskXml(() => throw new FileNotFoundException()));
+        Assert.Null(WindowsStartupStore.ReadTaskXml(() => throw new COMException("missing", unchecked((int)0x80070002))));
+        Assert.Null(WindowsStartupStore.ReadTaskXml(() => throw new COMException("missing path", unchecked((int)0x80070003))));
+
+        var denied = new UnauthorizedAccessException("denied");
+        var error = Assert.Throws<UnauthorizedAccessException>(() => WindowsStartupStore.ReadTaskXml(() => throw denied));
+        Assert.Same(denied, error);
+    }
 }
 
 internal sealed class StartupTestStore : IStartupStore
 {
     public string? TaskXml;
     public bool FailLegacyWriteOnce, FailRead;
+    public StartupShortcut? Shortcut;
+    public bool FailShortcutRead, FailShortcutWriteOnce;
     public Dictionary<string, string> Runs { get; } = [];
     public string? ReadTask(string name) => FailRead ? throw new UnauthorizedAccessException("query denied") : TaskXml;
     public void WriteTask(string name, string xml, string userSid) => TaskXml = xml;
@@ -198,5 +271,15 @@ internal sealed class StartupTestStore : IStartupStore
             FailLegacyWriteOnce = false;
             throw new IOException("legacy write failed after mutation");
         }
+    }
+    public StartupShortcut? ReadShortcut(string name) => FailShortcutRead ? throw new UnauthorizedAccessException("shortcut query denied") : Shortcut;
+    public void WriteShortcut(string name, StartupShortcut? shortcut)
+    {
+        if (FailShortcutWriteOnce)
+        {
+            FailShortcutWriteOnce = false;
+            throw new IOException("shortcut write failed after mutation");
+        }
+        Shortcut = shortcut;
     }
 }

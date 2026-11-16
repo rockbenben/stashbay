@@ -17,6 +17,10 @@ using System.Xml.Linq;
 using System.Xml;
 using System.Globalization;
 using Microsoft.Win32;
+using TaskService = Microsoft.Win32.TaskScheduler.TaskService;
+using TaskFolder = Microsoft.Win32.TaskScheduler.TaskFolder;
+using TaskCreation = Microsoft.Win32.TaskScheduler.TaskCreation;
+using TaskLogonType = Microsoft.Win32.TaskScheduler.TaskLogonType;
 
 namespace FileStash.Infrastructure.Shell;
 
@@ -26,7 +30,8 @@ public enum StartupFailure { None, AccountMismatch, AccessDenied, OwnershipConfl
 public sealed record StartupResult(StartupOutcome Outcome, string? Detail = null, StartupFailure Failure = StartupFailure.None);
 public sealed class StartupOwnershipException(string message) : InvalidOperationException(message);
 public sealed class StartupRollbackException(string message, Exception inner) : IOException(message, inner);
-public sealed record StartupOptions(string AppId, string ExecutableName, string TrayArguments = "--tray", string? LegacyRunValueName = null, string? PlainArguments = null, int LogonDelaySeconds = 3);
+public sealed record StartupOptions(string AppId, string ExecutableName, string TrayArguments = "--tray", string? LegacyRunValueName = null, string? PlainArguments = null, int LogonDelaySeconds = 3, bool UseStartupShortcut = false);
+public sealed record StartupShortcut(string Executable, string Arguments, string WorkingDirectory);
 public sealed record StartupTarget(StartupOptions Options, string Executable, string UserSid)
 {
     public string TaskName => Options.AppId + ".Startup." + UserSid;
@@ -41,6 +46,8 @@ public interface IStartupStore
     void DeleteTask(string name);
     string? ReadRun(string valueName);
     void WriteRun(string valueName, string? command);
+    StartupShortcut? ReadShortcut(string name);
+    void WriteShortcut(string name, StartupShortcut? shortcut);
 }
 
 public static class ElevatedStartup
@@ -83,6 +90,9 @@ public static class ElevatedStartup
         if (command.Length > 260) throw new ArgumentException("The Run command exceeds Windows' 260-character limit; use a shorter path or a logon-task backend.");
         return command;
     }
+
+    public static StartupShortcut PlainShortcut(StartupTarget target) => new(target.Executable,
+        target.Options.PlainArguments ?? target.Options.TrayArguments, Path.GetDirectoryName(target.Executable)!);
 
     public static string TaskXml(StartupTarget target)
     {
@@ -207,20 +217,26 @@ public static class ElevatedStartup
         if (!Enum.IsDefined(operation)) throw new ArgumentOutOfRangeException(nameof(operation));
         string name = target.TaskName;
         string? beforeTask, beforeRun, beforeLegacy;
+        StartupShortcut? beforeShortcut;
         try
         {
             beforeTask = store.ReadTask(name);
             beforeRun = store.ReadRun(target.Options.AppId);
             beforeLegacy = target.Options.LegacyRunValueName is { } legacy ? store.ReadRun(legacy) : null;
+            beforeShortcut = store.ReadShortcut(target.Options.AppId);
             if (beforeTask is not null && !Owned(beforeTask, target))
                 throw new StartupOwnershipException("Task name belongs to another application; no changes made.");
         }
         catch (Exception ex) { throw Failure("preflight", target, ex); }
 
         bool remove = operation is StartupOperation.Uninstall or StartupOperation.Plain;
-        string? desiredRun = operation == StartupOperation.Plain ? PlainCommand(target) : null;
-        bool alreadyCorrect = remove ? beforeTask is null : Matches(beforeTask, target);
-        if (alreadyCorrect && beforeRun == desiredRun && beforeLegacy is null) return new(StartupOutcome.Unchanged);
+        string? desiredRun = operation == StartupOperation.Plain && !target.Options.UseStartupShortcut ? PlainCommand(target) : null;
+        StartupShortcut? desiredShortcut = operation == StartupOperation.Plain && target.Options.UseStartupShortcut ? PlainShortcut(target) : null;
+        bool alreadyCorrect = (remove ? beforeTask is null : Matches(beforeTask, target)) &&
+            beforeRun == desiredRun &&
+            beforeLegacy is null &&
+            beforeShortcut == desiredShortcut;
+        if (alreadyCorrect) return new(StartupOutcome.Unchanged);
         string stage = remove ? "remove task" : "register task";
         try
         {
@@ -238,14 +254,16 @@ public static class ElevatedStartup
             stage = "update plain startup";
             store.WriteRun(target.Options.AppId, desiredRun);
             if (target.Options.LegacyRunValueName is { } legacy) store.WriteRun(legacy, null);
+            store.WriteShortcut(target.Options.AppId, desiredShortcut);
             if (store.ReadRun(target.Options.AppId) != desiredRun ||
-                (target.Options.LegacyRunValueName is { } legacyCheck && store.ReadRun(legacyCheck) is not null))
-                throw new IOException("The old Run entry is still present.");
+                (target.Options.LegacyRunValueName is { } legacyCheck && store.ReadRun(legacyCheck) is not null) ||
+                store.ReadShortcut(target.Options.AppId) != desiredShortcut)
+                throw new IOException("Plain startup entry could not be verified after update.");
             return new(StartupOutcome.Applied);
         }
         catch (Exception ex)
         {
-            // Attempt both restores even if one fails, and report any incomplete rollback honestly.
+            // Attempt all restores even if one fails, and report any incomplete rollback honestly.
             var errors = new List<Exception> { ex };
             try
             {
@@ -274,6 +292,13 @@ public static class ElevatedStartup
                 }
                 catch (Exception rollback) { errors.Add(rollback); }
             }
+            try
+            {
+                store.WriteShortcut(target.Options.AppId, beforeShortcut);
+                if (store.ReadShortcut(target.Options.AppId) != beforeShortcut)
+                    throw new IOException("Previous shortcut entry could not be verified after rollback.");
+            }
+            catch (Exception rollback) { errors.Add(rollback); }
             var failure = Failure(stage + (errors.Count > 1 ? "; rollback incomplete" : "; previous startup restored"), target,
                 new AggregateException(errors));
             if (errors.Count > 1) throw new StartupRollbackException(failure.Message, failure);
@@ -483,9 +508,11 @@ public static class ElevatedStartup
             committed = true;
             bool valid = operation is StartupOperation.Uninstall or StartupOperation.Plain ? store.ReadTask(target.TaskName) is null
                 : Matches(store.ReadTask(target.TaskName), target);
-            return valid && store.ReadRun(target.Options.AppId) ==
-                (operation == StartupOperation.Plain ? PlainCommand(target) : null) &&
-                (target.Options.LegacyRunValueName is not { } legacy || store.ReadRun(legacy) is null)
+            string? desiredRun = operation == StartupOperation.Plain && !target.Options.UseStartupShortcut ? PlainCommand(target) : null;
+            StartupShortcut? desiredShortcut = operation == StartupOperation.Plain && target.Options.UseStartupShortcut ? PlainShortcut(target) : null;
+            return valid && store.ReadRun(target.Options.AppId) == desiredRun &&
+                (target.Options.LegacyRunValueName is not { } legacy || store.ReadRun(legacy) is null) &&
+                store.ReadShortcut(target.Options.AppId) == desiredShortcut
                 ? new(StartupOutcome.Applied) : new(StartupOutcome.Uncertain, "Post-helper readback failed; read state before retrying.");
         }
         catch (Win32Exception ex) when (ex.NativeErrorCode == 1223)
@@ -499,43 +526,45 @@ public sealed class WindowsStartupStore : IStartupStore
 {
     private const string RunKey = @"Software\Microsoft\Windows\CurrentVersion\Run";
 
-    private static T WithFolder<T>(Func<dynamic, T> action)
+    private static T WithFolder<T>(Func<TaskFolder, T> action)
     {
-        object? service = null, folder = null;
-        try
-        {
-            service = Activator.CreateInstance(Type.GetTypeFromProgID("Schedule.Service")!);
-            ((dynamic)service!).Connect();
-            folder = ((dynamic)service).GetFolder(@"\");
-            return action(folder!);
-        }
-        finally { Release(folder); Release(service); }
+        using var service = new TaskService();
+        using var folder = service.RootFolder;
+        return action(folder);
     }
-    private static void Release(object? value)
+
+    // Only call around a task lookup in an already-open folder. The collection indexer
+    // reports missing tasks as ERROR_PATH_NOT_FOUND too; connection/folder failures stay errors.
+    internal static string? ReadTaskXml(Func<string> read)
     {
-        if (value is not null && Marshal.IsComObject(value)) Marshal.FinalReleaseComObject(value);
+        try { return read(); }
+        catch (Exception ex) when (ex.HResult is unchecked((int)0x80070002) or unchecked((int)0x80070003))
+        { return null; }
     }
+
     public string? ReadTask(string name) => WithFolder<string?>(folder =>
     {
-        object? task = null;
-        try { task = folder.GetTask(name); return (string)((dynamic)task).Xml; }
-        // COM interop may map HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND) to
-        // FileNotFoundException. A missing task is an ordinary unregistered state.
-        catch (Exception ex) when (ex.HResult == unchecked((int)0x80070002)) { return null; }
-        finally { Release(task); }
+        // TaskService.GetTask and TaskCollection.Exists swallow COM errors. The
+        // named collection indexer propagates access denial and other query failures.
+        using var tasks = folder.Tasks;
+        return ReadTaskXml(() =>
+        {
+            using var task = tasks[name];
+            return task.Xml;
+        });
     });
     public void WriteTask(string name, string xml, string userSid) => WithFolder(folder =>
     {
-        object? task = null;
         // Explicit DACL prevents an ordinary-user principal ACE from permitting task modification.
         // Do not add a principal write ACE or fire registration triggers during restore.
-        try { task = folder.RegisterTask(name, xml, 6 | 0x10 | 0x20, userSid, null, 3,
-            $"D:P(A;;FA;;;SY)(A;;FA;;;BA)(A;;FR;;;{userSid})"); return true; }
-        finally { Release(task); }
+        using var task = folder.RegisterTask(name, xml,
+            TaskCreation.CreateOrUpdate | TaskCreation.DontAddPrincipalAce | TaskCreation.IgnoreRegistrationTriggers,
+            userSid, null, TaskLogonType.InteractiveToken, $"D:P(A;;FA;;;SY)(A;;FA;;;BA)(A;;FR;;;{userSid})");
+        return true;
     });
     public void DeleteTask(string name) => WithFolder(folder =>
     {
-        try { folder.DeleteTask(name, 0); }
+        try { folder.DeleteTask(name); }
         catch (Exception ex) when (ex.HResult == unchecked((int)0x80070002)) { }
         return true;
     });
@@ -553,4 +582,102 @@ public sealed class WindowsStartupStore : IStartupStore
         if (command is null) key.DeleteValue(valueName, false);
         else key.SetValue(valueName, command, RegistryValueKind.String);
     }
+    private readonly StartupShortcutStore shortcuts = new(Environment.GetFolderPath(Environment.SpecialFolder.Startup));
+    public StartupShortcut? ReadShortcut(string name) => shortcuts.Read(name);
+    public void WriteShortcut(string name, StartupShortcut? shortcut) => shortcuts.Write(name, shortcut);
+}
+
+// Only shortcut files live here: tests use a temporary directory without a task/registry adapter.
+internal sealed class StartupShortcutStore(string directory)
+{
+    private string ShortcutPath(string name)
+    {
+        if (!Path.IsPathFullyQualified(directory)) throw new IOException("The Startup directory is unavailable.");
+        return Path.Combine(directory, name + ".lnk");
+    }
+
+    private static string ReadText(Action<StringBuilder, int> read)
+    {
+        // Shell link APIs can silently truncate to capacity - 1. Grow until the value fits;
+        // reject excessive data rather than taking a truncated rollback snapshot.
+        const int maximumCapacity = 1024 * 1024;
+        for (int capacity = 260; ; capacity = Math.Min(capacity * 2, maximumCapacity))
+        {
+            var buffer = new StringBuilder(capacity);
+            read(buffer, capacity);
+            if (buffer.Length < capacity - 1) return buffer.ToString();
+            if (capacity == maximumCapacity) throw new InvalidDataException("Shortcut text exceeds the supported buffer size.");
+        }
+    }
+
+    public StartupShortcut? Read(string name)
+    {
+        string path = ShortcutPath(name);
+        // File.Exists also returns false for access/read errors. Only proven absence is null.
+        try { _ = File.GetAttributes(path); }
+        catch (FileNotFoundException) { return null; }
+        catch (DirectoryNotFoundException) { return null; }
+        object? link = null;
+        try
+        {
+            link = (IShellLinkW)new ShellLink();
+            ((System.Runtime.InteropServices.ComTypes.IPersistFile)link).Load(path, 0);
+            var shellLink = (IShellLinkW)link;
+            return new(ReadText((buffer, capacity) => shellLink.GetPath(buffer, capacity, IntPtr.Zero, 0)),
+                ReadText(shellLink.GetArguments), ReadText(shellLink.GetWorkingDirectory));
+        }
+        finally { Release(link); }
+    }
+
+    public void Write(string name, StartupShortcut? shortcut)
+    {
+        string path = ShortcutPath(name);
+        if (shortcut is null)
+        {
+            try { File.Delete(path); }
+            catch (DirectoryNotFoundException) { /* The startup directory itself is absent. */ }
+            return;
+        }
+        object? link = null;
+        try
+        {
+            link = (IShellLinkW)new ShellLink();
+            ((IShellLinkW)link).SetPath(shortcut.Executable);
+            ((IShellLinkW)link).SetArguments(shortcut.Arguments);
+            ((IShellLinkW)link).SetWorkingDirectory(shortcut.WorkingDirectory);
+            ((System.Runtime.InteropServices.ComTypes.IPersistFile)link).Save(path, false);
+        }
+        finally { Release(link); }
+    }
+
+    private static void Release(object? value)
+    {
+        if (value is not null && Marshal.IsComObject(value)) Marshal.FinalReleaseComObject(value);
+    }
+}
+
+[ComImport, Guid("00021401-0000-0000-C000-000000000046")]
+internal class ShellLink { }
+
+[ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("000214F9-0000-0000-C000-000000000046")]
+internal interface IShellLinkW
+{
+    void GetPath([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszFile, int cch, IntPtr pfd, int fFlags);
+    void GetIDList(out IntPtr ppidl);
+    void SetIDList(IntPtr pidl);
+    void GetDescription([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszName, int cch);
+    void SetDescription([MarshalAs(UnmanagedType.LPWStr)] string pszName);
+    void GetWorkingDirectory([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszDir, int cch);
+    void SetWorkingDirectory([MarshalAs(UnmanagedType.LPWStr)] string pszDir);
+    void GetArguments([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszArgs, int cch);
+    void SetArguments([MarshalAs(UnmanagedType.LPWStr)] string pszArgs);
+    void GetHotkey(out short pwHotkey);
+    void SetHotkey(short wHotkey);
+    void GetShowCmd(out int piShowCmd);
+    void SetShowCmd(int iShowCmd);
+    void GetIconLocation([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pszIconPath, int cch, out int piIcon);
+    void SetIconLocation([MarshalAs(UnmanagedType.LPWStr)] string pszIconPath, int iIcon);
+    void SetRelativePath([MarshalAs(UnmanagedType.LPWStr)] string pszPathRel, int dwReserved);
+    void Resolve(IntPtr hwnd, int fFlags);
+    void SetPath([MarshalAs(UnmanagedType.LPWStr)] string pszFile);
 }

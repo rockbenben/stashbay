@@ -657,6 +657,9 @@
   <data name="ContextMenuLabel" xml:space="preserve">
     <value>Показывать «Добавить в область хранения» в контекстном меню Проводника</value>
   </data>
+  <data name="ContextMenuHint" xml:space="preserve">
+    <value>Предоставляет действия для сохранения и восстановления в контекстном меню файлов и папок, а также создает ярлык в меню «Отправить».</value>
+  </data>
   <data name="StartWithWindowsLabel" xml:space="preserve">
     <value>Запускать вместе с Windows</value>
   </data>
@@ -898,7 +901,7 @@
   </data>
 
   <data name="RemoveAfterDragExportLabel" xml:space="preserve">
-    <value>Автоматически удалять из области хранения после перетаскивания (как в DropPoint)</value>
+    <value>Автоматически удалять из области хранения после перетаскивания</value>
   </data>
   <data name="RemoveAfterDragExportTooltip" xml:space="preserve">
     <value>Автоматически удаляет элементы после сброса в целевую папку; при отключении элементы сохраняются</value>
