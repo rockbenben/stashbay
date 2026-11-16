@@ -4,16 +4,15 @@
 <meta charset="utf-8" />
 <style>
   /* ------------------------------------------------------------------
-     StashBay social preview — bilingual; teal brand layer around a neutral window.
+     StashBay social preview — bilingual; teal brand layer around neutral UI.
 
      Two colour layers, deliberately separate:
        · BRAND (--brand-*) — the teal/mint identity: glow, mark, headline
          accent, feature icons, the card flying out. This stays colourful:
-         it is the logo, not the product.
+         it is the logo and identity, not the product.
        · PRODUCT (--surface / --border / --text / --accent …) — the app's
          own Dark.xaml tokens (Brush.*). Since 2026-11-05 the runtime UI is
-         neutral graphite, so the window drawn here must match it: never
-         invent a mockup that differs from the shipped window.
+         neutral graphite, matching the shipped window.
      ------------------------------------------------------------------ */
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -22,6 +21,7 @@
     --surface:      #17181A;
     --surface-alt:  #1E2022;
     --surface-sunk: #131415;
+    --shelf-surf:   #292929;
     --border:       #2C2E31;
     --border-str:   #3C3F43;
     --text:         #ECEDEE;
@@ -33,7 +33,7 @@
     --warning:      #C9A227;
     --danger:       #C46A62;
 
-    /* --- brand: the teal/mint identity, unchanged --- */
+    /* --- brand: the teal/mint identity --- */
     --brand:        #3FC7AE;
     --brand-lit:    #7FE9D8;
     --brand-deep:   #0E9E87;
@@ -42,7 +42,7 @@
 
     --ui: "Segoe UI Variable Text", "Segoe UI", "Microsoft YaHei UI", system-ui, sans-serif;
     --display: "Segoe UI Variable Display", "Segoe UI", "Microsoft YaHei UI", system-ui, sans-serif;
-    --mono: "Cascadia Mono", "Cascadia Code", Consolas, "Microsoft YaHei UI", monospace;
+    --mono: "Cascadia Mono", "Cascadia Code", Consolas, monospace;
   }
 
   body {
@@ -55,8 +55,7 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Lit frame: keeps the card's edge readable when the repo page is dark.
-     Without it the dark top-left measured only 1.05:1 against #0d1117. */
+  /* Lit frame: keeps the card's edge readable on dark GitHub backgrounds */
   .frame {
     position: absolute; inset: 0; pointer-events: none; z-index: 5;
     box-shadow:
@@ -155,117 +154,165 @@
   .meta .sep { width: 3px; height: 3px; border-radius: 50%; background: #3C3F43; }
 
   /* ==================================================================
-     The product: a real app window, tilted in space.
-     Same 3D treatment as the previous card, but the contents are the
-     actual Dark.xaml UI instead of an invented mockup.
+     The product: real app windows, tilted in space.
+     Reflects the actual Dark.xaml UI:
+       1) Full Workbench window in the background
+       2) DropPoint Compact Shelf floating in the foreground
+       3) Draggable file flying out
      ================================================================== */
   .stage {
-    position: absolute; left: 556px; top: 56px;
-    width: 600px; height: 540px;
+    position: absolute; left: 540px; top: 48px;
+    width: 630px; height: 550px;
     perspective: 1500px;
-    perspective-origin: 46% 42%;
+    perspective-origin: 46% 44%;
   }
 
-  /* contact shadow so the window sits on something */
+  /* contact shadow */
   .ground {
-    position: absolute; left: 10px; top: 452px;
-    width: 480px; height: 78px;
-    background: radial-gradient(ellipse at 50% 50%, rgba(0,0,0,.70) 0%, rgba(0,0,0,.26) 46%, transparent 74%);
-    filter: blur(15px);
-    transform: rotate(-3deg);
+    position: absolute; left: 20px; top: 480px;
+    width: 520px; height: 60px;
+    background: radial-gradient(ellipse at 50% 50%, rgba(0,0,0,.75) 0%, rgba(0,0,0,.26) 46%, transparent 74%);
+    filter: blur(16px);
+    transform: rotate(-2deg);
   }
 
+  /* ---------------- Full Workbench Window (Background) ---------------- */
   .window {
-    position: absolute; left: 20px; top: 26px;
-    width: 500px;
+    position: absolute; left: 10px; top: 16px;
+    width: 520px; height: 436px;
     transform: rotateY(-12deg) rotateX(5deg) rotateZ(-1.2deg);
     transform-style: preserve-3d;
-    background: linear-gradient(158deg, rgba(30,32,34,.97), rgba(19,20,21,.95));
+    background: linear-gradient(158deg, rgba(30,32,34,.98), rgba(19,20,21,.96));
     border: 1px solid rgba(228,230,232,.16);
     border-radius: 14px;
     box-shadow:
-      0 46px 96px rgba(0,0,0,.66),
-      0 0 70px rgba(13,148,136,.14),
-      inset 0 1px 0 rgba(255,255,255,.07);
-    backdrop-filter: blur(22px);
+      0 42px 92px rgba(0,0,0,.70),
+      0 0 60px rgba(13,148,136,.12),
+      inset 0 1px 0 rgba(255,255,255,.08);
+    backdrop-filter: blur(20px);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
-  /* light catching the glass */
+
   .sheen {
     position: absolute; inset: 0; pointer-events: none;
     background:
-      linear-gradient(118deg, rgba(255,255,255,.11) 0%, rgba(255,255,255,0) 30%,
-                             rgba(255,255,255,0) 72%, rgba(255,255,255,.045) 100%);
+      linear-gradient(118deg, rgba(255,255,255,.09) 0%, rgba(255,255,255,0) 32%,
+                             rgba(255,255,255,0) 75%, rgba(255,255,255,.035) 100%);
   }
 
-  /* window chrome */
+  /* Window chrome */
   .win-bar {
-    height: 46px; display: flex; align-items: center; gap: 10px;
+    height: 40px; display: flex; align-items: center; gap: 8px;
     padding: 0 14px;
-    background: rgba(255,255,255,.028);
+    background: rgba(255,255,255,.025);
     border-bottom: 1px solid rgba(44,46,49,.9);
+    flex-shrink: 0;
   }
-  .win-bar .appmark { width: 20px; height: 20px; flex: none; }
+  .win-bar .appmark { width: 18px; height: 18px; flex: none; }
   .win-bar .appname { font-size: 13px; font-weight: 600; color: var(--text); }
-  .win-dots { margin-left: auto; display: flex; gap: 7px; }
-  .win-dots i { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,.16); }
-
-  /* shelf */
-  .shelf-head {
-    height: 56px; display: flex; align-items: center; gap: 11px;
-    padding: 0 18px;
-    border-bottom: 1px solid rgba(44,46,49,.9);
+  .win-actions {
+    margin-left: auto; display: flex; align-items: center; gap: 8px;
   }
-  .shelf-title { font-size: 15px; font-weight: 700; color: var(--text); white-space: nowrap; }
-  .shelf-count { font-family: var(--mono); font-size: 11px; color: var(--text-3); white-space: nowrap; }
-  .shelf-actions { margin-left: auto; display: flex; gap: 18px; }
-  .shelf-actions span { font-size: 13px; color: var(--text-2); white-space: nowrap; }
-
-  .row {
-    height: 52px; display: flex; align-items: center; gap: 13px;
-    padding: 0 18px;
-    border-bottom: 1px solid rgba(44,46,49,.55);
+  .win-pill {
+    font-size: 11px; color: var(--text-2);
+    padding: 3px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: rgba(255,255,255,.02);
   }
-  .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
-  .row-name { font-size: 14px; color: var(--text); flex: 1; white-space: nowrap; }
-  .row-size { font-family: var(--mono); font-size: 11.5px; color: var(--text-3); white-space: nowrap; }
+  .win-dots { display: flex; gap: 6px; margin-left: 6px; }
+  .win-dots i { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,.18); }
 
-  .shelf-foot {
-    height: 44px; display: flex; align-items: center; gap: 13px;
-    padding: 0 16px;
-    background: rgba(19,20,21,.95);
+  /* Workbench body: sidebar + content */
+  .wb-body {
+    flex: 1; display: flex; overflow: hidden;
   }
-  .grab {
-    display: flex; align-items: center; gap: 7px;
-    background: var(--surface);
+
+  /* Sidebar */
+  .wb-sidebar {
+    width: 136px;
+    background: rgba(30,32,34,.6);
+    border-right: 1px solid rgba(44,46,49,.8);
+    padding: 10px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .wb-side-title {
+    font-size: 10.5px; color: var(--text-3); padding: 4px 8px; font-weight: 600;
+  }
+  .wb-box {
+    font-size: 11.5px; color: var(--text-2);
+    padding: 5px 8px; border-radius: 6px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .wb-box.active {
+    background: rgba(255,255,255,.07);
     color: var(--text);
-    border: 1px solid var(--border-str);
-    border-radius: 999px;
-    padding: 5px 11px;
-    font-size: 12.5px; font-weight: 700;
-    white-space: nowrap; flex: none;
+    font-weight: 600;
   }
-  .foot-hint { font-size: 12px; color: var(--text-2); white-space: nowrap; }
 
-  /* write-back bar — the app's real bottom row */
-  .writeback {
-    height: 60px; display: flex; align-items: center; gap: 14px;
-    padding: 0 16px;
-    background: rgba(23,24,26,.9);
-    border-top: 1px solid rgba(44,46,49,.9);
+  /* Main content */
+  .wb-main {
+    flex: 1; display: flex; flex-direction: column; padding: 10px 14px;
+    overflow: hidden;
   }
-  .wb-label { font-size: 12.5px; color: var(--text-2); white-space: nowrap; flex: none; }
+  .wb-top {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .wb-title { font-size: 14px; font-weight: 700; color: var(--text); }
+  .wb-stats { font-family: var(--mono); font-size: 10.5px; color: var(--text-3); }
+
+  .wb-modes {
+    display: flex; gap: 3px; background: rgba(0,0,0,.25); padding: 2px; border-radius: 6px;
+  }
+  .wb-mode {
+    font-size: 10.5px; color: var(--text-3); padding: 2px 7px; border-radius: 4px;
+  }
+  .wb-mode.active {
+    background: rgba(255,255,255,.1); color: var(--text); font-weight: 600;
+  }
+
+  /* Tree rows */
+  .wb-table { display: flex; flex-direction: column; gap: 1px; }
+  .wb-row-head {
+    display: flex; align-items: center; padding: 4px 6px;
+    font-size: 10px; color: var(--text-3); border-bottom: 1px solid rgba(44,46,49,.6);
+  }
+  .wb-row {
+    display: flex; align-items: center; padding: 5px 6px;
+    font-size: 11px; color: var(--text); border-radius: 5px;
+  }
+  .wb-row:nth-child(even) { background: rgba(255,255,255,.015); }
+  .col-name { flex: 1; display: flex; align-items: center; gap: 7px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .col-size { width: 52px; font-family: var(--mono); font-size: 10.5px; color: var(--text-3); text-align: right; }
+  .col-status { width: 56px; font-size: 10px; text-align: right; color: var(--text-3); }
+  .dot { width: 6px; height: 6px; border-radius: 50%; flex: none; }
+
+  /* Writeback bar */
+  .writeback {
+    height: 48px; display: flex; align-items: center; gap: 10px;
+    padding: 0 12px;
+    background: rgba(23,24,26,.95);
+    border-top: 1px solid rgba(44,46,49,.9);
+    flex-shrink: 0;
+  }
+  .wb-label { font-size: 11px; color: var(--text-3); white-space: nowrap; flex: none; }
   .seg { display: flex; flex: none; }
   .seg span {
-    font-size: 12px; color: var(--text-2);
-    padding: 6px 11px;
+    font-size: 11px; color: var(--text-2);
+    padding: 4px 8px;
     border: 1px solid rgba(60,63,67,.9);
     border-right: none;
     background: rgba(255,255,255,.02);
     white-space: nowrap;
   }
-  .seg span:first-child { border-radius: 999px 0 0 999px; }
-  .seg span:last-child { border-right: 1px solid rgba(60,63,67,.9); border-radius: 0 999px 999px 0; }
+  .seg span:first-child { border-radius: 6px 0 0 6px; }
+  .seg span:last-child { border-right: 1px solid rgba(60,63,67,.9); border-radius: 0 6px 6px 0; }
   .seg span.on {
     background: rgba(46,49,52,.95);
     color: var(--text);
@@ -274,35 +321,91 @@
   }
   .wb-spacer { flex: 1; }
   .btn {
-    font-size: 12.5px; color: var(--text-2);
-    padding: 6px 13px;
+    font-size: 11.5px; color: var(--text-2);
+    padding: 5px 10px;
     border: 1px solid rgba(60,63,67,.9);
-    border-radius: 8px;
+    border-radius: 6px;
     background: rgba(255,255,255,.02);
     white-space: nowrap; flex: none;
   }
   .btn.primary {
-    /* 主键 = 反相中性块（app 里的 Brush.Accent）。不用纯白：纯白在深底上
-       读成一个"洞"，压过头了。 */
     background: #E4E6E8; border-color: #E4E6E8;
     color: var(--accent-text); font-weight: 700;
-    border-radius: 8px;
-    padding: 7px 20px;
+    padding: 5px 14px;
   }
 
-  /* the card that has just been dragged out — brand layer, stays teal */
-  .inflight {
-    position: absolute; left: 486px; top: -20px;
-    width: 86px; height: 94px;
-    background: linear-gradient(155deg, rgba(255,255,255,.92), rgba(120,222,204,.62));
-    border-radius: 11px;
-    box-shadow: 0 22px 42px rgba(0,0,0,.55), 0 0 34px rgba(63,199,174,.30);
-    transform: rotate(-14deg) translateZ(60px);
-    padding: 14px 13px;
+  /* ---------------- Floating Compact Shelf (Foreground) ---------------- */
+  .shelf-float {
+    position: absolute; right: 18px; bottom: 28px;
+    width: 226px; height: 196px;
+    background: #292929;
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 14px;
+    transform: rotateY(-10deg) rotateX(4deg) translateZ(55px);
+    transform-style: preserve-3d;
+    box-shadow:
+      0 32px 72px rgba(0,0,0,.80),
+      0 12px 28px rgba(0,0,0,.50),
+      0 0 45px rgba(63,199,174,.22),
+      inset 0 1px 0 rgba(255,255,255,.14);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
-  .inflight i { display: block; height: 6px; border-radius: 3px; background: rgba(11,91,80,.58); margin-bottom: 9px; }
+
+  .sf-header {
+    height: 32px; padding: 0 10px 0 13px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .sf-title { font-size: 10.5px; font-weight: 500; color: #BDBDBD; }
+  .sf-close {
+    width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;
+  }
+  .sf-close svg { width: 9px; height: 9px; stroke: #BDBDBD; }
+
+  .sf-body {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+  }
+  .sf-glyph { width: 44px; height: 44px; margin-bottom: 7px; }
+  .sf-drag { font-size: 16.5px; font-weight: 600; color: #F0F0F0; }
+  .sf-count { font-size: 10.5px; color: #BDBDBD; margin-top: 3px; }
+
+  .sf-footer {
+    height: 36px; display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding-bottom: 8px; flex-shrink: 0;
+  }
+  .sf-btn {
+    width: 32px; height: 26px; border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    background: transparent;
+  }
+  .sf-btn svg { width: 16px; height: 16px; stroke: #F0F0F0; }
+
+  /* ---------------- Card in Flight (Drag Action) ---------------- */
+  .inflight {
+    position: absolute; right: 54px; top: 120px;
+    width: 82px; height: 90px;
+    background: linear-gradient(155deg, rgba(255,255,255,.94), rgba(120,222,204,.68));
+    border-radius: 11px;
+    box-shadow:
+      0 26px 50px rgba(0,0,0,.60),
+      0 0 38px rgba(63,199,174,.40);
+    transform: rotate(-12deg) translateZ(95px);
+    padding: 13px 12px;
+    border: 1px solid rgba(255,255,255,.8);
+  }
+  .inflight i { display: block; height: 5.5px; border-radius: 3px; background: rgba(11,91,80,.62); margin-bottom: 8px; }
   .inflight i:last-child { width: 54%; margin-bottom: 0; }
-  .trail { position: absolute; border-radius: 50%; background: var(--brand); }
+  
+  .trail {
+    position: absolute; border-radius: 50%; background: var(--brand); pointer-events: none;
+    box-shadow: 0 0 12px var(--brand);
+  }
+  .trail-1 { right: 115px; top: 224px; width: 8px; height: 8px; opacity: .8; transform: translateZ(80px); }
+  .trail-2 { right: 138px; top: 248px; width: 6px; height: 6px; opacity: .5; transform: translateZ(70px); }
+  .trail-3 { right: 154px; top: 268px; width: 4px; height: 4px; opacity: .3; transform: translateZ(60px); }
 </style>
 </head>
 <body>
@@ -315,48 +418,16 @@
   <!-- brand -->
   <div class="brand">
     <div class="mark">
+      <!-- StashBay official stacked file mark from assets/icon.html -->
       <svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="mCard" x1="196" y1="128" x2="348" y2="324" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#6FEBD7"/><stop offset="52%" stop-color="#2ED3BA"/><stop offset="100%" stop-color="#0E9E87"/>
-          </linearGradient>
-          <linearGradient id="mGhost" x1="146" y1="118" x2="274" y2="282" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#12907B" stop-opacity="0.92"/><stop offset="100%" stop-color="#08473F" stop-opacity="0.92"/>
-          </linearGradient>
-          <linearGradient id="mBay" x1="256" y1="288" x2="256" y2="356" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#14887A"/><stop offset="30%" stop-color="#0B6459"/><stop offset="78%" stop-color="#07463E"/><stop offset="100%" stop-color="#0A6A5E"/>
-          </linearGradient>
-          <linearGradient id="mGloss" x1="208" y1="128" x2="278" y2="284" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.55"/><stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.10"/><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
-          </linearGradient>
-          <clipPath id="mCardClip"><rect x="196" y="128" width="152" height="196" rx="24"/></clipPath>
-          <clipPath id="mGhostClip"><rect x="146" y="118" width="128" height="164" rx="20"/></clipPath>
-        </defs>
-        <g transform="translate(256 256) scale(1.2) translate(-258 -251.5)">
-          <g transform="translate(0,16)">
-            <g transform="rotate(-24 210 200)">
-              <rect x="146" y="118" width="128" height="164" rx="20" fill="url(#mGhost)"/>
-              <g clip-path="url(#mGhostClip)">
-                <rect x="170" y="160" width="80" height="12" rx="6" fill="#9FF5E6" opacity="0.45"/>
-                <rect x="170" y="190" width="80" height="12" rx="6" fill="#9FF5E6" opacity="0.28"/>
-              </g>
-              <rect x="146" y="118" width="128" height="164" rx="20" stroke="#7FF0DC" stroke-opacity="0.72" stroke-width="3"/>
-            </g>
-            <g transform="rotate(-13 272 226)">
-              <rect x="196" y="128" width="152" height="196" rx="24" fill="url(#mCard)"/>
-              <g clip-path="url(#mCardClip)">
-                <rect x="222" y="172" width="100" height="15" rx="7.5" fill="#04342E" opacity="0.62"/>
-                <rect x="222" y="206" width="100" height="15" rx="7.5" fill="#04342E" opacity="0.46"/>
-                <rect x="222" y="240" width="58" height="15" rx="7.5" fill="#04342E" opacity="0.32"/>
-                <rect x="196" y="128" width="68" height="196" fill="url(#mGloss)"/>
-              </g>
-              <rect x="196" y="128" width="152" height="196" rx="24" stroke="#D6FFF6" stroke-opacity="0.85" stroke-width="3"/>
-            </g>
-            <path d="M 140 288 L 372 288 Q 382 288 388 298 L 418 342 Q 428 356 408 356 L 104 356 Q 84 356 94 342 L 124 298 Q 130 288 140 288 Z"
-                  fill="url(#mBay)" stroke="#5EEAD4" stroke-opacity="0.88" stroke-width="3.5"/>
-            <path d="M 100 352 L 412 352" stroke="#A7F3E8" stroke-opacity="0.85" stroke-width="5" stroke-linecap="round"/>
-          </g>
-        </g>
+        <rect x="100" y="41" width="298" height="366" rx="42"
+              transform="rotate(-17 249 407)" fill="#555555" stroke="#FAFAFA" stroke-width="12"/>
+        <rect x="115" y="40" width="298" height="366" rx="42"
+              transform="rotate(10 264 406)" fill="#A5A5A5" stroke="#FAFAFA" stroke-width="12"/>
+        <rect x="126" y="114" width="310" height="370" rx="44"
+              fill="#F4F4F4" stroke="#FAFAFA" stroke-width="16"/>
+        <rect x="126" y="114" width="310" height="370" rx="44"
+              fill="#F4F4F4" stroke="#646464" stroke-width="8"/>
       </svg>
     </div>
     <span class="wordmark">StashBay</span>
@@ -398,76 +469,146 @@
     <span>18 Languages</span>
   </div>
 
-  <!-- product: the real app window, in perspective -->
+  <!-- product: the real app windows in 3D perspective -->
   <div class="stage">
     <div class="ground"></div>
 
+    <!-- 1) Full Workbench (Background) -->
     <div class="window">
       <div class="win-bar">
         <span class="appmark">
-          <svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="wCard" x1="196" y1="128" x2="348" y2="324" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stop-color="#6FEBD7"/><stop offset="52%" stop-color="#2ED3BA"/><stop offset="100%" stop-color="#0E9E87"/>
-              </linearGradient>
-              <linearGradient id="wBay" x1="256" y1="288" x2="256" y2="356" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stop-color="#14887A"/><stop offset="60%" stop-color="#0A5049"/><stop offset="100%" stop-color="#0A6A5E"/>
-              </linearGradient>
-            </defs>
-            <g transform="translate(256 256) scale(1.2) translate(-258 -251.5)">
-              <g transform="translate(0,16)">
-                <g transform="rotate(-13 272 226)">
-                  <rect x="196" y="128" width="152" height="196" rx="24" fill="url(#wCard)"/>
-                  <rect x="196" y="128" width="152" height="196" rx="24" stroke="#D6FFF6" stroke-opacity="0.85" stroke-width="4"/>
-                </g>
-                <path d="M 140 288 L 372 288 Q 382 288 388 298 L 418 342 Q 428 356 408 356 L 104 356 Q 84 356 94 342 L 124 298 Q 130 288 140 288 Z"
-                      fill="url(#wBay)" stroke="#5EEAD4" stroke-opacity="0.7" stroke-width="4"/>
-              </g>
-            </g>
+          <svg viewBox="0 0 64 64" fill="none">
+            <rect x="12" y="7" width="34" height="43" rx="7" transform="rotate(-13 29 50)" fill="#737373"/>
+            <rect x="19" y="8" width="34" height="43" rx="7" transform="rotate(8 36 51)" fill="#BDBDBD" opacity="0.45"/>
+            <rect x="17" y="18" width="35" height="42" rx="7" fill="#E4E4E4" stroke="#777777" stroke-width="1"/>
           </svg>
         </span>
         <span class="appname">StashBay</span>
+        <div class="win-actions">
+          <span class="win-pill">+ 添加</span>
+          <span class="win-pill">⤢ 缩回</span>
+          <div class="win-dots"><i></i><i></i><i></i></div>
+        </div>
       </div>
 
-      <div class="shelf-head">
-        <span class="shelf-title">暂存区</span>
-        <span class="shelf-count">6 项 · 26 文件 · 6 MB</span>
-        <span class="shelf-actions"><span>添加</span><span>展开</span></span>
-      </div>
-      <div class="row">
-        <span class="dot" style="background:#A2A5AA"></span>
-        <span class="row-name">a.txt</span><span class="row-size">11 B</span>
-      </div>
-      <div class="row">
-        <span class="dot" style="background:#C9A227"></span>
-        <span class="row-name">改过的.txt</span><span class="row-size">14 B</span>
-      </div>
-      <div class="row">
-        <span class="dot" style="background:#C46A62"></span>
-        <span class="row-name">被删的.txt</span><span class="row-size">17 B</span>
-      </div>
-      <div class="row">
-        <span class="dot" style="background:#A2A5AA"></span>
-        <span class="row-name">大文件.bin</span><span class="row-size">6 MB</span>
-      </div>
-      <div class="shelf-foot">
-        <span class="grab">⤹ 全部拖出 (3)</span>
-        <span class="foot-hint">拖出去即可保存到那个位置</span>
-      </div>
-      <div class="writeback">
-        <span class="wb-label">写回位置</span>
-        <div class="seg">
-          <span class="on">位置</span><span>其他根目录</span><span>指定路径</span>
+      <div class="wb-body">
+        <div class="wb-sidebar">
+          <span class="wb-side-title">暂存箱</span>
+          <div class="wb-box active">默认暂存 (6)</div>
+          <div class="wb-box">项目 A · 前端</div>
+          <div class="wb-box">营销物料汇总</div>
         </div>
-        <span class="wb-spacer"></span>
-        <span class="btn">撤销上次</span>
-        <span class="btn primary">写回</span>
+
+        <div class="wb-main">
+          <div class="wb-top">
+            <span class="wb-title">默认暂存</span>
+            <span class="wb-stats">6 项 · 8 文件 · 293 KB</span>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <div style="display:flex; gap:6px;">
+              <span class="win-pill" style="color:var(--text); font-weight:600;">↗ 拖出文件 6</span>
+              <span class="win-pill">↺ 应用到原位置</span>
+            </div>
+            <div class="wb-modes">
+              <span class="wb-mode active">树</span>
+              <span class="wb-mode">列表</span>
+              <span class="wb-mode">按来源</span>
+              <span class="wb-mode">图标</span>
+            </div>
+          </div>
+
+          <div class="wb-table">
+            <div class="wb-row-head">
+              <span class="col-name">名称 / 路径</span>
+              <span class="col-size">大小</span>
+              <span class="col-status">源状态</span>
+            </div>
+            <div class="wb-row">
+              <span class="col-name"><span class="dot" style="background:#A2A5AA"></span>a.txt</span>
+              <span class="col-size">200 B</span>
+              <span class="col-status">未变化</span>
+            </div>
+            <div class="wb-row">
+              <span class="col-name"><span class="dot" style="background:#C9A227"></span>改过的.txt</span>
+              <span class="col-size">100 B</span>
+              <span class="col-status" style="color:#C9A227">已修改</span>
+            </div>
+            <div class="wb-row">
+              <span class="col-name"><span class="dot" style="background:#C46A62"></span>被删掉的.txt</span>
+              <span class="col-size">100 B</span>
+              <span class="col-status" style="color:#C46A62">已删除</span>
+            </div>
+            <div class="wb-row">
+              <span class="col-name"><span class="dot" style="background:#A2A5AA"></span>大文件.bin</span>
+              <span class="col-size">6 MB</span>
+              <span class="col-status">未变化</span>
+            </div>
+            <div class="wb-row">
+              <span class="col-name"><span class="dot" style="background:#A2A5AA"></span>素材/</span>
+              <span class="col-size">300 B</span>
+              <span class="col-status">未变化</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="writeback">
+        <span class="wb-label">写回</span>
+        <div class="seg">
+          <span class="on">原位置</span><span>其他根目录</span><span>指定路径</span>
+        </div>
+        <span class="wb-label" style="margin-left:4px">结构</span>
+        <div class="seg">
+          <span class="on" style="border-radius:6px">完整子路径 ⌄</span>
+        </div>
       </div>
 
       <div class="sheen"></div>
     </div>
 
-    <!-- the card that has just been dragged out -->
+    <!-- 2) DropPoint Compact Shelf (Foreground) -->
+    <div class="shelf-float">
+      <div class="sf-header">
+        <span class="sf-title">暂存区</span>
+        <div class="sf-close">
+          <svg viewBox="0 0 16 16" fill="none" stroke-width="1.6" stroke-linecap="round">
+            <path d="M4 4L12 12M12 4L4 12"/>
+          </svg>
+        </div>
+      </div>
+      <div class="sf-body">
+        <svg class="sf-glyph" viewBox="0 0 64 64" fill="none">
+          <rect x="12" y="7" width="34" height="43" rx="7" transform="rotate(-13 29 50)" fill="#737373"/>
+          <rect x="19" y="8" width="34" height="43" rx="7" transform="rotate(8 36 51)" fill="#BDBDBD" opacity="0.45"/>
+          <rect x="17" y="18" width="35" height="42" rx="7" fill="#E4E4E4" stroke="#777777" stroke-width="1"/>
+        </svg>
+        <div class="sf-drag">拖出文件</div>
+        <div class="sf-count">已暂存 6 项</div>
+      </div>
+      <div class="sf-footer">
+        <div class="sf-btn" title="应用到原位置">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 5L4 10L9 15M4 10H14C18 10 20 13 20 17"/>
+          </svg>
+        </div>
+        <div class="sf-btn" title="写回指定目录">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 6H9L11 8H21V20H3ZM12 11V17M9 14L12 17L15 14"/>
+          </svg>
+        </div>
+        <div class="sf-btn" title="应用到其他根目录">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 3V8M19 3V8M5 5H19M12 5V11M8 15L12 11L16 15M12 11V21"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3) In-flight card being dragged out -->
+    <div class="trail trail-1"></div>
+    <div class="trail trail-2"></div>
+    <div class="trail trail-3"></div>
     <div class="inflight">
       <i></i><i></i><i></i>
     </div>

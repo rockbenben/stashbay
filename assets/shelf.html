@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ui: "Segoe UI Variable Text", "Segoe UI", "Microsoft YaHei UI", system-ui, -apple-system, sans-serif;
+  }
+
+  html, body {
+    background: transparent;
+    font-family: var(--ui);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .stage {
+    display: inline-flex;
+    padding: 36px 40px 42px 40px;
+    gap: 48px;
+    align-items: flex-start;
+  }
+
+  .shelf-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .shelf {
+    width: 260px;
+    height: 220px;
+    border-radius: 16px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+    overflow: hidden;
+  }
+
+  /* ---------------- Light theme shelf ---------------- */
+  .shelf.light {
+    background: #ECECEC;
+    border: 1px solid #919191;
+    color: #252525;
+    box-shadow:
+      0 18px 48px rgba(0, 0, 0, 0.20),
+      0 4px 12px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  }
+
+  /* ---------------- Dark theme shelf ---------------- */
+  .shelf.dark {
+    background: #292929;
+    border: 1px solid #777777;
+    color: #F0F0F0;
+    box-shadow:
+      0 22px 56px rgba(0, 0, 0, 0.55),
+      0 6px 16px rgba(0, 0, 0, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+
+  /* Header */
+  .shelf-header {
+    height: 36px;
+    padding: 0 10px 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .shelf-title {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .shelf.light .shelf-title { color: #525252; }
+  .shelf.dark .shelf-title { color: #BDBDBD; }
+
+  .close-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: default;
+  }
+  .close-btn svg {
+    width: 10px;
+    height: 10px;
+  }
+  .shelf.light .close-btn svg { stroke: #525252; }
+  .shelf.dark .close-btn svg { stroke: #BDBDBD; }
+
+  /* Body */
+  .shelf-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    text-align: center;
+  }
+
+  .stack-glyph {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 10px;
+  }
+
+  .prompt-large {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  .shelf.light .prompt-large { color: #252525; }
+  .shelf.dark .prompt-large { color: #F0F0F0; }
+
+  .empty-prompt {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.25;
+  }
+  .shelf.light .empty-prompt { color: #525252; }
+  .shelf.dark .empty-prompt { color: #BDBDBD; }
+
+  .shelf-count {
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  .shelf.light .shelf-count { color: #525252; }
+  .shelf.dark .shelf-count { color: #BDBDBD; }
+
+  /* Footer actions */
+  .shelf-footer {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding-bottom: 10px;
+    flex-shrink: 0;
+  }
+
+  .action-btn {
+    width: 38px;
+    height: 32px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid transparent;
+  }
+  .action-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+  .shelf.light .action-btn svg { stroke: #252525; }
+  .shelf.dark .action-btn svg { stroke: #F0F0F0; }
+
+  /* Caption below each shelf */
+  .caption {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+  .caption-tag {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #4A4D52;
+    letter-spacing: 0.02em;
+  }
+  .caption-sub {
+    font-size: 11.5px;
+    color: #7A7E85;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .caption-tag { color: #C5C8CD; }
+    .caption-sub { color: #8A8E96; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <!-- Empty shelf in Light mode -->
+  <div class="shelf-wrapper">
+    <div class="shelf light">
+      <div class="shelf-header">
+        <div></div>
+        <div class="close-btn">
+          <svg viewBox="0 0 16 16" fill="none" stroke-width="1.6" stroke-linecap="round">
+            <path d="M4 4L12 12M12 4L4 12"/>
+          </svg>
+        </div>
+      </div>
+      <div class="shelf-body">
+        <svg class="stack-glyph" viewBox="0 0 64 64" fill="none">
+          <rect x="12" y="7" width="34" height="43" rx="7" transform="rotate(-13 29 50)" fill="#B8B8B8"/>
+          <rect x="19" y="8" width="34" height="43" rx="7" transform="rotate(8 36 51)" fill="#525252" opacity="0.45"/>
+          <rect x="17" y="18" width="35" height="42" rx="7" fill="#FFFFFF" stroke="#919191" stroke-width="1"/>
+        </svg>
+        <div class="empty-prompt">将文件拖到这里</div>
+      </div>
+    </div>
+    <div class="caption">
+      <span class="caption-tag">空状态 · 待拖入</span>
+      <span class="caption-sub">跟随光标呼出 · 晃动鼠标暂存</span>
+    </div>
+  </div>
+
+  <!-- Populated shelf in Dark mode -->
+  <div class="shelf-wrapper">
+    <div class="shelf dark">
+      <div class="shelf-header">
+        <span class="shelf-title">暂存区</span>
+        <div class="close-btn">
+          <svg viewBox="0 0 16 16" fill="none" stroke-width="1.6" stroke-linecap="round">
+            <path d="M4 4L12 12M12 4L4 12"/>
+          </svg>
+        </div>
+      </div>
+      <div class="shelf-body">
+        <svg class="stack-glyph" viewBox="0 0 64 64" fill="none">
+          <rect x="12" y="7" width="34" height="43" rx="7" transform="rotate(-13 29 50)" fill="#737373"/>
+          <rect x="19" y="8" width="34" height="43" rx="7" transform="rotate(8 36 51)" fill="#BDBDBD" opacity="0.45"/>
+          <rect x="17" y="18" width="35" height="42" rx="7" fill="#E4E4E4" stroke="#777777" stroke-width="1"/>
+        </svg>
+        <div class="prompt-large">拖出文件</div>
+        <div class="shelf-count">已暂存 6 项</div>
+      </div>
+      <div class="shelf-footer">
+        <div class="action-btn" title="应用到原位置">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 5L4 10L9 15M4 10H14C18 10 20 13 20 17"/>
+          </svg>
+        </div>
+        <div class="action-btn" title="写回指定目录">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 6H9L11 8H21V20H3ZM12 11V17M9 14L12 17L15 14"/>
+          </svg>
+        </div>
+        <div class="action-btn" title="应用到其他根目录">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 3V8M19 3V8M5 5H19M12 5V11M8 15L12 11L16 15M12 11V21"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="caption">
+      <span class="caption-tag">暂存中 · 一键拖出</span>
+      <span class="caption-sub">单个手势拖出 · 支持原路写回</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
