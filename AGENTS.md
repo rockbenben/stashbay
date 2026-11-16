@@ -28,9 +28,9 @@ FileStash.sln
 │   ├── FileStash.Core/             # net10.0, POCO models, repository & service interfaces, pure logic (no UI dependency)
 │   │   ├── Abstractions/           # IStashService, IApplyEngine, IBlobStore, IDragExportService, IGitService, ISettingsService, repositories
 │   │   ├── Models/                 # AppSettings, StashItem, StashEntry, StashGroup, TargetSpec, ApplyModels, Enums, ProgressInfo, AppLanguage, ThemeChoice, GitStatusEntry, FolderEnumerator
-│   │   ├── Services/               # StashService, BlobStore, ApplyPlanner, ApplyExecutor (incl. ApplyRecovery, ApplyRetry), PathMapper, DragExportService, CleanupService, SettingsService, StorageWriteLease
+│   │   ├── Services/               # StashService, ShelfLifetimeService, BlobStore, ApplyPlanner, ApplyExecutor (incl. ApplyRecovery, ApplyRetry), PathMapper, DragExportService, CleanupService, SettingsService, StorageWriteLease
 │   │   ├── Localization/           # AppLanguageResolver (language option → CultureInfo, incl. "follow system")
-│   │   ├── Utils/                  # AppPaths, HashUtil, PathUtil, Glob
+│   │   ├── Utils/                  # AppPaths, HashUtil, PathUtil, Glob, ZoneIdentifier
 │   │   └── Resources/              # Core localized error and status strings (18 languages, 55 keys each)
 │   ├── FileStash.Infrastructure/   # net10.0-windows, SQLite + Dapper, Windows Shell integration, Win32 P/Invoke
 │   │   ├── Data/                   # SqliteConnectionFactory, SchemaReadyConnectionFactory, DatabaseMigrator, Migrations, Repositories, Iso8601DateTimeOffsetTypeHandler, ISqliteConnectionFactory
@@ -42,23 +42,26 @@ FileStash.sln
 │       ├── Views/                  # MainWindow (Compact Shelf & Workbench), FloatingWindow, SettingsWindow, HistoryWindow, RootPresetsWindow,
 │       │                           # AboutWindow, PreviewDialog, ResultToast, GitStatusDialog, ApplyActions, Dialogs/{GroupPicker,Input,Message,SetRoot,StashPicker}
 │       ├── ViewModels/             # MainViewModel, SettingsViewModel, HistoryViewModel, GitStatusViewModel, TreeRowViewModel, EnumOption
-│       ├── Controls/               # WindowEffects (DPI/Cloak/Positioning), ThemeService, ShakeDetector, HotkeyManager, TrayIconService, HotkeyBox, WheelScroll, WindowWarmUp
-│       ├── Services/               # IDialogService, WpfDialogService, ThemedMessageBox, AppRestart, ElevatedRetryLauncher, DataPayloadHelper, LanguageService, ShellIconService
+│       ├── Controls/               # WindowEffects (DPI/Cloak/Positioning), ToastStack, ToastCountdown, ToastStackLayout, ThemeService, ShakeDetector, HotkeyManager, TrayIconService, HotkeyBox, WheelScroll, WindowWarmUp
+│       ├── Services/               # IDialogService, WpfDialogService, ThemedMessageBox, AppRestart, ElevatedRetryLauncher, ShelfGroupMigration, DataPayloadHelper, LanguageService, ShellIconService
 │       ├── Converters/             # ByteSizeConverter, EnumLabelConverter, EnumMatchConverter, NullToVisibilityConverter, WorkbenchChildrenConverter
 │       ├── Diagnostics/            # SmokeRunner, ShotsRunner, ProbeRunner, InspectRunner, SeedRunner, WindowCatalog, Fixture, UiPump
 │       ├── Startup/                # CommandLine (parses --add / --apply-here / --apply-original / --group / --minimized / --show / --quit / --unregister-shell / --elevated-retry)
 │       └── Resources/              # Controls.xaml, Themes/{Dark,Light}.xaml, Tray.xaml, Strings.cs, Strings.*.resx (18 languages, identical key sets)
 ├── tests/
-│   └── FileStash.Core.Tests/       # net10.0-windows, xUnit.v3 unit and integration test suite (42 test/helper files: 38 suites + 4 helpers, 503 test cases)
+│   └── FileStash.Core.Tests/       # net10.0-windows, xUnit.v3 unit and integration test suite (42 test/helper files: 38 suites + 4 helpers, 510 test cases)
 │       └── TempDirectory.cs, TempWorkspace.cs, GitHelper.cs, ApplyTestContext.cs   # test-only isolation helpers
 ├── tools/                          # Automated tooling
 │   ├── acceptance.ps1              # End-to-end acceptance runner (fully sandboxed)
 │   ├── shots.ps1                   # Fixture workspace → --seed → --shots, with an empty-shelf hash guard
 │   ├── release.ps1                 # Release build script (4 pubxml profiles, setup installer, SHA256SUMS)
 │   ├── package-release.ps1         # Shared local/CI packaging & verification runner (PE check, SQLite dll, ZIP verify, isolated smoke, Authenticode)
+│   ├── performance.ps1             # Isolated performance comparison benchmark harness
 │   ├── manual-checks.ps1           # Automated harness for OS-level scenarios (lock detection, UNC, >2GB files, DPI)
 │   ├── recovery-checks.ps1         # Crash recovery, interrupted apply/undo reconciliation, and elevation verification
 │   ├── installer-checks.ps1        # Upgrade, clean uninstall, and user content preservation verification
+│   ├── Test-ElevatedStartup.ps1    # Automated engine test for Task Scheduler registration
+│   ├── Test-StartupEntryPoints.ps1 # Entry-point and CLI flag validation
 │   ├── gen-strings.ps1             # Regenerates Resources/Strings.cs from the neutral resx
 │   └── installer/                  # Inno Setup 6 script (FileStash.iss) + lang/ChineseSimplified.isl
 └── README.md                       # User-facing manual and project documentation
@@ -159,6 +162,8 @@ StashBay features two tightly integrated workflows:
 * `Program` dispatches the fixed `--startup-task <operation> <requester-SID> [delay-seconds]` helper before WPF/settings/IPC. It may only act on the running StashBay executable. A different UAC account is rejected.
 * Portable writable directories are supported; protected deployment is recommended, not required. Never add an ACL or Program Files gate.
 * Startup only reads system state; task changes require an explicit settings action. Read back before persisting success. Cancellation and uncertainty must not become success or an automatic ordinary-privilege fallback.
+* Task Scheduler XML readback accommodates omitted schema defaults (`Enabled`, `RunOnlyIfNetworkAvailable`, `RunOnlyIfIdle`), resolves `DOMAIN\User` names to SIDs via `NTAccount`, and maps missing tasks (`0x80070002` COM / `FileNotFoundException`) to an ordinary unregistered state.
+* Ordinary settings persistence is decoupled from Task Scheduler queries: readback failure or an unknown task status alone does not lock saving general preferences; startup reconciliation only triggers upon startup configuration change or an explicit Repair action.
 * The no-shell-integration switches suppress task operations as well as Run/context-menu/Send-To operations. Tests must use the memory stores, not real registration.
 * `tools/Test-ElevatedStartup.ps1 -ValidateXml -PublishSingleFile` tests the actual engine in isolation. XML parsing and substitute tests do not prove real UAC, task DACLs or logon triggering; those require an isolated account/VM.
 
@@ -170,7 +175,7 @@ StashBay features two tightly integrated workflows:
 # Build solution (0 warnings, 0 errors required)
 dotnet build --nologo
 
-# Run unit & integration test suite (xUnit.v3, 503 test cases)
+# Run unit & integration test suite (xUnit.v3, 510 test cases)
 dotnet test --nologo -v q
 
 # Run end-to-end automated acceptance verification
@@ -206,6 +211,7 @@ sources and re-render.
 | :--- | :--- |
 | `assets/icon.html` | `assets/logo.png` (1024²), `assets/app.ico`, `assets/favicon.ico`, `src/FileStash.App/Resources/app.ico` |
 | `assets/social-preview.html` | `assets/social-preview.png` (1200×630) |
+| `assets/shelf.html` | `assets/shelf.png` (紧凑搁架状态展示，README 用) |
 
 ```powershell
 $SKILL_DIR = "$env:USERPROFILE\.agents\skills\html-shot"
@@ -214,6 +220,7 @@ node "$SKILL_DIR\icons.mjs" assets\icon.html artifacts\brand --preset electron -
 Copy-Item artifacts\brand\icon.ico assets\app.ico -Force
 Copy-Item artifacts\brand\icon.ico assets\favicon.ico -Force
 Copy-Item artifacts\brand\icon.ico src\FileStash.App\Resources\app.ico -Force
+node "$SKILL_DIR\render.mjs" assets\shelf.html assets\shelf.png --selector .stage --dpr 2 --transparent --offline
 node "$SKILL_DIR\render.mjs" assets\social-preview.html assets\social-preview.png --width 1200 --height 630 --offline
 ```
 

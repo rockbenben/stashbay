@@ -228,7 +228,7 @@ $warningCount = if ($build -match '(\d+) 个警告') { [int]$Matches[1] } else {
 $errorCount = if ($build -match '(\d+) 个错误') { [int]$Matches[1] } else { -1 }
 Add-Result 'dotnet build 无警告、无错误' ($warningCount -eq 0 -and $errorCount -eq 0) "警告 $warningCount / 错误 $errorCount"
 
-$testOutput = & dotnet test tests/FileStash.Core.Tests -c Release -- --minimum-expected-tests 366 2>&1 | Out-String
+$testOutput = & dotnet test tests/FileStash.Core.Tests -c Release -- --minimum-expected-tests 510 2>&1 | Out-String
 $testTotal = if ($testOutput -match '总计:\s*(\d+)') { [int]$Matches[1] } else { 0 }
 $testFailed = if ($testOutput -match '失败:\s*(\d+)') { [int]$Matches[1] } else { -1 }
 $mtpOk = $testOutput -notmatch 'MSB1001'

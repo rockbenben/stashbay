@@ -53,4 +53,4 @@ bootstrap 使用 System.Random(18371)、20,000 次重采样；历史 Python 统�
 baseline-manifest.json 防止无意漂移。将来接口变化，应明确新增版本和迁移说明，
 不要静默改写本基线或仅刷新校验和。
 
-[历史验收及第 1–7 项汇总](../../docs/validation/2026-11-14/README.md)
+- 单元与集成回归套件：`tests/FileStash.Core.Tests/PerformanceRegressionTests.cs`

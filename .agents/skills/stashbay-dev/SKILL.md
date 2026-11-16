@@ -17,7 +17,7 @@ This skill provides step-by-step procedures for building, testing, verifying, an
 # Build solution (0 warnings, 0 errors)
 dotnet build --nologo
 
-# Run all unit and integration tests (xUnit.v3, 366 test cases)
+# Run all unit and integration tests (xUnit.v3, 510 test cases)
 dotnet test --nologo -v q
 ```
 
@@ -111,7 +111,7 @@ CI reads the smoke **marker file**, not the process exit code, because a WPF GUI
 
 An unseeded `--shots` run is a **silent success**: every PNG lands, the process exits 0, and the "with data" and "empty" variants hash identically — so the matrix proves the windows still construct, not that the UI looks right. `tools/shots.ps1` builds the fixture, seeds, renders, then asserts those variants differ; use it instead of running the flags by hand.
 
-Product CLI flags (see `Startup/CommandLine.cs`): `--add <paths...>`, `--apply-here <dir>`, `--apply-original`, `--group <name>`, `--minimized`, `--show`, `--quit`, `--unregister-shell`, `--elevated-retry <id>`, `--elevated-home <dir>`.
+Product CLI flags (see `Startup/CommandLine.cs` and `Program.cs`): `--add <paths...>`, `--apply-here <dir>`, `--apply-original`, `--group <name>`, `--minimized`, `--show`, `--quit`, `--unregister-shell`, `--elevated-retry <id>`, `--elevated-home <dir>`, `--install-startup`, `--startup-task <operation> <sid> [delay]`.
 
 Release artifacts are generated in `artifacts/`:
 - `StashBay-v<version>-setup.exe`: Inno Setup installer (per-user, no admin required)

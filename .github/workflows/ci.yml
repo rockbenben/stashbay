@@ -34,7 +34,7 @@ jobs:
         run: dotnet --version
 
       - name: Test (Core)
-        run: dotnet test --project tests/FileStash.Core.Tests -c Release --minimum-expected-tests 503
+        run: dotnet test --project tests/FileStash.Core.Tests -c Release --minimum-expected-tests 510
 
       - name: Build (App)
         run: dotnet build src/FileStash.App -c Release --nologo

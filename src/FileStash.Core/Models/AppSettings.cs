@@ -83,7 +83,7 @@ public sealed class AppSettings
     /// <summary>工作台的条目视图档位（树 / 列表 / 按来源目录 / 图标）。</summary>
     public WorkbenchViewMode WorkbenchViewMode { get; set; } = WorkbenchViewMode.Tree;
 
-    /// <summary>紧凑模式下是否采用大图标视图（默认 true，关掉后为紧凑列表）。</summary>
+    /// <summary>旧设置文件兼容字段；紧凑模式现已统一采用可拖拽文件堆叠视图，保留此字段仅作配置兼容。</summary>
     public bool CompactIconView { get; set; } = true;
 
     /// <summary>上次选中的组。</summary>
