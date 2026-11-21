@@ -15,8 +15,9 @@ public interface ILogonStartupService
 /// <summary>One owner for normal Run entries / Startup shortcuts and the opt-in administrator logon task.</summary>
 public sealed class LogonStartupService : ILogonStartupService
 {
-    public static readonly StartupOptions Options = new("StashBay", "StashBay.exe",
-        "--elevated-logon", "FileStash", "--logon-startup");
+    public static StartupOptions Options => new("StashBay", "StashBay.exe",
+        "--elevated-logon", "FileStash", "--logon-startup",
+        UseStartupShortcut: !File.Exists(Path.Combine(AppContext.BaseDirectory, "installed.mode")));
     private readonly bool _disabled;
     private readonly Func<int> _delay;
     private readonly IStartupStore _store;
@@ -74,7 +75,7 @@ public sealed class LogonStartupService : ILogonStartupService
             {
                 var expectedShortcut = ElevatedStartup.PlainShortcut(target);
                 return new(run is null && legacy is null && shortcut is null ? LogonStartupState.Disabled :
-                    run is null && legacy is null && shortcut == expectedShortcut ? LogonStartupState.Plain :
+                    run is null && legacy is null && ElevatedStartup.MatchesShortcut(shortcut, expectedShortcut) ? LogonStartupState.Plain :
                     LogonStartupState.PlainNeedsRepair);
             }
             return new(run is null && legacy is null && shortcut is null ? LogonStartupState.Disabled :
@@ -115,6 +116,23 @@ public sealed class LogonStartupService : ILogonStartupService
         }
         catch (Exception ex) { return new(StartupOutcome.Failed, Diagnostic("change preflight", ex), ElevatedStartup.Classify(ex)); }
         finally { _gate.Release(); }
+    }
+
+    public async Task<StartupResult> UninstallInstalledAsync()
+    {
+        if (_disabled) return new(StartupOutcome.Unchanged);
+        try
+        {
+            var target = Target;
+            var task = _store.ReadTask(target.TaskName);
+            if (task is null)
+                return ElevatedStartup.Apply(StartupOperation.UninstallInstalled, target, _store);
+            return await _request(StartupOperation.UninstallInstalled, target.Options).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            return new(StartupOutcome.Failed, Diagnostic("uninstall", ex), ElevatedStartup.Classify(ex));
+        }
     }
 
     private string Diagnostic(string stage, Exception error)

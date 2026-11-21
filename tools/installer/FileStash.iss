@@ -51,17 +51,15 @@ Name: "startwithwindows"; Description: "Start with Windows"; GroupDescription: "
 [Files]
 ; 自包含版本（体积大、下载即用）
 Source: "..\..\artifacts\publish-x64\{#AppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-; 框架依赖版本（体积小、要求装 .NET 10）
-; SQLite 已内嵌，只安装 EXE。
-Source: "..\..\artifacts\publish-x64-needs-dotnet10\{#AppExeName}"; DestDir: "{app}-needs-dotnet10"; Flags: ignoreversion
+Source: "installed.mode"; DestDir: "{app}"; Flags: ignoreversion
 
 [InstallDelete]
 ; 清理旧版安装清单拥有的 SQLite DLL，保留目录中的其他用户文件。
 Type: files; Name: "{app}-needs-dotnet10\e_sqlite3.dll"
+Type: files; Name: "{group}\{#AppName} (requires .NET 10).lnk"
 
 [Icons]
 Name: "{group}\{#AppName}"; Filename: "{app}\{#AppExeName}"
-Name: "{group}\{#AppName} (requires .NET 10)"; Filename: "{app}-needs-dotnet10\{#AppExeName}"
 Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#AppExeName}"; Tasks: desktopicon
 
 [Run]
@@ -70,6 +68,7 @@ Filename: "{app}\{#AppExeName}"; Description: "Launch {#AppName}"; Flags: nowait
 [UninstallDelete]
 ; 卸载时清掉资源管理器右键菜单与"发送到"快捷方式
 Type: dirifempty; Name: "{app}"
+Type: files; Name: "{app}-needs-dotnet10\{#AppExeName}"
 Type: dirifempty; Name: "{app}-needs-dotnet10"
 Type: files; Name: "{userappdata}\Microsoft\Windows\SendTo\StashBay.lnk"
 Type: files; Name: "{userappdata}\Microsoft\Windows\SendTo\FileStash.lnk"

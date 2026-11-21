@@ -1,4 +1,4 @@
-﻿#Requires -Version 7.0
+#Requires -Version 7.0
 <#
 .SYNOPSIS
     StashBay 安装程序验收脚本：验证全新安装、跨版本升级、完整卸载与用户文件保留。
@@ -40,6 +40,7 @@ function Build-TestInstaller([string]$sourceRoot, [string]$packages, [string]$ve
     $text = $text.Replace('..\..\artifacts', [IO.Path]::GetFullPath($packages))
     $text = $text.Replace('..\..\src\FileStash.App\Resources\app.ico', (Join-Path $sourceRoot 'src/FileStash.App/Resources/app.ico'))
     $text = $text.Replace('lang\ChineseSimplified.isl', (Join-Path $sourceRoot 'tools/installer/lang/ChineseSimplified.isl'))
+    $text = $text.Replace('Source: "installed.mode"', ('Source: "' + (Join-Path $sourceRoot 'tools/installer/installed.mode') + '"'))
     $text = $text.Replace('{userappdata}', (Join-Path $outRoot 'roaming'))
     $text = $text.Replace('{group}', (Join-Path $outRoot 'shortcuts'))
     $text = $text.Replace('{autodesktop}', (Join-Path $outRoot 'desktop'))

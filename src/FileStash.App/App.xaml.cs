@@ -191,7 +191,7 @@ public partial class App : Application
         var command = CommandLine.Parse(e.Args);
         if (command.UnregisterShell)
         {
-            var result = await _host.Services.GetRequiredService<ILogonStartupService>().ChangeAsync(false, false);
+            var result = await new LogonStartupService(disabled: ShellIntegrationDisabled).UninstallInstalledAsync();
             if (result.Outcome is not (StartupOutcome.Applied or StartupOutcome.Unchanged))
             {
                 Log.Error("Uninstall startup cleanup {Outcome}: {Detail}", result.Outcome, result.Detail);

@@ -476,7 +476,7 @@ public static class RegressionSuite
                 error = Error(() => ElevatedStartup.Apply(StartupOperation.Uninstall, target, store));
                 Check(error.Message.Contains("preflight") && store.Writes == 0);
             }
-            Check(store.ReadShortcut(options.AppId) == previous);
+            Check(ElevatedStartup.MatchesShortcut(store.ReadShortcut(options.AppId), previous));
         }));
         Test("native shortcut reads preserve long Unicode arguments and whitespace", () => WithShortcutFiles((_, store) =>
         {
@@ -484,8 +484,9 @@ public static class RegressionSuite
             {
                 var previous = new StartupShortcut(Environment.ProcessPath!, "  --name=\"中文 路径\" " + new string('x', length) + "  ",
                     Environment.GetFolderPath(Environment.SpecialFolder.Windows));
-                store.ShortcutFiles!.Write(options.AppId, previous);
-                Check(store.ReadShortcut(options.AppId) == previous, "Shortcut data truncated at argument length " + length);
+                string name = options.AppId + length;
+                store.ShortcutFiles!.Write(name, previous);
+                Check(ElevatedStartup.MatchesShortcut(store.ReadShortcut(name), previous), "Shortcut data truncated at argument length " + length);
             }
         }));
         Test("native shortcut rollback restores old arguments and working directory after a partial write", () => WithShortcutFiles((_, store) =>
@@ -495,12 +496,28 @@ public static class RegressionSuite
             var previous = new StartupShortcut(Environment.ProcessPath!, "--old=\"中文 路径\" " + new string('x', 300) + "  ",
                 Environment.GetFolderPath(Environment.SpecialFolder.Windows));
             store.ShortcutFiles!.Write(options.AppId, previous);
+            var originalBytes = store.ReadShortcut(options.AppId)!.FileContentsBase64;
             store.Run = "previous run";
             store.FailShortcutOnce = true;
             var error = Error(() => ElevatedStartup.Apply(StartupOperation.Plain, portableTarget, store));
             Check(error is not StartupRollbackException && error.Message.Contains("previous startup restored"));
-            Check(store.ReadShortcut(options.AppId) == previous && store.Run == "previous run" && store.Task is null);
+            Check(ElevatedStartup.MatchesShortcut(store.ReadShortcut(options.AppId), previous) && store.Run == "previous run" && store.Task is null);
+            Check(store.ReadShortcut(options.AppId)!.FileContentsBase64 == originalBytes);
         }));
+
+        Test("installed uninstall clears the legacy installed edition and preserves portable startup", () =>
+        {
+            var installed = ElevatedStartup.Target(options with { ExecutableName = "StashBay.exe" },
+                @"C:\Programs\StashBay\StashBay.exe", target.UserSid);
+            var legacyPackage = installed with { Executable = @"C:\Programs\StashBay-needs-dotnet10\StashBay.exe" };
+            var portable = installed with { Executable = @"D:\Tools\StashBay.exe" };
+            var store = new MemoryStore { Task = ElevatedStartup.TaskXml(portable) };
+            Check(ElevatedStartup.Apply(StartupOperation.UninstallInstalled, installed, store).Outcome == StartupOutcome.Unchanged);
+            Check(store.Writes == 0);
+            store.Task = ElevatedStartup.TaskXml(legacyPackage);
+            Check(ElevatedStartup.Apply(StartupOperation.UninstallInstalled, installed, store).Outcome == StartupOutcome.Applied);
+            Check(store.Task is null);
+        });
 
         Console.WriteLine($"{passed} isolated startup checks passed; no OS startup state accessed.");
     }
