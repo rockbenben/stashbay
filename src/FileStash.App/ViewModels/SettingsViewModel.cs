@@ -26,6 +26,10 @@ public sealed partial class SettingsViewModel : ObservableObject
 
     /// <summary>打开这个窗口时的语言：用来判断用户有没有改它。</summary>
     private AppLanguage _languageBeforeEdit;
+    private (bool Enabled, bool Administrator) _startupBeforeEdit;
+
+    private (bool Enabled, bool Administrator) StartupSelection =>
+        (Settings.StartWithWindows, Settings.StartWithWindowsAsAdministrator);
 
     public SettingsViewModel(
         ISettingsService settingsService,
@@ -48,6 +52,7 @@ public sealed partial class SettingsViewModel : ObservableObject
             disabled: Application.Current is not App || App.ShellIntegrationDisabled);
         Settings = settingsService.Current.Clone();
         _languageBeforeEdit = Settings.Language;
+        _startupBeforeEdit = StartupSelection;
     }
 
     /// <summary>
@@ -60,6 +65,19 @@ public sealed partial class SettingsViewModel : ObservableObject
 
     /// <summary>表单绑定的设置对象。</summary>
     public AppSettings Settings { get; private set; }
+
+    public bool StartWithWindows
+    {
+        get => Settings.StartWithWindows;
+        set => SetProperty(Settings.StartWithWindows, value, Settings, static (settings, enabled) => settings.StartWithWindows = enabled);
+    }
+
+    public bool StartWithWindowsAsAdministrator
+    {
+        get => Settings.StartWithWindowsAsAdministrator;
+        set => SetProperty(Settings.StartWithWindowsAsAdministrator, value, Settings,
+            static (settings, administrator) => settings.StartWithWindowsAsAdministrator = administrator);
+    }
 
     public bool LastSaveSucceeded { get; private set; }
 
@@ -168,6 +186,7 @@ public sealed partial class SettingsViewModel : ObservableObject
             System.Globalization.CultureInfo.InvariantCulture, out int seconds) && (uint)seconds <= 300;
         var status = await _startupService.ReadAsync(valid ? seconds : 3);
         SetStartupStatus(status);
+        if (StartupSelection == _startupBeforeEdit) RestoreStartupSelection(status);
         // A query failure alone must not lock the whole settings editor. Keep the
         // replay guard only for a pending or previously unconfirmed startup change.
         StartupUncertain = _startupService.IsPending || (StartupUncertain && status.State == LogonStartupState.Unknown);
@@ -191,10 +210,9 @@ public sealed partial class SettingsViewModel : ObservableObject
     private void RestoreStartupSelection(LogonStartupStatus status)
     {
         if (status.State is LogonStartupState.Unknown or LogonStartupState.Conflict or LogonStartupState.Suppressed) return;
-        Settings = Settings.Clone();
-        Settings.StartWithWindows = status.State != LogonStartupState.Disabled;
-        Settings.StartWithWindowsAsAdministrator = status.State is LogonStartupState.Elevated or LogonStartupState.ElevatedNeedsRepair;
-        OnPropertyChanged(nameof(Settings));
+        StartWithWindows = status.State != LogonStartupState.Disabled;
+        StartWithWindowsAsAdministrator = status.State is LogonStartupState.Elevated or LogonStartupState.ElevatedNeedsRepair;
+        _startupBeforeEdit = StartupSelection;
     }
 
     private async Task SaveCoreAsync(bool repair)
@@ -216,11 +234,11 @@ public sealed partial class SettingsViewModel : ObservableObject
             // Ordinary preferences must remain editable when Task Scheduler cannot be queried.
             // Reconcile startup only after an explicit edit or Repair action.
             var saved = _settingsService.Current;
-            bool startupChanged = committed.StartWithWindows != saved.StartWithWindows ||
-                committed.StartWithWindowsAsAdministrator != saved.StartWithWindowsAsAdministrator ||
+            bool startupChanged = StartupSelection != _startupBeforeEdit ||
                 committed.AdministratorStartupDelaySeconds != saved.AdministratorStartupDelaySeconds;
             if (repair || startupChanged)
             {
+                committed.StartWithWindowsAsAdministrator &= committed.StartWithWindows;
                 StartupStatusText = Strings.StartupStatusBusy;
                 ElevatedStartup.ValidateDelay(committed.AdministratorStartupDelaySeconds);
                 var result = await _startupService.ChangeAsync(committed.StartWithWindows,
@@ -258,6 +276,12 @@ public sealed partial class SettingsViewModel : ObservableObject
                     return;
                 }
             }
+            else
+            {
+                // Windows readback fills the controls, but only an explicit edit saves a startup preference.
+                committed.StartWithWindows = saved.StartWithWindows;
+                committed.StartWithWindowsAsAdministrator = saved.StartWithWindowsAsAdministrator;
+            }
             var languageChanged = committed.Language != _languageBeforeEdit;
             var current = _settingsService.Current;
             committed.LastGroupId = current.LastGroupId;
@@ -266,6 +290,8 @@ public sealed partial class SettingsViewModel : ObservableObject
             committed.CompactIconView = current.CompactIconView;
             committed.ShelfRetentionDays = current.ShelfRetentionDays; // Preserve the legacy JSON field for older builds.
             _settingsService.Save(committed);
+            if (repair || startupChanged) StartWithWindowsAsAdministrator = committed.StartWithWindowsAsAdministrator;
+            _startupBeforeEdit = StartupSelection;
             ThemeService.ApplyFromSettings(committed);
             if (Application.Current is App app) app.ReloadGlobalHotkey();
             if (!_applyShellIntegration(committed))
@@ -303,9 +329,12 @@ public sealed partial class SettingsViewModel : ObservableObject
     private void Cancel()
     {
         Settings = _settingsService.Current.Clone();
+        _startupBeforeEdit = StartupSelection;
         _startupDelayText = null;
         OnPropertyChanged(nameof(StartupDelayText));
         OnPropertyChanged(nameof(Settings));
+        OnPropertyChanged(nameof(StartWithWindows));
+        OnPropertyChanged(nameof(StartWithWindowsAsAdministrator));
         OnPropertyChanged(nameof(ExcludeGlobsText));
     }
 

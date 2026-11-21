@@ -80,6 +80,62 @@ public sealed class SettingsViewModelTests : IAsyncLifetime
         Assert.False(_settings.Current.BackupBeforeOverwrite);
     }
 
+    [Theory]
+    [InlineData(LogonStartupState.PlainNeedsRepair, true, false)]
+    [InlineData(LogonStartupState.Elevated, true, true)]
+    [InlineData(LogonStartupState.Disabled, false, false)]
+    public async Task RefreshShowsActualStartupAndSavingOtherPreferencesPreservesTheSavedChoice(
+        LogonStartupState actual, bool enabled, bool administrator)
+    {
+        _settings.Save(new AppSettings
+        {
+            StartWithWindows = !enabled,
+            StartWithWindowsAsAdministrator = !enabled,
+            AdministratorStartupDelaySeconds = 17,
+            BackupBeforeOverwrite = true,
+        });
+        _viewModel.CancelCommand.Execute(null);
+        _startup.State = actual;
+        _viewModel.Settings.BackupBeforeOverwrite = false;
+        var notifications = new List<string?>();
+        _viewModel.PropertyChanged += (_, e) => notifications.Add(e.PropertyName);
+
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
+        Assert.Equal(enabled, _viewModel.StartWithWindows);
+        Assert.Equal(administrator, _viewModel.StartWithWindowsAsAdministrator);
+        Assert.DoesNotContain(nameof(SettingsViewModel.Settings), notifications);
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+
+        Assert.True(_viewModel.LastSaveSucceeded);
+        Assert.Equal(0, _startup.Calls);
+        _settings.Load();
+        Assert.False(_settings.Current.BackupBeforeOverwrite);
+        Assert.Equal(!enabled, _settings.Current.StartWithWindows);
+        Assert.Equal(!enabled, _settings.Current.StartWithWindowsAsAdministrator);
+        Assert.Equal(17, _settings.Current.AdministratorStartupDelaySeconds);
+    }
+
+    [Theory]
+    [InlineData(LogonStartupState.PlainNeedsRepair)]
+    [InlineData(LogonStartupState.Elevated)]
+    public async Task RefreshKeepsAnExplicitStartupEditAndSaveAppliesIt(LogonStartupState actual)
+    {
+        _startup.State = actual;
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
+        Assert.True(_viewModel.Settings.StartWithWindows);
+        _viewModel.Settings.StartWithWindows = false;
+
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
+        Assert.False(_viewModel.Settings.StartWithWindows);
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+
+        Assert.True(_viewModel.LastSaveSucceeded);
+        Assert.Equal(1, _startup.Calls);
+        Assert.Equal(LogonStartupState.Disabled, _startup.State);
+        Assert.False(_settings.Current.StartWithWindows);
+        Assert.False(_settings.Current.StartWithWindowsAsAdministrator);
+    }
+
     [Fact]
     public async Task UnknownReadbackAfterStartupEditDoesNotPersistOrEnableReplay()
     {
@@ -208,6 +264,7 @@ public sealed class SettingsViewModelTests : IAsyncLifetime
     public async Task FailedRemovalKeepsAdministratorChoiceAndDoesNotReportSuccess()
     {
         _settings.Save(new AppSettings { StartWithWindows = true, StartWithWindowsAsAdministrator = true });
+        _viewModel.CancelCommand.Execute(null);
         _startup.State = LogonStartupState.Elevated;
         _startup.Outcome = StartupOutcome.Failed;
         _viewModel.Settings.StartWithWindows = false;

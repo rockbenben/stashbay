@@ -245,12 +245,12 @@
                         <Border Style="{StaticResource Settings.Card}">
                             <StackPanel>
                                 <StackPanel Margin="0,8,0,8">
-                                    <CheckBox x:Name="LogonStartupCheck" Content="{x:Static app:Strings.StartWithWindowsLabel}" IsChecked="{Binding Settings.StartWithWindows, Mode=TwoWay}"/>
+                                    <CheckBox x:Name="LogonStartupCheck" Content="{x:Static app:Strings.StartWithWindowsLabel}" IsChecked="{Binding StartWithWindows, Mode=TwoWay}"/>
                                 </StackPanel>
                                 <StackPanel Margin="0,4,0,0" IsEnabled="{Binding IsChecked, ElementName=LogonStartupCheck}">
                                     <Border BorderBrush="{DynamicResource Brush.Border}" BorderThickness="0,1,0,0" Margin="0,4,0,12"/>
                                     <StackPanel Margin="0,4,0,4">
-                                        <CheckBox x:Name="AdministratorStartupCheck" Content="{x:Static app:Strings.StartupAdminLabel}" IsChecked="{Binding Settings.StartWithWindowsAsAdministrator, Mode=TwoWay}"/>
+                                        <CheckBox x:Name="AdministratorStartupCheck" Content="{x:Static app:Strings.StartupAdminLabel}" IsChecked="{Binding StartWithWindowsAsAdministrator, Mode=TwoWay}"/>
                                         <TextBlock Style="{StaticResource Settings.Hint}" Margin="39,4,0,6" Text="{x:Static app:Strings.StartupAdminHint}"/>
                                     </StackPanel>
                                     <Grid Margin="39,2,0,8" Visibility="{Binding IsChecked, ElementName=AdministratorStartupCheck, Converter={StaticResource BoolToVisibility}}">
