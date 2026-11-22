@@ -185,10 +185,12 @@ public sealed class ElevatedStartupTests
         Assert.True(isAdmin || !isAdmin);
     }
 
-    [Fact]
-    public async Task PortablePlainAutostartUsesShortcutAndCleansUpRun()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task PlainRepairUsesTheDeploymentEntryWithoutCreatingATask(bool useStartupShortcut)
     {
-        var target = NewTarget(useStartupShortcut: true);
+        var target = NewTarget(useStartupShortcut);
         var store = new StartupTestStore();
         store.Runs[target.Options.AppId] = "old run";
         var service = new LogonStartupService(store: store, target: target,
@@ -197,8 +199,9 @@ public sealed class ElevatedStartupTests
         Assert.Equal(LogonStartupState.PlainNeedsRepair, (await service.ReadAsync()).State);
         var applied = await service.ChangeAsync(true, false, repair: true);
         Assert.Equal(StartupOutcome.Applied, applied.Outcome);
-        Assert.Equal(ElevatedStartup.PlainShortcut(target), store.Shortcut);
-        Assert.Null(store.ReadRun(target.Options.AppId));
+        Assert.Equal(useStartupShortcut ? ElevatedStartup.PlainShortcut(target) : null, store.Shortcut);
+        Assert.Equal(useStartupShortcut ? null : ElevatedStartup.PlainCommand(target), store.ReadRun(target.Options.AppId));
+        Assert.Null(store.TaskXml);
 
         var status = await service.ReadAsync();
         Assert.Equal(LogonStartupState.Plain, status.State);

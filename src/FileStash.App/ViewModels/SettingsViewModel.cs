@@ -70,14 +70,22 @@ public sealed partial class SettingsViewModel : ObservableObject
     public bool StartWithWindows
     {
         get => Settings.StartWithWindows;
-        set => SetProperty(Settings.StartWithWindows, value, Settings, static (settings, enabled) => settings.StartWithWindows = enabled);
+        set
+        {
+            if (SetProperty(Settings.StartWithWindows, value, Settings, static (settings, enabled) => settings.StartWithWindows = enabled))
+                RepairStartupCommand.NotifyCanExecuteChanged();
+        }
     }
 
     public bool StartWithWindowsAsAdministrator
     {
         get => Settings.StartWithWindowsAsAdministrator;
-        set => SetProperty(Settings.StartWithWindowsAsAdministrator, value, Settings,
-            static (settings, administrator) => settings.StartWithWindowsAsAdministrator = administrator);
+        set
+        {
+            if (SetProperty(Settings.StartWithWindowsAsAdministrator, value, Settings,
+                    static (settings, administrator) => settings.StartWithWindowsAsAdministrator = administrator))
+                RepairStartupCommand.NotifyCanExecuteChanged();
+        }
     }
 
     public bool LastSaveSucceeded { get; private set; }
@@ -86,7 +94,12 @@ public sealed partial class SettingsViewModel : ObservableObject
     public string StartupDelayText
     {
         get => _startupDelayText ?? Settings.AdministratorStartupDelaySeconds.ToString(System.Globalization.CultureInfo.InvariantCulture);
-        set { _startupDelayText = value; OnPropertyChanged(); }
+        set
+        {
+            _startupDelayText = value;
+            OnPropertyChanged();
+            RepairStartupCommand.NotifyCanExecuteChanged();
+        }
     }
 
     /// <summary>排除规则：一行一个通配符。</summary>
@@ -174,9 +187,16 @@ public sealed partial class SettingsViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(RepairStartupCommand))]
-    private bool _hasConfirmedStartupMode;
+    private bool? _confirmedStartupAdministrator;
 
-    private bool CanRepairStartup() => CanSave() && HasConfirmedStartupMode;
+    private bool TryGetStartupDelay(out int seconds) =>
+        int.TryParse(StartupDelayText, System.Globalization.NumberStyles.None,
+            System.Globalization.CultureInfo.InvariantCulture, out seconds) && (uint)seconds <= 300;
+
+    // Repair applies the confirmed Windows mode. Switching modes or changing the delay uses Save.
+    private bool CanRepairStartup() => CanSave() && StartWithWindows &&
+        ConfirmedStartupAdministrator == StartWithWindowsAsAdministrator && StartupSelection == _startupBeforeEdit &&
+        TryGetStartupDelay(out int seconds) && seconds == _settingsService.Current.AdministratorStartupDelaySeconds;
 
     [RelayCommand(CanExecute = nameof(CanSave))]
     private Task SaveAsync() => SaveCoreAsync(repair: false);
@@ -189,14 +209,12 @@ public sealed partial class SettingsViewModel : ObservableObject
     {
         if (IsStartupBusy) return;
         int version = ++_startupReadVersion;
-        HasConfirmedStartupMode = false;
+        ConfirmedStartupAdministrator = null;
         // An invalid saved setting must not trap the editor in an unknown/retry-disabled state.
-        bool valid = int.TryParse(StartupDelayText, System.Globalization.NumberStyles.None,
-            System.Globalization.CultureInfo.InvariantCulture, out int seconds) && (uint)seconds <= 300;
-        var status = await _startupService.ReadAsync(valid ? seconds : 3);
+        var status = await _startupService.ReadAsync(TryGetStartupDelay(out int seconds) ? seconds : 3);
         if (version != _startupReadVersion) return;
-        SetStartupStatus(status);
         if (StartupSelection == _startupBeforeEdit) RestoreStartupSelection(status);
+        SetStartupStatus(status);
         // A query failure alone must not lock the whole settings editor. Keep the
         // replay guard only for a pending or previously unconfirmed startup change.
         StartupUncertain = _startupService.IsPending || (StartupUncertain && status.State == LogonStartupState.Unknown);
@@ -204,8 +222,12 @@ public sealed partial class SettingsViewModel : ObservableObject
 
     private void SetStartupStatus(LogonStartupStatus status)
     {
-        HasConfirmedStartupMode = status.State is LogonStartupState.Disabled or LogonStartupState.Plain
-            or LogonStartupState.PlainNeedsRepair or LogonStartupState.Elevated or LogonStartupState.ElevatedNeedsRepair;
+        ConfirmedStartupAdministrator = status.State switch
+        {
+            LogonStartupState.Plain or LogonStartupState.PlainNeedsRepair => false,
+            LogonStartupState.Elevated or LogonStartupState.ElevatedNeedsRepair => true,
+            _ => null
+        };
         StartupStatusText = status.State switch
         {
             LogonStartupState.Disabled => Strings.StartupStatusDisabled,
@@ -231,8 +253,7 @@ public sealed partial class SettingsViewModel : ObservableObject
     {
         if (!CanSave()) return;
         LastSaveSucceeded = false;
-        if (!int.TryParse(StartupDelayText, System.Globalization.NumberStyles.None,
-                System.Globalization.CultureInfo.InvariantCulture, out int seconds) || (uint)seconds > 300)
+        if (!TryGetStartupDelay(out int seconds))
         {
             _dialogs.ShowWarning(Strings.SettingsTitle, Strings.StartupDelayRange);
             return;
@@ -252,7 +273,7 @@ public sealed partial class SettingsViewModel : ObservableObject
             {
                 // A refresh started before this change can still return the previous login mode.
                 ++_startupReadVersion;
-                HasConfirmedStartupMode = false;
+                ConfirmedStartupAdministrator = null;
                 committed.StartWithWindowsAsAdministrator &= committed.StartWithWindows;
                 StartupStatusText = Strings.StartupStatusBusy;
                 ElevatedStartup.ValidateDelay(committed.AdministratorStartupDelaySeconds);
@@ -351,6 +372,7 @@ public sealed partial class SettingsViewModel : ObservableObject
         OnPropertyChanged(nameof(StartWithWindows));
         OnPropertyChanged(nameof(StartWithWindowsAsAdministrator));
         OnPropertyChanged(nameof(ExcludeGlobsText));
+        RepairStartupCommand.NotifyCanExecuteChanged();
     }
 
     /// <summary>刷新存储占用显示。</summary>

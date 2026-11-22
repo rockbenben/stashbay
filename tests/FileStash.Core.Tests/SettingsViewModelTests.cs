@@ -220,7 +220,7 @@ public sealed class SettingsViewModelTests : IAsyncLifetime
         _startup.State = LogonStartupState.Disabled;
         await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
         Assert.True(_viewModel.SaveCommand.CanExecute(null));
-        Assert.True(_viewModel.RepairStartupCommand.CanExecute(null));
+        Assert.False(_viewModel.RepairStartupCommand.CanExecute(null));
 
         _startup.Outcome = StartupOutcome.Applied;
         await _viewModel.SaveCommand.ExecuteAsync(null);
@@ -276,7 +276,8 @@ public sealed class SettingsViewModelTests : IAsyncLifetime
         _viewModel.Settings.StartWithWindows = true;
         _viewModel.Settings.StartWithWindowsAsAdministrator = true;
         _viewModel.StartupDelayText = "17";
-        await _viewModel.RepairStartupCommand.ExecuteAsync(null);
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+        Assert.False(_startup.LastRepair);
         _settings.Load();
         Assert.Equal(17, _startup.LastDelay);
         Assert.Equal(17, _settings.Current.AdministratorStartupDelaySeconds);
@@ -345,16 +346,35 @@ public sealed class SettingsViewModelTests : IAsyncLifetime
         Assert.True(_settings.Current.StartWithWindowsAsAdministrator);
     }
 
-    [Fact]
-    public async Task RepairUsesTheSelectedPrivilegeAndPreservesConcurrentWindowState()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task RepairUsesConfirmedPrivilegeAndPreservesConcurrentWindowState(bool elevated)
     {
+        _startup.State = elevated ? LogonStartupState.ElevatedNeedsRepair : LogonStartupState.PlainNeedsRepair;
         await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
-        _viewModel.Settings.StartWithWindows = true;
-        _viewModel.Settings.StartWithWindowsAsAdministrator = true;
+        Assert.True(_viewModel.RepairStartupCommand.CanExecute(null));
+
+        _viewModel.StartWithWindowsAsAdministrator = !elevated;
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
+        Assert.Equal(!elevated, _viewModel.StartWithWindowsAsAdministrator);
+        Assert.False(_viewModel.RepairStartupCommand.CanExecute(null));
+        await _viewModel.RepairStartupCommand.ExecuteAsync(null);
+        Assert.Equal(0, _startup.Calls);
+
+        _viewModel.StartWithWindowsAsAdministrator = elevated;
+        Assert.True(_viewModel.RepairStartupCommand.CanExecute(null));
+        _viewModel.StartupDelayText = "17";
+        Assert.False(_viewModel.RepairStartupCommand.CanExecute(null));
+        await _viewModel.RepairStartupCommand.ExecuteAsync(null);
+        Assert.Equal(0, _startup.Calls);
+
+        _viewModel.StartupDelayText = "3";
         _settings.Current.LastGroupId = "changed-during-edit";
         await _viewModel.RepairStartupCommand.ExecuteAsync(null);
         Assert.True(_startup.LastRepair);
-        Assert.Equal(LogonStartupState.Elevated, _startup.State);
+        Assert.Equal(1, _startup.Calls);
+        Assert.Equal(elevated ? LogonStartupState.Elevated : LogonStartupState.Plain, _startup.State);
         Assert.Equal("changed-during-edit", _settings.Current.LastGroupId);
     }
 
