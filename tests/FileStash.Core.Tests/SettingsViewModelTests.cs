@@ -155,6 +155,51 @@ public sealed class SettingsViewModelTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task RepairWaitsForConfirmedModeWhileOtherPreferencesRemainEditable()
+    {
+        _settings.Save(new AppSettings { StartWithWindows = true, StartWithWindowsAsAdministrator = true });
+        _viewModel.CancelCommand.Execute(null);
+        var pending = new TaskCompletionSource<LogonStartupStatus>();
+        _startup.NextRead = pending.Task;
+        var refresh = _viewModel.RefreshStartupCommand.ExecuteAsync(null);
+        Assert.True(_viewModel.SaveCommand.CanExecute(null));
+        Assert.False(_viewModel.RepairStartupCommand.CanExecute(null));
+        await _viewModel.RepairStartupCommand.ExecuteAsync(null);
+        Assert.Equal(0, _startup.Calls);
+
+        pending.SetResult(new(LogonStartupState.PlainNeedsRepair));
+        await refresh;
+        Assert.True(_viewModel.RepairStartupCommand.CanExecute(null));
+        await _viewModel.RepairStartupCommand.ExecuteAsync(null);
+        Assert.True(_startup.LastRepair);
+        Assert.Equal(LogonStartupState.Plain, _startup.State);
+
+        _startup.State = LogonStartupState.Unknown;
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
+        Assert.False(_viewModel.RepairStartupCommand.CanExecute(null));
+        Assert.True(_viewModel.SaveCommand.CanExecute(null));
+    }
+
+    [Fact]
+    public async Task OlderRefreshCannotReplaceTheModeConfirmedByANewerSave()
+    {
+        var pending = new TaskCompletionSource<LogonStartupStatus>();
+        _startup.NextRead = pending.Task;
+        var refresh = _viewModel.RefreshStartupCommand.ExecuteAsync(null);
+        _viewModel.StartWithWindows = true;
+        _viewModel.StartWithWindowsAsAdministrator = true;
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+        Assert.True(_viewModel.LastSaveSucceeded);
+
+        pending.SetResult(new(LogonStartupState.PlainNeedsRepair));
+        await refresh;
+        Assert.True(_viewModel.StartWithWindowsAsAdministrator);
+        await _viewModel.RepairStartupCommand.ExecuteAsync(null);
+        Assert.True(_startup.LastRepair);
+        Assert.Equal(LogonStartupState.Elevated, _startup.State);
+    }
+
+    [Fact]
     public async Task PendingStartupHelperStillBlocksSaving()
     {
         _startup.IsPending = true;
@@ -219,6 +264,7 @@ public sealed class SettingsViewModelTests : IAsyncLifetime
     [Fact]
     public async Task DelayIsValidatedBeforeStartupChangesAndPersistedAfterSuccess()
     {
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
         foreach (string invalid in new[] { "-1", "301", "1.5", "", "abc" })
         {
             _viewModel.StartupDelayText = invalid;
@@ -302,6 +348,7 @@ public sealed class SettingsViewModelTests : IAsyncLifetime
     [Fact]
     public async Task RepairUsesTheSelectedPrivilegeAndPreservesConcurrentWindowState()
     {
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
         _viewModel.Settings.StartWithWindows = true;
         _viewModel.Settings.StartWithWindowsAsAdministrator = true;
         _settings.Current.LastGroupId = "changed-during-edit";
@@ -468,9 +515,15 @@ public sealed class SettingsViewModelTests : IAsyncLifetime
         public int Calls;
         public int LastDelay;
         public int? LastReadDelay;
+        public Task<LogonStartupStatus>? NextRead;
         public Task<LogonStartupStatus> ReadAsync(int? delaySeconds = null)
         {
             LastReadDelay = delaySeconds;
+            if (NextRead is { } pending)
+            {
+                NextRead = null;
+                return pending;
+            }
             return Task.FromResult(new LogonStartupStatus(IsPending ? LogonStartupState.Unknown : State));
         }
         public Task<StartupResult> ChangeAsync(bool enabled, bool elevated, bool repair = false, int delaySeconds = 3)

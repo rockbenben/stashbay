@@ -27,6 +27,7 @@ public sealed partial class SettingsViewModel : ObservableObject
     /// <summary>打开这个窗口时的语言：用来判断用户有没有改它。</summary>
     private AppLanguage _languageBeforeEdit;
     private (bool Enabled, bool Administrator) _startupBeforeEdit;
+    private int _startupReadVersion;
 
     private (bool Enabled, bool Administrator) StartupSelection =>
         (Settings.StartWithWindows, Settings.StartWithWindowsAsAdministrator);
@@ -171,20 +172,29 @@ public sealed partial class SettingsViewModel : ObservableObject
 
     private bool CanSave() => !IsStartupBusy && !StartupUncertain;
 
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RepairStartupCommand))]
+    private bool _hasConfirmedStartupMode;
+
+    private bool CanRepairStartup() => CanSave() && HasConfirmedStartupMode;
+
     [RelayCommand(CanExecute = nameof(CanSave))]
     private Task SaveAsync() => SaveCoreAsync(repair: false);
 
-    [RelayCommand(CanExecute = nameof(CanSave))]
-    private Task RepairStartupAsync() => SaveCoreAsync(repair: true);
+    [RelayCommand(CanExecute = nameof(CanRepairStartup))]
+    private Task RepairStartupAsync() => CanRepairStartup() ? SaveCoreAsync(repair: true) : Task.CompletedTask;
 
     [RelayCommand]
     private async Task RefreshStartupAsync()
     {
         if (IsStartupBusy) return;
+        int version = ++_startupReadVersion;
+        HasConfirmedStartupMode = false;
         // An invalid saved setting must not trap the editor in an unknown/retry-disabled state.
         bool valid = int.TryParse(StartupDelayText, System.Globalization.NumberStyles.None,
             System.Globalization.CultureInfo.InvariantCulture, out int seconds) && (uint)seconds <= 300;
         var status = await _startupService.ReadAsync(valid ? seconds : 3);
+        if (version != _startupReadVersion) return;
         SetStartupStatus(status);
         if (StartupSelection == _startupBeforeEdit) RestoreStartupSelection(status);
         // A query failure alone must not lock the whole settings editor. Keep the
@@ -194,6 +204,8 @@ public sealed partial class SettingsViewModel : ObservableObject
 
     private void SetStartupStatus(LogonStartupStatus status)
     {
+        HasConfirmedStartupMode = status.State is LogonStartupState.Disabled or LogonStartupState.Plain
+            or LogonStartupState.PlainNeedsRepair or LogonStartupState.Elevated or LogonStartupState.ElevatedNeedsRepair;
         StartupStatusText = status.State switch
         {
             LogonStartupState.Disabled => Strings.StartupStatusDisabled,
@@ -238,6 +250,9 @@ public sealed partial class SettingsViewModel : ObservableObject
                 committed.AdministratorStartupDelaySeconds != saved.AdministratorStartupDelaySeconds;
             if (repair || startupChanged)
             {
+                // A refresh started before this change can still return the previous login mode.
+                ++_startupReadVersion;
+                HasConfirmedStartupMode = false;
                 committed.StartWithWindowsAsAdministrator &= committed.StartWithWindows;
                 StartupStatusText = Strings.StartupStatusBusy;
                 ElevatedStartup.ValidateDelay(committed.AdministratorStartupDelaySeconds);

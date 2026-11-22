@@ -156,7 +156,10 @@ public sealed class ElevatedStartupTests
             TaskXml = ElevatedStartup.TaskXml(target).Replace("HighestAvailable", "LeastPrivilege")
         };
         var service = new LogonStartupService(store: store, target: target, request: operation =>
-            Task.FromResult(ElevatedStartup.Apply(operation, target, store)));
+        {
+            Assert.Equal(StartupOperation.Repair, operation);
+            return Task.FromResult(ElevatedStartup.Apply(operation, target, store));
+        });
         Assert.Equal(LogonStartupState.ElevatedNeedsRepair, (await service.ReadAsync()).State);
         Assert.Equal(StartupOutcome.Applied, (await service.ChangeAsync(true, true, repair: true)).Outcome);
         Assert.Equal(LogonStartupState.Elevated, (await service.ReadAsync()).State);
@@ -191,7 +194,8 @@ public sealed class ElevatedStartupTests
         var service = new LogonStartupService(store: store, target: target,
             request: _ => throw new Exception("UAC must not run"));
 
-        var applied = await service.ChangeAsync(true, false);
+        Assert.Equal(LogonStartupState.PlainNeedsRepair, (await service.ReadAsync()).State);
+        var applied = await service.ChangeAsync(true, false, repair: true);
         Assert.Equal(StartupOutcome.Applied, applied.Outcome);
         Assert.Equal(ElevatedStartup.PlainShortcut(target), store.Shortcut);
         Assert.Null(store.ReadRun(target.Options.AppId));
