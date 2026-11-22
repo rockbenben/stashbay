@@ -341,20 +341,8 @@
         </TabControl>
         <Border Grid.Row="1" Style="{StaticResource ActionBar}">
             <StackPanel Style="{StaticResource Actions.End}">
-                <Button x:Name="SaveSettingsButton" Content="{x:Static app:Strings.SaveButton}" Click="OnSave" MinWidth="88">
-                    <Button.Style>
-                        <Style TargetType="Button" BasedOn="{StaticResource Button.Primary}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsStartupBusy}" Value="True">
-                                    <Setter Property="IsEnabled" Value="False"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding StartupUncertain}" Value="True">
-                                    <Setter Property="IsEnabled" Value="False"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
+                <Button x:Name="SaveSettingsButton" Content="{x:Static app:Strings.SaveButton}" Click="OnSave" MinWidth="88"
+                        Style="{StaticResource Button.Primary}" IsEnabled="{Binding CanSaveSettings}"/>
                 <Button Content="{x:Static app:Strings.CancelButton}" Margin="8,0,0,0" MinWidth="88" IsCancel="True" Click="OnCancel">
                     <Button.Style>
                         <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">

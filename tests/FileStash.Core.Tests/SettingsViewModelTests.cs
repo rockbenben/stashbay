@@ -116,6 +116,46 @@ public sealed class SettingsViewModelTests : IAsyncLifetime
     }
 
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task UnknownStartupReadPreservesDraftAndRejectsBothWritesUntilRecovery(bool delayOnly)
+    {
+        var confirmed = delayOnly ? LogonStartupState.ElevatedNeedsRepair : LogonStartupState.PlainNeedsRepair;
+        _startup.State = confirmed;
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
+        if (delayOnly) _viewModel.StartupDelayText = "17";
+        else _viewModel.StartWithWindowsAsAdministrator = true;
+
+        _startup.State = LogonStartupState.Unknown;
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
+        Assert.False(_viewModel.SaveCommand.CanExecute(null));
+        Assert.False(_viewModel.RepairStartupCommand.CanExecute(null));
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+        await _viewModel.RepairStartupCommand.ExecuteAsync(null);
+        Assert.Equal(0, _startup.Calls);
+        Assert.True(_viewModel.StartWithWindowsAsAdministrator);
+        Assert.Equal(delayOnly ? "17" : "3", _viewModel.StartupDelayText);
+        _settings.Load();
+        Assert.False(_settings.Current.StartWithWindowsAsAdministrator);
+        Assert.Equal(3, _settings.Current.AdministratorStartupDelaySeconds);
+
+        _startup.State = confirmed;
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
+        Assert.True(_viewModel.StartWithWindowsAsAdministrator);
+        Assert.Equal(delayOnly ? "17" : "3", _viewModel.StartupDelayText);
+        Assert.True(_viewModel.SaveCommand.CanExecute(null));
+        Assert.False(_viewModel.RepairStartupCommand.CanExecute(null));
+        Assert.Equal(0, _startup.Calls);
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+        Assert.True(_viewModel.LastSaveSucceeded);
+        Assert.Equal(1, _startup.Calls);
+        Assert.False(_startup.LastRepair);
+        _settings.Load();
+        Assert.True(_settings.Current.StartWithWindowsAsAdministrator);
+        Assert.Equal(delayOnly ? 17 : 3, _settings.Current.AdministratorStartupDelaySeconds);
+    }
+
+    [Theory]
     [InlineData(LogonStartupState.PlainNeedsRepair)]
     [InlineData(LogonStartupState.Elevated)]
     public async Task RefreshKeepsAnExplicitStartupEditAndSaveAppliesIt(LogonStartupState actual)
@@ -139,9 +179,9 @@ public sealed class SettingsViewModelTests : IAsyncLifetime
     [Fact]
     public async Task UnknownReadbackAfterStartupEditDoesNotPersistOrEnableReplay()
     {
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
         _startup.State = LogonStartupState.Unknown;
         _startup.Outcome = StartupOutcome.Failed;
-        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
         _viewModel.Settings.StartWithWindows = true;
 
         await _viewModel.SaveCommand.ExecuteAsync(null);
@@ -188,6 +228,11 @@ public sealed class SettingsViewModelTests : IAsyncLifetime
         var refresh = _viewModel.RefreshStartupCommand.ExecuteAsync(null);
         _viewModel.StartWithWindows = true;
         _viewModel.StartWithWindowsAsAdministrator = true;
+        Assert.False(_viewModel.SaveCommand.CanExecute(null));
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+        Assert.Equal(0, _startup.Calls);
+
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
         await _viewModel.SaveCommand.ExecuteAsync(null);
         Assert.True(_viewModel.LastSaveSucceeded);
 
@@ -211,6 +256,7 @@ public sealed class SettingsViewModelTests : IAsyncLifetime
     [Fact]
     public async Task FailedStartupEditCanBeSavedAfterRefreshConfirmsUnregisteredState()
     {
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
         _startup.State = LogonStartupState.Unknown;
         _startup.Outcome = StartupOutcome.Failed;
         _viewModel.Settings.StartWithWindows = true;
@@ -237,6 +283,7 @@ public sealed class SettingsViewModelTests : IAsyncLifetime
         _viewModel.Settings.StartWithWindows = true;
         _viewModel.Settings.StartWithWindowsAsAdministrator = true;
         _startup.State = LogonStartupState.Elevated;
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
         _startup.Outcome = StartupOutcome.Cancelled;
         _viewModel.StartupDelayText = "17";
         await _viewModel.SaveCommand.ExecuteAsync(null);
@@ -289,6 +336,7 @@ public sealed class SettingsViewModelTests : IAsyncLifetime
     [Fact]
     public async Task AdministratorChoicePersistsOnlyAfterConfirmedRegistration()
     {
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
         _viewModel.Settings.StartWithWindows = true;
         _viewModel.Settings.StartWithWindowsAsAdministrator = true;
         _startup.Outcome = StartupOutcome.Cancelled;
@@ -313,6 +361,7 @@ public sealed class SettingsViewModelTests : IAsyncLifetime
         _settings.Save(new AppSettings { StartWithWindows = true, StartWithWindowsAsAdministrator = true });
         _viewModel.CancelCommand.Execute(null);
         _startup.State = LogonStartupState.Elevated;
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
         _startup.Outcome = StartupOutcome.Failed;
         _viewModel.Settings.StartWithWindows = false;
         await _viewModel.SaveCommand.ExecuteAsync(null);
@@ -327,6 +376,7 @@ public sealed class SettingsViewModelTests : IAsyncLifetime
     [Fact]
     public async Task UncertainResultBlocksReplayUntilExplicitSuccessfulRefresh()
     {
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
         _startup.Outcome = StartupOutcome.Uncertain;
         _startup.IsPending = true;
         _viewModel.Settings.StartWithWindows = true;
@@ -381,6 +431,7 @@ public sealed class SettingsViewModelTests : IAsyncLifetime
     [Fact]
     public async Task FailedStartupSyncWarnsAndAllowsRetryBeforeLanguageRestart()
     {
+        await _viewModel.RefreshStartupCommand.ExecuteAsync(null);
         _shellIntegrationSucceeds = false;
         var restarts = 0;
         _viewModel.LanguageChangeRequested += () => restarts++;

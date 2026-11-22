@@ -73,7 +73,7 @@ public sealed partial class SettingsViewModel : ObservableObject
         set
         {
             if (SetProperty(Settings.StartWithWindows, value, Settings, static (settings, enabled) => settings.StartWithWindows = enabled))
-                RepairStartupCommand.NotifyCanExecuteChanged();
+                NotifyStartupDraftChanged();
         }
     }
 
@@ -84,7 +84,7 @@ public sealed partial class SettingsViewModel : ObservableObject
         {
             if (SetProperty(Settings.StartWithWindowsAsAdministrator, value, Settings,
                     static (settings, administrator) => settings.StartWithWindowsAsAdministrator = administrator))
-                RepairStartupCommand.NotifyCanExecuteChanged();
+                NotifyStartupDraftChanged();
         }
     }
 
@@ -98,7 +98,7 @@ public sealed partial class SettingsViewModel : ObservableObject
         {
             _startupDelayText = value;
             OnPropertyChanged();
-            RepairStartupCommand.NotifyCanExecuteChanged();
+            NotifyStartupDraftChanged();
         }
     }
 
@@ -173,30 +173,55 @@ public sealed partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     [NotifyCanExecuteChangedFor(nameof(RepairStartupCommand))]
+    [NotifyPropertyChangedFor(nameof(CanSaveSettings))]
     private bool _isStartupBusy;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     [NotifyCanExecuteChangedFor(nameof(RepairStartupCommand))]
+    [NotifyPropertyChangedFor(nameof(CanSaveSettings))]
     private bool _startupUncertain;
 
     [ObservableProperty]
     private string _startupStatusText = Strings.StartupStatusUnknown;
 
-    private bool CanSave() => !IsStartupBusy && !StartupUncertain;
+    public bool CanSaveSettings => !IsStartupBusy && !StartupUncertain &&
+        (!HasStartupDraft || ObservedStartupState is LogonStartupState.Disabled or LogonStartupState.Plain
+            or LogonStartupState.PlainNeedsRepair or LogonStartupState.Elevated
+            or LogonStartupState.ElevatedNeedsRepair or LogonStartupState.Suppressed);
+
+    private bool CanSave() => CanSaveSettings;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     [NotifyCanExecuteChangedFor(nameof(RepairStartupCommand))]
-    private bool? _confirmedStartupAdministrator;
+    [NotifyPropertyChangedFor(nameof(CanSaveSettings))]
+    private LogonStartupState _observedStartupState = LogonStartupState.Unknown;
 
     private bool TryGetStartupDelay(out int seconds) =>
         int.TryParse(StartupDelayText, System.Globalization.NumberStyles.None,
             System.Globalization.CultureInfo.InvariantCulture, out seconds) && (uint)seconds <= 300;
 
+    private bool HasStartupDraft => StartupSelection != _startupBeforeEdit ||
+        !TryGetStartupDelay(out int seconds) || seconds != _settingsService.Current.AdministratorStartupDelaySeconds;
+
+    private void NotifyStartupDraftChanged()
+    {
+        OnPropertyChanged(nameof(CanSaveSettings));
+        SaveCommand.NotifyCanExecuteChanged();
+        RepairStartupCommand.NotifyCanExecuteChanged();
+    }
+
+    private bool? ConfirmedStartupAdministrator => ObservedStartupState switch
+    {
+        LogonStartupState.Plain or LogonStartupState.PlainNeedsRepair => false,
+        LogonStartupState.Elevated or LogonStartupState.ElevatedNeedsRepair => true,
+        _ => null
+    };
+
     // Repair applies the confirmed Windows mode. Switching modes or changing the delay uses Save.
     private bool CanRepairStartup() => CanSave() && StartWithWindows &&
-        ConfirmedStartupAdministrator == StartWithWindowsAsAdministrator && StartupSelection == _startupBeforeEdit &&
-        TryGetStartupDelay(out int seconds) && seconds == _settingsService.Current.AdministratorStartupDelaySeconds;
+        ConfirmedStartupAdministrator == StartWithWindowsAsAdministrator && !HasStartupDraft;
 
     [RelayCommand(CanExecute = nameof(CanSave))]
     private Task SaveAsync() => SaveCoreAsync(repair: false);
@@ -209,7 +234,7 @@ public sealed partial class SettingsViewModel : ObservableObject
     {
         if (IsStartupBusy) return;
         int version = ++_startupReadVersion;
-        ConfirmedStartupAdministrator = null;
+        ObservedStartupState = LogonStartupState.Unknown;
         // An invalid saved setting must not trap the editor in an unknown/retry-disabled state.
         var status = await _startupService.ReadAsync(TryGetStartupDelay(out int seconds) ? seconds : 3);
         if (version != _startupReadVersion) return;
@@ -222,12 +247,7 @@ public sealed partial class SettingsViewModel : ObservableObject
 
     private void SetStartupStatus(LogonStartupStatus status)
     {
-        ConfirmedStartupAdministrator = status.State switch
-        {
-            LogonStartupState.Plain or LogonStartupState.PlainNeedsRepair => false,
-            LogonStartupState.Elevated or LogonStartupState.ElevatedNeedsRepair => true,
-            _ => null
-        };
+        ObservedStartupState = status.State;
         StartupStatusText = status.State switch
         {
             LogonStartupState.Disabled => Strings.StartupStatusDisabled,
@@ -258,6 +278,7 @@ public sealed partial class SettingsViewModel : ObservableObject
             _dialogs.ShowWarning(Strings.SettingsTitle, Strings.StartupDelayRange);
             return;
         }
+        bool startupChanged = HasStartupDraft;
         Settings.AdministratorStartupDelaySeconds = seconds;
         IsStartupBusy = true;
         try
@@ -267,13 +288,11 @@ public sealed partial class SettingsViewModel : ObservableObject
             // Ordinary preferences must remain editable when Task Scheduler cannot be queried.
             // Reconcile startup only after an explicit edit or Repair action.
             var saved = _settingsService.Current;
-            bool startupChanged = StartupSelection != _startupBeforeEdit ||
-                committed.AdministratorStartupDelaySeconds != saved.AdministratorStartupDelaySeconds;
             if (repair || startupChanged)
             {
                 // A refresh started before this change can still return the previous login mode.
                 ++_startupReadVersion;
-                ConfirmedStartupAdministrator = null;
+                ObservedStartupState = LogonStartupState.Unknown;
                 committed.StartWithWindowsAsAdministrator &= committed.StartWithWindows;
                 StartupStatusText = Strings.StartupStatusBusy;
                 ElevatedStartup.ValidateDelay(committed.AdministratorStartupDelaySeconds);
@@ -372,7 +391,7 @@ public sealed partial class SettingsViewModel : ObservableObject
         OnPropertyChanged(nameof(StartWithWindows));
         OnPropertyChanged(nameof(StartWithWindowsAsAdministrator));
         OnPropertyChanged(nameof(ExcludeGlobsText));
-        RepairStartupCommand.NotifyCanExecuteChanged();
+        NotifyStartupDraftChanged();
     }
 
     /// <summary>刷新存储占用显示。</summary>
