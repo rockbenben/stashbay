@@ -1,117 +1,117 @@
 # StashBay
 
-> 跨窗口倒腾文件的极简中转搁架：拖进来放着，拖出去用掉，无需并排开窗口。
+> A lightweight shelf for shuttling files between folders — drop in, drag out, done.
 
-**简体中文** · [English](README.en.md) · [繁體中文](docs/i18n/README.zh-Hant.md) · [日本語](docs/i18n/README.ja.md) · [한국어](docs/i18n/README.ko.md) · [Español](docs/i18n/README.es.md) · [Français](docs/i18n/README.fr.md) · [Deutsch](docs/i18n/README.de.md) · [Português](docs/i18n/README.pt.md) · [Русский](docs/i18n/README.ru.md) · [Italiano](docs/i18n/README.it.md) · [العربية](docs/i18n/README.ar.md) · [हिन्दी](docs/i18n/README.hi.md) · [বাংলা](docs/i18n/README.bn.md) · [ไทย](docs/i18n/README.th.md) · [Türkçe](docs/i18n/README.tr.md) · [Tiếng Việt](docs/i18n/README.vi.md) · [Bahasa Indonesia](docs/i18n/README.id.md)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![365 Open Source Plan #048](https://img.shields.io/badge/365%20Open%20Source%20Plan-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![365 开源计划 #048](https://img.shields.io/badge/365%20%E5%BC%80%E6%BA%90%E8%AE%A1%E5%88%92-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
+[⬇ Download Latest Release](https://github.com/rockbenben/stashbay/releases/latest)
 
-[⬇ 下载最新版](https://github.com/rockbenben/stashbay/releases/latest)
+**English** · [简体中文](README.zh.md) · [繁體中文](docs/i18n/README.zh-Hant.md) · [日本語](docs/i18n/README.ja.md) · [한국어](docs/i18n/README.ko.md) · [Español](docs/i18n/README.es.md) · [Français](docs/i18n/README.fr.md) · [Deutsch](docs/i18n/README.de.md) · [Português](docs/i18n/README.pt.md) · [Русский](docs/i18n/README.ru.md) · [Italiano](docs/i18n/README.it.md) · [العربية](docs/i18n/README.ar.md) · [हिन्दी](docs/i18n/README.hi.md) · [বাংলা](docs/i18n/README.bn.md) · [ไทย](docs/i18n/README.th.md) · [Türkçe](docs/i18n/README.tr.md) · [Tiếng Việt](docs/i18n/README.vi.md) · [Bahasa Indonesia](docs/i18n/README.id.md)
 
-![StashBay 紧凑搁架：一个置顶小卡片架，拖进来放着，拖出去用掉](assets/shelf.png)
+![StashBay compact shelf: a small always-on-top card rack — drop files in to keep them, drag them out to use them](assets/shelf-en.png)
 
-Windows 桌面端轻量文件中转站。全部本地运行，零上传、不联网、免注册。既是用完即走的极简中转架，也是支持改动备份与一键撤销的完整文件工作台。
+A lightweight local file transit station for Windows. Runs completely offline with zero telemetry, network requests, or account sign-ups. Works both as a transient shelf you use and dismiss, and as a full branch-aware workbench with snapshot backups and instant rollback.
 
 ---
 
-## 支持范围
+## Support Range
 
-| 维度 | 支持规格 |
+| Dimension | Specifications |
 | :--- | :--- |
-| **操作系统** | Windows 10 (1809+) / Windows 11（原生支持 x64 与 ARM64） |
-| **运行依赖** | 官方安装版与便携版均内置运行时，解压/双击即用；精简版需 .NET 10 桌面运行时 |
-| **暂存对象** | 任意格式文件、多级文件夹（完整保留相对目录层级） |
-| **输入来源** | 资源管理器多选、剪贴板文件列表、鼠标晃动自动入箱 |
-| **写回目标** | 本地硬盘、网络共享路径（UNC / 映射盘符）、Git 代码仓库 |
-| **大文件支持** | 支持单个 >2GB 大文件，支持 Windows 长路径（>260 字符） |
-| **权限机制** | 默认普通用户权限运行（装在 `%LOCALAPPDATA%\Programs` 免提权）；可选注册管理员自启 |
-| **数据位置** | 默认保存在 `%LOCALAPPDATA%\StashBay\`，自动兼容旧版 `FileStash` 目录 |
+| **Operating System** | Windows 10 (1809+) / Windows 11 (native x64 and ARM64 support) |
+| **Runtime** | Official installer and portable builds include the runtime; compact builds require .NET 10 Desktop Runtime |
+| **Stash Content** | Any file, entire folders (full recursive subdirectory structure preserved) |
+| **Input Sources** | Explorer file selection, clipboard file list, mouse shake gesture |
+| **Write-Back Targets** | Local disks, network shares (UNC / mapped drives), Git repositories |
+| **Large Files** | Supports single files > 2 GB, supports Windows long paths (> 260 characters) |
+| **Permissions** | Runs under standard user rights by default (installed in `%LOCALAPPDATA%\Programs`); optional admin startup |
+| **Data Storage** | Saved under `%LOCALAPPDATA%\StashBay\`; backward compatible with legacy `FileStash` directory |
 
 ---
 
-## 快速开始
+## Getting Started
 
-1. **获取程序**：从 [Releases](https://github.com/rockbenben/stashbay/releases/latest) 下载安装包 `StashBay-vx.y.z-setup.exe`（免管理员权限）或绿色便携包 `StashBay-vx.y.z-win-x64.zip`。
-2. **唤出搁架**：按下快捷键 <kbd>Win+Alt+S</kbd>，迷你搁架即刻在当前鼠标光标所在屏幕展开。
-3. **放入文件**：在资源管理器中选中文件，再次按下 <kbd>Win+Alt+S</kbd>（或拖入搁架、或晃动鼠标），选中的文件立刻入箱。
-4. **一键拖出**：拖住搁架底部的 `[⤹ 共 X 项]` 句柄，一次拖拽即可将所有文件拖入目标窗口或通讯软件。文件全部移出后搁架自动淡出关闭。
-
----
-
-## 核心特性
-
-### 极简中转搁架（DropPoint 体验）
-* **一键批量导出**：拖拽底部计数把手，单个手势将整箱文件一次性拖至资源管理器、微信、飞书或浏览器表单。
-* **拖出即清空**：文件成功落入目标后自动从架上移除；架空后窗口平滑淡出，无需手动整理。
-* **跟随光标唤醒**：全局热键呼出时自动定位至当前鼠标所在显示器，无需跨屏幕寻找窗口。
-* **晃动鼠标入架**：拖选文件时轻晃光标即可原地呼出搁架并自动暂存。
-* **边缘磁吸悬浮球**：桌面贴边小球，单击或轻拖即展开，松开自动吸附屏幕边缘。
-* **多实例独立搁架**：双击托盘图标或在窗口内按 <kbd>Ctrl+Shift+N</kbd> 即可新建独立暂存箱；临时箱清空后自动清理，避免堆积。
-
-### Git 分支改动托管与安全写回
-* **仓库智能感知**：暂存文件归属 Git 仓库时，自动解析仓库根目录；切换分支时弹出提醒，支持一键写回原位。
-* **写前占用检测**：写回前自动调用 Windows 重启管理器检测文件占用（如 Word、Excel、IDE），防止半截写入损坏。
-* **覆盖安全备份**：任何文件被覆盖前均自动快照备份至本地 Blob 内容寻址库，支持一键撤销还原。
-* **内容哈希比对**：内容一致时自动跳过写入，保留原始修改时间，避免触发无谓的项目重构或热重载。
-
-### 完整工作台
-* **多视图切换**：提供树状层级、扁平列表、按来源目录分组及大图标平铺四种视图，状态记忆持久化。
-* **灵活落地模式**：支持按原位置写回、指定目标目录或映射新根路径；目录结构可选完整保留、仅文件名或全部拍平。
-* **冲突预防预览**：写入前提供明细预览，支持询问、覆盖、跳过、自动重命名四种冲突解决策略。
-* **批次操作历史**：每次落地均记录详细执行日志与结果，部分失败时仅需针对失败项重试。
-
-### 原生多语言与无缝适配
-* 内置 18 门语言原生支持，各语言词条 100% 逐键对齐；完整支持阿拉伯语（ar-SA）RTL 界面镜像排版。
-* 完美适配 Windows 深色与浅色模式，语言与主题均可跟随系统自动切换。
+1. **Install**: Download `StashBay-vx.y.z-setup.exe` (no admin needed) from [Releases](https://github.com/rockbenben/stashbay/releases/latest), or grab the portable `StashBay-vx.y.z-win-x64.zip` and unzip to run.
+2. **Summon**: Press <kbd>Win+Alt+S</kbd>. The mini shelf opens near your cursor on the active display.
+3. **Stash**: Select files in Explorer, press <kbd>Win+Alt+S</kbd> again (or drag them in, or shake the mouse) — the selected files land on the shelf.
+4. **Drag out**: Drag the `[⤹ X items]` handle at the bottom into an Explorer folder or app window. When empty, the shelf fades out back to the tray.
 
 ---
 
-## 常用快捷键
+## Features
 
-| 快捷键 | 作用范围 | 功能说明 |
+### Minimal Transit (Yoink / DropPoint Experience)
+* **One-shot drag all**: Grab the count badge at the bottom to bulk-export all stashed items to Explorer or chat apps in a single gesture.
+* **Auto-dismiss when empty**: Items leave the shelf once dropped; once empty, the window smoothly fades away.
+* **Summon at cursor**: Global hotkey summons the shelf directly adjacent to the mouse pointer on the active screen.
+* **Shake to stash**: Quickly shake the cursor left and right while dragging files in Explorer to summon the shelf and stash them.
+* **Edge-docked floating ball**: An edge widget that expands on click or short drag, snapping magnetically to the screen border on release.
+* **Multiple independent shelves**: Double-click the tray icon or press <kbd>Ctrl+Shift+N</kbd> to open separate drop targets; empty temporary shelves are cleaned up automatically.
+
+### Git Preservation & Safe Write-Back
+* **Repository awareness**: Stashed files from Git repos remember the repo root; switching branches triggers a tray notice with one-click restore.
+* **Lock inspection**: Automatically checks whether target files are held open by Word, Excel, or IDEs before writing.
+* **Pre-overwrite snapshots**: Overwritten targets are backed up into a local content-addressed blob store with one-click undo rollback.
+* **Content deduplication**: Skips writing when target and stashed files are byte-identical, preserving original timestamps and preventing rebuild loops.
+
+### Full Workbench
+* **Four view modes**: Tree (nested hierarchy), List (compact flat rows), By Source Folder, and Icons (dense tiles), with view persistence.
+* **Three write-back modes**: Original location, alternate root, or specified directory; subpath structures support full relative path, item name only, or flatten.
+* **Conflict preview**: Review detailed write actions before committing, with Ask, Overwrite, Skip, and Rename conflict policies.
+* **Operation history**: Detailed history logs for every restore batch; partial failures can be retried individually.
+
+### 18 Native Languages & Themes
+* Native support for 18 languages with 100% key parity enforced by automated tests; full RTL layout mirroring for Arabic (ar-SA).
+* Dual neutral-graphite themes (Dark and Light) that seamlessly follow system settings.
+
+---
+
+## Keyboard Shortcuts
+
+| Shortcut | Scope | What it does |
 | :--- | :--- | :--- |
-| <kbd>Win+Alt+S</kbd> | 全局 | 唤出迷你搁架；前台为资源管理器且有选中文件时直接入架 |
-| <kbd>Win+Alt+W</kbd> | 全局 | 唤出完整工作台 |
-| <kbd>Win+Alt+V</kbd> | 全局 | 将剪贴板中的文件直接加入暂存 |
-| <kbd>Ctrl+V</kbd> | 窗口内 | 粘贴剪贴板文件至当前暂存箱 |
-| <kbd>Ctrl+Shift+N</kbd> | 窗口内 | 新建一个独立的空暂存箱 |
-| <kbd>F11</kbd> / <kbd>Ctrl+E</kbd> | 窗口内 | 在迷你搁架与完整工作台之间无缝切换 |
-| <kbd>Esc</kbd> | 窗口内 | 工作台模式下缩回搁架；搁架模式下隐藏至托盘 |
-| <kbd>Delete</kbd> | 列表 | 移出选中的暂存条目 |
+| <kbd>Win+Alt+S</kbd> | Global | Summon the shelf; if Explorer has selected files in front, stashes them directly |
+| <kbd>Win+Alt+W</kbd> | Global | Summon the full workbench |
+| <kbd>Win+Alt+V</kbd> | Global | Stash files currently in the clipboard |
+| <kbd>Ctrl+V</kbd> | In window | Paste clipboard files into the active shelf |
+| <kbd>Ctrl+Shift+N</kbd> | In window | Create a new independent empty shelf |
+| <kbd>F11</kbd> / <kbd>Ctrl+E</kbd> | In window | Toggle between mini shelf and full workbench |
+| <kbd>Esc</kbd> | In window | In workbench, collapse to shelf; in shelf, hide to tray |
+| <kbd>Delete</kbd> | List | Remove selected stashed items |
 
 > [!TIP]
-> 全局热键均可在设置中自定义修改或单独禁用；若按键被系统其他程序占用，软件会明确提示冲突而非静默失效。
+> Global shortcuts can be reconfigured or disabled in Settings; if a hotkey conflicts with another application, StashBay warns you explicitly rather than failing silently.
 
 ---
 
-## 命令行参数（CLI）
+## Command-Line Interface (CLI)
 
-`StashBay.exe` 提供丰富的命令行接口，便于与外部启动器、系统脚本或自动化工作流集成：
+`StashBay.exe` provides command-line flags for scripting, custom shortcuts, or automation workflows:
 
-| 命令参数 | 功能说明 |
+| Option | Description |
 | :--- | :--- |
-| `--add <路径...>` | 将指定的一个或多个文件/文件夹加入暂存箱 |
-| `--group <分组名>` | 配合 `--add` 使用，指定目标暂存箱（不存在则自动创建） |
-| `--apply-here <目录>` | 将当前暂存箱内容写回至指定目录 |
-| `--apply-original` | 按原始相对路径原路写回（适合 Git 分支恢复） |
-| `--show` | 唤出并显示主窗口界面 |
-| `--minimized` | 最小化静默启动至托盘（用于系统自启） |
-| `--quit` | 安全退出正在运行的实例 |
-| `--unregister-shell` | 清除右键菜单、发送到快捷方式及开机自启项 |
+| `--add <paths...>` | Add one or more files or folders to the shelf |
+| `--group <name>` | Specify target group name with `--add` (created automatically if missing) |
+| `--apply-here <dir>` | Write stashed files into the specified directory |
+| `--apply-original` | Restore files back to original repo-relative locations |
+| `--show` | Summon and display the main window |
+| `--minimized` | Start minimized to tray (used for Windows auto-start) |
+| `--quit` | Terminate running StashBay instance |
+| `--unregister-shell` | Unregister Explorer context menu, Send To shortcut, and auto-start entry |
 
 ---
 
-## 已知限制
+## Known Limitations
 
-* **平台专属**：深度整合 Windows Shell、DWM 混合排版与 Windows 访问控制，仅支持 Windows 系统。
-* **数据快照机制**：文件暂存时立即创建内容快照副本而非符号链接；后续修改源文件不会改变暂存箱内容，防误改误删。
-* **单实例机制**：重复运行会将参数自动转发至已运行的托盘主进程，不会产生多余的孤儿进程。
-* **管理员自启说明**：开机自启默认以普通用户权限运行；若需常驻处理管理员窗口拖拽，可在设置中勾选管理员自启并在注册时通过 UAC 授权。[自启配置与排查说明](docs/admin-startup.md)。
+* **Windows exclusive**: Deeply integrated with Windows Shell, DWM composition, and access control; no cross-platform version planned.
+* **Snapshots, not links**: Content is snapshotted immediately when stashed; modifying original files does not alter stashed copies.
+* **Single instance**: Re-launching passes arguments to the running tray instance rather than creating redundant processes.
+* **Administrator startup**: Runs with standard privileges by default; if needed for dragging into elevated windows, opt in to administrator startup in Settings and approve via UAC. See the [startup guide](docs/admin-startup.md).
 
 ---
 
-## 关于 365 开源计划
+## About the 365 Open Source Plan
 
-[365 开源计划](https://github.com/rockbenben/365opensource) 的第 **#048** 个项目——一个人 + AI，一年 300+ 个开源项目。
+Project **#048** of the [365 Open Source Plan](https://github.com/rockbenben/365opensource) — one person + AI, 300+ open-source projects in a year.
 
-[提交你的需求 →](https://365.aishort.top/) · [Discord](https://discord.gg/PZTQfJ4GjX) · [Telegram](https://t.me/aishort_top)
+[Submit your idea →](https://365.aishort.top/) · [Discord](https://discord.gg/PZTQfJ4GjX) · [Telegram](https://t.me/aishort_top)

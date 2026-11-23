@@ -2,11 +2,11 @@
 
 > 跨視窗倒騰檔案的極簡中轉擱架：拖進來放著，拖出去用掉，無需並排開視窗。
 
-[简体中文](../../README.md) · [English](../../README.en.md) · **繁體中文** · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Português](README.pt.md) · [Русский](README.ru.md) · [Italiano](README.it.md) · [العربية](README.ar.md) · [हिन्दी](README.hi.md) · [বাংলা](README.bn.md) · [ไทย](README.th.md) · [Türkçe](README.tr.md) · [Tiếng Việt](README.vi.md) · [Bahasa Indonesia](README.id.md)
-
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE) [![365 開源計畫 #048](https://img.shields.io/badge/365%20%E9%96%8B%E6%BA%90%E8%A8%88%E7%95%AB-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
 
 [⬇ 下載最新版](https://github.com/rockbenben/stashbay/releases/latest)
+
+[English](../../README.md) · [简体中文](../../README.zh.md) · **繁體中文** · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Português](README.pt.md) · [Русский](README.ru.md) · [Italiano](README.it.md) · [العربية](README.ar.md) · [हिन्दी](README.hi.md) · [বাংলা](README.bn.md) · [ไทย](README.th.md) · [Türkçe](README.tr.md) · [Tiếng Việt](README.vi.md) · [Bahasa Indonesia](README.id.md)
 
 ![StashBay 緊湊擱架：一個置頂小卡片架，拖進來放著，拖出去用掉](../../assets/shelf.png)
 

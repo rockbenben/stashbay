@@ -2,11 +2,11 @@
 
 > เชลฟ์ขนาดเล็กสำหรับพักและย้ายไฟล์ระหว่างหน้าต่าง: ลากมาวางไว้ แล้วลากออกไปใช้ — ไม่จำเป็นต้องเปิดหน้าต่างเทียบกันสองข้างอีกต่อไป
 
-[简体中文](../../README.md) · [English](../../README.en.md) · [繁體中文](README.zh-Hant.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Português](README.pt.md) · [Русский](README.ru.md) · [Italiano](README.it.md) · [العربية](README.ar.md) · [हिन्दी](README.hi.md) · [বাংলা](README.bn.md) · **ไทย** · [Türkçe](README.tr.md) · [Tiếng Việt](README.vi.md) · [Bahasa Indonesia](README.id.md)
-
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE) [![365 Open Source Plan #048](https://img.shields.io/badge/365%20Open%20Source%20Plan-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
 
 [⬇ ดาวน์โหลดเวอร์ชันล่าสุด](https://github.com/rockbenben/stashbay/releases/latest)
+
+[English](../../README.md) · [简体中文](../../README.zh.md) · [繁體中文](README.zh-Hant.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Português](README.pt.md) · [Русский](README.ru.md) · [Italiano](README.it.md) · [العربية](README.ar.md) · [हिन्दी](README.hi.md) · [বাংলা](README.bn.md) · **ไทย** · [Türkçe](README.tr.md) · [Tiếng Việt](README.vi.md) · [Bahasa Indonesia](README.id.md)
 
 ![เชลฟ์ขนาดกะทัดรัด StashBay: การ์ดลอยขนาดเล็กที่อยู่ด้านบนเสมอสำหรับพักและส่งต่อไฟล์](../../assets/shelf.png)
 

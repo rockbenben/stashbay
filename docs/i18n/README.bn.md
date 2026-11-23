@@ -2,11 +2,11 @@
 
 > উইন্ডোগুলির মধ্যে ফাইল স্থানান্তরের একটি হালকা ট্রানজিট শেল্ফ: ফাইল ড্র্যাগ করে রাখুন, ড্র্যাগ করে ব্যবহার করুন — উইন্ডো পাশাপাশি খুলে রাখার কোনো প্রয়োজন নেই।
 
-[简体中文](../../README.md) · [English](../../README.en.md) · [繁體中文](README.zh-Hant.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Português](README.pt.md) · [Русский](README.ru.md) · [Italiano](README.it.md) · [العربية](README.ar.md) · [हिन्दी](README.hi.md) · **বাংলা** · [ไทย](README.th.md) · [Türkçe](README.tr.md) · [Tiếng Việt](README.vi.md) · [Bahasa Indonesia](README.id.md)
-
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE) [![365 Open Source Plan #048](https://img.shields.io/badge/365%20Open%20Source%20Plan-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
 
 [⬇ সর্বশেষ সংস্করণ ডাউনলোড করুন](https://github.com/rockbenben/stashbay/releases/latest)
+
+[English](../../README.md) · [简体中文](../../README.zh.md) · [繁體中文](README.zh-Hant.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Português](README.pt.md) · [Русский](README.ru.md) · [Italiano](README.it.md) · [العربية](README.ar.md) · [हिन्दी](README.hi.md) · **বাংলা** · [ไทย](README.th.md) · [Türkçe](README.tr.md) · [Tiếng Việt](README.vi.md) · [Bahasa Indonesia](README.id.md)
 
 ![StashBay কমপ্যাক্ট শেল্ফ: স্ক্রিনের শীর্ষে ভেসে থাকা ছোট ফাইল র্যাক — ফাইল রাখুন এবং ব্যবহার করুন](../../assets/shelf.png)
 

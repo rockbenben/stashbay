@@ -211,7 +211,7 @@ sources and re-render.
 | :--- | :--- |
 | `assets/icon.html` | `assets/logo.png` (1024²), `assets/app.ico`, `assets/favicon.ico`, `src/FileStash.App/Resources/app.ico` |
 | `assets/social-preview.html` | `assets/social-preview.png` (1200×630) |
-| `assets/shelf.html` | `assets/shelf.png` (紧凑搁架状态展示，README 用) |
+| `assets/shelf.html` | `assets/shelf.png` (紧凑搁架状态展示，`README.zh.md` 与 `docs/i18n/*` 用)、`assets/shelf-en.png` (同一构图、英文字样，`README.md` 用) |
 
 ```powershell
 $SKILL_DIR = "$env:USERPROFILE\.agents\skills\html-shot"
@@ -221,6 +221,7 @@ Copy-Item artifacts\brand\icon.ico assets\app.ico -Force
 Copy-Item artifacts\brand\icon.ico assets\favicon.ico -Force
 Copy-Item artifacts\brand\icon.ico src\FileStash.App\Resources\app.ico -Force
 node "$SKILL_DIR\render.mjs" assets\shelf.html assets\shelf.png --selector .stage --dpr 2 --transparent --offline
+node "$SKILL_DIR\render.mjs" assets\shelf.html assets\shelf-en.png --selector .stage --dpr 2 --transparent --offline --style ".zh{display:none}.en{display:inline}"
 node "$SKILL_DIR\render.mjs" assets\social-preview.html assets\social-preview.png --width 1200 --height 630 --offline
 ```
 

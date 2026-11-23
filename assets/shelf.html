@@ -184,6 +184,9 @@
     color: #7A7E85;
   }
 
+  /* 双语字幕：默认中文；英文版由 --style 覆盖（渲染命令见文件末尾注释） */
+  .en { display: none; }
+
   @media (prefers-color-scheme: dark) {
     .caption-tag { color: #C5C8CD; }
     .caption-sub { color: #8A8E96; }
@@ -210,12 +213,12 @@
           <rect x="19" y="8" width="34" height="43" rx="7" transform="rotate(8 36 51)" fill="#525252" opacity="0.45"/>
           <rect x="17" y="18" width="35" height="42" rx="7" fill="#FFFFFF" stroke="#919191" stroke-width="1"/>
         </svg>
-        <div class="empty-prompt">将文件拖到这里</div>
+        <div class="empty-prompt"><span class="zh">将文件拖到这里</span><span class="en">Drop your files here</span></div>
       </div>
     </div>
     <div class="caption">
-      <span class="caption-tag">空状态 · 待拖入</span>
-      <span class="caption-sub">跟随光标呼出 · 晃动鼠标暂存</span>
+      <span class="caption-tag"><span class="zh">空状态 · 待拖入</span><span class="en">Empty · waiting for files</span></span>
+      <span class="caption-sub"><span class="zh">跟随光标呼出 · 晃动鼠标暂存</span><span class="en">Summons at the cursor · shake to stash</span></span>
     </div>
   </div>
 
@@ -223,7 +226,7 @@
   <div class="shelf-wrapper">
     <div class="shelf dark">
       <div class="shelf-header">
-        <span class="shelf-title">暂存区</span>
+        <span class="shelf-title"><span class="zh">暂存区</span><span class="en">Stash</span></span>
         <div class="close-btn">
           <svg viewBox="0 0 16 16" fill="none" stroke-width="1.6" stroke-linecap="round">
             <path d="M4 4L12 12M12 4L4 12"/>
@@ -236,8 +239,8 @@
           <rect x="19" y="8" width="34" height="43" rx="7" transform="rotate(8 36 51)" fill="#BDBDBD" opacity="0.45"/>
           <rect x="17" y="18" width="35" height="42" rx="7" fill="#E4E4E4" stroke="#777777" stroke-width="1"/>
         </svg>
-        <div class="prompt-large">拖出文件</div>
-        <div class="shelf-count">已暂存 6 项</div>
+        <div class="prompt-large"><span class="zh">拖出文件</span><span class="en">Drag files out</span></div>
+        <div class="shelf-count"><span class="zh">已暂存 6 项</span><span class="en">6 items stashed</span></div>
       </div>
       <div class="shelf-footer">
         <div class="action-btn" title="应用到原位置">
@@ -258,11 +261,18 @@
       </div>
     </div>
     <div class="caption">
-      <span class="caption-tag">暂存中 · 一键拖出</span>
-      <span class="caption-sub">单个手势拖出 · 支持原路写回</span>
+      <span class="caption-tag"><span class="zh">暂存中 · 一键拖出</span><span class="en">Stashed · drag out as one gesture</span></span>
+      <span class="caption-sub"><span class="zh">单个手势拖出 · 支持原路写回</span><span class="en">Whole batch in one gesture · writes back in place</span></span>
     </div>
   </div>
 </div>
 
+<!--
+  渲染（中文，README.zh.md 与 docs/i18n 用）：
+    node %USERPROFILE%\.agents\skills\html-shot\render.mjs assets\shelf.html assets\shelf.png --selector .stage --dpr 2 --transparent --offline
+
+  渲染（英文，README.md 用；只换字样，构图与配色完全一致）：
+    node %USERPROFILE%\.agents\skills\html-shot\render.mjs assets\shelf.html assets\shelf-en.png --selector .stage --dpr 2 --transparent --offline --style ".zh{display:none}.en{display:inline}"
+-->
 </body>
 </html>

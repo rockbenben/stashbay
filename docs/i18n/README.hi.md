@@ -2,11 +2,11 @@
 
 > विंडोज़ के बीच फ़ाइलों को आसानी से स्थानांतरित करने के लिए एक हल्का शेल्फ़: फ़ाइलें अंदर छोड़ें, बाहर खींचें और काम पूरा — दो विंडो को अगल-बगल रखने की कोई आवश्यकता नहीं।
 
-[简体中文](../../README.md) · [English](../../README.en.md) · [繁體中文](README.zh-Hant.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Português](README.pt.md) · [Русский](README.ru.md) · [Italiano](README.it.md) · [العربية](README.ar.md) · **हिन्दी** · [বাংলা](README.bn.md) · [ไทย](README.th.md) · [Türkçe](README.tr.md) · [Tiếng Việt](README.vi.md) · [Bahasa Indonesia](README.id.md)
-
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](../../LICENSE) [![365 Open Source Plan #048](https://img.shields.io/badge/365%20Open%20Source%20Plan-%23048-1f6feb)](https://github.com/rockbenben/365opensource)
 
 [⬇ नवीनतम संस्करण डाउनलोड करें](https://github.com/rockbenben/stashbay/releases/latest)
+
+[English](../../README.md) · [简体中文](../../README.zh.md) · [繁體中文](README.zh-Hant.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Português](README.pt.md) · [Русский](README.ru.md) · [Italiano](README.it.md) · [العربية](README.ar.md) · **हिन्दी** · [বাংলা](README.bn.md) · [ไทย](README.th.md) · [Türkçe](README.tr.md) · [Tiếng Việt](README.vi.md) · [Bahasa Indonesia](README.id.md)
 
 ![StashBay कॉम्पैक्ट शेल्फ़: स्क्रीन पर हमेशा सबसे ऊपर रहने वाला कार्ड शेल्फ़ — फ़ाइलें रखें और बाहर निकालें](../../assets/shelf.png)
 
