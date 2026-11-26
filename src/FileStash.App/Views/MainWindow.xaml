@@ -341,9 +341,10 @@
             <!-- ================= 台面 ================= -->
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="216"/>
+                    <!-- 两列都用星号宽度，让 GridSplitter 同时约束两侧。权重保留 1180 DIP 窗口下的初始侧栏宽度。 -->
+                    <ColumnDefinition Width="216*" MinWidth="200"/>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="955*" MinWidth="600"/>
                 </Grid.ColumnDefinitions>
                 <!-- 收纳格（暂存箱） -->
                 <Grid Grid.Column="0" Background="{DynamicResource Brush.SurfaceAlt}">
@@ -396,7 +397,18 @@
                         <Button WindowChrome.IsHitTestVisibleInChrome="True" Grid.Column="1" Margin="4,0,0,0" Content="{x:Static app:Strings.ClearAllBoxesButton}" ToolTip="{x:Static app:Strings.ClearAllBoxesTooltip}" Style="{StaticResource Button.Ghost}" Command="{Binding ClearAllBoxesCommand}"/>
                     </Grid>
                 </Grid>
-                <GridSplitter Grid.Column="1" Width="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{DynamicResource Brush.Border}"/>
+                <GridSplitter Grid.Column="1" Width="9" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                              ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" Cursor="SizeWE"
+                              FocusVisualStyle="{StaticResource FocusRing}">
+                    <GridSplitter.Template>
+                        <ControlTemplate TargetType="GridSplitter">
+                            <Grid Background="Transparent">
+                                <Border Width="1" HorizontalAlignment="Center" SnapsToDevicePixels="True"
+                                        Background="{DynamicResource Brush.Border}"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </GridSplitter.Template>
+                </GridSplitter>
                 <!-- 暂存项 -->
                 <Grid Grid.Column="2">
                     <Grid.RowDefinitions>
