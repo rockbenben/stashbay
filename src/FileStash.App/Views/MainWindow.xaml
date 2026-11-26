@@ -508,9 +508,11 @@
                                         <ColumnDefinition Width="120"/>
                                         <ColumnDefinition Width="110"/>
                                     </Grid.ColumnDefinitions>
-                                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <!-- 先给文件名空间，再用本列的余宽显示路径。 -->
+                                    <DockPanel Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Center" ClipToBounds="True">
                                         <!-- 源文件没了：名字要跟着变暗，不能只靠一颗 6 DIP 的点 -->
-                                        <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" VerticalAlignment="Center">
+                                        <TextBlock DockPanel.Dock="Left" Text="{Binding DisplayName}" FontWeight="SemiBold" VerticalAlignment="Center"
+                                                   TextTrimming="CharacterEllipsis" ToolTip="{Binding SourcePath}">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock" BasedOn="{StaticResource Text.Body}">
                                                     <Style.Triggers>
@@ -521,8 +523,9 @@
                                                 </Style>
                                             </TextBlock.Style>
                                         </TextBlock>
-                                        <TextBlock Text="{Binding PathTail}" Margin="10,0,0,0" VerticalAlignment="Center" MaxWidth="260" Style="{StaticResource Text.Mono}" TextTrimming="CharacterEllipsis" ToolTip="{Binding SourcePath}"/>
-                                    </StackPanel>
+                                        <TextBlock Text="{Binding PathTail}" Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"
+                                                   MaxWidth="260" Style="{StaticResource Text.Mono}" TextTrimming="CharacterEllipsis" ToolTip="{Binding SourcePath}"/>
+                                    </DockPanel>
                                     <TextBlock Grid.Column="1" VerticalAlignment="Center" Style="{StaticResource Text.Mono}" Text="{Binding SizeText}"/>
                                     <TextBlock Grid.Column="2" VerticalAlignment="Center" Style="{StaticResource Text.Mono}" Text="{Binding BranchText}" TextTrimming="CharacterEllipsis"/>
                                     <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
