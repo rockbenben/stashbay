@@ -1069,4 +1069,14 @@
   <data name="SettingsShelf" xml:space="preserve"><value>Raf</value></data>
   <data name="SettingsFiles" xml:space="preserve"><value>Dosya işleme</value></data>
   <data name="SettingsShortcuts" xml:space="preserve"><value>Kısayollar</value></data>
+  <data name="WindowMinimize" xml:space="preserve"><value>Küçült</value></data>
+  <data name="WindowMaximize" xml:space="preserve"><value>Ekranı Kapla</value></data>
+  <data name="WindowRestore" xml:space="preserve"><value>Önceki Boyut</value></data>
+  <data name="SearchPlaceholder" xml:space="preserve"><value>Dosya veya yol filtrele…</value></data>
+  <data name="ClearSearchTooltip" xml:space="preserve"><value>Aramayı temizle</value></data>
+  <data name="SearchNoMatches" xml:space="preserve"><value>Eşleşen dosya yok</value></data>
+  <data name="GitHubRepoTooltip" xml:space="preserve"><value>GitHub deposunu aç</value></data>
+  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
+  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} ({1} öğe) · {2}</value></data>
+  <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>Tam sürüm bilgisini kopyala</value></data>
 </root>

@@ -3,50 +3,59 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:app="clr-namespace:FileStash.App.Resources"
         Title="{x:Static app:Strings.AboutTitle}"
-        Icon="pack://application:,,,/Resources/app.ico"
-        Width="420"
-        Height="300"
+        Icon="pack://application:,,,/StashBay;component/Resources/app.ico"
+        Width="440"
+        Height="320"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
-        Background="{DynamicResource Brush.Surface}">
+        Background="{DynamicResource Brush.Surface}"
+        FontFamily="{DynamicResource Font.UI}"
+        FontSize="{DynamicResource Font.Size.Body}"
+        UseLayoutRounding="True">
 
-    <Grid Margin="20">
+    <Grid Margin="22,20">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0"
-                   Text="{x:Static app:Strings.AppName}"
-                   FontSize="22"
-                   FontWeight="SemiBold" />
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <ContentControl Grid.Column="0" ContentTemplate="{StaticResource ShelfFileStackGlyph}" Width="44" Height="44" Margin="0,0,14,0" VerticalAlignment="Center" IsHitTestVisible="False" />
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <TextBlock Text="{x:Static app:Strings.AppName}" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource Brush.TextPrimary}" />
+                <TextBlock Margin="0,3,0,0" Style="{StaticResource Text.Caption}" TextWrapping="Wrap" Text="{x:Static app:Strings.AboutTagline}" />
+            </StackPanel>
+        </Grid>
 
-        <TextBlock Grid.Row="1"
-                   Margin="0,6,0,0"
-                   Style="{StaticResource Text.Caption}"
-                   TextWrapping="Wrap"
-                   Text="{x:Static app:Strings.AboutTagline}" />
-
-        <Border Grid.Row="2"
-                Margin="0,16,0,0"
-                Padding="12"
+        <Border Grid.Row="1"
+                Margin="0,18,0,0"
+                Padding="14,12"
                 Background="{DynamicResource Brush.SurfaceAlt}"
                 BorderBrush="{DynamicResource Brush.Border}"
                 BorderThickness="1"
                 CornerRadius="{DynamicResource Radius.Panel}">
-            <StackPanel>
-                <TextBlock x:Name="VersionText" />
-                <TextBlock x:Name="RuntimeText" Margin="0,6,0,0" Style="{StaticResource Text.Caption}" />
+            <StackPanel VerticalAlignment="Center">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock x:Name="VersionText" Grid.Column="0" FontWeight="SemiBold" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                    <Button x:Name="CopyVersionButton" Grid.Column="1" Style="{StaticResource Button.IconOnly}" Width="26" Height="26" MinHeight="26"
+                            Click="OnCopyVersion"
+                            ToolTip="{x:Static app:Strings.CopyBuildInfoTooltip}"
+                            AutomationProperties.Name="{x:Static app:Strings.CopyBuildInfoTooltip}">
+                        <Path Data="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" Fill="{DynamicResource Brush.TextSecondary}" Width="12" Height="12" Stretch="Uniform" />
+                    </Button>
+                </Grid>
+                <TextBlock x:Name="RuntimeText" Margin="0,8,0,0" Style="{StaticResource Text.Caption}" />
                 <TextBlock x:Name="GitText" Margin="0,6,0,0" Style="{StaticResource Text.Caption}" />
-                <!--
-                    数据目录那行是路径：没有 TextTrimming 时它按整行宽度要空间，
-                    撑破边框 —— 阿拉伯语下从左边冲出去，窗边裁掉的是路径开头
-                    （"C:\Users\..." 变成 "ocal\Temp\..."）。
-                    截断 + ToolTip：省略号收尾，完整路径看悬停。
-                -->
                 <TextBlock x:Name="DataText"
                            Margin="0,6,0,0"
                            Style="{StaticResource Text.Caption}"
@@ -55,12 +64,26 @@
             </StackPanel>
         </Border>
 
-        <Button Grid.Row="3"
-                Content="{x:Static app:Strings.OkButton}"
-                Width="90"
-                Margin="0,16,0,0"
-                IsCancel="True"
-                Click="OnClose"
-                Style="{StaticResource Button.Primary.End}" />
+        <Grid Grid.Row="2" Margin="0,16,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Click="OnOpenGitHub"
+                    ToolTip="{x:Static app:Strings.GitHubRepoTooltip}"
+                    AutomationProperties.Name="{x:Static app:Strings.GitHubRepoTooltip}">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Path Data="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.69 5.4-5.26 5.68.41.36.78 1.06.78 2.14 0 1.55-.01 2.79-.01 3.17 0 .31.21.67.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z" Fill="{DynamicResource Brush.TextPrimary}" Width="14" Height="14" Margin="0,0,7,0" Stretch="Uniform" />
+                    <TextBlock Text="GitHub" VerticalAlignment="Center" />
+                </StackPanel>
+            </Button>
+            <Button Grid.Column="2"
+                    Content="{x:Static app:Strings.OkButton}"
+                    Width="90"
+                    IsCancel="True"
+                    Click="OnClose"
+                    Style="{StaticResource Button.Primary}" />
+        </Grid>
     </Grid>
 </Window>

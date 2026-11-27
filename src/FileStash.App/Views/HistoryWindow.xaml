@@ -3,124 +3,176 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:app="clr-namespace:FileStash.App.Resources"
         Title="{x:Static app:Strings.HistoryTitle}"
-        Icon="pack://application:,,,/Resources/app.ico"
-        Width="900"
-        Height="560"
+        Icon="pack://application:,,,/StashBay;component/Resources/app.ico"
+        Width="940"
+        Height="580"
         MinWidth="640"
         MinHeight="320"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
-        Background="{DynamicResource Brush.Surface}">
+        Background="{DynamicResource Brush.Surface}"
+        FontFamily="{DynamicResource Font.UI}"
+        FontSize="{DynamicResource Font.Size.Body}"
+        UseLayoutRounding="True">
 
     <Window.Resources>
-        <!--
-            历史里被截掉的两样最要命：目标路径（分不清是哪一份）与错误原因
-            （报错本来就是来看第二眼的）。截断保留，全内容进 tooltip。
-        -->
         <Style x:Key="Cell.Trimmed" TargetType="TextBlock">
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         </Style>
     </Window.Resources>
 
-    <Grid Margin="12">
+    <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
+        <Border Grid.Row="0" Padding="18,14,18,10">
+            <TextBlock Text="{x:Static app:Strings.HistoryTitle}" Style="{StaticResource Text.Title}" FontSize="17" />
+        </Border>
+
+        <Grid Grid.Row="1" Margin="18,0,18,14">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="380" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="380*" MinWidth="260" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="520*" MinWidth="300" />
             </Grid.ColumnDefinitions>
 
-            <!-- 操作列表 -->
-            <DataGrid Grid.Column="0"
-                      Margin="0,0,12,0"
-                      ItemsSource="{Binding Operations}"
-                      SelectedItem="{Binding SelectedOperation}"
-                      AutoGenerateColumns="False"
-                      IsReadOnly="True"
-                      CanUserAddRows="False"
-                      HeadersVisibility="Column"
-                      GridLinesVisibility="Horizontal"
-                      Background="Transparent"
-                      BorderBrush="{DynamicResource Brush.Border}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="{x:Static app:Strings.ColumnTime}" Binding="{Binding TimeText}" Width="140" />
-                    <DataGridTextColumn Header="{x:Static app:Strings.ColumnTarget}"
-                                        Binding="{Binding TargetText}"
-                                        Width="*"
-                                        IsReadOnly="True">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock" BasedOn="{StaticResource Cell.Trimmed}">
-                                <Setter Property="ToolTip" Value="{Binding TargetText}" />
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn Header="{x:Static app:Strings.ColumnStatus}" Binding="{Binding StatusText}" Width="70" />
-                </DataGrid.Columns>
-            </DataGrid>
+            <!-- 操作列表卡片 -->
+            <Border Grid.Column="0"
+                    Background="{DynamicResource Brush.SurfaceAlt}"
+                    BorderBrush="{DynamicResource Brush.Border}"
+                    BorderThickness="1"
+                    CornerRadius="{DynamicResource Radius.Panel}"
+                    Padding="4">
+                <DataGrid ItemsSource="{Binding Operations}"
+                          SelectedItem="{Binding SelectedOperation}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          CanUserAddRows="False"
+                          HeadersVisibility="Column"
+                          GridLinesVisibility="Horizontal"
+                          HorizontalGridLinesBrush="{DynamicResource Brush.Border}"
+                          Background="Transparent"
+                          BorderThickness="0">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="{x:Static app:Strings.ColumnTime}" Binding="{Binding TimeText}" Width="140">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource Cell.Trimmed}">
+                                    <Setter Property="FontFamily" Value="{DynamicResource Font.Mono}" />
+                                    <Setter Property="FontSize" Value="{DynamicResource Font.Size.Caption}" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="{x:Static app:Strings.ColumnTarget}"
+                                            Binding="{Binding TargetText}"
+                                            Width="*"
+                                            IsReadOnly="True">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource Cell.Trimmed}">
+                                    <Setter Property="ToolTip" Value="{Binding TargetText}" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTemplateColumn Header="{x:Static app:Strings.ColumnStatus}" Width="112">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border Background="{Binding StatusBackground}" CornerRadius="{DynamicResource Radius.Pill}" Padding="8,2" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding StatusText}" Foreground="{Binding StatusForeground}" FontSize="{DynamicResource Font.Size.Caption}" FontWeight="Medium" TextTrimming="CharacterEllipsis" ToolTip="{Binding StatusText}" />
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
 
-            <!-- 明细 -->
-            <DataGrid Grid.Column="1"
-                      ItemsSource="{Binding Entries}"
-                      SelectedItem="{Binding SelectedEntry}"
-                      AutoGenerateColumns="False"
-                      IsReadOnly="True"
-                      CanUserAddRows="False"
-                      HeadersVisibility="Column"
-                      GridLinesVisibility="Horizontal"
-                      Background="Transparent"
-                      BorderBrush="{DynamicResource Brush.Border}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="{x:Static app:Strings.ColumnTargetPath}"
-                                        Binding="{Binding TargetPath}"
-                                        Width="*"
-                                        IsReadOnly="True">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock" BasedOn="{StaticResource Cell.Trimmed}">
-                                <Setter Property="FontFamily" Value="{DynamicResource Font.Mono}" />
-                                <Setter Property="FontSize" Value="{DynamicResource Font.Size.Caption}" />
-                                <Setter Property="ToolTip" Value="{Binding TargetPath}" />
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn Header="{x:Static app:Strings.ColumnResult}" Binding="{Binding ActionText}" Width="80" />
-                    <DataGridTextColumn Header="{x:Static app:Strings.ColumnError}"
-                                        Binding="{Binding Error}"
-                                        Width="200"
-                                        IsReadOnly="True">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock" BasedOn="{StaticResource Cell.Trimmed}">
-                                <Setter Property="ToolTip" Value="{Binding Error}" />
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
-                </DataGrid.Columns>
-            </DataGrid>
+            <GridSplitter Grid.Column="1" Width="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                          ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" Cursor="SizeWE"
+                          FocusVisualStyle="{StaticResource FocusRing}">
+                <GridSplitter.Template>
+                    <ControlTemplate TargetType="GridSplitter">
+                        <Grid Background="Transparent" />
+                    </ControlTemplate>
+                </GridSplitter.Template>
+            </GridSplitter>
+
+            <!-- 明细列表卡片 -->
+            <Border Grid.Column="2"
+                    Background="{DynamicResource Brush.SurfaceAlt}"
+                    BorderBrush="{DynamicResource Brush.Border}"
+                    BorderThickness="1"
+                    CornerRadius="{DynamicResource Radius.Panel}"
+                    Padding="4">
+                <DataGrid ItemsSource="{Binding Entries}"
+                          SelectedItem="{Binding SelectedEntry}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          CanUserAddRows="False"
+                          HeadersVisibility="Column"
+                          GridLinesVisibility="Horizontal"
+                          HorizontalGridLinesBrush="{DynamicResource Brush.Border}"
+                          Background="Transparent"
+                          BorderThickness="0">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="{x:Static app:Strings.ColumnTargetPath}"
+                                            Binding="{Binding TargetPath}"
+                                            Width="*"
+                                            IsReadOnly="True">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource Cell.Trimmed}">
+                                    <Setter Property="FontFamily" Value="{DynamicResource Font.Mono}" />
+                                    <Setter Property="FontSize" Value="{DynamicResource Font.Size.Caption}" />
+                                    <Setter Property="ToolTip" Value="{Binding TargetPath}" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTemplateColumn Header="{x:Static app:Strings.ColumnResult}" Width="96">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border Background="{Binding ActionBackground}" CornerRadius="{DynamicResource Radius.Pill}" Padding="8,2" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding ActionText}" Foreground="{Binding ActionForeground}" FontSize="{DynamicResource Font.Size.Caption}" FontWeight="Medium" TextTrimming="CharacterEllipsis" ToolTip="{Binding ActionText}" />
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="{x:Static app:Strings.ColumnError}"
+                                            Binding="{Binding Error}"
+                                            Width="180"
+                                            IsReadOnly="True">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource Cell.Trimmed}">
+                                    <Setter Property="Foreground" Value="{DynamicResource Brush.Danger}" />
+                                    <Setter Property="ToolTip" Value="{Binding Error}" />
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
         </Grid>
 
-        <StackPanel Grid.Row="1"
-                    Margin="0,12,0,0"
-                    Style="{StaticResource Actions.End}">
-            <Button Content="{x:Static app:Strings.RefreshButton}" Command="{Binding LoadCommand}" />
-            <Button Content="{x:Static app:Strings.UndoThisButton}"
-                    Margin="6,0,0,0"
-                    ToolTip="{x:Static app:Strings.UndoNeedsWrite}"
-                    Command="{Binding UndoCommand}"
-                    IsEnabled="{Binding CanUndoSelected}" />
-            <Button Content="{x:Static app:Strings.KeepCurrentButton}"
-                    Margin="6,0,0,0" Command="{Binding KeepCurrentCommand}" IsEnabled="{Binding CanKeepCurrent}" />
-            <Button Content="{x:Static app:Strings.OpenTargetFolderButton}"
-                    Margin="6,0,0,0"
-                    Command="{Binding OpenTargetFolderCommand}"
-                    IsEnabled="{Binding HasSelection}" />
-            <Button Content="{x:Static app:Strings.CloseButton}"
-                    Margin="6,0,0,0"
-                    IsCancel="True"
-                    Click="OnClose" />
-        </StackPanel>
+        <Border Grid.Row="2" Style="{StaticResource ActionBar}">
+            <StackPanel Style="{StaticResource Actions.End}">
+                <Button Content="{x:Static app:Strings.RefreshButton}" Command="{Binding LoadCommand}" />
+                <Button Content="{x:Static app:Strings.UndoThisButton}"
+                        Margin="6,0,0,0"
+                        ToolTip="{x:Static app:Strings.UndoNeedsWrite}"
+                        Command="{Binding UndoCommand}"
+                        IsEnabled="{Binding CanUndoSelected}" />
+                <Button Content="{x:Static app:Strings.KeepCurrentButton}"
+                        Margin="6,0,0,0" Command="{Binding KeepCurrentCommand}" IsEnabled="{Binding CanKeepCurrent}" />
+                <Button Content="{x:Static app:Strings.OpenTargetFolderButton}"
+                        Margin="6,0,0,0"
+                        Command="{Binding OpenTargetFolderCommand}"
+                        IsEnabled="{Binding HasSelection}" />
+                <Button Content="{x:Static app:Strings.CloseButton}"
+                        Margin="6,0,0,0"
+                        IsCancel="True"
+                        Click="OnClose" />
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

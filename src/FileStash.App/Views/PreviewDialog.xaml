@@ -5,6 +5,7 @@
         xmlns:local="clr-namespace:FileStash.App.Views"
         xmlns:app="clr-namespace:FileStash.App.Resources"
         Title="{x:Static app:Strings.PreviewTitle}"
+        Icon="pack://application:,,,/StashBay;component/Resources/app.ico"
         Width="940"
         Height="560"
         MinWidth="680"
@@ -21,9 +22,38 @@
         <conv:EnumLabelConverter x:Key="EnumLabel" />
         <conv:ByteSizeConverter x:Key="ByteSize" />
 
-        <!-- 状态列：只有"根本写不进去"的那两档需要被看见，其余保持安静 -->
-        <Style x:Key="Cell.State" TargetType="TextBlock" BasedOn="{StaticResource Text.Body}">
+        <Style x:Key="Badge.State" TargetType="Border">
+            <Setter Property="CornerRadius" Value="{DynamicResource Radius.Pill}" />
+            <Setter Property="Padding" Value="8,2" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Background" Value="{DynamicResource Brush.SurfaceSunken}" />
             <Style.Triggers>
+                <DataTrigger Binding="{Binding State}" Value="New">
+                    <Setter Property="Background" Value="{DynamicResource Brush.SuccessSoft}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding State}" Value="Overwrite">
+                    <Setter Property="Background" Value="{DynamicResource Brush.WarningSoft}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding State}" Value="TypeConflict">
+                    <Setter Property="Background" Value="{DynamicResource Brush.DangerSoft}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding State}" Value="Invalid">
+                    <Setter Property="Background" Value="{DynamicResource Brush.DangerSoft}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="Cell.State" TargetType="TextBlock" BasedOn="{StaticResource Text.Caption}">
+            <Setter Property="FontWeight" Value="Medium" />
+            <Setter Property="Foreground" Value="{DynamicResource Brush.TextSecondary}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding State}" Value="New">
+                    <Setter Property="Foreground" Value="{DynamicResource Brush.Success}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding State}" Value="Overwrite">
+                    <Setter Property="Foreground" Value="{DynamicResource Brush.Warning}" />
+                </DataTrigger>
                 <DataTrigger Binding="{Binding State}" Value="TypeConflict">
                     <Setter Property="Foreground" Value="{DynamicResource Brush.Danger}" />
                     <Setter Property="FontWeight" Value="SemiBold" />
@@ -41,7 +71,6 @@
             <Setter Property="Foreground" Value="{DynamicResource Brush.TextPrimary}" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-            <!-- 路径被截断时，全长得在 tooltip 里看得到 -->
             <Setter Property="ToolTip" Value="{Binding TargetPath}" />
         </Style>
 
@@ -70,9 +99,9 @@
         </Grid.RowDefinitions>
 
         <!-- 目标说明 -->
-        <Border Grid.Row="0" Padding="18,14,18,12">
+        <Border Grid.Row="0" Padding="18,14,18,10">
             <StackPanel>
-                <TextBlock x:Name="TargetText" Style="{StaticResource Text.Title}"
+                <TextBlock x:Name="TargetText" Style="{StaticResource Text.Title}" FontSize="16"
                            TextTrimming="CharacterEllipsis" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" />
                 <TextBlock x:Name="GitText"
                            Margin="0,4,0,0"
@@ -87,87 +116,98 @@
                 Margin="18,0,18,10"
                 Padding="12,8"
                 Background="{DynamicResource Brush.SurfaceAlt}"
-                CornerRadius="{DynamicResource Radius.Panel}">
+                BorderBrush="{DynamicResource Brush.Border}"
+                BorderThickness="1"
+                CornerRadius="{DynamicResource Radius.Control}">
             <TextBlock x:Name="SummaryText" Style="{StaticResource Text.Caption}" />
         </Border>
 
         <!-- 明细 -->
-        <DataGrid x:Name="EntryGrid"
-                  Grid.Row="2"
-                  Margin="18,0,18,0"
-                  AutoGenerateColumns="False"
-                  IsReadOnly="False"
-                  CanUserAddRows="False"
-                  HeadersVisibility="Column"
-                  Background="Transparent"
-                  BorderBrush="{DynamicResource Brush.Border}">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="{x:Static app:Strings.ColumnStatus}"
-                                    Binding="{Binding State, Converter={StaticResource EnumLabel}}"
-                                    ElementStyle="{StaticResource Cell.State}"
-                                    Width="92"
-                                    IsReadOnly="True" />
+        <Border Grid.Row="2"
+                Margin="18,0,18,0"
+                Background="{DynamicResource Brush.SurfaceAlt}"
+                BorderBrush="{DynamicResource Brush.Border}"
+                BorderThickness="1"
+                CornerRadius="{DynamicResource Radius.Panel}"
+                Padding="4">
+            <DataGrid x:Name="EntryGrid"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="False"
+                      CanUserAddRows="False"
+                      HeadersVisibility="Column"
+                      GridLinesVisibility="Horizontal"
+                      HorizontalGridLinesBrush="{DynamicResource Brush.Border}"
+                      Background="Transparent"
+                      BorderThickness="0">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="{x:Static app:Strings.ColumnStatus}" Width="100" IsReadOnly="True">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource Badge.State}">
+                                    <TextBlock Text="{Binding State, Converter={StaticResource EnumLabel}}" Style="{StaticResource Cell.State}" />
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
 
-                <!-- 这一行属于哪个暂存项：数据一直在计划里（ItemDisplayName），以前没列出来 -->
-                <DataGridTextColumn Header="{x:Static app:Strings.ColumnSourceItem}"
-                                    Binding="{Binding ItemDisplayName}"
-                                    Width="150"
-                                    IsReadOnly="True">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="Foreground" Value="{DynamicResource Brush.TextSecondary}" />
-                            <Setter Property="VerticalAlignment" Value="Center" />
-                            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                            <Setter Property="ToolTip" Value="{Binding ItemDisplayName}" />
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
+                    <DataGridTextColumn Header="{x:Static app:Strings.ColumnSourceItem}"
+                                        Binding="{Binding ItemDisplayName}"
+                                        Width="150"
+                                        IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="{DynamicResource Brush.TextSecondary}" />
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                                <Setter Property="ToolTip" Value="{Binding ItemDisplayName}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
 
-                <DataGridTextColumn Header="{x:Static app:Strings.ColumnTargetPath}"
-                                    Binding="{Binding TargetPath}"
-                                    ElementStyle="{StaticResource Cell.Path}"
-                                    Width="*"
-                                    IsReadOnly="True" />
+                    <DataGridTextColumn Header="{x:Static app:Strings.ColumnTargetPath}"
+                                        Binding="{Binding TargetPath}"
+                                        ElementStyle="{StaticResource Cell.Path}"
+                                        Width="*"
+                                        IsReadOnly="True" />
 
-                <!-- 大小走与主界面同一套格式化：以前这里绑的是裸字节 -->
-                <DataGridTextColumn Header="{x:Static app:Strings.ColumnSize}"
-                                    Binding="{Binding Source.Size, Converter={StaticResource ByteSize}}"
-                                    ElementStyle="{StaticResource Cell.Size}"
-                                    Width="78"
-                                    IsReadOnly="True" />
+                    <DataGridTextColumn Header="{x:Static app:Strings.ColumnSize}"
+                                        Binding="{Binding Source.Size, Converter={StaticResource ByteSize}}"
+                                        ElementStyle="{StaticResource Cell.Size}"
+                                        Width="78"
+                                        IsReadOnly="True" />
 
-                <DataGridTemplateColumn Header="{x:Static app:Strings.ColumnAction}" Width="112">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <!-- 只有需要决定的行才给下拉，其余行显示文字 -->
-                                <ComboBox ItemsSource="{x:Static local:ApplyActions.Items}"
-                                          DisplayMemberPath="Label"
-                                          SelectedValuePath="Value"
-                                          SelectedValue="{Binding Action, Mode=TwoWay}"
-                                          MinHeight="24"
-                                          Padding="6,2,6,2"
-                                          Visibility="{Binding NeedsDecision, Converter={StaticResource BoolToVisibility}}" />
-                                <TextBlock Text="{Binding Action, Converter={StaticResource EnumLabel}}"
-                                           VerticalAlignment="Center"
-                                           Margin="6,0,0,0"
-                                           Style="{StaticResource Text.Body}"
-                                           Visibility="{Binding NeedsDecision, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}" />
-                            </Grid>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="{x:Static app:Strings.ColumnAction}" Width="112">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <ComboBox ItemsSource="{x:Static local:ApplyActions.Items}"
+                                              DisplayMemberPath="Label"
+                                              SelectedValuePath="Value"
+                                              SelectedValue="{Binding Action, Mode=TwoWay}"
+                                              MinHeight="24"
+                                              Padding="6,2,6,2"
+                                              Visibility="{Binding NeedsDecision, Converter={StaticResource BoolToVisibility}}" />
+                                    <TextBlock Text="{Binding Action, Converter={StaticResource EnumLabel}}"
+                                               VerticalAlignment="Center"
+                                               Margin="6,0,0,0"
+                                               Style="{StaticResource Text.Body}"
+                                               Visibility="{Binding NeedsDecision, Converter={StaticResource BoolToVisibility}, ConverterParameter=Inverse}" />
+                                </Grid>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
 
-                <DataGridTextColumn Header="{x:Static app:Strings.ColumnWarning}"
-                                    Binding="{Binding Warning}"
-                                    ElementStyle="{StaticResource Cell.Warning}"
-                                    Width="180"
-                                    IsReadOnly="True" />
-            </DataGrid.Columns>
-        </DataGrid>
+                    <DataGridTextColumn Header="{x:Static app:Strings.ColumnWarning}"
+                                        Binding="{Binding Warning}"
+                                        ElementStyle="{StaticResource Cell.Warning}"
+                                        Width="180"
+                                        IsReadOnly="True" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
 
         <!-- 底部 -->
-        <Border Grid.Row="3" Margin="0,14,0,0" Style="{StaticResource ActionBar}">
+        <Border Grid.Row="3" Margin="0,12,0,0" Style="{StaticResource ActionBar}">
             <Grid>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Content="{x:Static app:Strings.CompareDiffButton}" Click="OnCompareDiff" />
@@ -176,6 +216,9 @@
                                  Height="4"
                                  Margin="12,0,0,0"
                                  VerticalAlignment="Center"
+                                 Foreground="{DynamicResource Brush.Accent}"
+                                 Background="{DynamicResource Brush.Border}"
+                                 BorderThickness="0"
                                  IsIndeterminate="True"
                                  Visibility="Collapsed" />
                     <TextBlock x:Name="ProgressText"

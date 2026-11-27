@@ -1069,4 +1069,14 @@
   <data name="SettingsShelf" xml:space="preserve"><value>ชั้นวาง</value></data>
   <data name="SettingsFiles" xml:space="preserve"><value>การจัดการไฟล์</value></data>
   <data name="SettingsShortcuts" xml:space="preserve"><value>ปุ่มลัด</value></data>
+  <data name="WindowMinimize" xml:space="preserve"><value>ย่อเล็กสุด</value></data>
+  <data name="WindowMaximize" xml:space="preserve"><value>ขยายใหญ่สุด</value></data>
+  <data name="WindowRestore" xml:space="preserve"><value>คืนค่าขนาด</value></data>
+  <data name="SearchPlaceholder" xml:space="preserve"><value>กรองไฟล์หรือเส้นทาง…</value></data>
+  <data name="ClearSearchTooltip" xml:space="preserve"><value>ล้างการค้นหา</value></data>
+  <data name="SearchNoMatches" xml:space="preserve"><value>ไม่พบไฟล์ที่ตรงกัน</value></data>
+  <data name="GitHubRepoTooltip" xml:space="preserve"><value>เปิดที่เก็บ GitHub</value></data>
+  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
+  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} ({1} รายการ) · {2}</value></data>
+  <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>คัดลอกข้อมูลเวอร์ชันเต็ม</value></data>
 </root>

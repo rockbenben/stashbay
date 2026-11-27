@@ -151,16 +151,48 @@ public sealed partial class MainViewModel : ObservableObject
     /// </remarks>
     public IReadOnlyList<TreeRowViewModel> WorkbenchRows => _workbenchRows;
 
+    public IReadOnlyList<ItemViewModel> FilteredItems => _filteredItems;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasSearchQuery))]
+    [NotifyPropertyChangedFor(nameof(HasSearchNoMatches))]
+    private string _searchQuery = string.Empty;
+
+    public bool HasSearchQuery => !string.IsNullOrWhiteSpace(SearchQuery);
+
+    public bool HasSearchNoMatches => HasSearchQuery && !HasNoItems && _filteredItems.Count == 0;
+
+    partial void OnSearchQueryChanged(string value) => RebuildWorkbenchRows();
+
+    [RelayCommand]
+    private void ClearSearch() => SearchQuery = string.Empty;
+
     private List<TreeRowViewModel> _workbenchRows = [];
+    private List<ItemViewModel> _filteredItems = [];
 
     private void RebuildWorkbenchRows()
     {
-        _workbenchRows = _workbenchViewMode == WorkbenchViewMode.BySourceFolder
-            ? BuildSourceFolderRows(Items)
-            : [.. Items.Cast<TreeRowViewModel>()];
+        var query = SearchQuery.Trim();
+        _filteredItems = string.IsNullOrEmpty(query)
+            ? [.. Items]
+            : [.. Items.Where(item => MatchesSearch(item, query))];
 
+        _workbenchRows = _workbenchViewMode == WorkbenchViewMode.BySourceFolder
+            ? BuildSourceFolderRows(_filteredItems)
+            : [.. _filteredItems.Cast<TreeRowViewModel>()];
+
+        OnPropertyChanged(nameof(FilteredItems));
+        OnPropertyChanged(nameof(HasSearchNoMatches));
         OnPropertyChanged(nameof(WorkbenchRows));
     }
+
+    private static bool MatchesSearch(ItemViewModel item, string query) =>
+        item.DisplayName.Contains(query, StringComparison.OrdinalIgnoreCase)
+        || item.RelativePath.Contains(query, StringComparison.OrdinalIgnoreCase)
+        || item.SourcePath.Contains(query, StringComparison.OrdinalIgnoreCase)
+        || item.Children.Any(child =>
+            child.DisplayName.Contains(query, StringComparison.OrdinalIgnoreCase)
+            || child.RelativePath.Contains(query, StringComparison.OrdinalIgnoreCase));
 
     /// <summary>
     /// 按来源目录分节：节序按"第一次见到那个目录"，节内保持加入序。
@@ -340,6 +372,14 @@ public sealed partial class MainViewModel : ObservableObject
     /// <summary>小搁架一键拖出全部的徽章文案：短小精炼，防止挤压标题与操作按钮。</summary>
     public string ShelfCountText => Strings.Format(Strings.ShelfCountFormat, Items.Count);
 
+    /// <summary>紧凑暂存台副标题：展示首项文件名与总大小，让用户拖出前心里有底。</summary>
+    public string ShelfPreviewText => Items.Count switch
+    {
+        0 => string.Empty,
+        1 => Strings.Format(Strings.ShelfPreviewSingle, Items[0].DisplayName, ItemViewModel.FormatSize(Items[0].Item.TotalSize)),
+        _ => Strings.Format(Strings.ShelfPreviewMany, Items[0].DisplayName, Items.Count, ItemViewModel.FormatSize(Items.Sum(item => item.Item.TotalSize))),
+    };
+
     public string DragAllBadgeText => Items.Count.ToString(System.Globalization.CultureInfo.CurrentCulture);
 
     /// <summary>台面是不是空的（空台面要给个邀请，别留一片白）。</summary>
@@ -369,9 +409,43 @@ public sealed partial class MainViewModel : ObservableObject
 
     /// <summary>界面请求打开设置窗口（由 App 处理，ViewModel 不碰窗口）。</summary>
     public event Action? SettingsRequested;
+    public event Action? HistoryRequested;
+    public event Action? GitChangesRequested;
+    public event Action? FloatingWindowRequested;
+    public event Action? RootPresetsRequested;
+    public event Action? AboutRequested;
 
     [RelayCommand]
     private void OpenSettings() => SettingsRequested?.Invoke();
+
+    [RelayCommand]
+    private void OpenHistory() => HistoryRequested?.Invoke();
+
+    [RelayCommand]
+    private void OpenGitChanges() => GitChangesRequested?.Invoke();
+
+    [RelayCommand]
+    private void OpenFloatingWindow() => FloatingWindowRequested?.Invoke();
+
+    [RelayCommand]
+    private void OpenRootPresets() => RootPresetsRequested?.Invoke();
+
+    [RelayCommand]
+    private void OpenAbout() => AboutRequested?.Invoke();
+
+    [RelayCommand]
+    private void OpenGitHub()
+    {
+        if (App.InSmoke) return;
+        try
+        {
+            Process.Start(new ProcessStartInfo("https://github.com/rockbenben/stashbay") { UseShellExecute = true });
+        }
+        catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException)
+        {
+            _dialogs.ShowWarning(Strings.OpenFailedTitle, ex.Message);
+        }
+    }
 
     public IReadOnlyList<EnumOption<TargetMode>> TargetModes { get; } =
     [
@@ -438,6 +512,10 @@ public sealed partial class MainViewModel : ObservableObject
     {
         if (_suppressSelectionLoad) return;
         SyncGroupSelection();
+        if (!string.IsNullOrEmpty(SearchQuery))
+        {
+            SearchQuery = string.Empty;
+        }
 
         // 记住在哪个箱：下次开应用回到同一个界面
         _settings.Current.LastGroupId = value?.Id;
@@ -450,7 +528,9 @@ public sealed partial class MainViewModel : ObservableObject
             OnPropertyChanged(nameof(StatusSummary));
             OnPropertyChanged(nameof(DragAllBadgeText));
             OnPropertyChanged(nameof(ShelfCountText));
+            OnPropertyChanged(nameof(ShelfPreviewText));
             OnPropertyChanged(nameof(HasNoItems));
+            OnPropertyChanged(nameof(HasSearchNoMatches));
             UpdateDestinationPreview();
             return;
         }
@@ -1517,7 +1597,9 @@ public sealed partial class MainViewModel : ObservableObject
         OnPropertyChanged(nameof(StatusSummary));
         OnPropertyChanged(nameof(DragAllBadgeText));
         OnPropertyChanged(nameof(ShelfCountText));
+        OnPropertyChanged(nameof(ShelfPreviewText));
         OnPropertyChanged(nameof(HasNoItems));
+        OnPropertyChanged(nameof(HasSearchNoMatches));
         RaiseWriteCommands();
         UpdateDestinationPreview();
 
@@ -1609,6 +1691,7 @@ public sealed partial class MainViewModel : ObservableObject
                 };
 
                 item.StatusBrush = FindBrush(status.State);
+                item.StatusBadgeBrush = FindBadgeBrush(status.State);
                 item.SourceState = status.State;
             }
         }
@@ -1628,13 +1711,23 @@ public sealed partial class MainViewModel : ObservableObject
     {
         var key = state switch
         {
-            // "未变化"是这一列的默认状态，安静就好 —— 以前这里写的是 "Brush.Success"，
-            // 而两套主题都没有这个键，TryFindResource 静默返回 null，
-            // 结果"未变化"那颗点根本不画，只有另外两档有点（看着像渲染坏了）
             ItemSourceState.Unchanged => "Brush.TextSecondary",
             ItemSourceState.Modified => "Brush.Warning",
             ItemSourceState.Missing => "Brush.Danger",
             _ => "Brush.TextSecondary",
+        };
+
+        return Application.Current?.TryFindResource(key) as Brush;
+    }
+
+    private static Brush? FindBadgeBrush(ItemSourceState state)
+    {
+        var key = state switch
+        {
+            ItemSourceState.Unchanged => "Brush.SurfaceSunken",
+            ItemSourceState.Modified => "Brush.WarningSoft",
+            ItemSourceState.Missing => "Brush.DangerSoft",
+            _ => "Brush.SurfaceSunken",
         };
 
         return Application.Current?.TryFindResource(key) as Brush;

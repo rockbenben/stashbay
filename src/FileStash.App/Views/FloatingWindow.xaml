@@ -14,16 +14,15 @@
         WindowStartupLocation="Manual">
 
     <!--
-        悬浮窗：拖进来就暂存，拖出去是整组。
-        Topmost 的窗口不能走 z 序兜底那条路（SetWindowPos 会让 WPF 的 Topmost 失效）。
+        悬浮球：拖进来就暂存，点击或短拖展开紧凑暂存台。
     -->
     <Border x:Name="Panel"
-            Width="88"
-            Height="88"
-            CornerRadius="44"
-            Background="{DynamicResource Brush.SurfaceAlt}"
-            BorderBrush="{DynamicResource Brush.BorderStrong}"
-            BorderThickness="1"
+            Width="86"
+            Height="86"
+            CornerRadius="43"
+            Background="{DynamicResource Brush.SurfaceElevated}"
+            BorderBrush="{DynamicResource Brush.Accent}"
+            BorderThickness="2"
             MouseLeftButtonDown="OnMouseLeftButtonDown"
             DragEnter="OnDragEnter"
             DragLeave="OnDragLeave"
@@ -32,15 +31,17 @@
             AllowDrop="True"
             Drop="OnDrop"
             DragOver="OnDragOver">
-        <StackPanel VerticalAlignment="Center">
+        <StackPanel VerticalAlignment="Center" IsHitTestVisible="False">
             <TextBlock Text="{x:Static app:Strings.AppName}"
                        HorizontalAlignment="Center"
-                       FontSize="10"
-                       Foreground="{DynamicResource Brush.TextSecondary}" />
+                       FontSize="9.5"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource Brush.Accent}" />
             <TextBlock x:Name="CountText"
                        HorizontalAlignment="Center"
                        FontSize="22"
-                       FontWeight="SemiBold"
+                       FontWeight="Bold"
+                       Margin="0,1,0,0"
                        RenderTransformOrigin="0.5,0.5"
                        Foreground="{DynamicResource Brush.TextPrimary}"
                        Text="0">

@@ -1069,4 +1069,14 @@
   <data name="SettingsShelf" xml:space="preserve"><value>暫存區</value></data>
   <data name="SettingsFiles" xml:space="preserve"><value>檔案處理</value></data>
   <data name="SettingsShortcuts" xml:space="preserve"><value>快捷鍵</value></data>
+  <data name="WindowMinimize" xml:space="preserve"><value>最小化</value></data>
+  <data name="WindowMaximize" xml:space="preserve"><value>最大化</value></data>
+  <data name="WindowRestore" xml:space="preserve"><value>還原</value></data>
+  <data name="SearchPlaceholder" xml:space="preserve"><value>搜尋檔案名稱或路徑…</value></data>
+  <data name="ClearSearchTooltip" xml:space="preserve"><value>清除搜尋</value></data>
+  <data name="SearchNoMatches" xml:space="preserve"><value>沒有相符的檔案</value></data>
+  <data name="GitHubRepoTooltip" xml:space="preserve"><value>在 GitHub 上檢視專案</value></data>
+  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
+  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} 等 {1} 項 · {2}</value></data>
+  <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>複製完整版本資訊</value></data>
 </root>

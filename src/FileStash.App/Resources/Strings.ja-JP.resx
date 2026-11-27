@@ -1069,4 +1069,14 @@
   <data name="SettingsShelf" xml:space="preserve"><value>一時保管</value></data>
   <data name="SettingsFiles" xml:space="preserve"><value>ファイル処理</value></data>
   <data name="SettingsShortcuts" xml:space="preserve"><value>ショートカット</value></data>
+  <data name="WindowMinimize" xml:space="preserve"><value>最小化</value></data>
+  <data name="WindowMaximize" xml:space="preserve"><value>最大化</value></data>
+  <data name="WindowRestore" xml:space="preserve"><value>元に戻す</value></data>
+  <data name="SearchPlaceholder" xml:space="preserve"><value>ファイル名やパスを検索…</value></data>
+  <data name="ClearSearchTooltip" xml:space="preserve"><value>検索をクリア</value></data>
+  <data name="SearchNoMatches" xml:space="preserve"><value>一致するファイルがありません</value></data>
+  <data name="GitHubRepoTooltip" xml:space="preserve"><value>GitHub リポジトリを開く</value></data>
+  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
+  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} 他 {1} 件 · {2}</value></data>
+  <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>バージョン情報をコピー</value></data>
 </root>

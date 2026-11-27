@@ -1069,4 +1069,14 @@
   <data name="SettingsShelf" xml:space="preserve"><value>Полка</value></data>
   <data name="SettingsFiles" xml:space="preserve"><value>Обработка файлов</value></data>
   <data name="SettingsShortcuts" xml:space="preserve"><value>Сочетания клавиш</value></data>
+  <data name="WindowMinimize" xml:space="preserve"><value>Свернуть</value></data>
+  <data name="WindowMaximize" xml:space="preserve"><value>Развернуть</value></data>
+  <data name="WindowRestore" xml:space="preserve"><value>Восстановить</value></data>
+  <data name="SearchPlaceholder" xml:space="preserve"><value>Фильтр файлов и путей…</value></data>
+  <data name="ClearSearchTooltip" xml:space="preserve"><value>Очистить поиск</value></data>
+  <data name="SearchNoMatches" xml:space="preserve"><value>Подходящих файлов нет</value></data>
+  <data name="GitHubRepoTooltip" xml:space="preserve"><value>Открыть репозиторий на GitHub</value></data>
+  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
+  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} (всего {1}) · {2}</value></data>
+  <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>Копировать сведения о версии</value></data>
 </root>

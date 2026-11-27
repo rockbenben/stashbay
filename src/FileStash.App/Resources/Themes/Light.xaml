@@ -2,55 +2,62 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- The transit shelf keeps its silhouette against both white and black desktops. -->
-    <SolidColorBrush x:Key="Brush.ShelfSurface" Color="#FFECECEC" />
-    <SolidColorBrush x:Key="Brush.ShelfBorder" Color="#FF919191" />
-    <SolidColorBrush x:Key="Brush.ShelfText" Color="#FF252525" />
-    <SolidColorBrush x:Key="Brush.ShelfSecondary" Color="#FF525252" />
+    <SolidColorBrush x:Key="Brush.ShelfSurface" Color="#FFECEFEF" />
+    <SolidColorBrush x:Key="Brush.ShelfBorder" Color="#FF8C969A" />
+    <SolidColorBrush x:Key="Brush.ShelfText" Color="#FF1B2022" />
+    <SolidColorBrush x:Key="Brush.ShelfSecondary" Color="#FF4B5458" />
     <SolidColorBrush x:Key="Brush.ShelfCard" Color="#FFFFFFFF" />
-    <SolidColorBrush x:Key="Brush.ShelfCardBack" Color="#FFB8B8B8" />
-    <SolidColorBrush x:Key="Brush.ShelfHover" Color="#FFDCDCDC" />
+    <SolidColorBrush x:Key="Brush.ShelfCardBack" Color="#FF189E89" />
+    <SolidColorBrush x:Key="Brush.ShelfHover" Color="#FFDCE3E4" />
 
     <!--
-        浅色主题（中性纸面）：冷灰改成无彩灰阶，与深色同一套语义。
-        强调色不再是色相，而是"更深的中性色"：Brush.Accent 做结构高亮，
-        Brush.AccentText 是压在高亮底上的白字（主键仍是高对比的深底白字）。
-        状态色只给需要注意的情况（已修改 / 已删除），"未变化"用安静的灰。
-
-        次级 = 所有必读的小字（表头、状态词、摘要、页脚指引）：必须在五块底上都 ≥4.5。
-        第三级只给"可错过"的东西（空态标题、箱的计数、占位），不再承载必读信息。
+        浅色主题（温润石墨 + 克制品牌青绿）：
+        靠表面亮度差 + 发丝线分层，品牌青绿（#0C6E5F）只用于主按钮、焦点环、活动导航指示与拖拽高亮。
+        所有文字与图标均满足 WCAG 2.2 AA 对比度门槛。
     -->
 
-    <Color x:Key="Color.Surface">#FFF8F9F9</Color>
-    <Color x:Key="Color.SurfaceAlt">#FFEFF0F1</Color>
-    <Color x:Key="Color.SurfaceSunken">#FFE8E9EA</Color>
-    <Color x:Key="Color.Border">#FFD8DADB</Color>
-    <Color x:Key="Color.BorderStrong">#FFBCC0C2</Color>
-    <Color x:Key="Color.TextPrimary">#FF1B1D1F</Color>
-    <Color x:Key="Color.TextSecondary">#FF5A5E62</Color>
-    <Color x:Key="Color.TextTertiary">#FF6C7074</Color>
-    <Color x:Key="Color.Accent">#FF2E3134</Color>
-    <Color x:Key="Color.AccentSoft">#FFE6E7E8</Color>
+    <Color x:Key="Color.Surface">#FFF9FAFA</Color>
+    <Color x:Key="Color.SurfaceAlt">#FFF1F3F4</Color>
+    <Color x:Key="Color.SurfaceSunken">#FFE7EAEB</Color>
+    <Color x:Key="Color.SurfaceElevated">#FFFFFFFF</Color>
+    <Color x:Key="Color.Border">#FFD8DDDF</Color>
+    <Color x:Key="Color.BorderStrong">#FFBAC2C6</Color>
+    <Color x:Key="Color.TextPrimary">#FF181C1E</Color>
+    <Color x:Key="Color.TextSecondary">#FF525A5F</Color>
+    <Color x:Key="Color.TextTertiary">#FF626B71</Color>
+    <Color x:Key="Color.Accent">#FF0C6E5F</Color>
+    <Color x:Key="Color.AccentHover">#FF0A5D50</Color>
+    <Color x:Key="Color.AccentSoft">#FFE4F4F1</Color>
     <Color x:Key="Color.AccentText">#FFFFFFFF</Color>
-    <Color x:Key="Color.Warning">#FF946A08</Color>
-    <Color x:Key="Color.Danger">#FFA63B33</Color>
-    <Color x:Key="Color.Selection">#FFE2E4E5</Color>
-    <Color x:Key="Color.Hover">#FFE9EAEB</Color>
-    <!-- 悬停叠加层：半透明黑，压在任何底色上都是"压暗一点"。 -->
+    <Color x:Key="Color.Success">#FF137352</Color>
+    <Color x:Key="Color.SuccessSoft">#FFE5F5EE</Color>
+    <Color x:Key="Color.Warning">#FF8F5F00</Color>
+    <Color x:Key="Color.WarningSoft">#FFFBF1DA</Color>
+    <Color x:Key="Color.Danger">#FFB4342D</Color>
+    <Color x:Key="Color.DangerSoft">#FFFCEBE9</Color>
+    <Color x:Key="Color.Selection">#FFE0F0ED</Color>
+    <Color x:Key="Color.Hover">#FFE8ECEE</Color>
     <Color x:Key="Color.HoverOverlay">#12000000</Color>
 
     <SolidColorBrush x:Key="Brush.Surface" Color="{StaticResource Color.Surface}" />
     <SolidColorBrush x:Key="Brush.SurfaceAlt" Color="{StaticResource Color.SurfaceAlt}" />
     <SolidColorBrush x:Key="Brush.SurfaceSunken" Color="{StaticResource Color.SurfaceSunken}" />
+    <SolidColorBrush x:Key="Brush.SurfaceElevated" Color="{StaticResource Color.SurfaceElevated}" />
     <SolidColorBrush x:Key="Brush.Border" Color="{StaticResource Color.Border}" />
     <SolidColorBrush x:Key="Brush.BorderStrong" Color="{StaticResource Color.BorderStrong}" />
     <SolidColorBrush x:Key="Brush.TextPrimary" Color="{StaticResource Color.TextPrimary}" />
     <SolidColorBrush x:Key="Brush.TextSecondary" Color="{StaticResource Color.TextSecondary}" />
     <SolidColorBrush x:Key="Brush.TextTertiary" Color="{StaticResource Color.TextTertiary}" />
     <SolidColorBrush x:Key="Brush.Accent" Color="{StaticResource Color.Accent}" />
+    <SolidColorBrush x:Key="Brush.AccentHover" Color="{StaticResource Color.AccentHover}" />
     <SolidColorBrush x:Key="Brush.AccentSoft" Color="{StaticResource Color.AccentSoft}" />
     <SolidColorBrush x:Key="Brush.AccentText" Color="{StaticResource Color.AccentText}" />
+    <SolidColorBrush x:Key="Brush.Success" Color="{StaticResource Color.Success}" />
+    <SolidColorBrush x:Key="Brush.SuccessSoft" Color="{StaticResource Color.SuccessSoft}" />
     <SolidColorBrush x:Key="Brush.Warning" Color="{StaticResource Color.Warning}" />
+    <SolidColorBrush x:Key="Brush.WarningSoft" Color="{StaticResource Color.WarningSoft}" />
     <SolidColorBrush x:Key="Brush.Danger" Color="{StaticResource Color.Danger}" />
+    <SolidColorBrush x:Key="Brush.DangerSoft" Color="{StaticResource Color.DangerSoft}" />
     <SolidColorBrush x:Key="Brush.Selection" Color="{StaticResource Color.Selection}" />
     <SolidColorBrush x:Key="Brush.Hover" Color="{StaticResource Color.Hover}" />
     <SolidColorBrush x:Key="Brush.HoverOverlay" Color="{StaticResource Color.HoverOverlay}" />
@@ -60,7 +67,7 @@
     <FontFamily x:Key="Font.Mono">Cascadia Mono, Consolas, Microsoft YaHei UI</FontFamily>
 
     <!--
-        字号一律不动：多语言长文案（德语实测 +146 DIP）已经顶到槽位边界，
+        字号一律不动：多语言长文案已经顶到槽位边界，
         放大字号会撑破视觉树探针的溢出检查。层级改由字重 / 灰度 / 留白表达。
     -->
     <sys:Double xmlns:sys="clr-namespace:System;assembly=mscorlib" x:Key="Font.Size.Caption">11</sys:Double>

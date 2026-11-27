@@ -74,6 +74,7 @@ public partial class MainWindow : Window
         }
 
         SourceInitialized += (_, _) => WindowEffects.SetShelfChrome(this, ViewModel.IsCompact);
+        StateChanged += OnWindowStateChanged;
         ViewModel.PropertyChanged += OnViewModelPropertyChanged;
         ViewModel.RestoreSucceeded += OnRestoreSucceeded;
 
@@ -184,6 +185,7 @@ public partial class MainWindow : Window
         WindowEffects.SetShelfChrome(this, compact);
         if (compact)
         {
+            WorkbenchRoot.Margin = new Thickness(0);
             if (WindowState == WindowState.Normal)
             {
                 _workbenchBounds = new Rect(Left, Top, Width, Height);
@@ -855,6 +857,24 @@ public partial class MainWindow : Window
         BeginAnimation(OpacityProperty, anim);
     }
 
+
+    private void OnWindowStateChanged(object? sender, EventArgs e)
+    {
+        var maximized = !ViewModel.IsCompact && WindowState == WindowState.Maximized;
+        WorkbenchRoot.Margin = maximized ? new Thickness(7) : new Thickness(0);
+        if (MaximizeGlyph is not null)
+        {
+            MaximizeGlyph.Data = Geometry.Parse(maximized
+                ? "M2 0H10V8H8V2H2ZM0 2H8V10H0Z"
+                : "M0 0H10V10H0Z");
+        }
+        if (MaximizeButton is not null)
+        {
+            var tip = maximized ? Strings.WindowRestore : Strings.WindowMaximize;
+            MaximizeButton.ToolTip = tip;
+            System.Windows.Automation.AutomationProperties.SetName(MaximizeButton, tip);
+        }
+    }
 
     private void OnMinimizeClick(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
     private void OnMaximizeClick(object sender, RoutedEventArgs e) => WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;

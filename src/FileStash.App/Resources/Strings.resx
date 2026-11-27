@@ -1069,4 +1069,14 @@
   <data name="SettingsShelf" xml:space="preserve"><value>暂存区</value></data>
   <data name="SettingsFiles" xml:space="preserve"><value>文件处理</value></data>
   <data name="SettingsShortcuts" xml:space="preserve"><value>快捷键</value></data>
+  <data name="WindowMinimize" xml:space="preserve"><value>最小化</value></data>
+  <data name="WindowMaximize" xml:space="preserve"><value>最大化</value></data>
+  <data name="WindowRestore" xml:space="preserve"><value>还原</value></data>
+  <data name="SearchPlaceholder" xml:space="preserve"><value>搜索文件名或路径…</value></data>
+  <data name="ClearSearchTooltip" xml:space="preserve"><value>清除搜索</value></data>
+  <data name="SearchNoMatches" xml:space="preserve"><value>没有匹配的文件</value></data>
+  <data name="GitHubRepoTooltip" xml:space="preserve"><value>在 GitHub 上查看项目</value></data>
+  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
+  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} 等 {1} 项 · {2}</value></data>
+  <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>复制完整版本信息</value></data>
 </root>

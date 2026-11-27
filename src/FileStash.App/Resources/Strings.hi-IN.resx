@@ -1069,4 +1069,14 @@
   <data name="SettingsShelf" xml:space="preserve"><value>अस्थायी संग्रह</value></data>
   <data name="SettingsFiles" xml:space="preserve"><value>फ़ाइल प्रबंधन</value></data>
   <data name="SettingsShortcuts" xml:space="preserve"><value>शॉर्टकट</value></data>
+  <data name="WindowMinimize" xml:space="preserve"><value>छोटा करें</value></data>
+  <data name="WindowMaximize" xml:space="preserve"><value>बड़ा करें</value></data>
+  <data name="WindowRestore" xml:space="preserve"><value>पुनर्स्थापित करें</value></data>
+  <data name="SearchPlaceholder" xml:space="preserve"><value>फ़ाइलें या पथ फ़िल्टर करें…</value></data>
+  <data name="ClearSearchTooltip" xml:space="preserve"><value>खोज साफ़ करें</value></data>
+  <data name="SearchNoMatches" xml:space="preserve"><value>कोई मेल खाती फ़ाइल नहीं</value></data>
+  <data name="GitHubRepoTooltip" xml:space="preserve"><value>GitHub रिपॉज़िटरी खोलें</value></data>
+  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
+  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} ({1} आइटम) · {2}</value></data>
+  <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>पूर्ण संस्करण जानकारी कॉपी करें</value></data>
 </root>

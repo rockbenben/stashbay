@@ -127,8 +127,8 @@ public partial class FloatingWindow : Window
         if (DataPayloadHelper.IsSupported(e.Data))
         {
             _dragCounter++;
-            Panel.Background = (Brush)FindResource("Brush.Selection");
-            Panel.BorderThickness = new Thickness(2);
+            Panel.Background = (Brush)FindResource("Brush.AccentSoft");
+            Panel.BorderThickness = new Thickness(2.5);
             e.Effects = DragDropEffects.Copy;
             e.Handled = true;
         }
@@ -153,15 +153,15 @@ public partial class FloatingWindow : Window
         if (_dragCounter <= 0)
         {
             _dragCounter = 0;
-            Panel.Background = (Brush)FindResource("Brush.SurfaceAlt");
-            Panel.BorderThickness = new Thickness(1);
+            Panel.Background = (Brush)FindResource("Brush.SurfaceElevated");
+            Panel.BorderThickness = new Thickness(2);
         }
     }
 
     private async void OnDrop(object sender, DragEventArgs e)
     {
         _dragCounter = 0;
-        Panel.Background = (Brush)FindResource("Brush.SurfaceAlt");
+        Panel.Background = (Brush)FindResource("Brush.SurfaceElevated");
         Panel.BorderThickness = new Thickness(2);
 
         var paths = DataPayloadHelper.ExtractPayloadPaths(e.Data, _viewModel.ClipboardDirectory);

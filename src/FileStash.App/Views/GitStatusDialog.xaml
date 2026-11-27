@@ -3,15 +3,19 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:app="clr-namespace:FileStash.App.Resources"
         Title="{x:Static app:Strings.GitStatusTitle}"
-        Width="640"
+        Icon="pack://application:,,,/StashBay;component/Resources/app.ico"
+        Width="660"
         Height="520"
         MinWidth="420"
         MinHeight="320"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
-        Background="{DynamicResource Brush.Surface}">
+        Background="{DynamicResource Brush.Surface}"
+        FontFamily="{DynamicResource Font.UI}"
+        FontSize="{DynamicResource Font.Size.Body}"
+        UseLayoutRounding="True">
 
-    <Grid Margin="12">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -19,58 +23,75 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock x:Name="RepoText"
-                   Grid.Row="0"
-                   Style="{StaticResource Text.Caption}"
-                   TextTrimming="CharacterEllipsis" />
+        <Border Grid.Row="0" Padding="18,14,18,10">
+            <StackPanel>
+                <TextBlock Text="{x:Static app:Strings.GitStatusTitle}" Style="{StaticResource Text.Title}" FontSize="16" />
+                <TextBlock x:Name="RepoText"
+                           Margin="0,4,0,0"
+                           Style="{StaticResource Text.Mono}"
+                           TextTrimming="CharacterEllipsis"
+                           ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" />
+            </StackPanel>
+        </Border>
 
-        <ListView Grid.Row="1"
-                  Margin="0,10,0,0"
-                  ItemsSource="{Binding Items}"
-                  SelectionMode="Extended">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Grid Margin="0,4">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="60" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+        <Border Grid.Row="1"
+                Margin="18,0,18,0"
+                Background="{DynamicResource Brush.SurfaceAlt}"
+                BorderBrush="{DynamicResource Brush.Border}"
+                BorderThickness="1"
+                CornerRadius="{DynamicResource Radius.Panel}"
+                Padding="6">
+            <ListView ItemsSource="{Binding Items}"
+                      SelectionMode="Extended"
+                      Background="Transparent"
+                      BorderThickness="0">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="4,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="64" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-                        <CheckBox Grid.Column="0"
-                                  VerticalAlignment="Center"
-                                  IsChecked="{Binding IsSelected}"
-                                  IsEnabled="{Binding CanSelect}" />
+                            <CheckBox Grid.Column="0"
+                                      VerticalAlignment="Center"
+                                      Margin="0,0,8,0"
+                                      IsChecked="{Binding IsSelected}"
+                                      IsEnabled="{Binding CanSelect}" />
 
-                        <TextBlock Grid.Column="1"
-                                   VerticalAlignment="Center"
-                                   Style="{StaticResource Text.Caption}"
-                                   Text="{Binding StatusText}" />
+                            <Border Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left"
+                                    Background="{DynamicResource Brush.SurfaceSunken}" CornerRadius="{DynamicResource Radius.Pill}" Padding="7,1">
+                                <TextBlock Style="{StaticResource Text.Caption}" Text="{Binding StatusText}" />
+                            </Border>
 
-                        <TextBlock Grid.Column="2"
-                                   VerticalAlignment="Center"
-                                   Margin="8,0,0,0"
-                                   Text="{Binding Path}"
-                                   TextTrimming="CharacterEllipsis" />
-                    </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                            <TextBlock Grid.Column="2"
+                                       VerticalAlignment="Center"
+                                       Margin="8,0,0,0"
+                                       Style="{StaticResource Text.Mono.Primary}"
+                                       Text="{Binding Path}"
+                                       TextTrimming="CharacterEllipsis"
+                                       ToolTip="{Binding Path}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Border>
 
         <TextBlock Grid.Row="2"
-                   Margin="0,8,0,0"
+                   Margin="18,8,18,10"
                    Style="{StaticResource Text.Caption}"
                    Text="{Binding StatusText}" />
 
-        <StackPanel Grid.Row="3"
-                    Margin="0,12,0,0"
-                    Style="{StaticResource Actions.End}">
-            <Button Content="{x:Static app:Strings.RefreshButton}" Command="{Binding LoadCommand}" />
-            <Button Content="{x:Static app:Strings.AddSelectedButton}"
-                    Margin="6,0,0,0"
-                    Style="{StaticResource Button.Primary}"
-                    Command="{Binding AddSelectedCommand}" />
-            <Button Content="{x:Static app:Strings.CloseButton}" Margin="6,0,0,0" IsCancel="True" Click="OnClose" />
-        </StackPanel>
+        <Border Grid.Row="3" Style="{StaticResource ActionBar}">
+            <StackPanel Style="{StaticResource Actions.End}">
+                <Button Content="{x:Static app:Strings.RefreshButton}" Command="{Binding LoadCommand}" />
+                <Button Content="{x:Static app:Strings.AddSelectedButton}"
+                        Margin="6,0,0,0"
+                        Style="{StaticResource Button.Primary}"
+                        Command="{Binding AddSelectedCommand}" />
+                <Button Content="{x:Static app:Strings.CloseButton}" Margin="6,0,0,0" IsCancel="True" Click="OnClose" />
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

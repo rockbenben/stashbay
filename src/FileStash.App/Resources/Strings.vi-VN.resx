@@ -1069,4 +1069,14 @@
   <data name="SettingsShelf" xml:space="preserve"><value>Khay tạm</value></data>
   <data name="SettingsFiles" xml:space="preserve"><value>Xử lý tệp</value></data>
   <data name="SettingsShortcuts" xml:space="preserve"><value>Phím tắt</value></data>
+  <data name="WindowMinimize" xml:space="preserve"><value>Thu nhỏ</value></data>
+  <data name="WindowMaximize" xml:space="preserve"><value>Phóng to</value></data>
+  <data name="WindowRestore" xml:space="preserve"><value>Khôi phục</value></data>
+  <data name="SearchPlaceholder" xml:space="preserve"><value>Lọc tệp hoặc đường dẫn…</value></data>
+  <data name="ClearSearchTooltip" xml:space="preserve"><value>Xóa tìm kiếm</value></data>
+  <data name="SearchNoMatches" xml:space="preserve"><value>Không có tệp phù hợp</value></data>
+  <data name="GitHubRepoTooltip" xml:space="preserve"><value>Mở kho lưu trữ GitHub</value></data>
+  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
+  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} ({1} mục) · {2}</value></data>
+  <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>Sao chép thông tin phiên bản</value></data>
 </root>

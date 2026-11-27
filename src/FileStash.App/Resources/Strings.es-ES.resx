@@ -1069,4 +1069,14 @@
   <data name="SettingsShelf" xml:space="preserve"><value>Bandeja</value></data>
   <data name="SettingsFiles" xml:space="preserve"><value>Gestión de archivos</value></data>
   <data name="SettingsShortcuts" xml:space="preserve"><value>Atajos</value></data>
+  <data name="WindowMinimize" xml:space="preserve"><value>Minimizar</value></data>
+  <data name="WindowMaximize" xml:space="preserve"><value>Maximizar</value></data>
+  <data name="WindowRestore" xml:space="preserve"><value>Restaurar</value></data>
+  <data name="SearchPlaceholder" xml:space="preserve"><value>Filtrar archivos o rutas…</value></data>
+  <data name="ClearSearchTooltip" xml:space="preserve"><value>Limpiar búsqueda</value></data>
+  <data name="SearchNoMatches" xml:space="preserve"><value>Sin archivos coincidentes</value></data>
+  <data name="GitHubRepoTooltip" xml:space="preserve"><value>Abrir repositorio en GitHub</value></data>
+  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
+  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} ({1} elementos) · {2}</value></data>
+  <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>Copiar información de versión</value></data>
 </root>

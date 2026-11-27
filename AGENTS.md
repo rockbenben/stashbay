@@ -227,25 +227,15 @@ node "$SKILL_DIR\render.mjs" assets\social-preview.html assets\social-preview.pn
 
 ### Brand rules
 
-> **2026-11-05 视觉方向更新：两层配色，不要混。**
+> **2026-11-27 视觉方向更新：温润石墨基底 + 克制品牌青绿点缀（与品牌图标统一）。**
 >
 > | 层 | 方向 | 覆盖范围 |
 > | :--- | :--- | :--- |
 > | **品牌层** | 彩色 teal/mint（`#3FC7AE` 系） | 图标字形、光晕、社交卡标题与特性行、拖出卡片 |
-> | **产品层** | 中性石墨（无色相） | 运行时 UI 全部界面、社交卡里"画的是真实窗口"那段 |
+> | **产品层** | 温润石墨 + 克制青绿强调 | 运行时 UI：`#0C6E5F`（浅色）/ `#3FC7AE`（深色）仅用于主按钮、焦点环、活动导航细条与拖拽高亮；语义状态使用低饱和绿/琥珀/红胶囊 |
 >
-> 运行时 UI 已改为中性石墨：近黑无彩底、大圆角卡片/药丸、发丝线分层、粗体大字配
-> 灰色说明。`Brush.Accent` 不再是色相，而是"更亮/更深的中性色"；`Brush.Warning` /
-> `Brush.Danger` 降饱和后只用来区分 Git 状态。
-> **但品牌资产不跟着去色** —— 图标就是那个 teal 玻璃字形，别把它抹成灰的。
-
-* **Compact shelf visibility**: use the theme `Brush.Shelf*` tokens: a soft pearl-grey surface (`#ECECEC`) with dark text in light mode and soft graphite (`#292929`) with light text in dark mode. Each has a contrasting hairline outline, rounded corners and a native compositor shadow so the shelf stays visible on both white and black desktops.
-* **Runtime UI: neutral graphite.** The app UI has **no chroma**: near-black
-  surfaces (`#17181A` / `#1E2022` / `#131415`), hairline borders (`#2C2E31`),
-  large radii (control 8 / panel 12 / pill), and hierarchy carried by font weight and
-  grey levels rather than colour. Accent is a neutral light/dark step, not a hue.
-  All colours live in `Themes/Dark.xaml` and `Themes/Light.xaml` as `Brush.*` tokens;
-  never hard-code a colour in a view.
+> * **Compact shelf visibility**: use the theme `Brush.Shelf*` tokens: a soft pearl-grey surface (`#ECEFEF`) with dark text in light mode and soft graphite (`#23272A`) with light text in dark mode. Each has a contrasting hairline outline, rounded corners and a native compositor shadow so the shelf stays visible on both white and black desktops.
+> * **Runtime UI: warm graphite + restrained teal.** Near-black / paper surfaces (`#151719` / `#1C1F22` / `#101214` dark; `#F9FAFA` / `#F1F3F4` / `#E7EAEB` light), hairline borders (`#2A2E33` / `#D8DDDF`), large radii (control 8 / panel 12 / pill 999), and brand teal accent (`#3FC7AE` dark / `#0C6E5F` light) reserved for primary actions, active sidebar indicators, focus rings, and drag targets. All colours live in `Themes/Dark.xaml` and `Themes/Light.xaml` as `Brush.*` tokens; never hard-code a colour in a view.
 * **Brand layer stays colourful.** The mark is *glass cards rising out of a lit bay*:
   saturated-teal fills (readable on white) *and* lit-mint edges (readable on
   near-black), with the `#3FC7AE` accent glow. `assets/icon.html` is the source of

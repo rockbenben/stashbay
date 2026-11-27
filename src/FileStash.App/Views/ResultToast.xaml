@@ -16,8 +16,8 @@
         WindowStartupLocation="Manual"
         UseLayoutRounding="True">
 
-    <Border Background="{DynamicResource Brush.Surface}"
-            BorderBrush="{DynamicResource Brush.Border}"
+    <Border Background="{DynamicResource Brush.SurfaceElevated}"
+            BorderBrush="{DynamicResource Brush.BorderStrong}"
             BorderThickness="1"
             CornerRadius="{DynamicResource Radius.Panel}"
             Padding="16">
@@ -40,7 +40,7 @@
                         AutomationProperties.Name="{x:Static app:Strings.CloseButton}" Click="OnClose">
                     <Grid Width="28" Height="28" IsHitTestVisible="False">
                         <Grid x:Name="DismissCountdown" Visibility="Collapsed">
-                            <Path x:Name="CountdownArc" Stroke="{DynamicResource Brush.TextSecondary}" StrokeThickness="1.8"
+                            <Path x:Name="CountdownArc" Stroke="{DynamicResource Brush.Accent}" StrokeThickness="1.8"
                                   StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
                         </Grid>
                         <Path Data="M4 4L16 16M16 4L4 16" Stroke="{DynamicResource Brush.TextSecondary}"

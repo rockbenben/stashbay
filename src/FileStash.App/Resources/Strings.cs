@@ -54,6 +54,7 @@ public static class Strings
     public static string ClearHistoryConfirmMessage => Get(nameof(ClearHistoryConfirmMessage));
     public static string ClearHistoryConfirmTitle => Get(nameof(ClearHistoryConfirmTitle));
     public static string ClearHistoryDoneMessage => Get(nameof(ClearHistoryDoneMessage));
+    public static string ClearSearchTooltip => Get(nameof(ClearSearchTooltip));
     public static string ClipboardBusy => Get(nameof(ClipboardBusy));
     public static string ClipboardBusyLong => Get(nameof(ClipboardBusyLong));
     public static string CloseButton => Get(nameof(CloseButton));
@@ -85,6 +86,7 @@ public static class Strings
     public static string ConflictLabel => Get(nameof(ConflictLabel));
     public static string ContextMenuHint => Get(nameof(ContextMenuHint));
     public static string ContextMenuLabel => Get(nameof(ContextMenuLabel));
+    public static string CopyBuildInfoTooltip => Get(nameof(CopyBuildInfoTooltip));
     public static string CopyFailedTitle => Get(nameof(CopyFailedTitle));
     public static string DataDirectoryLabel => Get(nameof(DataDirectoryLabel));
     public static string DefaultConflictPolicyLabel => Get(nameof(DefaultConflictPolicyLabel));
@@ -112,6 +114,7 @@ public static class Strings
     public static string GitChangedSummaryWithDeleted => Get(nameof(GitChangedSummaryWithDeleted));
     public static string GitDeletedSkipped => Get(nameof(GitDeletedSkipped));
     public static string GitFound => Get(nameof(GitFound));
+    public static string GitHubRepoTooltip => Get(nameof(GitHubRepoTooltip));
     public static string GitMissing => Get(nameof(GitMissing));
     public static string GitNoSelection => Get(nameof(GitNoSelection));
     public static string GitStatusTitle => Get(nameof(GitStatusTitle));
@@ -213,6 +216,8 @@ public static class Strings
     public static string RootPresetsTitle => Get(nameof(RootPresetsTitle));
     public static string RuntimeLabel => Get(nameof(RuntimeLabel));
     public static string SaveButton => Get(nameof(SaveButton));
+    public static string SearchNoMatches => Get(nameof(SearchNoMatches));
+    public static string SearchPlaceholder => Get(nameof(SearchPlaceholder));
     public static string SectionDeveloperOptions => Get(nameof(SectionDeveloperOptions));
     public static string SectionExcludes => Get(nameof(SectionExcludes));
     public static string SectionGeneral => Get(nameof(SectionGeneral));
@@ -235,6 +240,8 @@ public static class Strings
     public static string ShelfCountFormat => Get(nameof(ShelfCountFormat));
     public static string ShelfDragPrompt => Get(nameof(ShelfDragPrompt));
     public static string ShelfDropPrompt => Get(nameof(ShelfDropPrompt));
+    public static string ShelfPreviewMany => Get(nameof(ShelfPreviewMany));
+    public static string ShelfPreviewSingle => Get(nameof(ShelfPreviewSingle));
     public static string ShelfRestoreMenu => Get(nameof(ShelfRestoreMenu));
     public static string ShelfRetentionLabel => Get(nameof(ShelfRetentionLabel));
     public static string ShellIntegrationFailedMessage => Get(nameof(ShellIntegrationFailedMessage));
@@ -363,6 +370,9 @@ public static class Strings
     public static string WatchBranchLabel => Get(nameof(WatchBranchLabel));
     public static string WillWrite => Get(nameof(WillWrite));
     public static string WillWriteMany => Get(nameof(WillWriteMany));
+    public static string WindowMaximize => Get(nameof(WindowMaximize));
+    public static string WindowMinimize => Get(nameof(WindowMinimize));
+    public static string WindowRestore => Get(nameof(WindowRestore));
     public static string WorkbenchEmptyHint => Get(nameof(WorkbenchEmptyHint));
     public static string WorkbenchEmptyTitle => Get(nameof(WorkbenchEmptyTitle));
     public static string WriteBackLabel => Get(nameof(WriteBackLabel));

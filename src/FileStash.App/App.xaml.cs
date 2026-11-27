@@ -330,9 +330,8 @@ public partial class App : Application
         _mainWindow = _host.Services.GetRequiredService<MainWindow>();
         WindowWarmUp.Warm(_mainWindow);
 
-        // 界面上的"设置"由 App 打开窗口（ViewModel 不碰窗口）
-        _host.Services.GetRequiredService<MainViewModel>().SettingsRequested += () => OpenWindow<SettingsWindow>();
-        _host.Services.GetRequiredService<MainViewModel>().NewShelfRequested += async () => await OpenNewShelfAsync();
+        // 界面上的辅助窗口由 App 打开（ViewModel 不碰窗口）
+        WireViewModelEvents(_host.Services.GetRequiredService<MainViewModel>());
 
         // --show 是接管路径（重启自己）用的：它要的是"窗口出来"，所以压过"启动时最小化"。
         if (!(command.Minimized || ((command.LogonStartup || command.ElevatedLogon) && _settings.Current.MinimizeToTray)) || command.Show)
@@ -934,8 +933,7 @@ public partial class App : Application
         {
             var vm = ActivatorUtilities.CreateInstance<MainViewModel>(_host.Services);
             await vm.CreateShelfAsync();
-            vm.SettingsRequested += () => OpenWindow<SettingsWindow>();
-            vm.NewShelfRequested += async () => await OpenNewShelfAsync();
+            WireViewModelEvents(vm);
             var window = new MainWindow(vm, _settings,
                 _host.Services.GetRequiredService<ShelfLifetimeService>());
             window.Show();
@@ -943,6 +941,17 @@ public partial class App : Application
             WindowEffects.BringToFront(window);
         }
         catch (Exception ex) { ShowError(_mainWindow, ex.Message); }
+    }
+
+    private void WireViewModelEvents(MainViewModel vm)
+    {
+        vm.SettingsRequested += () => OpenWindow<SettingsWindow>();
+        vm.NewShelfRequested += async () => await OpenNewShelfAsync();
+        vm.HistoryRequested += () => OpenWindow<HistoryWindow>();
+        vm.GitChangesRequested += () => OpenGitStatusDialog();
+        vm.FloatingWindowRequested += () => OpenFloatingWindow();
+        vm.RootPresetsRequested += () => OpenWindow<RootPresetsWindow>();
+        vm.AboutRequested += () => OpenWindow<AboutWindow>();
     }
 
     private bool _shelfGroupsRefreshing;

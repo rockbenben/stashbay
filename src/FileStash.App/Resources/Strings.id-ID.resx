@@ -1069,4 +1069,14 @@
   <data name="SettingsShelf" xml:space="preserve"><value>Rak sementara</value></data>
   <data name="SettingsFiles" xml:space="preserve"><value>Pengelolaan berkas</value></data>
   <data name="SettingsShortcuts" xml:space="preserve"><value>Pintasan</value></data>
+  <data name="WindowMinimize" xml:space="preserve"><value>Perkecil</value></data>
+  <data name="WindowMaximize" xml:space="preserve"><value>Perbesar</value></data>
+  <data name="WindowRestore" xml:space="preserve"><value>Pulihkan</value></data>
+  <data name="SearchPlaceholder" xml:space="preserve"><value>Filter file atau jalur…</value></data>
+  <data name="ClearSearchTooltip" xml:space="preserve"><value>Hapus pencarian</value></data>
+  <data name="SearchNoMatches" xml:space="preserve"><value>Tidak ada file yang cocok</value></data>
+  <data name="GitHubRepoTooltip" xml:space="preserve"><value>Buka repositori GitHub</value></data>
+  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
+  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} ({1} item) · {2}</value></data>
+  <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>Salin info versi lengkap</value></data>
 </root>

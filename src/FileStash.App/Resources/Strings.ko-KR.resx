@@ -1069,4 +1069,14 @@
   <data name="SettingsShelf" xml:space="preserve"><value>임시 보관함</value></data>
   <data name="SettingsFiles" xml:space="preserve"><value>파일 처리</value></data>
   <data name="SettingsShortcuts" xml:space="preserve"><value>단축키</value></data>
+  <data name="WindowMinimize" xml:space="preserve"><value>최소화</value></data>
+  <data name="WindowMaximize" xml:space="preserve"><value>최대화</value></data>
+  <data name="WindowRestore" xml:space="preserve"><value>이전 크기로</value></data>
+  <data name="SearchPlaceholder" xml:space="preserve"><value>파일 이름 또는 경로 검색…</value></data>
+  <data name="ClearSearchTooltip" xml:space="preserve"><value>검색 지우기</value></data>
+  <data name="SearchNoMatches" xml:space="preserve"><value>일치하는 파일이 없습니다</value></data>
+  <data name="GitHubRepoTooltip" xml:space="preserve"><value>GitHub 저장소 열기</value></data>
+  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
+  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} 외 {1}개 · {2}</value></data>
+  <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>전체 버전 정보 복사</value></data>
 </root>

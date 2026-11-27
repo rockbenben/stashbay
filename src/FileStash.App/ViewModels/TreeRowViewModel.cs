@@ -31,6 +31,21 @@ public abstract partial class TreeRowViewModel : ObservableObject
 
     /// <summary>状态列的前景色。</summary>
     public virtual Brush? StatusBrush => null;
+
+    /// <summary>状态胶囊的背景色。</summary>
+    public virtual Brush? StatusBadgeBackground => null;
+
+    public virtual ImageSource? FileIcon => null;
+
+    public virtual bool IsFolder => false;
+
+    public virtual bool IsItemRow => false;
+
+    public virtual ItemViewModel? AsItem => null;
+
+    public bool HasBranch => !string.IsNullOrEmpty(BranchText);
+
+    public virtual bool HasStatus => !string.IsNullOrEmpty(StatusText);
 }
 
 /// <summary>一个暂存项。</summary>
@@ -47,10 +62,10 @@ public sealed partial class ItemViewModel : TreeRowViewModel
 
     public string SourcePath => Item.SourcePath;
 
-    public bool IsFolder => Item.Kind == StashItemKind.Folder;
+    public override bool IsFolder => Item.Kind == StashItemKind.Folder;
 
     /// <summary>系统真实文件/文件夹图标。</summary>
-    public ImageSource? FileIcon => ShellIconService.GetIcon(SourcePath, IsFolder);
+    public override ImageSource? FileIcon => ShellIconService.GetIcon(SourcePath, IsFolder);
 
     public override string DisplayName => Item.DisplayName;
 
@@ -93,7 +108,10 @@ public sealed partial class ItemViewModel : TreeRowViewModel
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CompactToolTip))]
     [NotifyPropertyChangedFor(nameof(IsSourceMissing))]
+    [NotifyPropertyChangedFor(nameof(HasStatus))]
     private string _statusText = string.Empty;
+
+    public override bool HasStatus => !string.IsNullOrEmpty(StatusText);
 
     /// <summary>算出来的源状态本身（名字要据此变暗，不能只靠一颗点）。</summary>
     [ObservableProperty]
@@ -102,9 +120,20 @@ public sealed partial class ItemViewModel : TreeRowViewModel
 
     public bool IsSourceMissing => SourceState == ItemSourceState.Missing;
 
+    public override bool IsItemRow => true;
+
+    public override ItemViewModel? AsItem => this;
+
     /// <summary>源状态对应的颜色。</summary>
     [ObservableProperty]
     private Brush? _statusBrush;
+
+    /// <summary>源状态胶囊背景色。</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(StatusBadgeBackground))]
+    private Brush? _statusBadgeBrush;
+
+    public override Brush? StatusBadgeBackground => StatusBadgeBrush;
 
     /// <summary>文件夹默认展开。</summary>
     [ObservableProperty]
@@ -164,8 +193,9 @@ public sealed partial class EntryViewModel : TreeRowViewModel
 
     public override string SizeText => Entry.IsDirectory ? string.Empty : ItemViewModel.FormatSize(Entry.Size);
 
-    /// <summary>系统真实文件/文件夹图标。</summary>
-    public ImageSource? FileIcon => ShellIconService.GetIcon(Entry.RelativePath, Entry.IsDirectory);
+    public override ImageSource? FileIcon => ShellIconService.GetIcon(Entry.RelativePath, Entry.IsDirectory);
+
+    public override bool IsFolder => Entry.IsDirectory;
 }
 
 /// <summary>一个暂存组。</summary>
@@ -187,6 +217,7 @@ public sealed partial class GroupViewModel : TreeRowViewModel
     public override string PathTail => string.Empty;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasItems))]
     private int _itemCount;
 
     [ObservableProperty]
@@ -204,6 +235,8 @@ public sealed partial class GroupViewModel : TreeRowViewModel
             : Strings.Format(Strings.TreeItemFileCount, ItemCount, FileCount);
 
     public override string FileCountText => ItemCount > 0 ? ItemCount.ToString() : string.Empty;
+
+    public bool HasItems => ItemCount > 0;
 }
 
 /// <summary>

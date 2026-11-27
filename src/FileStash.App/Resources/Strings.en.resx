@@ -1069,4 +1069,14 @@
   <data name="SettingsShelf" xml:space="preserve"><value>Shelf</value></data>
   <data name="SettingsFiles" xml:space="preserve"><value>File handling</value></data>
   <data name="SettingsShortcuts" xml:space="preserve"><value>Shortcuts</value></data>
+  <data name="WindowMinimize" xml:space="preserve"><value>Minimize</value></data>
+  <data name="WindowMaximize" xml:space="preserve"><value>Maximize</value></data>
+  <data name="WindowRestore" xml:space="preserve"><value>Restore</value></data>
+  <data name="SearchPlaceholder" xml:space="preserve"><value>Filter files or paths…</value></data>
+  <data name="ClearSearchTooltip" xml:space="preserve"><value>Clear search</value></data>
+  <data name="SearchNoMatches" xml:space="preserve"><value>No matching files</value></data>
+  <data name="GitHubRepoTooltip" xml:space="preserve"><value>Open GitHub repository</value></data>
+  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
+  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} (+{1} items) · {2}</value></data>
+  <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>Copy full version info</value></data>
 </root>

@@ -2,44 +2,40 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- The transit shelf keeps its silhouette against both white and black desktops. -->
-    <SolidColorBrush x:Key="Brush.ShelfSurface" Color="#FF292929" />
-    <SolidColorBrush x:Key="Brush.ShelfBorder" Color="#FF777777" />
-    <SolidColorBrush x:Key="Brush.ShelfText" Color="#FFF0F0F0" />
-    <SolidColorBrush x:Key="Brush.ShelfSecondary" Color="#FFBDBDBD" />
-    <SolidColorBrush x:Key="Brush.ShelfCard" Color="#FFE4E4E4" />
-    <SolidColorBrush x:Key="Brush.ShelfCardBack" Color="#FF737373" />
-    <SolidColorBrush x:Key="Brush.ShelfHover" Color="#FF3A3A3A" />
+    <SolidColorBrush x:Key="Brush.ShelfSurface" Color="#FF23272A" />
+    <SolidColorBrush x:Key="Brush.ShelfBorder" Color="#FF5F686E" />
+    <SolidColorBrush x:Key="Brush.ShelfText" Color="#FFF1F4F5" />
+    <SolidColorBrush x:Key="Brush.ShelfSecondary" Color="#FFB5BDC2" />
+    <SolidColorBrush x:Key="Brush.ShelfCard" Color="#FFE9EEED" />
+    <SolidColorBrush x:Key="Brush.ShelfCardBack" Color="#FF3FC7AE" />
+    <SolidColorBrush x:Key="Brush.ShelfHover" Color="#FF31373C" />
 
     <!--
-        深色主题（中性石墨）：同一套语义，只换成无彩的近黑底。
-
-        视觉语言来自 magpie：靠表面亮度差 + 发丝线分层，不靠彩色；
-        层级靠字重与灰度表达，色彩只留给需要区分的 Git 状态（Warning / Danger，且已降饱和）。
-        「强调」在这里是"更亮的中性色"而不是一个色相 —— Brush.Accent 仍是结构高亮
-        （焦点环、拖拽边框、胶囊徽章、进度条），Brush.AccentSoft 是它的软底版本。
-
+        深色主题（温润石墨 + 克制品牌青绿）：
         只覆盖 Brush.* —— 键名与浅色一一对应，ThemeService 切换时直接换字典。
     -->
 
-    <SolidColorBrush x:Key="Brush.Surface" Color="#FF17181A" />
-    <SolidColorBrush x:Key="Brush.SurfaceAlt" Color="#FF1E2022" />
-    <SolidColorBrush x:Key="Brush.SurfaceSunken" Color="#FF131415" />
-    <SolidColorBrush x:Key="Brush.Border" Color="#FF2C2E31" />
-    <SolidColorBrush x:Key="Brush.BorderStrong" Color="#FF3C3F43" />
-    <SolidColorBrush x:Key="Brush.TextPrimary" Color="#FFECEDEE" />
-    <SolidColorBrush x:Key="Brush.TextSecondary" Color="#FFA2A5AA" />
-    <!-- 第三级提亮到 #8C8F94，压在 SurfaceSunken #131415 上仍有 ~4.9:1（可错过的小字，但别瞎） -->
-    <SolidColorBrush x:Key="Brush.TextTertiary" Color="#FF8C8F94" />
-    <SolidColorBrush x:Key="Brush.Accent" Color="#FFE4E6E8" />
-    <SolidColorBrush x:Key="Brush.AccentSoft" Color="#FF282A2D" />
-    <SolidColorBrush x:Key="Brush.AccentText" Color="#FF141517" />
-    <!-- 状态色降饱和：只用来区分"已修改 / 已删除"，不是装饰 -->
-    <SolidColorBrush x:Key="Brush.Warning" Color="#FFC9A227" />
-    <SolidColorBrush x:Key="Brush.Danger" Color="#FFC46A62" />
-    <SolidColorBrush x:Key="Brush.Selection" Color="#FF2E3134" />
-    <SolidColorBrush x:Key="Brush.Hover" Color="#FF25282A" />
-    <!-- 悬停叠加层：半透明白，压在任何底色上都是"提亮一点"，
-         不替换 Background —— 主按钮是浅底深字，替换背景会把前景字一起压黑。 -->
-    <SolidColorBrush x:Key="Brush.HoverOverlay" Color="#14FFFFFF" />
+    <SolidColorBrush x:Key="Brush.Surface" Color="#FF151719" />
+    <SolidColorBrush x:Key="Brush.SurfaceAlt" Color="#FF1C1F22" />
+    <SolidColorBrush x:Key="Brush.SurfaceSunken" Color="#FF101214" />
+    <SolidColorBrush x:Key="Brush.SurfaceElevated" Color="#FF22262A" />
+    <SolidColorBrush x:Key="Brush.Border" Color="#FF2A2E33" />
+    <SolidColorBrush x:Key="Brush.BorderStrong" Color="#FF3C4249" />
+    <SolidColorBrush x:Key="Brush.TextPrimary" Color="#FFEDF0F2" />
+    <SolidColorBrush x:Key="Brush.TextSecondary" Color="#FFA2A9B0" />
+    <SolidColorBrush x:Key="Brush.TextTertiary" Color="#FF8C939A" />
+    <SolidColorBrush x:Key="Brush.Accent" Color="#FF3FC7AE" />
+    <SolidColorBrush x:Key="Brush.AccentHover" Color="#FF52D1B9" />
+    <SolidColorBrush x:Key="Brush.AccentSoft" Color="#FF172C29" />
+    <SolidColorBrush x:Key="Brush.AccentText" Color="#FF0D1514" />
+    <SolidColorBrush x:Key="Brush.Success" Color="#FF4AD295" />
+    <SolidColorBrush x:Key="Brush.SuccessSoft" Color="#FF172D24" />
+    <SolidColorBrush x:Key="Brush.Warning" Color="#FFE0B04B" />
+    <SolidColorBrush x:Key="Brush.WarningSoft" Color="#FF2E2617" />
+    <SolidColorBrush x:Key="Brush.Danger" Color="#FFE5736D" />
+    <SolidColorBrush x:Key="Brush.DangerSoft" Color="#FF311C1C" />
+    <SolidColorBrush x:Key="Brush.Selection" Color="#FF213130" />
+    <SolidColorBrush x:Key="Brush.Hover" Color="#FF23272B" />
+    <SolidColorBrush x:Key="Brush.HoverOverlay" Color="#16FFFFFF" />
 
 </ResourceDictionary>

@@ -41,6 +41,22 @@ public sealed partial class OperationViewModel : ObservableObject
 
     public string SummaryText => Operation.Summary ?? string.Empty;
 
+    public Brush? StatusForeground => Application.Current?.TryFindResource(Operation.Status switch
+    {
+        OperationStatus.Succeeded => "Brush.Success",
+        OperationStatus.PartiallyFailed => "Brush.Warning",
+        OperationStatus.Failed => "Brush.Danger",
+        _ => "Brush.TextSecondary",
+    }) as Brush;
+
+    public Brush? StatusBackground => Application.Current?.TryFindResource(Operation.Status switch
+    {
+        OperationStatus.Succeeded => "Brush.SuccessSoft",
+        OperationStatus.PartiallyFailed => "Brush.WarningSoft",
+        OperationStatus.Failed => "Brush.DangerSoft",
+        _ => "Brush.SurfaceSunken",
+    }) as Brush;
+
     /// <summary>
     /// 能不能撤销。拖出那一条虽然状态是"成功"，但它没有写入条目 ——
     /// 对它点「撤销这次」必然什么都不发生，所以不给这个入口。
@@ -54,7 +70,7 @@ public sealed partial class OperationViewModel : ObservableObject
 /// <summary>历史里的一条条目。</summary>
 public sealed class OperationEntryViewModel(OperationEntry entry)
 {
-        public long Id => entry.Id;
+    public long Id => entry.Id;
     public bool NeedsReview => entry.Pending || entry.UndoPending;
     public string TargetPath => entry.TargetPath;
 
@@ -68,6 +84,26 @@ public sealed class OperationEntryViewModel(OperationEntry entry)
         EntryResult.DirectoryCreated => Strings.ResultDirectoryCreated,
         _ => entry.Action.ToString(),
     };
+
+    public Brush? ActionForeground => Application.Current?.TryFindResource(entry.Pending
+        ? "Brush.Warning"
+        : entry.Action switch
+        {
+            EntryResult.Created or EntryResult.DirectoryCreated => "Brush.Success",
+            EntryResult.Overwritten or EntryResult.Renamed => "Brush.Warning",
+            EntryResult.Failed => "Brush.Danger",
+            _ => "Brush.TextSecondary",
+        }) as Brush;
+
+    public Brush? ActionBackground => Application.Current?.TryFindResource(entry.Pending
+        ? "Brush.WarningSoft"
+        : entry.Action switch
+        {
+            EntryResult.Created or EntryResult.DirectoryCreated => "Brush.SuccessSoft",
+            EntryResult.Overwritten or EntryResult.Renamed => "Brush.WarningSoft",
+            EntryResult.Failed => "Brush.DangerSoft",
+            _ => "Brush.SurfaceSunken",
+        }) as Brush;
 
     public string Error => entry.Error ?? string.Empty;
 }

@@ -1069,4 +1069,14 @@
   <data name="SettingsShelf" xml:space="preserve"><value>الرف</value></data>
   <data name="SettingsFiles" xml:space="preserve"><value>معالجة الملفات</value></data>
   <data name="SettingsShortcuts" xml:space="preserve"><value>اختصارات لوحة المفاتيح</value></data>
+  <data name="WindowMinimize" xml:space="preserve"><value>تصغير</value></data>
+  <data name="WindowMaximize" xml:space="preserve"><value>تكبير</value></data>
+  <data name="WindowRestore" xml:space="preserve"><value>استعادة</value></data>
+  <data name="SearchPlaceholder" xml:space="preserve"><value>تصفية الملفات أو المسارات…</value></data>
+  <data name="ClearSearchTooltip" xml:space="preserve"><value>مسح البحث</value></data>
+  <data name="SearchNoMatches" xml:space="preserve"><value>لا توجد ملفات مطابقة</value></data>
+  <data name="GitHubRepoTooltip" xml:space="preserve"><value>فتح مستودع GitHub</value></data>
+  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
+  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} ({1} عناصر) · {2}</value></data>
+  <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>نسخ معلومات الإصدار الكاملة</value></data>
 </root>
