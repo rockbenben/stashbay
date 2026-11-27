@@ -2,8 +2,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Globalization;
+using System.Runtime.ExceptionServices;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Threading;
 using FileStash.App.Controls;
 using FileStash.App.Converters;
@@ -24,15 +26,26 @@ public sealed class SegmentBindingTests
     {
         RunOnStaThread(() =>
         {
-            var list = new ListBox { ItemsSource = Enumerable.Range(1, 100) };
-            WheelScroll.SetIsEnabled(list, true);
-            // Give the template a presentation source, just as the live ListBox has.
-            using var source = new System.Windows.Interop.HwndSource(new("WheelScrollTest")
+            var list = new ListBox
             {
-                Width = 200, Height = 100, WindowStyle = 0, PositionX = -32000, PositionY = -32000,
-            }) { RootVisual = list };
-            Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.ApplicationIdle);
+                ItemsSource = Enumerable.Range(1, 100),
+                Template = (ControlTemplate)XamlReader.Parse("""
+                    <ControlTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                     TargetType="ListBox">
+                        <ScrollViewer x:Name="Viewer">
+                            <ItemsPresenter />
+                        </ScrollViewer>
+                    </ControlTemplate>
+                    """),
+            };
+            WheelScroll.SetIsEnabled(list, true);
+            // Lay out the scrollable template without creating a native window.
+            list.Measure(new Size(200, 100));
+            list.Arrange(new Rect(0, 0, 200, 100));
             list.UpdateLayout();
+            var viewer = Assert.IsType<ScrollViewer>(list.Template.FindName("Viewer", list));
+            Assert.True(viewer.ScrollableHeight > 0, "The test list must overflow its viewport.");
 
             // A hit on the list itself never bubbles through its child ScrollViewer.
             var wheel = new MouseWheelEventArgs(Mouse.PrimaryDevice, Environment.TickCount, -120)
@@ -150,8 +163,9 @@ public sealed class SegmentBindingTests
         thread.IsBackground = true;
         thread.Start();
 
-        Assert.True(done.Wait(TimeSpan.FromSeconds(20), TestContext.Current.CancellationToken));
-        Assert.Null(failure);
+        Assert.True(done.Wait(TimeSpan.FromSeconds(20), TestContext.Current.CancellationToken),
+            "The WPF STA test did not complete within 20 seconds.");
+        if (failure is not null) ExceptionDispatchInfo.Throw(failure);
 
         return result;
     }
