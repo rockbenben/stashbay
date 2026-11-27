@@ -1065,7 +1065,6 @@
   <data name="ShelfRetentionLabel" xml:space="preserve"><value>বন্ধ শেল্ফ রাখার দিন (0 = চিরকাল)</value></data>
   <data name="TrayNewShelf" xml:space="preserve"><value>নতুন শেল্ফ</value></data>
   <data name="ShelfDragPrompt" xml:space="preserve"><value>ফাইল বাইরে টেনে আনুন</value></data>
-  <data name="ShelfCountFormat" xml:space="preserve"><value>{0}টি আইটেম রাখা হয়েছে</value></data>
   <data name="ToastDismissCountdown" xml:space="preserve"><value>{0} সেকেন্ডে বন্ধ হবে; মাউস রাখলে বা কীবোর্ড ফোকাসে বিরতি</value></data>
   <data name="ShelfCleanupHint" xml:space="preserve"><value>খালি অস্থায়ী তাক স্বয়ংক্রিয়ভাবে মুছে যায়। ডিফল্ট তাক এবং সামগ্রী থাকা সংরক্ষণস্থল রাখা হয়।</value></data>
   <data name="SettingsAppearance" xml:space="preserve"><value>চেহারা</value></data>
@@ -1079,7 +1078,6 @@
   <data name="ClearSearchTooltip" xml:space="preserve"><value>অনুসন্ধান মুছুন</value></data>
   <data name="SearchNoMatches" xml:space="preserve"><value>কোনো মিল থাকা ফাইল নেই</value></data>
   <data name="GitHubRepoTooltip" xml:space="preserve"><value>GitHub রিপোজিটরি খুলুন</value></data>
-  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
-  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} ({1} আইটেম) · {2}</value></data>
+  <data name="ShelfSummaryFormat" xml:space="preserve"><value>{0}টি আইটেম · {1}</value></data>
   <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>সম্পূর্ণ সংস্করণ তথ্য কপি করুন</value></data>
 </root>

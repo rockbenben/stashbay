@@ -1065,7 +1065,6 @@
   <data name="ShelfRetentionLabel" xml:space="preserve"><value>Aufbewahrung geschlossener Ablagen in Tagen (0 = unbegrenzt)</value></data>
   <data name="TrayNewShelf" xml:space="preserve"><value>Neue Ablage</value></data>
   <data name="ShelfDragPrompt" xml:space="preserve"><value>Dateien herausziehen</value></data>
-  <data name="ShelfCountFormat" xml:space="preserve"><value>{0} Elemente abgelegt</value></data>
   <data name="ToastDismissCountdown" xml:space="preserve"><value>Schließt in {0} Sekunden; pausiert bei Mauszeiger oder Tastaturfokus</value></data>
   <data name="ShelfCleanupHint" xml:space="preserve"><value>Leere temporäre Ablagen werden automatisch entfernt. Die Standardablage und Ablagen mit Inhalt bleiben erhalten.</value></data>
   <data name="SettingsAppearance" xml:space="preserve"><value>Darstellung</value></data>
@@ -1079,7 +1078,6 @@
   <data name="ClearSearchTooltip" xml:space="preserve"><value>Suche löschen</value></data>
   <data name="SearchNoMatches" xml:space="preserve"><value>Keine passenden Dateien</value></data>
   <data name="GitHubRepoTooltip" xml:space="preserve"><value>GitHub-Repository öffnen</value></data>
-  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
-  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} ({1} Elemente) · {2}</value></data>
+  <data name="ShelfSummaryFormat" xml:space="preserve"><value>Elemente: {0} · {1}</value></data>
   <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>Vollständige Versionsinfo kopieren</value></data>
 </root>

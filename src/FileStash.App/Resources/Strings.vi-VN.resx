@@ -1065,7 +1065,6 @@
   <data name="ShelfRetentionLabel" xml:space="preserve"><value>Số ngày giữ kệ đã đóng (0 = mãi mãi)</value></data>
   <data name="TrayNewShelf" xml:space="preserve"><value>Kệ mới</value></data>
   <data name="ShelfDragPrompt" xml:space="preserve"><value>Kéo tệp ra ngoài</value></data>
-  <data name="ShelfCountFormat" xml:space="preserve"><value>Đã lưu tạm {0} mục</value></data>
   <data name="ToastDismissCountdown" xml:space="preserve"><value>Đóng sau {0} giây; tạm dừng khi di chuột hoặc dùng bàn phím</value></data>
   <data name="ShelfCleanupHint" xml:space="preserve"><value>Kệ tạm trống được tự động xóa. Kệ mặc định và các kho tạm có nội dung được giữ lại.</value></data>
   <data name="SettingsAppearance" xml:space="preserve"><value>Giao diện</value></data>
@@ -1079,7 +1078,6 @@
   <data name="ClearSearchTooltip" xml:space="preserve"><value>Xóa tìm kiếm</value></data>
   <data name="SearchNoMatches" xml:space="preserve"><value>Không có tệp phù hợp</value></data>
   <data name="GitHubRepoTooltip" xml:space="preserve"><value>Mở kho lưu trữ GitHub</value></data>
-  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
-  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} ({1} mục) · {2}</value></data>
+  <data name="ShelfSummaryFormat" xml:space="preserve"><value>Số mục: {0} · {1}</value></data>
   <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>Sao chép thông tin phiên bản</value></data>
 </root>

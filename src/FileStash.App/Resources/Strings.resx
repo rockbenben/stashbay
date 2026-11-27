@@ -1065,7 +1065,6 @@
   <data name="ShelfRetentionLabel" xml:space="preserve"><value>关闭的暂存箱保留天数（0 = 永久）</value></data>
   <data name="TrayNewShelf" xml:space="preserve"><value>新建暂存箱</value></data>
   <data name="ShelfDragPrompt" xml:space="preserve"><value>拖出文件</value></data>
-  <data name="ShelfCountFormat" xml:space="preserve"><value>已暂存 {0} 项</value></data>
   <data name="ToastDismissCountdown" xml:space="preserve"><value>{0} 秒后关闭，悬停或键盘操作时暂停</value></data>
   <data name="ShelfCleanupHint" xml:space="preserve"><value>空的临时暂存区自动删除；默认暂存区和仍有内容的暂存区会保留。</value></data>
   <data name="SettingsAppearance" xml:space="preserve"><value>外观</value></data>
@@ -1079,7 +1078,6 @@
   <data name="ClearSearchTooltip" xml:space="preserve"><value>清除搜索</value></data>
   <data name="SearchNoMatches" xml:space="preserve"><value>没有匹配的文件</value></data>
   <data name="GitHubRepoTooltip" xml:space="preserve"><value>在 GitHub 上查看项目</value></data>
-  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
-  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} 等 {1} 项 · {2}</value></data>
+  <data name="ShelfSummaryFormat" xml:space="preserve"><value>{0} 项 · {1}</value></data>
   <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>复制完整版本信息</value></data>
 </root>

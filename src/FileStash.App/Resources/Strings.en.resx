@@ -1065,7 +1065,6 @@
   <data name="ShelfRetentionLabel" xml:space="preserve"><value>Closed shelf retention in days (0 = forever)</value></data>
   <data name="TrayNewShelf" xml:space="preserve"><value>New shelf</value></data>
   <data name="ShelfDragPrompt" xml:space="preserve"><value>Drag files out</value></data>
-  <data name="ShelfCountFormat" xml:space="preserve"><value>{0} items stashed</value></data>
   <data name="ToastDismissCountdown" xml:space="preserve"><value>Closes in {0} seconds; pauses on hover or keyboard focus</value></data>
   <data name="ShelfCleanupHint" xml:space="preserve"><value>Empty temporary shelves are removed automatically. The default shelf and stashes with contents are kept.</value></data>
   <data name="SettingsAppearance" xml:space="preserve"><value>Appearance</value></data>
@@ -1079,7 +1078,6 @@
   <data name="ClearSearchTooltip" xml:space="preserve"><value>Clear search</value></data>
   <data name="SearchNoMatches" xml:space="preserve"><value>No matching files</value></data>
   <data name="GitHubRepoTooltip" xml:space="preserve"><value>Open GitHub repository</value></data>
-  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
-  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} (+{1} items) · {2}</value></data>
+  <data name="ShelfSummaryFormat" xml:space="preserve"><value>Items: {0} · {1}</value></data>
   <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>Copy full version info</value></data>
 </root>

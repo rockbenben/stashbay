@@ -1065,7 +1065,6 @@
   <data name="ShelfRetentionLabel" xml:space="preserve"><value>Días de conservación de bandejas cerradas (0 = siempre)</value></data>
   <data name="TrayNewShelf" xml:space="preserve"><value>Nueva bandeja</value></data>
   <data name="ShelfDragPrompt" xml:space="preserve"><value>Arrastra los archivos fuera</value></data>
-  <data name="ShelfCountFormat" xml:space="preserve"><value>{0} elementos guardados</value></data>
   <data name="ToastDismissCountdown" xml:space="preserve"><value>Se cierra en {0} segundos; se pausa al pasar el cursor o usar el teclado</value></data>
   <data name="ShelfCleanupHint" xml:space="preserve"><value>Las bandejas temporales vacías se eliminan automáticamente. Se conservan la bandeja predeterminada y los depósitos con contenido.</value></data>
   <data name="SettingsAppearance" xml:space="preserve"><value>Apariencia</value></data>
@@ -1079,7 +1078,6 @@
   <data name="ClearSearchTooltip" xml:space="preserve"><value>Limpiar búsqueda</value></data>
   <data name="SearchNoMatches" xml:space="preserve"><value>Sin archivos coincidentes</value></data>
   <data name="GitHubRepoTooltip" xml:space="preserve"><value>Abrir repositorio en GitHub</value></data>
-  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
-  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} ({1} elementos) · {2}</value></data>
+  <data name="ShelfSummaryFormat" xml:space="preserve"><value>Elementos: {0} · {1}</value></data>
   <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>Copiar información de versión</value></data>
 </root>

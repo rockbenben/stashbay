@@ -1065,7 +1065,6 @@
   <data name="ShelfRetentionLabel" xml:space="preserve"><value>Kapalı rafları saklama süresi, gün (0 = sonsuza kadar)</value></data>
   <data name="TrayNewShelf" xml:space="preserve"><value>Yeni raf</value></data>
   <data name="ShelfDragPrompt" xml:space="preserve"><value>Dosyaları dışarı sürükleyin</value></data>
-  <data name="ShelfCountFormat" xml:space="preserve"><value>{0} öğe saklandı</value></data>
   <data name="ToastDismissCountdown" xml:space="preserve"><value>{0} saniye sonra kapanır; fareyle üzerine gelindiğinde veya klavye odağında duraklar</value></data>
   <data name="ShelfCleanupHint" xml:space="preserve"><value>Boş geçici raflar otomatik olarak silinir. Varsayılan raf ve içeriği olan kutular korunur.</value></data>
   <data name="SettingsAppearance" xml:space="preserve"><value>Görünüm</value></data>
@@ -1079,7 +1078,6 @@
   <data name="ClearSearchTooltip" xml:space="preserve"><value>Aramayı temizle</value></data>
   <data name="SearchNoMatches" xml:space="preserve"><value>Eşleşen dosya yok</value></data>
   <data name="GitHubRepoTooltip" xml:space="preserve"><value>GitHub deposunu aç</value></data>
-  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
-  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} ({1} öğe) · {2}</value></data>
+  <data name="ShelfSummaryFormat" xml:space="preserve"><value>Öğe: {0} · {1}</value></data>
   <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>Tam sürüm bilgisini kopyala</value></data>
 </root>

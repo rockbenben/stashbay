@@ -1065,7 +1065,6 @@
   <data name="ShelfRetentionLabel" xml:space="preserve"><value>बंद शेल्फ रखने के दिन (0 = हमेशा)</value></data>
   <data name="TrayNewShelf" xml:space="preserve"><value>नई शेल्फ</value></data>
   <data name="ShelfDragPrompt" xml:space="preserve"><value>फ़ाइलें बाहर खींचें</value></data>
-  <data name="ShelfCountFormat" xml:space="preserve"><value>{0} आइटम रखे गए</value></data>
   <data name="ToastDismissCountdown" xml:space="preserve"><value>{0} सेकंड में बंद होगा; माउस रखने या कीबोर्ड फ़ोकस पर रुकेगा</value></data>
   <data name="ShelfCleanupHint" xml:space="preserve"><value>खाली अस्थायी शेल्फ अपने आप हट जाते हैं। डिफ़ॉल्ट शेल्फ और सामग्री वाले भंडार बने रहते हैं।</value></data>
   <data name="SettingsAppearance" xml:space="preserve"><value>दिखावट</value></data>
@@ -1079,7 +1078,6 @@
   <data name="ClearSearchTooltip" xml:space="preserve"><value>खोज साफ़ करें</value></data>
   <data name="SearchNoMatches" xml:space="preserve"><value>कोई मेल खाती फ़ाइल नहीं</value></data>
   <data name="GitHubRepoTooltip" xml:space="preserve"><value>GitHub रिपॉज़िटरी खोलें</value></data>
-  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
-  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} ({1} आइटम) · {2}</value></data>
+  <data name="ShelfSummaryFormat" xml:space="preserve"><value>आइटम: {0} · {1}</value></data>
   <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>पूर्ण संस्करण जानकारी कॉपी करें</value></data>
 </root>

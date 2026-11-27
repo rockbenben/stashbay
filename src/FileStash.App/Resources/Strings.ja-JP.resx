@@ -1065,7 +1065,6 @@
   <data name="ShelfRetentionLabel" xml:space="preserve"><value>閉じたシェルフの保存日数（0 = 無期限）</value></data>
   <data name="TrayNewShelf" xml:space="preserve"><value>新しいシェルフ</value></data>
   <data name="ShelfDragPrompt" xml:space="preserve"><value>ファイルをドラッグして取り出す</value></data>
-  <data name="ShelfCountFormat" xml:space="preserve"><value>{0} 件を一時保存</value></data>
   <data name="ToastDismissCountdown" xml:space="preserve"><value>{0} 秒後に閉じます。マウスやキーボードの操作中は一時停止します</value></data>
   <data name="ShelfCleanupHint" xml:space="preserve"><value>空の一時保管棚は自動削除されます。既定の棚と内容がある保管ボックスは保持されます。</value></data>
   <data name="SettingsAppearance" xml:space="preserve"><value>外観</value></data>
@@ -1079,7 +1078,6 @@
   <data name="ClearSearchTooltip" xml:space="preserve"><value>検索をクリア</value></data>
   <data name="SearchNoMatches" xml:space="preserve"><value>一致するファイルがありません</value></data>
   <data name="GitHubRepoTooltip" xml:space="preserve"><value>GitHub リポジトリを開く</value></data>
-  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
-  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} 他 {1} 件 · {2}</value></data>
+  <data name="ShelfSummaryFormat" xml:space="preserve"><value>{0} 件 · {1}</value></data>
   <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>バージョン情報をコピー</value></data>
 </root>

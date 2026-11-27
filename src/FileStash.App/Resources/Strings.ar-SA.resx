@@ -1065,7 +1065,6 @@
   <data name="ShelfRetentionLabel" xml:space="preserve"><value>مدة الاحتفاظ بالرفوف المغلقة بالأيام (0 = للأبد)</value></data>
   <data name="TrayNewShelf" xml:space="preserve"><value>رف جديد</value></data>
   <data name="ShelfDragPrompt" xml:space="preserve"><value>اسحب الملفات للخارج</value></data>
-  <data name="ShelfCountFormat" xml:space="preserve"><value>تم حفظ {0} من العناصر</value></data>
   <data name="ToastDismissCountdown" xml:space="preserve"><value>يغلق خلال {0} ثانية؛ يتوقف عند تمرير المؤشر أو تركيز لوحة المفاتيح</value></data>
   <data name="ShelfCleanupHint" xml:space="preserve"><value>تُحذف الرفوف المؤقتة الفارغة تلقائيًا. يُحتفظ بالرف الافتراضي والمخازن التي تحتوي على عناصر.</value></data>
   <data name="SettingsAppearance" xml:space="preserve"><value>المظهر</value></data>
@@ -1079,7 +1078,6 @@
   <data name="ClearSearchTooltip" xml:space="preserve"><value>مسح البحث</value></data>
   <data name="SearchNoMatches" xml:space="preserve"><value>لا توجد ملفات مطابقة</value></data>
   <data name="GitHubRepoTooltip" xml:space="preserve"><value>فتح مستودع GitHub</value></data>
-  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
-  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} ({1} عناصر) · {2}</value></data>
+  <data name="ShelfSummaryFormat" xml:space="preserve"><value>العناصر: {0} · {1}</value></data>
   <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>نسخ معلومات الإصدار الكاملة</value></data>
 </root>

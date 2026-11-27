@@ -1065,7 +1065,6 @@
   <data name="ShelfRetentionLabel" xml:space="preserve"><value>Lama penyimpanan rak tertutup dalam hari (0 = selamanya)</value></data>
   <data name="TrayNewShelf" xml:space="preserve"><value>Rak baru</value></data>
   <data name="ShelfDragPrompt" xml:space="preserve"><value>Seret berkas keluar</value></data>
-  <data name="ShelfCountFormat" xml:space="preserve"><value>{0} item disimpan</value></data>
   <data name="ToastDismissCountdown" xml:space="preserve"><value>Menutup dalam {0} detik; jeda saat disorot atau mendapat fokus papan ketik</value></data>
   <data name="ShelfCleanupHint" xml:space="preserve"><value>Rak sementara yang kosong dihapus otomatis. Rak bawaan dan penyimpanan yang masih berisi item tetap disimpan.</value></data>
   <data name="SettingsAppearance" xml:space="preserve"><value>Tampilan</value></data>
@@ -1079,7 +1078,6 @@
   <data name="ClearSearchTooltip" xml:space="preserve"><value>Hapus pencarian</value></data>
   <data name="SearchNoMatches" xml:space="preserve"><value>Tidak ada file yang cocok</value></data>
   <data name="GitHubRepoTooltip" xml:space="preserve"><value>Buka repositori GitHub</value></data>
-  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
-  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} ({1} item) · {2}</value></data>
+  <data name="ShelfSummaryFormat" xml:space="preserve"><value>{0} item · {1}</value></data>
   <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>Salin info versi lengkap</value></data>
 </root>

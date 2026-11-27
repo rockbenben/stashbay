@@ -214,7 +214,7 @@
                     </StackPanel>
                 </Grid>
 
-                <!-- 唯一整块拖出区：叠卡 + 拖出提示 + 首项文件名与总大小摘要 -->
+                <!-- 唯一整块拖出区：叠卡、拖出提示、项数与总大小 -->
                 <Border x:Name="ShelfExportSurface" Grid.Row="1"
                         Background="Transparent" Cursor="Hand"
                         Margin="18,0,18,4" Focusable="True"
@@ -246,7 +246,7 @@
                                 <ContentControl ContentTemplate="{StaticResource ShelfFileStackGlyph}"/>
                             </Grid>
                             <TextBlock Text="{x:Static app:Strings.ShelfDragPrompt}" FontSize="19" FontWeight="SemiBold" TextWrapping="Wrap" TextAlignment="Center" Foreground="{DynamicResource Brush.ShelfText}"/>
-                            <TextBlock Text="{Binding ShelfPreviewText}" FontSize="11.5" Margin="0,4,0,0" TextAlignment="Center" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource Brush.ShelfSecondary}"/>
+                            <TextBlock Text="{Binding ShelfSummary}" FontSize="11.5" Margin="0,4,0,0" TextAlignment="Center" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource Brush.ShelfSecondary}"/>
                         </StackPanel>
                     </Viewbox>
                 </Border>

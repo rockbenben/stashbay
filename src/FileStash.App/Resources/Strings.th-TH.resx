@@ -1065,7 +1065,6 @@
   <data name="ShelfRetentionLabel" xml:space="preserve"><value>จำนวนวันที่เก็บชั้นวางที่ปิด (0 = ตลอดไป)</value></data>
   <data name="TrayNewShelf" xml:space="preserve"><value>ชั้นวางใหม่</value></data>
   <data name="ShelfDragPrompt" xml:space="preserve"><value>ลากไฟล์ออก</value></data>
-  <data name="ShelfCountFormat" xml:space="preserve"><value>พักไว้ {0} รายการ</value></data>
   <data name="ToastDismissCountdown" xml:space="preserve"><value>ปิดใน {0} วินาที พักเมื่อวางเมาส์หรือโฟกัสด้วยแป้นพิมพ์</value></data>
   <data name="ShelfCleanupHint" xml:space="preserve"><value>ชั้นพักชั่วคราวที่ว่างจะถูกลบอัตโนมัติ ชั้นพักเริ่มต้นและกล่องพักที่มีเนื้อหาจะถูกเก็บไว้</value></data>
   <data name="SettingsAppearance" xml:space="preserve"><value>รูปลักษณ์</value></data>
@@ -1079,7 +1078,6 @@
   <data name="ClearSearchTooltip" xml:space="preserve"><value>ล้างการค้นหา</value></data>
   <data name="SearchNoMatches" xml:space="preserve"><value>ไม่พบไฟล์ที่ตรงกัน</value></data>
   <data name="GitHubRepoTooltip" xml:space="preserve"><value>เปิดที่เก็บ GitHub</value></data>
-  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
-  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} ({1} รายการ) · {2}</value></data>
+  <data name="ShelfSummaryFormat" xml:space="preserve"><value>{0} รายการ · {1}</value></data>
   <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>คัดลอกข้อมูลเวอร์ชันเต็ม</value></data>
 </root>

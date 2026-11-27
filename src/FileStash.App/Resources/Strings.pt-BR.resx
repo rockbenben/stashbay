@@ -1065,7 +1065,6 @@
   <data name="ShelfRetentionLabel" xml:space="preserve"><value>Retenção de prateleiras fechadas em dias (0 = para sempre)</value></data>
   <data name="TrayNewShelf" xml:space="preserve"><value>Nova prateleira</value></data>
   <data name="ShelfDragPrompt" xml:space="preserve"><value>Arraste os arquivos para fora</value></data>
-  <data name="ShelfCountFormat" xml:space="preserve"><value>{0} itens guardados</value></data>
   <data name="ToastDismissCountdown" xml:space="preserve"><value>Fecha em {0} segundos; pausa ao passar o mouse ou receber foco do teclado</value></data>
   <data name="ShelfCleanupHint" xml:space="preserve"><value>Prateleiras temporárias vazias são removidas automaticamente. A prateleira padrão e os depósitos com conteúdo são mantidos.</value></data>
   <data name="SettingsAppearance" xml:space="preserve"><value>Aparência</value></data>
@@ -1079,7 +1078,6 @@
   <data name="ClearSearchTooltip" xml:space="preserve"><value>Limpar pesquisa</value></data>
   <data name="SearchNoMatches" xml:space="preserve"><value>Nenhum arquivo encontrado</value></data>
   <data name="GitHubRepoTooltip" xml:space="preserve"><value>Abrir repositório no GitHub</value></data>
-  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
-  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} ({1} itens) · {2}</value></data>
+  <data name="ShelfSummaryFormat" xml:space="preserve"><value>Itens: {0} · {1}</value></data>
   <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>Copiar informações da versão</value></data>
 </root>

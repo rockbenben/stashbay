@@ -1065,7 +1065,6 @@
   <data name="ShelfRetentionLabel" xml:space="preserve"><value>Giorni di conservazione dei ripiani chiusi (0 = sempre)</value></data>
   <data name="TrayNewShelf" xml:space="preserve"><value>Nuovo ripiano</value></data>
   <data name="ShelfDragPrompt" xml:space="preserve"><value>Trascina fuori i file</value></data>
-  <data name="ShelfCountFormat" xml:space="preserve"><value>{0} elementi conservati</value></data>
   <data name="ToastDismissCountdown" xml:space="preserve"><value>Chiusura tra {0} secondi; pausa al passaggio del mouse o al focus della tastiera</value></data>
   <data name="ShelfCleanupHint" xml:space="preserve"><value>Gli scaffali temporanei vuoti vengono rimossi automaticamente. Lo scaffale predefinito e i depositi con contenuti vengono conservati.</value></data>
   <data name="SettingsAppearance" xml:space="preserve"><value>Aspetto</value></data>
@@ -1079,7 +1078,6 @@
   <data name="ClearSearchTooltip" xml:space="preserve"><value>Cancella ricerca</value></data>
   <data name="SearchNoMatches" xml:space="preserve"><value>Nessun file corrispondente</value></data>
   <data name="GitHubRepoTooltip" xml:space="preserve"><value>Apri repository GitHub</value></data>
-  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
-  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} ({1} elementi) · {2}</value></data>
+  <data name="ShelfSummaryFormat" xml:space="preserve"><value>Elementi: {0} · {1}</value></data>
   <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>Copia informazioni sulla versione</value></data>
 </root>

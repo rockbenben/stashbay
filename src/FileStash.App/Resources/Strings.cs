@@ -237,13 +237,11 @@ public static class Strings
     public static string ShelfApply => Get(nameof(ShelfApply));
     public static string ShelfCleanupHint => Get(nameof(ShelfCleanupHint));
     public static string ShelfClearAll => Get(nameof(ShelfClearAll));
-    public static string ShelfCountFormat => Get(nameof(ShelfCountFormat));
     public static string ShelfDragPrompt => Get(nameof(ShelfDragPrompt));
     public static string ShelfDropPrompt => Get(nameof(ShelfDropPrompt));
-    public static string ShelfPreviewMany => Get(nameof(ShelfPreviewMany));
-    public static string ShelfPreviewSingle => Get(nameof(ShelfPreviewSingle));
     public static string ShelfRestoreMenu => Get(nameof(ShelfRestoreMenu));
     public static string ShelfRetentionLabel => Get(nameof(ShelfRetentionLabel));
+    public static string ShelfSummaryFormat => Get(nameof(ShelfSummaryFormat));
     public static string ShellIntegrationFailedMessage => Get(nameof(ShellIntegrationFailedMessage));
     public static string SkipIdenticalLabel => Get(nameof(SkipIdenticalLabel));
     public static string SkippedTitle => Get(nameof(SkippedTitle));

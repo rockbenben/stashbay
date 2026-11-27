@@ -1065,7 +1065,6 @@
   <data name="ShelfRetentionLabel" xml:space="preserve"><value>Срок хранения закрытых полок в днях (0 = бессрочно)</value></data>
   <data name="TrayNewShelf" xml:space="preserve"><value>Новая полка</value></data>
   <data name="ShelfDragPrompt" xml:space="preserve"><value>Перетащите файлы наружу</value></data>
-  <data name="ShelfCountFormat" xml:space="preserve"><value>Сохранено элементов: {0}</value></data>
   <data name="ToastDismissCountdown" xml:space="preserve"><value>Закроется через {0} с; пауза при наведении или фокусе клавиатуры</value></data>
   <data name="ShelfCleanupHint" xml:space="preserve"><value>Пустые временные полки удаляются автоматически. Основная полка и хранилища с содержимым сохраняются.</value></data>
   <data name="SettingsAppearance" xml:space="preserve"><value>Оформление</value></data>
@@ -1079,7 +1078,6 @@
   <data name="ClearSearchTooltip" xml:space="preserve"><value>Очистить поиск</value></data>
   <data name="SearchNoMatches" xml:space="preserve"><value>Подходящих файлов нет</value></data>
   <data name="GitHubRepoTooltip" xml:space="preserve"><value>Открыть репозиторий на GitHub</value></data>
-  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
-  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} (всего {1}) · {2}</value></data>
+  <data name="ShelfSummaryFormat" xml:space="preserve"><value>Элементов: {0} · {1}</value></data>
   <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>Копировать сведения о версии</value></data>
 </root>

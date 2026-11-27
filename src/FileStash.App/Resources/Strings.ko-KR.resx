@@ -1065,7 +1065,6 @@
   <data name="ShelfRetentionLabel" xml:space="preserve"><value>닫은 보관함 유지 일수 (0 = 영구)</value></data>
   <data name="TrayNewShelf" xml:space="preserve"><value>새 보관함</value></data>
   <data name="ShelfDragPrompt" xml:space="preserve"><value>파일을 밖으로 드래그</value></data>
-  <data name="ShelfCountFormat" xml:space="preserve"><value>{0}개 보관됨</value></data>
   <data name="ToastDismissCountdown" xml:space="preserve"><value>{0}초 후 닫힘. 마우스를 올리거나 키보드로 조작하면 일시 정지</value></data>
   <data name="ShelfCleanupHint" xml:space="preserve"><value>빈 임시 보관함은 자동 삭제됩니다. 기본 보관함과 내용이 있는 보관함은 유지됩니다.</value></data>
   <data name="SettingsAppearance" xml:space="preserve"><value>모양</value></data>
@@ -1079,7 +1078,6 @@
   <data name="ClearSearchTooltip" xml:space="preserve"><value>검색 지우기</value></data>
   <data name="SearchNoMatches" xml:space="preserve"><value>일치하는 파일이 없습니다</value></data>
   <data name="GitHubRepoTooltip" xml:space="preserve"><value>GitHub 저장소 열기</value></data>
-  <data name="ShelfPreviewSingle" xml:space="preserve"><value>{0} · {1}</value></data>
-  <data name="ShelfPreviewMany" xml:space="preserve"><value>{0} 외 {1}개 · {2}</value></data>
+  <data name="ShelfSummaryFormat" xml:space="preserve"><value>{0}개 · {1}</value></data>
   <data name="CopyBuildInfoTooltip" xml:space="preserve"><value>전체 버전 정보 복사</value></data>
 </root>

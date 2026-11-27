@@ -369,16 +369,8 @@ public sealed partial class MainViewModel : ObservableObject
         }
     }
 
-    /// <summary>小搁架一键拖出全部的徽章文案：短小精炼，防止挤压标题与操作按钮。</summary>
-    public string ShelfCountText => Strings.Format(Strings.ShelfCountFormat, Items.Count);
-
-    /// <summary>紧凑暂存台副标题：展示首项文件名与总大小，让用户拖出前心里有底。</summary>
-    public string ShelfPreviewText => Items.Count switch
-    {
-        0 => string.Empty,
-        1 => Strings.Format(Strings.ShelfPreviewSingle, Items[0].DisplayName, ItemViewModel.FormatSize(Items[0].Item.TotalSize)),
-        _ => Strings.Format(Strings.ShelfPreviewMany, Items[0].DisplayName, Items.Count, ItemViewModel.FormatSize(Items.Sum(item => item.Item.TotalSize))),
-    };
+    public string ShelfSummary => Strings.Format(Strings.ShelfSummaryFormat, Items.Count,
+        ItemViewModel.FormatSize(Items.Sum(item => item.Item.TotalSize)));
 
     public string DragAllBadgeText => Items.Count.ToString(System.Globalization.CultureInfo.CurrentCulture);
 
@@ -521,8 +513,7 @@ public sealed partial class MainViewModel : ObservableObject
             Items.Clear();
             OnPropertyChanged(nameof(StatusSummary));
             OnPropertyChanged(nameof(DragAllBadgeText));
-            OnPropertyChanged(nameof(ShelfCountText));
-            OnPropertyChanged(nameof(ShelfPreviewText));
+            OnPropertyChanged(nameof(ShelfSummary));
             OnPropertyChanged(nameof(HasNoItems));
             OnPropertyChanged(nameof(HasSearchNoMatches));
             UpdateDestinationPreview();
@@ -1590,8 +1581,7 @@ public sealed partial class MainViewModel : ObservableObject
 
         OnPropertyChanged(nameof(StatusSummary));
         OnPropertyChanged(nameof(DragAllBadgeText));
-        OnPropertyChanged(nameof(ShelfCountText));
-        OnPropertyChanged(nameof(ShelfPreviewText));
+        OnPropertyChanged(nameof(ShelfSummary));
         OnPropertyChanged(nameof(HasNoItems));
         OnPropertyChanged(nameof(HasSearchNoMatches));
         RaiseWriteCommands();
