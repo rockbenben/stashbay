@@ -13,6 +13,8 @@ namespace FileStash.App.Controls;
 /// </summary>
 internal static class WindowEffects
 {
+    public static bool AnimationsEnabled => !App.InSmoke && SystemParameters.ClientAreaAnimation;
+
     private const int DwmwaCloak = 13;
     private const int DwmwaCloaked = 14;
     private const int DwmwaUseImmersiveDarkMode = 20;   // Win11 build 22000 起

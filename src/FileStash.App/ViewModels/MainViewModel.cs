@@ -567,8 +567,9 @@ public sealed partial class MainViewModel : ObservableObject
         var id = SelectedGroup?.Id;
         if (_isIndependentShelf || App.InSmoke || id is null || _settings.Current.LastGroupId == id) return;
 
-        _settings.Current.LastGroupId = id;
-        try { _settings.Save(_settings.Current); }
+        var updated = _settings.Current.Clone();
+        updated.LastGroupId = id;
+        try { _settings.Save(updated); }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
             Log.Warning(ex, "Unable to save the main window's selected stash group");

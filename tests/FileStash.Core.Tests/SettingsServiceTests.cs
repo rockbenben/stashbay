@@ -120,6 +120,29 @@ public sealed class SettingsServiceTests : IDisposable
     }
 
     [Fact]
+    public void LockedSettingsFilePreservesTheLastCommittedValue()
+    {
+        _service.Save(new AppSettings { LastGroupId = "original" });
+        var updated = new AppSettings { LastGroupId = "new" };
+
+        using (var locked = new FileStream(_paths.SettingsPath, FileMode.Open, FileAccess.Read, FileShare.None))
+        {
+            var failure = Record.Exception(() => _service.Save(updated));
+            Assert.True(failure is IOException or UnauthorizedAccessException, failure?.ToString());
+            Assert.Equal("original", _service.Current.LastGroupId);
+            new SettingsService(_paths).Load();
+            Assert.False(File.Exists(_paths.SettingsPath + ".corrupt"));
+        }
+
+        _service.Load();
+        Assert.Equal("original", _service.Current.LastGroupId);
+        Assert.Empty(Directory.GetFiles(Path.GetDirectoryName(_paths.SettingsPath)!, "*.tmp"));
+        _service.Save(updated);
+        _service.Load();
+        Assert.Equal("new", _service.Current.LastGroupId);
+    }
+
+    [Fact]
     public void Save_ShouldWriteCamelCaseJson()
     {
         _service.Save(new AppSettings());

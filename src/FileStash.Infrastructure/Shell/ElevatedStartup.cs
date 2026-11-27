@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml;
 using System.Globalization;
+using FileStash.Core.Utils;
 using Microsoft.Win32;
 using TaskService = Microsoft.Win32.TaskScheduler.TaskService;
 using TaskFolder = Microsoft.Win32.TaskScheduler.TaskFolder;
@@ -713,7 +714,7 @@ internal sealed class StartupShortcutStore(string directory)
                 shellLink.SetWorkingDirectory(shortcut.WorkingDirectory);
                 ((System.Runtime.InteropServices.ComTypes.IPersistFile)shellLink).Save(temporary, false);
             }
-            File.Move(temporary, path, overwrite: true);
+            FileReplacement.MoveOverwritingWithRetry(temporary, path);
         }
         finally
         {

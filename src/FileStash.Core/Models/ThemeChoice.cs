@@ -5,7 +5,7 @@ namespace FileStash.Core.Models;
 /// </summary>
 /// <remarks>
 /// 与 <c>AppTheme</c>（界面实际生效的两套配色）分开：这一层多一个"跟随系统"，
-/// 它要在启动时查一次系统设置才知道落到哪一档。
+/// 应用启动时和收到系统外观变更通知时，按 Windows 配色决定实际主题。
 /// 顺序不要动 —— 设置文件里存的是名字，改了顺序老用户的取值会读成别的档。
 /// </remarks>
 public enum ThemeChoice

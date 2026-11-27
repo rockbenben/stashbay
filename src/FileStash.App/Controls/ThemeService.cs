@@ -26,19 +26,15 @@ internal static class ThemeService
 
     public static bool IsDark => Current == AppTheme.Dark;
 
-    /// <summary>
-    /// 按设置落一次外观。"跟随系统"在这里查注册表 —— 只在启动与保存设置时查，
-    /// 不订阅系统广播：运行中换主题要重开窗口才干净，为一个配色挂消息循环不值。
-    /// </summary>
     public static void ApplyFromSettings(AppSettings settings) =>
-        Apply(ThemeChoiceResolver.WantsDark(settings.Theme, SystemTheme.IsLight())
+        Apply(ThemeChoiceResolver.WantsDark(settings.Theme, settings.Theme != ThemeChoice.System || SystemTheme.IsLight())
             ? AppTheme.Dark
             : AppTheme.Light);
 
     public static void Apply(AppTheme theme)
     {
         var app = Application.Current;
-        if (app is null)
+        if (app is null || !app.Dispatcher.CheckAccess() || (_windowHandlerRegistered && Current == theme))
         {
             return;
         }
@@ -78,13 +74,12 @@ internal static class ThemeService
         }
 
         Current = theme;
-        if (app.Dispatcher.CheckAccess())
-            foreach (Window window in app.Windows)
-            {
-                WindowEffects.ApplyDarkTitleBar(window, IsDark);
-                if (window is FileStash.App.Views.MainWindow shelf)
-                    WindowEffects.SetShelfChrome(shelf, shelf.ViewModel.IsCompact);
-            }
+        foreach (Window window in app.Windows)
+        {
+            WindowEffects.ApplyDarkTitleBar(window, IsDark);
+            if (window is FileStash.App.Views.MainWindow shelf)
+                WindowEffects.SetShelfChrome(shelf, shelf.ViewModel.IsCompact);
+        }
     }
 
     private static int FindTheme(IList<ResourceDictionary> dictionaries, string fileName)

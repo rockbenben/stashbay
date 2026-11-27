@@ -52,7 +52,7 @@ public partial class FloatingWindow : Window
         var count = _viewModel.Items.Sum(item => 1 + item.Children.Count);
         CountText.Text = count.ToString();
 
-        if (CountText.RenderTransform is ScaleTransform st)
+        if (WindowEffects.AnimationsEnabled && CountText.RenderTransform is ScaleTransform st)
         {
             var anim = new System.Windows.Media.Animation.DoubleAnimation(1.0, 1.35, TimeSpan.FromMilliseconds(130))
             {

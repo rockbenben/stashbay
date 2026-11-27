@@ -28,7 +28,6 @@ public partial class ResultToast : Window
     internal bool IsPresentedInStack { get; private set; }
     private bool _closing;
     private bool _closeReady;
-    private static bool CanAnimate => !App.InSmoke;
     private DispatcherTimer? _lifeTimer;
     private ToastCountdown? _countdown;
     private long _lastLifeTick;
@@ -147,7 +146,7 @@ public partial class ResultToast : Window
         _stackTargetTop = bounds.Top;
         var version = ++_stackMoveVersion;
         Left = bounds.Left;
-        if (!entering && CanAnimate && Math.Abs(currentTop - bounds.Top) > 0.5
+        if (!entering && WindowEffects.AnimationsEnabled && Math.Abs(currentTop - bounds.Top) > 0.5
             && currentTop >= workArea.Top && currentTop + ActualHeight <= workArea.Bottom)
         {
             // Preserve the currently displayed position while replacing an in-flight animation.
@@ -186,7 +185,7 @@ public partial class ResultToast : Window
     private void BeginEntrance()
     {
         if (_closing) return;
-        if (!CanAnimate)
+        if (!WindowEffects.AnimationsEnabled)
         {
             Opacity = 1;
             StartCountdown();
@@ -212,7 +211,7 @@ public partial class ResultToast : Window
         base.OnClosing(e);
         if (e.Cancel || _closeReady) return;
         _lifeTimer?.Stop();
-        if (!CanAnimate || App.IsShuttingDown || !IsVisible || Dispatcher.HasShutdownStarted) return;
+        if (!WindowEffects.AnimationsEnabled || App.IsShuttingDown || !IsVisible || Dispatcher.HasShutdownStarted) return;
         e.Cancel = true;
         if (_closing) return;
         _closing = true;

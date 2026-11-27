@@ -24,7 +24,7 @@
     <Color x:Key="Color.BorderStrong">#FFBAC2C6</Color>
     <Color x:Key="Color.TextPrimary">#FF181C1E</Color>
     <Color x:Key="Color.TextSecondary">#FF525A5F</Color>
-    <Color x:Key="Color.TextTertiary">#FF626B71</Color>
+    <Color x:Key="Color.TextTertiary">#FF616A70</Color>
     <Color x:Key="Color.Accent">#FF0C6E5F</Color>
     <Color x:Key="Color.AccentHover">#FF0A5D50</Color>
     <Color x:Key="Color.AccentSoft">#FFE4F4F1</Color>

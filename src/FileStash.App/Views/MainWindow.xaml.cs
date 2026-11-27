@@ -542,7 +542,7 @@ public partial class MainWindow : Window
                 // 如果开启了"拖出后自动从暂存移除"（默认开启，参考 DropPoint 行为）
                 if (_settings.Current.RemoveAfterDragExport)
                 {
-                    if (container is not null)
+                    if (container is not null && WindowEffects.AnimationsEnabled)
                     {
                         var fade = new System.Windows.Media.Animation.DoubleAnimation(0.45, 0, TimeSpan.FromMilliseconds(120));
                         fade.Completed += async (_, _) =>
@@ -555,21 +555,14 @@ public partial class MainWindow : Window
                     }
                     else
                     {
+                        if (container is not null) container.Opacity = 1;
                         await ViewModel.RemoveItemDirectCommand.ExecuteAsync(item);
                         CheckAutoDismiss();
                     }
                 }
-                else if (container is not null)
-                {
-                    var restore = new System.Windows.Media.Animation.DoubleAnimation(0.45, 1.0, TimeSpan.FromMilliseconds(150));
-                    container.BeginAnimation(UIElement.OpacityProperty, restore);
-                }
+                else if (container is not null) SetDragOpacity(container, 1, 150);
             }
-            else if (container is not null)
-            {
-                var restore = new System.Windows.Media.Animation.DoubleAnimation(0.45, 1.0, TimeSpan.FromMilliseconds(150));
-                container.BeginAnimation(UIElement.OpacityProperty, restore);
-            }
+            else if (container is not null) SetDragOpacity(container, 1, 150);
         }
         catch (Exception ex)
         {
@@ -607,22 +600,39 @@ public partial class MainWindow : Window
     private DragDropEffects RunExportDrag(DependencyObject source, IDataObject data)
     {
         _isDraggingOut = true;
-        ShelfExportSurface.BeginAnimation(OpacityProperty, new DoubleAnimation(0.45, TimeSpan.FromMilliseconds(120)));
+        SetDragOpacity(ShelfExportSurface, 0.45, 120);
         try { return DragDrop.DoDragDrop(source, data, DragDropEffects.Copy); }
         finally
         {
             _isDraggingOut = false;
             _windowDragCounter = 0;
-            ShelfExportSurface.BeginAnimation(OpacityProperty, new DoubleAnimation(1, TimeSpan.FromMilliseconds(180)));
+            SetDragOpacity(ShelfExportSurface, 1, 180);
         }
+    }
+
+    private static void SetDragOpacity(UIElement element, double opacity, int duration)
+    {
+        if (WindowEffects.AnimationsEnabled)
+        {
+            element.BeginAnimation(OpacityProperty, new DoubleAnimation(opacity, TimeSpan.FromMilliseconds(duration)));
+            return;
+        }
+
+        element.BeginAnimation(OpacityProperty, null);
+        element.Opacity = opacity;
     }
 
     private void OnShelfStackHover(object sender, MouseEventArgs e)
     {
         if (ShelfStack.RenderTransform is TransformGroup transforms && transforms.Children[1] is TranslateTransform offset)
         {
+            if (!WindowEffects.AnimationsEnabled)
+            {
+                offset.BeginAnimation(TranslateTransform.YProperty, null);
+                return;
+            }
             offset.BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation(
-                ShelfExportSurface.IsMouseOver ? -5 : 0, TimeSpan.FromMilliseconds(CanAnimate ? 180 : 0))
+                ShelfExportSurface.IsMouseOver ? -5 : 0, TimeSpan.FromMilliseconds(180))
             {
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
             });
@@ -698,15 +708,13 @@ public partial class MainWindow : Window
         }
     }
 
-    private static bool CanAnimate => !App.InSmoke && SystemParameters.ClientAreaAnimation;
-
     private void ShowDropOverlay()
     {
         if (_dropOverlayActive) return;
         _dropOverlayActive = true;
         DropOverlay.Visibility = Visibility.Visible;
-        DropOverlay.BeginAnimation(OpacityProperty, new DoubleAnimation(CanAnimate ? DropOverlay.Opacity : 1, 1, TimeSpan.FromMilliseconds(160)));
-        if (CanAnimate && DropOverlay.RenderTransform is ScaleTransform scale)
+        SetDragOpacity(DropOverlay, 1, 160);
+        if (WindowEffects.AnimationsEnabled && DropOverlay.RenderTransform is ScaleTransform scale)
         {
             var settle = new DoubleAnimation(0.96, 1, TimeSpan.FromMilliseconds(240))
             {
@@ -721,7 +729,13 @@ public partial class MainWindow : Window
     {
         _dropOverlayActive = false;
         if (DropOverlay.Visibility != Visibility.Visible) return;
-        var anim = new DoubleAnimation(DropOverlay.Opacity, 0, TimeSpan.FromMilliseconds(CanAnimate ? 140 : 0));
+        if (!WindowEffects.AnimationsEnabled)
+        {
+            SetDragOpacity(DropOverlay, 0, 0);
+            DropOverlay.Visibility = Visibility.Collapsed;
+            return;
+        }
+        var anim = new DoubleAnimation(DropOverlay.Opacity, 0, TimeSpan.FromMilliseconds(140));
         anim.Completed += (_, _) =>
         {
             if (!_dropOverlayActive) DropOverlay.Visibility = Visibility.Collapsed;
@@ -742,7 +756,7 @@ public partial class MainWindow : Window
 
     private void PulseStatusBadge()
     {
-        if (!CanAnimate || !ViewModel.IsCompact || ViewModel.HasNoItems) return;
+        if (!WindowEffects.AnimationsEnabled || !ViewModel.IsCompact || ViewModel.HasNoItems) return;
         if (ShelfStack.RenderTransform is TransformGroup transforms && transforms.Children[0] is ScaleTransform scale)
         {
             var settle = new DoubleAnimation(0.86, 1, TimeSpan.FromMilliseconds(380))
@@ -844,15 +858,23 @@ public partial class MainWindow : Window
     private void DismissCompactShelf()
     {
         if (!ViewModel.IsCompact || !IsVisible) return;
-        var anim = new DoubleAnimation(Opacity, 0, TimeSpan.FromMilliseconds(CanAnimate ? 160 : 0));
-        anim.Completed += (_, _) =>
+        void CompleteDismissal()
         {
             BeginAnimation(OpacityProperty, null);
             Opacity = 1;
             if (!ViewModel.IsCompact) return;
             if (ReferenceEquals(this, Application.Current.MainWindow)) Hide();
             else Close();
-        };
+        }
+
+        if (!WindowEffects.AnimationsEnabled)
+        {
+            CompleteDismissal();
+            return;
+        }
+
+        var anim = new DoubleAnimation(Opacity, 0, TimeSpan.FromMilliseconds(160));
+        anim.Completed += (_, _) => CompleteDismissal();
         BeginAnimation(OpacityProperty, anim);
     }
 

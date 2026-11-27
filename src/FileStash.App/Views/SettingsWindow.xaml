@@ -269,7 +269,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="{x:Static app:Strings.StartupDelayLabel}" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,16,0" Style="{StaticResource Text.Body}"/>
-                                        <TextBox Grid.Column="1" Width="64" Height="28" TextAlignment="Center" VerticalContentAlignment="Center"
+                                        <TextBox Grid.Column="1" Width="64" MinHeight="34" TextAlignment="Center" VerticalContentAlignment="Center"
                                                  Text="{Binding StartupDelayText, UpdateSourceTrigger=PropertyChanged}"
                                                  AutomationProperties.Name="{x:Static app:Strings.StartupDelayLabel}"
                                                  ToolTip="{x:Static app:Strings.StartupDelayRange}"/>

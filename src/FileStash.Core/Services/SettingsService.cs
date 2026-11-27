@@ -53,10 +53,14 @@ public sealed class SettingsService : ISettingsService
             var json = File.ReadAllText(_settingsPath);
             Current = JsonSerializer.Deserialize<AppSettings>(json, JsonOptions) ?? new AppSettings();
         }
-        catch (Exception ex) when (ex is JsonException or IOException or UnauthorizedAccessException)
+        catch (JsonException)
         {
             // 文件坏了：留一份现场，回退默认值，别让整个应用起不来
             TryBackupCorruptFile();
+            Current = new AppSettings();
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
             Current = new AppSettings();
         }
     }
@@ -72,10 +76,18 @@ public sealed class SettingsService : ISettingsService
         }
 
         // 原子写：先写临时文件再改名，避免写一半掉电留下半个 JSON
-        var temporaryPath = _settingsPath + ".tmp";
-        File.WriteAllText(temporaryPath, JsonSerializer.Serialize(settings, JsonOptions));
-        File.Move(temporaryPath, _settingsPath, overwrite: true);
-        Current = settings;
+        var temporaryPath = _settingsPath + "." + Guid.NewGuid().ToString("N") + ".tmp";
+        try
+        {
+            File.WriteAllText(temporaryPath, JsonSerializer.Serialize(settings, JsonOptions));
+            FileReplacement.MoveOverwritingWithRetry(temporaryPath, _settingsPath);
+            Current = settings;
+        }
+        finally
+        {
+            try { File.Delete(temporaryPath); }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { }
+        }
     }
 
     private void TryBackupCorruptFile()

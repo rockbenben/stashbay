@@ -79,6 +79,24 @@ public sealed class ApplyPlannerTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task PreviewIdentifiesSameNamedEntriesWithinOneFolder()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var left = Path.GetFullPath(_context.Workspace.CreateFile("batch/left/report.txt", "first"));
+        var right = Path.GetFullPath(_context.Workspace.CreateFile("batch/right/report.txt", "second"));
+        var group = await _context.CreateGroupAsync();
+        var folder = Path.Combine(_context.Workspace.Root, "batch");
+        var stash = await _context.Stash.AddAsync(group, [folder], null, ct);
+        var plan = await _context.Planner.BuildPlanAsync(stash.Added,
+            new TargetSpec(TargetMode.OriginalLocation, null, StructureMode.FullRelative),
+            ConflictPolicy.Ask, ct);
+
+        (string?, string?)[] expected = [(left, @"report.txt (batch\left)"), (right, @"report.txt (batch\right)")];
+        Assert.Equal(expected, plan.Entries.OrderBy(entry => entry.SourcePath)
+            .Select(entry => (entry.SourcePath, entry.SourceDisplayPath)));
+    }
+
+    [Fact]
     public async Task BuildPlanAsync_NewTarget_ShouldBeCreate()
     {
         var (groupId, item) = await AddFileAsync("a.txt", "hello");

@@ -151,7 +151,7 @@
                     </DataGridTemplateColumn>
 
                     <DataGridTextColumn Header="{x:Static app:Strings.ColumnSourceItem}"
-                                        Binding="{Binding ItemDisplayName}"
+                                        Binding="{Binding SourceDisplayPath}"
                                         Width="150"
                                         IsReadOnly="True">
                         <DataGridTextColumn.ElementStyle>
@@ -159,7 +159,7 @@
                                 <Setter Property="Foreground" Value="{DynamicResource Brush.TextSecondary}" />
                                 <Setter Property="VerticalAlignment" Value="Center" />
                                 <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                                <Setter Property="ToolTip" Value="{Binding ItemDisplayName}" />
+                                <Setter Property="ToolTip" Value="{Binding SourcePath}" />
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>

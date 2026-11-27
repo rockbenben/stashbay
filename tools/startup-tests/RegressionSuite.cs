@@ -500,7 +500,7 @@ public static class RegressionSuite
             store.Run = "previous run";
             store.FailShortcutOnce = true;
             var error = Error(() => ElevatedStartup.Apply(StartupOperation.Plain, portableTarget, store));
-            Check(error is not StartupRollbackException && error.Message.Contains("previous startup restored"));
+            Check(error is not StartupRollbackException && error.Message.Contains("previous startup restored"), error.ToString());
             Check(ElevatedStartup.MatchesShortcut(store.ReadShortcut(options.AppId), previous) && store.Run == "previous run" && store.Task is null);
             Check(store.ReadShortcut(options.AppId)!.FileContentsBase64 == originalBytes);
         }));

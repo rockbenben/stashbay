@@ -515,7 +515,7 @@
                                AllowsTransparency="True"
                                Focusable="False"
                                IsOpen="{TemplateBinding IsDropDownOpen}"
-                               PopupAnimation="Fade">
+                               PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
                             <Border Background="{DynamicResource Brush.Surface}"
                                     BorderBrush="{DynamicResource Brush.BorderStrong}"
                                     BorderThickness="1"

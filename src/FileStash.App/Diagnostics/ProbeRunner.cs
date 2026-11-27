@@ -51,8 +51,8 @@ internal static class ProbeRunner
                 Path.Combine(outputDirectory, "probe-witness.txt"),
                 string.Join(Environment.NewLine, witnesses));
 
-            var rows = new StringBuilder(ElementHeader);
-            var tabRows = new StringBuilder(TabHeader);
+            var rows = new StringBuilder().AppendLine(ElementHeader);
+            var tabRows = new StringBuilder().AppendLine(TabHeader);
             var notes = new StringBuilder();
             var unparsed = new List<string>();
             var failures = new List<string>();
@@ -95,7 +95,7 @@ internal static class ProbeRunner
                     // 真按 Tab 的走查只用来证明"这台机器上走得动"（走不动会自己报）
                     try
                     {
-                        TabWalk(window, theme, shot.Name, warnings, stops);
+                        TabWalk(window, theme, shot.Name, tabRows, warnings, stops);
                     }
                     catch (Exception ex)
                     {
@@ -147,17 +147,11 @@ internal static class ProbeRunner
     /// <summary>
     /// 可聚焦性扫描：不靠按 Tab，直接遍历视觉树问"这一站聚焦时屏上会不会变"。
     /// </summary>
-    /// <remarks>
-    /// 为什么不靠 <see cref="TabWalk"/> 的数就够了：harness 的窗口开在屏幕外且
-    /// <c>ShowActivated=false</c>，<c>MoveFocus</c> 走不动（实测每屏都只回到 1 站，
-    /// 数字齐得像没有缺陷）。所以焦点表现按结构判，走查另做一条自检。
-    /// </remarks>
     private static int FocusScan(
         Window window,
         AppTheme theme,
         string screen,
-        StringBuilder tabRows,
-        Rect rootBounds)
+        StringBuilder tabRows)
     {
         var stops = 0;
         var blind = 0;
@@ -169,14 +163,7 @@ internal static class ProbeRunner
                 continue;
             }
 
-            var bounds = TryBounds(control, window);
             var cue = FocusCue(control);
-            var label = TextOf(control);
-
-            if (string.IsNullOrEmpty(label))
-            {
-                label = GetAuto(control, AutomationProperties.NameProperty);
-            }
 
             stops++;
 
@@ -185,18 +172,25 @@ internal static class ProbeRunner
                 blind++;
             }
 
-            tabRows.Append(string.Join('\t',
-                screen, theme, "stop-" + stops, control.GetType().Name, Cell(label),
-                Cell(bounds?.Width ?? double.NaN), Cell(bounds?.Height ?? double.NaN),
-                Cell(bounds?.X ?? double.NaN), Cell(bounds?.Y ?? double.NaN),
-                cue, Cell(GetAuto(control, AutomationProperties.NameProperty))));
-            tabRows.AppendLine();
+            AppendFocusRow(tabRows, window, theme, screen, "stop-" + stops, control, cue);
         }
 
         tabRows.Append(string.Join('\t', screen, theme, "TOTAL", stops, "(站)", "", "", "", "", blind, "(无焦点表现)"));
         tabRows.AppendLine();
 
         return stops;
+    }
+
+    private static void AppendFocusRow(StringBuilder rows, Window window, AppTheme theme,
+        string screen, string order, FrameworkElement element, string cue)
+    {
+        var bounds = TryBounds(element, window);
+        var name = GetAuto(element, AutomationProperties.NameProperty);
+        var label = TextOf(element);
+        rows.AppendLine(string.Join('\t',
+            screen, theme, order, element.GetType().Name, Cell(string.IsNullOrEmpty(label) ? name : label),
+            Cell(bounds?.Width ?? double.NaN), Cell(bounds?.Height ?? double.NaN),
+            Cell(bounds?.X ?? double.NaN), Cell(bounds?.Y ?? double.NaN), cue, Cell(name)));
     }
 
     private static IEnumerable<T> Descendants<T>(DependencyObject root) where T : DependencyObject
@@ -222,26 +216,29 @@ internal static class ProbeRunner
     /// <summary>
     /// 按 Tab 走一圈：站点顺序。走不动要冒出来，不许报一个像样的小数字。
     /// </summary>
-    private static void TabWalk(Window window, AppTheme theme, string screen, List<string> warnings, int stops)
+    private static void TabWalk(Window window, AppTheme theme, string screen, StringBuilder tabRows,
+        List<string> warnings, int stops)
     {
         window.Focus();
         Keyboard.Focus(window);
 
-        var visited = new List<FrameworkElement>();
-        FrameworkElement? first = null;
+        var visited = new HashSet<FrameworkElement>();
+        FrameworkElement current = window;
+        var next = new TraversalRequest(FocusNavigationDirection.Next);
 
         for (var step = 0; step < 80; step++)
         {
-            if (!window.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next)) ||
+            if (!current.MoveFocus(next) ||
                 Keyboard.FocusedElement is not FrameworkElement focused ||
-                ReferenceEquals(focused, first) ||
-                visited.Contains(focused))
+                ReferenceEquals(focused, window) ||
+                Window.GetWindow(focused) != window ||
+                !visited.Add(focused))
             {
                 break;
             }
 
-            first ??= focused;
-            visited.Add(focused);
+            AppendFocusRow(tabRows, window, theme, screen, "tab-" + visited.Count, focused, FocusCue(focused));
+            current = focused;
         }
 
         if (stops >= 3 && visited.Count < 2)
@@ -251,7 +248,6 @@ internal static class ProbeRunner
             warnings.Add($"{screen}.{theme}: 真按 Tab 走不动（走到 {visited.Count} 站 / 结构上 {stops} 站）—— 焦点表现按结构判，站点顺序这一维没量到");
         }
 
-        return;
     }
 
 
@@ -293,22 +289,11 @@ internal static class ProbeRunner
 
         if (control.Template is ControlTemplate template)
         {
-            foreach (var rawTrigger in (System.Collections.IEnumerable)template.Triggers)
+            foreach (var rawTrigger in template.Triggers)
             {
-                // PropertyTrigger 这个类型在 WPF 里不是公开的，按名字认，再反射取它关注的属性
-                var trigger = rawTrigger as DependencyObject;
-
-                if (trigger?.GetType().Name != "PropertyTrigger")
-                {
-                    continue;
-                }
-
-                var property = trigger.GetType()
-                    .GetProperty("Property")?
-                    .GetValue(trigger) as DependencyProperty;
-
-                if (property == UIElement.IsKeyboardFocusedProperty ||
-                    property == UIElement.IsKeyboardFocusWithinProperty)
+                if (rawTrigger is Trigger { Value: true } trigger &&
+                    (trigger.Property == UIElement.IsKeyboardFocusedProperty ||
+                     trigger.Property == UIElement.IsKeyboardFocusWithinProperty))
                 {
                     return "trigger";
                 }
@@ -354,7 +339,7 @@ internal static class ProbeRunner
         var rootBounds = new Rect(0, 0, window.ActualWidth, window.ActualHeight);
 
         Visit(window, window, theme, screen, rows, unparsed, notes, dpi, rootBounds, null, 1.0);
-        var stops = FocusScan(window, theme, screen, tabRows, rootBounds);
+        var stops = FocusScan(window, theme, screen, tabRows);
         GeometryChecks(window, screen, rootBounds, failures);
 
         var overflow = CrossScreen(window, screen, rootBounds);

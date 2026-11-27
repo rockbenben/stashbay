@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="TaskScheduler" Version="2.12.2" />
     <Compile Include="../ElevatedStartup.cs" Link="ElevatedStartup.cs" />
+    <Compile Include="../FileReplacement.cs" Link="FileReplacement.cs" />
     <Compile Include="../RegressionSuite.cs" Link="RegressionSuite.cs" />
     <Compile Include="../LogonStartupService.cs" Link="LogonStartupService.cs" />
     <Compile Include="Program.cs" />

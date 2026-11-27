@@ -7,12 +7,12 @@ namespace FileStash.Core.Tests;
 /// 资源管理器右键菜单的注册 / 注销。
 /// </summary>
 /// <remarks>
-/// 写的是**临时根**（HKCU\Software\FileStashTest\...），测完删掉 ——
+/// 每个测试使用独立的 HKCU 临时根，测完删掉 ——
 /// 真实路径 Software\Classes 下面挂的是用户的资源管理器菜单，不能拿它当测试对象。
 /// </remarks>
 public sealed class ContextMenuRegistrarTests : IDisposable
 {
-    private const string TestRoot = @"Software\FileStashTest";
+    private readonly string _testRoot = @"Software\FileStashTest-" + Guid.NewGuid().ToString("N");
 
     private readonly string _executablePath = @"C:\Program Files\StashBay\StashBay.exe";
 
@@ -20,21 +20,21 @@ public sealed class ContextMenuRegistrarTests : IDisposable
     {
         try
         {
-            Registry.CurrentUser.DeleteSubKeyTree(TestRoot, throwOnMissingSubKey: false);
+            Registry.CurrentUser.DeleteSubKeyTree(_testRoot, throwOnMissingSubKey: false);
         }
         catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
         {
         }
     }
 
-    private ContextMenuRegistrar CreateRegistrar() => new(_executablePath, TestRoot);
+    private ContextMenuRegistrar CreateRegistrar() => new(_executablePath, _testRoot);
 
     [Fact]
     public void Register_ShouldWriteAllMenuItems()
     {
         CreateRegistrar().Register();
 
-        using var key = Registry.CurrentUser.OpenSubKey($@"{TestRoot}\*\shell\StashBay.Add");
+        using var key = Registry.CurrentUser.OpenSubKey($@"{_testRoot}\*\shell\StashBay.Add");
         Assert.NotNull(key);
         Assert.Equal("加入暂存", key.GetValue(null));
         Assert.Equal($"{_executablePath},0", key.GetValue("Icon"));
@@ -45,13 +45,13 @@ public sealed class ContextMenuRegistrarTests : IDisposable
         Assert.Equal($"\"{_executablePath}\" --add \"%1\"", command.GetValue(null));
 
         // 其余三项
-        using var directory = Registry.CurrentUser.OpenSubKey($@"{TestRoot}\Directory\shell\StashBay.Add");
+        using var directory = Registry.CurrentUser.OpenSubKey($@"{_testRoot}\Directory\shell\StashBay.Add");
         Assert.NotNull(directory);
 
-        using var applyHere = Registry.CurrentUser.OpenSubKey($@"{TestRoot}\Directory\shell\StashBay.ApplyHere");
+        using var applyHere = Registry.CurrentUser.OpenSubKey($@"{_testRoot}\Directory\shell\StashBay.ApplyHere");
         Assert.NotNull(applyHere);
 
-        using var background = Registry.CurrentUser.OpenSubKey($@"{TestRoot}\Directory\Background\shell\StashBay.ApplyHere");
+        using var background = Registry.CurrentUser.OpenSubKey($@"{_testRoot}\Directory\Background\shell\StashBay.ApplyHere");
         Assert.NotNull(background);
     }
 
@@ -62,7 +62,7 @@ public sealed class ContextMenuRegistrarTests : IDisposable
         registrar.Register();
         registrar.Unregister();
 
-        using var key = Registry.CurrentUser.OpenSubKey($@"{TestRoot}\*\shell\StashBay.Add");
+        using var key = Registry.CurrentUser.OpenSubKey($@"{_testRoot}\*\shell\StashBay.Add");
         Assert.Null(key);
     }
 
@@ -73,14 +73,14 @@ public sealed class ContextMenuRegistrarTests : IDisposable
         registrar.Register();
         registrar.Register();
 
-        using var key = Registry.CurrentUser.OpenSubKey($@"{TestRoot}\*\shell\StashBay.Add");
+        using var key = Registry.CurrentUser.OpenSubKey($@"{_testRoot}\*\shell\StashBay.Add");
         Assert.NotNull(key);
     }
 
     [Fact]
     public void Register_ShouldCleanUpLegacyKeys()
     {
-        using (var legacy = Registry.CurrentUser.CreateSubKey($@"{TestRoot}\*\shell\FileStash.Add"))
+        using (var legacy = Registry.CurrentUser.CreateSubKey($@"{_testRoot}\*\shell\FileStash.Add"))
         {
             legacy?.SetValue(null, "Legacy");
         }
@@ -88,7 +88,7 @@ public sealed class ContextMenuRegistrarTests : IDisposable
         var registrar = CreateRegistrar();
         registrar.Register();
 
-        using var keyAfterRegister = Registry.CurrentUser.OpenSubKey($@"{TestRoot}\*\shell\FileStash.Add");
+        using var keyAfterRegister = Registry.CurrentUser.OpenSubKey($@"{_testRoot}\*\shell\FileStash.Add");
         Assert.Null(keyAfterRegister);
     }
 }

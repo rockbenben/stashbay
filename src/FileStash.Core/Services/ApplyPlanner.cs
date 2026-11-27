@@ -75,6 +75,12 @@ public sealed class ApplyPlanner : IApplyPlanner
             }
 
             var action = DetermineAction(state, policy, skipIdentical);
+            var sourcePath = Path.Combine(item.RootPath, entry.RelativePath);
+            var sourceName = Path.GetFileName(Path.TrimEndingDirectorySeparator(sourcePath));
+            if (sourceName.Length == 0) sourceName = item.DisplayName;
+            var sourceParent = Path.GetDirectoryName(sourcePath);
+            var relativeParent = sourceParent is null ? "." :
+                Path.GetRelativePath(Path.GetDirectoryName(item.SourcePath) ?? item.RootPath, sourceParent);
             var plannedEntry = new PlannedEntry
             {
                 Source = entry,
@@ -85,7 +91,8 @@ public sealed class ApplyPlanner : IApplyPlanner
                 Action = action,
                 Warning = BuildWarning(targetPath, state),
                 ItemId = item.Id,
-                ItemDisplayName = item.DisplayName,
+                SourcePath = sourcePath,
+                SourceDisplayPath = relativeParent == "." ? sourceName : $"{sourceName} ({relativeParent})",
             };
 
             if (treatAsFileNameNotAllowed)

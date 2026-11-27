@@ -79,6 +79,8 @@ foreach ($scenario in 'fresh', 'upgrade') {
     $first = if ($scenario -eq 'upgrade') { $legacy } else { $current }
     $arguments = @('/CURRENTUSER', '/SP-', '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', '/NOICONS', '/TASKS=', "/DIR=$install")
     Run-TestProcess $first ($arguments + "/LOG=$outRoot/$scenario-first.log")
+    # A clean install writes no files to the legacy framework-dependent directory.
+    New-Item -ItemType Directory -Force -Path "$install-needs-dotnet10" | Out-Null
     $sentinels = @((Join-Path $install 'user-notes.txt'), (Join-Path "$install-needs-dotnet10" 'user-notes.txt'), (Join-Path $outRoot "$scenario-neighbor.txt"))
     foreach ($file in $sentinels) { [IO.File]::WriteAllText($file, 'User-owned content must survive') }
     if ($scenario -eq 'upgrade') { Run-TestProcess $current ($arguments + "/LOG=$outRoot/$scenario-update.log") }

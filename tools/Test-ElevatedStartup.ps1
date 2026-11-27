@@ -14,6 +14,7 @@ try {
     $project = Join-Path $sandbox 'tests'
     New-Item -ItemType Directory -Path $project -Force | Out-Null
     Copy-Item -LiteralPath (Join-Path $repositoryRoot 'src/FileStash.Infrastructure/Shell/ElevatedStartup.cs') -Destination $sandbox
+    Copy-Item -LiteralPath (Join-Path $repositoryRoot 'src/FileStash.Core/Utils/FileReplacement.cs') -Destination $sandbox
     Copy-Item -LiteralPath (Join-Path $templateRoot 'Program.cs') -Destination $project
     Copy-Item -LiteralPath (Join-Path $templateRoot 'ElevatedStartup.Tests.csproj.txt') -Destination (Join-Path $project 'ElevatedStartup.Tests.csproj')
     Copy-Item -LiteralPath (Join-Path $repositoryRoot 'src/FileStash.Infrastructure/Shell/LogonStartupService.cs') -Destination $sandbox

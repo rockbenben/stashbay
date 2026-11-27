@@ -77,8 +77,11 @@ public sealed class PlannedEntry : System.ComponentModel.INotifyPropertyChanged
     /// <summary>所属的暂存项（预览界面显示用）。</summary>
     public string? ItemId { get; init; }
 
-    /// <summary>所属暂存项的名字（预览界面显示用）。</summary>
-    public string? ItemDisplayName { get; init; }
+    /// <summary>The original entry path shown in the preview tooltip.</summary>
+    public string? SourcePath { get; init; }
+
+    /// <summary>The entry name followed by its parent within the stashed item.</summary>
+    public string? SourceDisplayPath { get; init; }
 
     /// <summary>
     /// 这一行要不要人当场决定：只有"会被覆盖"的行需要。

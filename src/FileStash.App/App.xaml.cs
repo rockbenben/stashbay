@@ -25,6 +25,7 @@ using H.NotifyIcon;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Win32;
 using Serilog;
 using Serilog.Extensions.Logging;
 
@@ -38,6 +39,8 @@ public partial class App : Application
 {
     /// <summary>smoke / shots 模式下置位：异常处理器改成"记 marker 并退出"，不再弹模态框。</summary>
     public static bool InSmoke { get; set; }
+
+    private bool _watchingSystemAppearance;
 
     /// <summary>
     /// 自查模式下遇到的第一个错误。非空即判失败 —— 自查不能"出了错还报 OK"。
@@ -313,6 +316,17 @@ public partial class App : Application
         // Collect orphaned empty temporary shelves before commands restore a selection.
         await DeleteEmptyShelvesAsync();
 
+        try
+        {
+            SystemEvents.UserPreferenceChanged += OnUserPreferenceChanged;
+            _watchingSystemAppearance = true;
+            ThemeService.ApplyFromSettings(_settings.Current);
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or System.Runtime.InteropServices.ExternalException)
+        {
+            Log.Warning(ex, "Unable to subscribe to Windows appearance changes");
+        }
+
         // 6) 管道服务：接收其它实例转发过来的参数
         if (_instance is not null)
         {
@@ -421,6 +435,8 @@ public partial class App : Application
     protected override void OnExit(ExitEventArgs e)
     {
         IsShuttingDown = true;
+        if (_watchingSystemAppearance)
+            SystemEvents.UserPreferenceChanged -= OnUserPreferenceChanged;
         Log.Information("StashBay 退出，退出码 {ExitCode}", e.ApplicationExitCode);
         _periodicCleanupTimer?.Stop();
         // Startup and periodic cleanup own cache expiry. Blocking here on a storage
@@ -433,6 +449,15 @@ public partial class App : Application
         _host?.Dispose();
         Log.CloseAndFlush();
         base.OnExit(e);
+    }
+
+    private void OnUserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
+    {
+        _ = Dispatcher.InvokeAsync(() =>
+        {
+            if (!IsShuttingDown && _settings.Current.Theme == Core.Models.ThemeChoice.System)
+                ThemeService.ApplyFromSettings(_settings.Current);
+        }, DispatcherPriority.Background);
     }
 
     internal static bool ShellIntegrationDisabled => InSmoke ||
@@ -640,7 +665,9 @@ public partial class App : Application
 
         _tray!.ShowCustomBalloon(
             content,
-            System.Windows.Controls.Primitives.PopupAnimation.Slide,
+            WindowEffects.AnimationsEnabled
+                ? System.Windows.Controls.Primitives.PopupAnimation.Slide
+                : System.Windows.Controls.Primitives.PopupAnimation.None,
             8000);
     }
 
