@@ -1,618 +1,430 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
-<meta charset="utf-8" />
+<meta charset="utf-8">
+<title>StashBay social preview</title>
 <style>
-  /* ------------------------------------------------------------------
-     StashBay social preview — bilingual; teal brand layer around neutral UI.
-
-     Two colour layers, deliberately separate:
-       · BRAND (--brand-*) — the teal/mint identity: glow, mark, headline
-         accent, feature icons, the card flying out. This stays colourful:
-         it is the logo and identity, not the product.
-       · PRODUCT (--surface / --border / --text / --accent …) — the app's
-         own Dark.xaml tokens (Brush.*). Since 2026-11-05 the runtime UI is
-         neutral graphite, matching the shipped window.
-     ------------------------------------------------------------------ */
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { box-sizing: border-box; }
 
   :root {
-    /* --- product: the app's Dark.xaml tokens (neutral graphite) --- */
-    --surface:      #17181A;
-    --surface-alt:  #1E2022;
-    --surface-sunk: #131415;
-    --shelf-surf:   #292929;
-    --border:       #2C2E31;
-    --border-str:   #3C3F43;
-    --text:         #ECEDEE;
-    --text-2:       #A2A5AA;
-    --text-3:       #8C8F94;
-    --accent:       #E4E6E8;
-    --accent-soft:  #282A2D;
-    --accent-text:  #141517;
-    --warning:      #C9A227;
-    --danger:       #C46A62;
+    /* Window colors mirror Dark.xaml. */
+    --surface: #151719;
+    --surface-alt: #1c1f22;
+    --surface-sunken: #101214;
+    --border: #2a2e33;
+    --text: #edf0f2;
+    --secondary: #a2a9b0;
+    --accent: #3fc7ae;
+    --accent-soft: #172c29;
+    --accent-text: #0d1514;
+    --shelf: #23272a;
+    --shelf-border: #5f686e;
+    --shelf-text: #f1f4f5;
+    --shelf-secondary: #b5bdc2;
+    --shelf-card: #e9eeed;
+    --shelf-card-back: #3fc7ae;
 
-    /* --- brand: the teal/mint identity --- */
-    --brand:        #3FC7AE;
-    --brand-lit:    #7FE9D8;
-    --brand-deep:   #0E9E87;
-    --brand-soft:   #12312C;
-    --brand-text:   #06231F;
-
-    --ui: "Segoe UI Variable Text", "Segoe UI", "Microsoft YaHei UI", system-ui, sans-serif;
-    --display: "Segoe UI Variable Display", "Segoe UI", "Microsoft YaHei UI", system-ui, sans-serif;
-    --mono: "Cascadia Mono", "Cascadia Code", Consolas, monospace;
+    --mint: #8beedb;
+    --copy: #c3d7d5;
+    --frame: #37645f;
   }
 
   body {
-    width: 1200px; height: 630px;
-    overflow: hidden;
     position: relative;
-    background: linear-gradient(150deg, #081317 0%, #0B2025 38%, #0C3336 70%, #10463F 100%);
-    color: var(--text);
-    font-family: var(--ui);
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* Lit frame: keeps the card's edge readable on dark GitHub backgrounds */
-  .frame {
-    position: absolute; inset: 0; pointer-events: none; z-index: 5;
-    box-shadow:
-      inset 0 0 0 1.5px rgba(94,234,212,.24),
-      inset 0 0 80px rgba(63,199,174,.12);
-  }
-
-  /* ---------- atmosphere (brand) ---------- */
-  .glow-a, .glow-b {
-    position: absolute; border-radius: 50%; pointer-events: none;
-  }
-  .glow-a {
-    width: 760px; height: 760px; top: -210px; left: -160px;
-    background: radial-gradient(circle, rgba(13,148,136,.34) 0%, rgba(13,148,136,.10) 46%, transparent 70%);
-    filter: blur(52px);
-  }
-  .glow-b {
-    width: 660px; height: 660px; bottom: -210px; right: -120px;
-    background: radial-gradient(circle, rgba(63,199,174,.28) 0%, rgba(15,84,76,.10) 48%, transparent 72%);
-    filter: blur(60px);
-  }
-  .grid {
-    position: absolute; inset: 0; pointer-events: none;
-    background-image:
-      linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
-    background-size: 42px 42px;
-    mask-image: radial-gradient(circle at 66% 46%, black 24%, transparent 76%);
-    -webkit-mask-image: radial-gradient(circle at 66% 46%, black 24%, transparent 76%);
-  }
-
-  /* ---------- brand lockup ---------- */
-  .brand {
-    position: absolute; left: 72px; top: 60px;
-    display: flex; align-items: center; gap: 14px;
-  }
-  .mark {
-    width: 54px; height: 54px; flex: none; position: relative;
-  }
-  .mark::before {
-    content: ""; position: absolute; inset: -14px;
-    background: radial-gradient(circle, rgba(63,199,174,.40) 0%, rgba(63,199,174,0) 68%);
-    filter: blur(8px);
-  }
-  .mark svg { display: block; width: 100%; height: 100%; position: relative; }
-  .wordmark {
-    font-family: var(--display);
-    font-size: 29px; font-weight: 600;
-    letter-spacing: -0.012em;
-    color: #FFFFFF;
-  }
-
-  /* ---------- headline ---------- */
-  h1 {
-    position: absolute; left: 72px; top: 146px;
-    font-family: var(--display);
-    font-size: 46px; font-weight: 700;
-    line-height: 1.16;
-    letter-spacing: -0.018em;
-    color: #FFFFFF;
-  }
-  .zh-head {
-    position: absolute; left: 72px; top: 278px;
-    font-family: var(--display);
-    font-size: 30px; font-weight: 600;
-    letter-spacing: 0.01em;
-    color: #7FE9D8;
-  }
-  .lede-en {
-    position: absolute; left: 72px; top: 348px;
-    font-size: 15.5px; line-height: 1.6;
-    color: var(--text-2);
-    max-width: 500px;
-  }
-  .lede-zh {
-    position: absolute; left: 72px; top: 376px;
-    font-size: 15.5px; line-height: 1.6;
-    color: var(--text-2);
-    max-width: 500px;
-  }
-
-  /* ---------- bilingual feature rows ---------- */
-  .feats { position: absolute; left: 72px; top: 436px; }
-  .feat { display: flex; align-items: center; height: 36px; gap: 13px; }
-  .feat svg { width: 21px; height: 21px; flex: none; stroke: var(--brand); }
-  .feat .en { font-size: 14px; color: var(--text); }
-  .feat .zh { font-size: 13px; color: var(--text-3); margin-left: 4px; }
-
-  /* ---------- meta ---------- */
-  .meta {
-    position: absolute; left: 72px; top: 566px;
-    display: flex; gap: 22px; align-items: center;
-    font-size: 12px; letter-spacing: .045em;
-    color: var(--text-3);
-  }
-  .meta .sep { width: 3px; height: 3px; border-radius: 50%; background: #3C3F43; }
-
-  /* ==================================================================
-     The product: real app windows, tilted in space.
-     Reflects the actual Dark.xaml UI:
-       1) Full Workbench window in the background
-       2) DropPoint Compact Shelf floating in the foreground
-       3) Draggable file flying out
-     ================================================================== */
-  .stage {
-    position: absolute; left: 540px; top: 48px;
-    width: 630px; height: 550px;
-    perspective: 1500px;
-    perspective-origin: 46% 44%;
-  }
-
-  /* contact shadow */
-  .ground {
-    position: absolute; left: 20px; top: 480px;
-    width: 520px; height: 60px;
-    background: radial-gradient(ellipse at 50% 50%, rgba(0,0,0,.75) 0%, rgba(0,0,0,.26) 46%, transparent 74%);
-    filter: blur(16px);
-    transform: rotate(-2deg);
-  }
-
-  /* ---------------- Full Workbench Window (Background) ---------------- */
-  .window {
-    position: absolute; left: 10px; top: 16px;
-    width: 520px; height: 436px;
-    transform: rotateY(-12deg) rotateX(5deg) rotateZ(-1.2deg);
-    transform-style: preserve-3d;
-    background: linear-gradient(158deg, rgba(30,32,34,.98), rgba(19,20,21,.96));
-    border: 1px solid rgba(228,230,232,.16);
-    border-radius: 14px;
-    box-shadow:
-      0 42px 92px rgba(0,0,0,.70),
-      0 0 60px rgba(13,148,136,.12),
-      inset 0 1px 0 rgba(255,255,255,.08);
-    backdrop-filter: blur(20px);
+    width: 1200px;
+    height: 630px;
+    margin: 0;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .sheen {
-    position: absolute; inset: 0; pointer-events: none;
-    background:
-      linear-gradient(118deg, rgba(255,255,255,.09) 0%, rgba(255,255,255,0) 32%,
-                             rgba(255,255,255,0) 75%, rgba(255,255,255,.035) 100%);
-  }
-
-  /* Window chrome */
-  .win-bar {
-    height: 40px; display: flex; align-items: center; gap: 8px;
-    padding: 0 14px;
-    background: rgba(255,255,255,.025);
-    border-bottom: 1px solid rgba(44,46,49,.9);
-    flex-shrink: 0;
-  }
-  .win-bar .appmark { width: 18px; height: 18px; flex: none; }
-  .win-bar .appname { font-size: 13px; font-weight: 600; color: var(--text); }
-  .win-actions {
-    margin-left: auto; display: flex; align-items: center; gap: 8px;
-  }
-  .win-pill {
-    font-size: 11px; color: var(--text-2);
-    padding: 3px 8px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: rgba(255,255,255,.02);
-  }
-  .win-dots { display: flex; gap: 6px; margin-left: 6px; }
-  .win-dots i { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,.18); }
-
-  /* Workbench body: sidebar + content */
-  .wb-body {
-    flex: 1; display: flex; overflow: hidden;
-  }
-
-  /* Sidebar */
-  .wb-sidebar {
-    width: 136px;
-    background: rgba(30,32,34,.6);
-    border-right: 1px solid rgba(44,46,49,.8);
-    padding: 10px 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    flex-shrink: 0;
-  }
-  .wb-side-title {
-    font-size: 10.5px; color: var(--text-3); padding: 4px 8px; font-weight: 600;
-  }
-  .wb-box {
-    font-size: 11.5px; color: var(--text-2);
-    padding: 5px 8px; border-radius: 6px;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .wb-box.active {
-    background: rgba(255,255,255,.07);
     color: var(--text);
+    background:
+      radial-gradient(ellipse at 82% 78%, #23534b 0%, transparent 55%),
+      linear-gradient(145deg, #102225 0%, #122c30 56%, #173e3c 100%);
+    font-family: "Segoe UI Variable Text", "Segoe UI", "Microsoft YaHei UI", sans-serif;
+  }
+
+  body::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--frame);
+    box-shadow: inset 0 0 60px #82ebd710;
+    pointer-events: none;
+  }
+
+  .copy {
+    position: absolute;
+    top: 58px;
+    left: 66px;
+    width: 461px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 25px;
+    font-weight: 650;
+  }
+
+  .brand img {
+    width: 48px;
+    height: 48px;
+    filter: drop-shadow(0 0 12px #3fc7ae55);
+  }
+
+  h1 {
+    margin: 27px 0 11px;
+    color: #fff;
+    font-size: 66px;
+    line-height: 1.02;
+    letter-spacing: -.045em;
+    font-weight: 750;
+  }
+
+  .zh-head {
+    margin: 0;
+    color: var(--mint);
+    font-size: 29px;
+    font-weight: 650;
+  }
+
+  .features {
+    display: grid;
+    gap: 13px;
+    padding: 0;
+    margin: 35px 0 0;
+    list-style: none;
+  }
+
+  .features li {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    font-size: 19px;
     font-weight: 600;
   }
 
-  /* Main content */
-  .wb-main {
-    flex: 1; display: flex; flex-direction: column; padding: 10px 14px;
+  .features li::before {
+    content: "";
+    align-self: center;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--mint);
+  }
+
+  .features span {
+    color: var(--copy);
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  .platform {
+    margin: 29px 0 0;
+    color: var(--copy);
+    font-size: 14px;
+  }
+
+  .stage {
+    position: absolute;
+    inset: 0 0 0 520px;
+    perspective: 1500px;
+    perspective-origin: 52% 45%;
+  }
+
+  .workbench {
+    position: absolute;
+    top: 48px;
+    left: 28px;
+    width: 591px;
+    height: 318px;
     overflow: hidden;
-  }
-  .wb-top {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 8px;
-  }
-  .wb-title { font-size: 14px; font-weight: 700; color: var(--text); }
-  .wb-stats { font-family: var(--mono); font-size: 10.5px; color: var(--text-3); }
-
-  .wb-modes {
-    display: flex; gap: 3px; background: rgba(0,0,0,.25); padding: 2px; border-radius: 6px;
-  }
-  .wb-mode {
-    font-size: 10.5px; color: var(--text-3); padding: 2px 7px; border-radius: 4px;
-  }
-  .wb-mode.active {
-    background: rgba(255,255,255,.1); color: var(--text); font-weight: 600;
+    display: grid;
+    grid-template: 39px minmax(0, 1fr) auto / 132px minmax(0, 1fr);
+    border: 1px solid #52615f;
+    border-radius: 13px;
+    background: var(--surface);
+    box-shadow: 0 28px 60px #0009, inset 0 1px #ffffff13;
+    transform: rotateY(-11deg) rotateX(6deg) rotateZ(-2deg);
+    font-size: 11px;
   }
 
-  /* Tree rows */
-  .wb-table { display: flex; flex-direction: column; gap: 1px; }
-  .wb-row-head {
-    display: flex; align-items: center; padding: 4px 6px;
-    font-size: 10px; color: var(--text-3); border-bottom: 1px solid rgba(44,46,49,.6);
-  }
-  .wb-row {
-    display: flex; align-items: center; padding: 5px 6px;
-    font-size: 11px; color: var(--text); border-radius: 5px;
-  }
-  .wb-row:nth-child(even) { background: rgba(255,255,255,.015); }
-  .col-name { flex: 1; display: flex; align-items: center; gap: 7px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .col-size { width: 52px; font-family: var(--mono); font-size: 10.5px; color: var(--text-3); text-align: right; }
-  .col-status { width: 56px; font-size: 10px; text-align: right; color: var(--text-3); }
-  .dot { width: 6px; height: 6px; border-radius: 50%; flex: none; }
-
-  /* Writeback bar */
-  .writeback {
-    height: 48px; display: flex; align-items: center; gap: 10px;
+  .titlebar, .restore-bar {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     padding: 0 12px;
-    background: rgba(23,24,26,.95);
-    border-top: 1px solid rgba(44,46,49,.9);
-    flex-shrink: 0;
+    background: var(--surface-alt);
   }
-  .wb-label { font-size: 11px; color: var(--text-3); white-space: nowrap; flex: none; }
-  .seg { display: flex; flex: none; }
-  .seg span {
-    font-size: 11px; color: var(--text-2);
-    padding: 4px 8px;
-    border: 1px solid rgba(60,63,67,.9);
-    border-right: none;
-    background: rgba(255,255,255,.02);
+
+  .titlebar { border-bottom: 1px solid var(--border); }
+  .titlebar img { width: 17px; height: 17px; }
+  .title-actions .filter { min-width: 103px; background: var(--surface-sunken); }
+
+  .title-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-left: auto;
+    color: var(--secondary);
+  }
+
+  .title-actions span, .control {
+    padding: 4px 7px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
     white-space: nowrap;
   }
-  .seg span:first-child { border-radius: 6px 0 0 6px; }
-  .seg span:last-child { border-right: 1px solid rgba(60,63,67,.9); border-radius: 0 6px 6px 0; }
-  .seg span.on {
-    background: rgba(46,49,52,.95);
-    color: var(--text);
-    font-weight: 700;
-    border-color: rgba(228,230,232,.26);
-  }
-  .wb-spacer { flex: 1; }
-  .btn {
-    font-size: 11.5px; color: var(--text-2);
-    padding: 5px 10px;
-    border: 1px solid rgba(60,63,67,.9);
-    border-radius: 6px;
-    background: rgba(255,255,255,.02);
-    white-space: nowrap; flex: none;
-  }
-  .btn.primary {
-    background: #E4E6E8; border-color: #E4E6E8;
-    color: var(--accent-text); font-weight: 700;
-    padding: 5px 14px;
-  }
 
-  /* ---------------- Floating Compact Shelf (Foreground) ---------------- */
-  .shelf-float {
-    position: absolute; right: 18px; bottom: 28px;
-    width: 226px; height: 196px;
-    background: #292929;
-    border: 1px solid rgba(255,255,255,0.22);
-    border-radius: 14px;
-    transform: rotateY(-10deg) rotateX(4deg) translateZ(55px);
-    transform-style: preserve-3d;
-    box-shadow:
-      0 32px 72px rgba(0,0,0,.80),
-      0 12px 28px rgba(0,0,0,.50),
-      0 0 45px rgba(63,199,174,.22),
-      inset 0 1px 0 rgba(255,255,255,.14);
+  .sidebar {
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    gap: 4px;
+    padding: 11px 8px;
+    background: var(--surface-alt);
+    border-right: 1px solid var(--border);
+    color: var(--secondary);
   }
 
-  .sf-header {
-    height: 32px; padding: 0 10px 0 13px;
-    display: flex; align-items: center; justify-content: space-between;
-    flex-shrink: 0;
+  .sidebar-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 5px 5px;
   }
-  .sf-title { font-size: 10.5px; font-weight: 500; color: #BDBDBD; }
-  .sf-close {
-    width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;
-  }
-  .sf-close svg { width: 9px; height: 9px; stroke: #BDBDBD; }
 
-  .sf-body {
-    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    text-align: center;
+  .sidebar-item {
+    padding: 5px 8px;
+    border: 1px solid transparent;
+    border-radius: 5px;
   }
-  .sf-glyph { width: 44px; height: 44px; margin-bottom: 7px; }
-  .sf-drag { font-size: 16.5px; font-weight: 600; color: #F0F0F0; }
-  .sf-count { font-size: 10.5px; color: #BDBDBD; margin-top: 3px; }
 
-  .sf-footer {
-    height: 36px; display: flex; align-items: center; justify-content: center; gap: 8px;
-    padding-bottom: 8px; flex-shrink: 0;
+  .sidebar-item.selected {
+    border-left: 2px solid var(--accent);
+    background: var(--accent-soft);
+    color: var(--text);
   }
-  .sf-btn {
-    width: 32px; height: 26px; border-radius: 7px;
-    display: flex; align-items: center; justify-content: center;
-    background: transparent;
-  }
-  .sf-btn svg { width: 16px; height: 16px; stroke: #F0F0F0; }
 
-  /* ---------------- Card in Flight (Drag Action) ---------------- */
-  .inflight {
-    position: absolute; right: 54px; top: 120px;
-    width: 82px; height: 90px;
-    background: linear-gradient(155deg, rgba(255,255,255,.94), rgba(120,222,204,.68));
-    border-radius: 11px;
-    box-shadow:
-      0 26px 50px rgba(0,0,0,.60),
-      0 0 38px rgba(63,199,174,.40);
-    transform: rotate(-12deg) translateZ(95px);
-    padding: 13px 12px;
-    border: 1px solid rgba(255,255,255,.8);
+  .sidebar nav { margin-top: auto; padding: 3px; line-height: 1.45; font-size: 10px; white-space: nowrap; }
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 13px;
   }
-  .inflight i { display: block; height: 5.5px; border-radius: 3px; background: rgba(11,91,80,.62); margin-bottom: 8px; }
-  .inflight i:last-child { width: 54%; margin-bottom: 0; }
-  
-  .trail {
-    position: absolute; border-radius: 50%; background: var(--brand); pointer-events: none;
-    box-shadow: 0 0 12px var(--brand);
+
+  .toolbar strong { display: block; font-size: 14px; }
+  .toolbar small { display: block; margin-top: 3px; color: var(--secondary); font-size: 10px; }
+
+  .toolbar-actions, .segments {
+    display: flex;
+    align-items: center;
+    gap: 5px;
   }
-  .trail-1 { right: 115px; top: 224px; width: 8px; height: 8px; opacity: .8; transform: translateZ(80px); }
-  .trail-2 { right: 138px; top: 248px; width: 6px; height: 6px; opacity: .5; transform: translateZ(70px); }
-  .trail-3 { right: 154px; top: 268px; width: 4px; height: 4px; opacity: .3; transform: translateZ(60px); }
+
+  .drag-control {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--text);
+  }
+
+  .drag-control b {
+    margin-left: 3px;
+    padding: 0 4px;
+    border-radius: 9px;
+    color: var(--accent-text);
+    background: var(--accent);
+  }
+
+  .segments {
+    gap: 0;
+    padding: 2px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface-sunken);
+    color: var(--secondary);
+  }
+
+  .segments span { padding: 3px 6px; white-space: nowrap; }
+  .segments .selected { color: var(--text); background: var(--surface-alt); border-radius: 4px; }
+
+  table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+  th, td { padding: 2px 9px; text-align: left; }
+  th:first-child, td:first-child { padding-left: 15px; }
+  th { color: var(--secondary); background: var(--surface-alt); font-weight: 400; }
+  th:nth-child(2), td:nth-child(2) { text-align: right; }
+  td:nth-child(3) { color: var(--secondary); }
+
+  .status { padding: 1px 6px; border-radius: 9px; background: var(--surface-alt); color: var(--secondary); }
+  .modified { background: #2e2617; color: #e0b04b; }
+  .missing { background: #311c1c; color: #e5736d; }
+
+  .restore-bar {
+    display: grid;
+    gap: 5px;
+    padding: 6px 12px;
+    border-top: 1px solid var(--border);
+    color: var(--secondary);
+  }
+
+  .restore-options, .restore-actions { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .restore-actions span:first-child { margin-right: auto; }
+  .restore-actions .primary { color: var(--accent-text); background: var(--accent); font-weight: 650; }
+
+  .shelf {
+    position: absolute;
+    right: 68px;
+    bottom: 42px;
+    width: 220px;
+    height: 220px;
+    display: grid;
+    grid-template-rows: 36px 1fr 48px;
+    border: 1px solid var(--shelf-border);
+    border-radius: 12px;
+    background: var(--shelf);
+    color: var(--shelf-text);
+    box-shadow: 0 25px 45px #000b, 0 0 30px #3fc7ae22;
+    transform: rotateY(-8deg) rotateX(4deg) rotateZ(3deg) translateZ(64px) scale(1.08);
+  }
+
+  .shelf header {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 12px 0 14px;
+    color: var(--shelf-secondary);
+    font-size: 11.5px;
+  }
+
+  .shelf header::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .shelf header svg:first-of-type { margin-left: auto; }
+  .shelf header svg { width: 12px; height: 12px; margin-right: 3px; }
+
+  .shelf svg:not(.stack) {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .shelf main {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    padding-bottom: 3px;
+  }
+
+  .stack { width: 48px; height: 48px; margin-bottom: 10px; }
+  .shelf strong { font-size: 19px; font-weight: 600; }
+
+  .shelf small {
+    margin-top: 4px;
+    color: var(--shelf-secondary);
+    font-size: 11.5px;
+  }
+
+  .shelf footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 34px;
+    padding-bottom: 8px;
+  }
+
+  .shelf footer svg { width: 18px; height: 18px; }
 </style>
 </head>
 <body>
+  <section class="copy" aria-label="About StashBay">
+    <div class="brand"><img src="logo.png" alt="">StashBay</div>
+    <h1>Stash files.<br>Drag them out.</h1>
+    <p class="zh-head" lang="zh-CN">暂存文件，一键拖出。</p>
+    <ul class="features">
+      <li>Drag all out <span lang="zh-CN">一键全部拖出</span></li>
+      <li>Paste to stash <span lang="zh-CN">剪贴板直存</span></li>
+      <li>Restore &amp; undo <span lang="zh-CN">写回文件，支持撤销</span></li>
+    </ul>
+    <p class="platform">Windows 10/11 · Portable &amp; installer · 18 languages</p>
+  </section>
 
-  <div class="glow-a"></div>
-  <div class="glow-b"></div>
-  <div class="grid"></div>
-  <div class="frame"></div>
-
-  <!-- brand -->
-  <div class="brand">
-    <div class="mark">
-      <!-- StashBay official stacked file mark from assets/icon.html -->
-      <svg viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="100" y="41" width="298" height="366" rx="42"
-              transform="rotate(-17 249 407)" fill="#555555" stroke="#FAFAFA" stroke-width="12"/>
-        <rect x="115" y="40" width="298" height="366" rx="42"
-              transform="rotate(10 264 406)" fill="#A5A5A5" stroke="#FAFAFA" stroke-width="12"/>
-        <rect x="126" y="114" width="310" height="370" rx="44"
-              fill="#F4F4F4" stroke="#FAFAFA" stroke-width="16"/>
-        <rect x="126" y="114" width="310" height="370" rx="44"
-              fill="#F4F4F4" stroke="#646464" stroke-width="8"/>
-      </svg>
-    </div>
-    <span class="wordmark">StashBay</span>
-  </div>
-
-  <!-- headline -->
-  <h1>Stash files.<br />Drag them out.</h1>
-  <div class="zh-head">暂存文件，一键拖出。</div>
-
-  <p class="lede-en">Park files between folders, or stash WIP before a branch switch.</p>
-  <p class="lede-zh">在文件夹之间随手暂存，或在切分支前先存下改动。</p>
-
-  <!-- features, bilingual -->
-  <div class="feats">
-    <div class="feat">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 13.5h13" /><path d="M12 9.5l4 4-4 4" /><path d="M3 19.5h7" opacity=".45" />
-      </svg>
-      <span class="en">Drag all out</span><span class="zh">一键全部拖出</span>
-    </div>
-    <div class="feat">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="5" y="4.5" width="14" height="16" rx="2.5" />
-        <path d="M9.5 4.5v2.8h5V4.5" /><path d="M9 12.5h6M9 16h4" opacity=".5" />
-      </svg>
-      <span class="en">Paste to stash</span><span class="zh">剪贴板直存</span>
-    </div>
-    <div class="feat">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M9.5 14H6a4 4 0 0 1 0-8h12" /><path d="M8.5 2.5 5 6l3.5 3.5" /><path d="M4 20h16" opacity=".45" />
-      </svg>
-      <span class="en">Write back &amp; undo</span><span class="zh">写回原位可撤销</span>
-    </div>
-  </div>
-
-  <div class="meta">
-    <span>Windows 10/11</span><span class="sep"></span>
-    <span>Portable &amp; Installer</span><span class="sep"></span>
-    <span>18 Languages</span>
-  </div>
-
-  <!-- product: the real app windows in 3D perspective -->
-  <div class="stage">
-    <div class="ground"></div>
-
-    <!-- 1) Full Workbench (Background) -->
-    <div class="window">
-      <div class="win-bar">
-        <span class="appmark">
-          <svg viewBox="0 0 64 64" fill="none">
-            <rect x="12" y="7" width="34" height="43" rx="7" transform="rotate(-13 29 50)" fill="#737373"/>
-            <rect x="19" y="8" width="34" height="43" rx="7" transform="rotate(8 36 51)" fill="#BDBDBD" opacity="0.45"/>
-            <rect x="17" y="18" width="35" height="42" rx="7" fill="#E4E4E4" stroke="#777777" stroke-width="1"/>
-          </svg>
-        </span>
-        <span class="appname">StashBay</span>
-        <div class="win-actions">
-          <span class="win-pill">+ 添加</span>
-          <span class="win-pill">⤢ 缩回</span>
-          <div class="win-dots"><i></i><i></i><i></i></div>
-        </div>
-      </div>
-
-      <div class="wb-body">
-        <div class="wb-sidebar">
-          <span class="wb-side-title">暂存箱</span>
-          <div class="wb-box active">默认暂存 (6)</div>
-          <div class="wb-box">项目 A · 前端</div>
-          <div class="wb-box">营销物料汇总</div>
-        </div>
-
-        <div class="wb-main">
-          <div class="wb-top">
-            <span class="wb-title">默认暂存</span>
-            <span class="wb-stats">6 项 · 8 文件 · 293 KB</span>
-          </div>
-
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <div style="display:flex; gap:6px;">
-              <span class="win-pill" style="color:var(--text); font-weight:600;">↗ 拖出文件 6</span>
-              <span class="win-pill">↺ 应用到原位置</span>
-            </div>
-            <div class="wb-modes">
-              <span class="wb-mode active">树</span>
-              <span class="wb-mode">列表</span>
-              <span class="wb-mode">按来源</span>
-              <span class="wb-mode">图标</span>
-            </div>
-          </div>
-
-          <div class="wb-table">
-            <div class="wb-row-head">
-              <span class="col-name">名称 / 路径</span>
-              <span class="col-size">大小</span>
-              <span class="col-status">源状态</span>
-            </div>
-            <div class="wb-row">
-              <span class="col-name"><span class="dot" style="background:#A2A5AA"></span>a.txt</span>
-              <span class="col-size">200 B</span>
-              <span class="col-status">未变化</span>
-            </div>
-            <div class="wb-row">
-              <span class="col-name"><span class="dot" style="background:#C9A227"></span>改过的.txt</span>
-              <span class="col-size">100 B</span>
-              <span class="col-status" style="color:#C9A227">已修改</span>
-            </div>
-            <div class="wb-row">
-              <span class="col-name"><span class="dot" style="background:#C46A62"></span>被删掉的.txt</span>
-              <span class="col-size">100 B</span>
-              <span class="col-status" style="color:#C46A62">已删除</span>
-            </div>
-            <div class="wb-row">
-              <span class="col-name"><span class="dot" style="background:#A2A5AA"></span>大文件.bin</span>
-              <span class="col-size">6 MB</span>
-              <span class="col-status">未变化</span>
-            </div>
-            <div class="wb-row">
-              <span class="col-name"><span class="dot" style="background:#A2A5AA"></span>素材/</span>
-              <span class="col-size">300 B</span>
-              <span class="col-status">未变化</span>
-            </div>
+  <section class="stage" aria-label="StashBay workbench and compact shelf">
+    <div class="workbench">
+      <header class="titlebar">
+        <img src="logo.png" alt=""> <strong>StashBay</strong>
+        <div class="title-actions"><span class="filter">Filter files or paths…</span><span>+ Add</span><span>Collapse</span><span>−</span><span>□</span><span>×</span></div>
+      </header>
+      <aside class="sidebar">
+        <div class="sidebar-heading">Stash boxes <span>+</span></div>
+        <div class="sidebar-item selected">Stash (6)</div>
+        <div class="sidebar-item">Design assets</div>
+        <div class="sidebar-item">Release notes</div>
+        <nav>Operation history…<br>Add from Git changes…<br>Root presets…<br>Settings<br>About StashBay</nav>
+      </aside>
+      <div>
+        <div class="toolbar">
+          <div><strong>Stash</strong><small>6 items · 8 files · 293.7 KB</small></div>
+          <div class="toolbar-actions">
+            <span class="control drag-control">↗ Drag files out <b>6</b></span>
+            <div class="segments"><span class="selected">Tree</span><span>List</span><span>By source</span><span>Icons</span></div>
           </div>
         </div>
+        <table>
+          <thead><tr><th>Name / path</th><th>Size</th><th>Source branch</th><th>Source state</th></tr></thead>
+          <tbody>
+            <tr><td>notes.txt</td><td>2.8 KB</td><td>—</td><td><span class="status">Unchanged</span></td></tr>
+            <tr><td>draft.md</td><td>8.4 KB</td><td>feature/landing</td><td><span class="status modified">Modified</span></td></tr>
+            <tr><td>layout.css</td><td>4.1 KB</td><td>feature/landing</td><td><span class="status missing">Deleted</span></td></tr>
+            <tr><td>› mockups</td><td>243.2 KB</td><td>—</td><td><span class="status">Unchanged</span></td></tr>
+            <tr><td>copy.md</td><td>6.2 KB</td><td>—</td><td><span class="status">Unchanged</span></td></tr>
+            <tr><td>logo.png</td><td>29 KB</td><td>—</td><td><span class="status">Unchanged</span></td></tr>
+          </tbody>
+        </table>
       </div>
-
-      <div class="writeback">
-        <span class="wb-label">写回</span>
-        <div class="seg">
-          <span class="on">原位置</span><span>其他根目录</span><span>指定路径</span>
+      <footer class="restore-bar">
+        <div class="restore-options">
+          Write back
+          <div class="segments"><span class="selected">Original location</span><span>Another root</span><span>Specified path</span></div>
+          Structure <span class="control">Full relative path ⌄</span>
+          Conflicts <span class="control">Ask ⌄</span>
         </div>
-        <span class="wb-label" style="margin-left:4px">结构</span>
-        <div class="seg">
-          <span class="on" style="border-radius:6px">完整子路径 ⌄</span>
+        <div class="restore-actions">
+          <span>Will write 8 files, e.g. C:\Projects\notes.txt</span>
+          <span>Undo last</span><span class="control">Preview</span><span class="control primary">Write back</span>
         </div>
-      </div>
-
-      <div class="sheen"></div>
+      </footer>
     </div>
 
-    <!-- 2) DropPoint Compact Shelf (Foreground) -->
-    <div class="shelf-float">
-      <div class="sf-header">
-        <span class="sf-title">暂存区</span>
-        <div class="sf-close">
-          <svg viewBox="0 0 16 16" fill="none" stroke-width="1.6" stroke-linecap="round">
-            <path d="M4 4L12 12M12 4L4 12"/>
-          </svg>
-        </div>
-      </div>
-      <div class="sf-body">
-        <svg class="sf-glyph" viewBox="0 0 64 64" fill="none">
-          <rect x="12" y="7" width="34" height="43" rx="7" transform="rotate(-13 29 50)" fill="#737373"/>
-          <rect x="19" y="8" width="34" height="43" rx="7" transform="rotate(8 36 51)" fill="#BDBDBD" opacity="0.45"/>
-          <rect x="17" y="18" width="35" height="42" rx="7" fill="#E4E4E4" stroke="#777777" stroke-width="1"/>
+    <div class="shelf">
+      <header>
+        Stash
+        <svg viewBox="0 0 24 24" aria-label="Open workbench"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+        <svg viewBox="0 0 16 16" aria-label="Close"><path d="m3 3 10 10M13 3 3 13"/></svg>
+      </header>
+      <main>
+        <svg class="stack" viewBox="0 0 64 64" aria-hidden="true">
+          <rect x="11" y="7" width="34" height="43" rx="7" transform="rotate(-13 28 50)" fill="var(--shelf-card-back)"/>
+          <rect x="19" y="8" width="34" height="43" rx="7" transform="rotate(8 36 51)" fill="var(--shelf-secondary)" opacity=".45"/>
+          <rect x="17" y="18" width="35" height="42" rx="7" fill="var(--shelf-card)" stroke="var(--shelf-border)"/>
         </svg>
-        <div class="sf-drag">拖出文件</div>
-        <div class="sf-count">已暂存 6 项</div>
-      </div>
-      <div class="sf-footer">
-        <div class="sf-btn" title="应用到原位置">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 5L4 10L9 15M4 10H14C18 10 20 13 20 17"/>
-          </svg>
-        </div>
-        <div class="sf-btn" title="写回指定目录">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 6H9L11 8H21V20H3ZM12 11V17M9 14L12 17L15 14"/>
-          </svg>
-        </div>
-        <div class="sf-btn" title="应用到其他根目录">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 3V8M19 3V8M5 5H19M12 5V11M8 15L12 11L16 15M12 11V21"/>
-          </svg>
-        </div>
-      </div>
+        <strong>Drag files out</strong>
+        <small>Items: 6 · 293.7 KB</small>
+      </main>
+      <footer>
+        <svg viewBox="3 3 18 18" aria-label="Restore to original location"><path d="m9 5-5 5 5 5m-5-5h10c4 0 6 3 6 7"/></svg>
+        <svg viewBox="2 3 20 20" aria-label="Restore to specified folder"><path d="M3 6h6l2 2h10v12H3Zm9 5v6m-3-3 3 3 3-3"/></svg>
+        <svg viewBox="3 2 18 20" aria-label="Restore to another root"><path d="M5 3v5m14-5v5M5 5h14m-7 0v16m-4-6 4-4 4 4"/></svg>
+      </footer>
     </div>
-
-    <!-- 3) In-flight card being dragged out -->
-    <div class="trail trail-1"></div>
-    <div class="trail trail-2"></div>
-    <div class="trail trail-3"></div>
-    <div class="inflight">
-      <i></i><i></i><i></i>
-    </div>
-  </div>
-
+  </section>
 </body>
 </html>
