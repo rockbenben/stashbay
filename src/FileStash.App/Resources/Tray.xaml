@@ -6,9 +6,9 @@
     <!--
         放在资源字典里的 TaskbarIcon 不会进入可视树，
         H.NotifyIcon 的 Loaded 事件永远不触发 → 必须在代码里手动 ForceCreate()。
+        Windows 将图标 GUID 绑定到可执行文件路径，使用 H.NotifyIcon 按路径生成的默认 Id。
     -->
     <h:TaskbarIcon x:Key="Tray"
-                    Id="3D4A80BE-1BF8-4061-B9D1-5A8EFA062F8A"
                     ToolTipText="{x:Static app:Strings.AppName}" />
 
 </ResourceDictionary>

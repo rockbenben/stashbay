@@ -43,6 +43,13 @@ internal static class TrayIconService
 
         if (!tray.IsCreated)
         {
+            // A smoke run can use the same executable as the resident app.
+            // Give its icon a separate ID so registration and disposal leave the resident icon alone.
+            if (App.InSmoke)
+            {
+                tray.Id = H.NotifyIcon.Core.TrayIcon.CreateUniqueGuidForProcessPath("smoke");
+            }
+
             // Load the ICO synchronously, selecting the native small-icon frame.
             // IconSource's asynchronous WPF conversion can resample an arbitrary
             // frame and later replace this handle; keep one owner of the icon.
