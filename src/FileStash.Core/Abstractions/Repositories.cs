@@ -20,8 +20,11 @@ public interface IStashGroupRepository
     /// <summary>更新暂存组信息。</summary>
     Task UpdateAsync(StashGroup group, CancellationToken ct);
 
-    /// <summary>根据 ID 删除暂存组。</summary>
-    Task DeleteAsync(string id, CancellationToken ct);
+    /// <summary>根据 ID 删除非默认暂存组。</summary>
+    Task<bool> DeleteAsync(string id, CancellationToken ct);
+
+    /// <summary>清空所有暂存项并删除非默认组。</summary>
+    Task<bool> ClearAllAsync(CancellationToken ct);
 }
 
 /// <summary>暂存项仓储：管理顶层暂存文件/文件夹元数据。</summary>

@@ -106,10 +106,7 @@ internal static class SeedRunner
         Directory.CreateDirectory(outDir);
 
         // 幂等：重跑先把上一次的播掉，否则箱越加越多，截图与稿子对不上号
-        foreach (var group in await groups.GetAllAsync(CancellationToken.None))
-        {
-            await stash.DeleteGroupAsync(group.Id);
-        }
+        await stash.ClearAllGroupsAsync();
 
         foreach (var operation in await operations.GetAllAsync(CancellationToken.None))
         {

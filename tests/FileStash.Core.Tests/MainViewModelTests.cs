@@ -261,6 +261,7 @@ public sealed class MainViewModelTests : IAsyncLifetime
     public async Task NewShelvesHaveIndependentGroupsItemsAndDisplayModes()
     {
         await _viewModel.InitializeAsync();
+        await _viewModel.SelectGroupAsync("Remembered workbench");
         var originalGroup = _viewModel.SelectedGroup!.Id;
         await _viewModel.AddPathsAsync([_workspace.CreateFile("first.txt", "first")]);
         var constructor = typeof(MainViewModel).GetConstructors().Single();
@@ -274,6 +275,12 @@ public sealed class MainViewModelTests : IAsyncLifetime
         Assert.True(_viewModel.IsCompact);
         Assert.Equal("first.txt", Assert.Single(_viewModel.Items).DisplayName);
         Assert.Equal("second.txt", Assert.Single(sibling.Items).DisplayName);
+        await sibling.SelectGroupAsync("Different box");
+        await sibling.RefreshAsync();
+        Assert.Equal(originalGroup, ((ISettingsService)Dependency("_settings")).Current.LastGroupId);
+        var savedSettings = new SettingsService(_workspace.Paths);
+        savedSettings.Load();
+        Assert.Equal(originalGroup, savedSettings.Current.LastGroupId);
         await _viewModel.RefreshAsync();
         Assert.Equal(originalGroup, _viewModel.SelectedGroup!.Id);
         Assert.Equal("first.txt", Assert.Single(_viewModel.Items).DisplayName);
@@ -443,9 +450,7 @@ public sealed class MainViewModelTests : IAsyncLifetime
         }
         ReplaceDependency("_groups", Proxy<IStashGroupRepository>((method, args) =>
             method.Name == nameof(IStashGroupRepository.GetAllAsync) ? Read() : method.Invoke(inner, args)));
-        var loading = (Task)typeof(MainViewModel)
-            .GetMethod("LoadGroupsAsync", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!
-            .Invoke(_viewModel, [true])!;
+        var loading = _viewModel.RefreshAsync();
         await captured.Task.WaitAsync(TestContext.Current.CancellationToken);
         _viewModel.SelectedGroup = groupB;
         release.SetResult();
@@ -628,6 +633,7 @@ public sealed class MainViewModelTests : IAsyncLifetime
     {
         await _viewModel.InitializeAsync();
         SimulateListBoxSelectionBinding(_viewModel);
+        var defaultId = _viewModel.SelectedGroup!.Id;
 
         var first = _workspace.CreateFile("clear_a.txt", "内容A");
         var second = _workspace.CreateFile("clear_b.txt", "内容B");
@@ -635,17 +641,79 @@ public sealed class MainViewModelTests : IAsyncLifetime
 
         Assert.Equal(2, _viewModel.Items.Count);
 
+        await _viewModel.SelectGroupAsync("Other box");
+        await _viewModel.AddPathsAsync([first]);
         _dialogs.ConfirmResult = true;
         await _viewModel.ClearAllBoxesCommand.ExecuteAsync(null);
 
         Assert.Empty(_viewModel.Items);
-        Assert.Single(_viewModel.Groups);
-        Assert.NotNull(_viewModel.SelectedGroup);
+        Assert.Equal(defaultId, Assert.Single(_viewModel.Groups).Id);
+        Assert.Equal(defaultId, _viewModel.SelectedGroup!.Id);
         Assert.NotEmpty(_dialogs.Infos);
         Assert.False(_viewModel.IsBusy);
         Assert.True(_viewModel.ClearAllBoxesCommand.CanExecute(null));
         Assert.Equal("内容A", await File.ReadAllTextAsync(first, TestContext.Current.CancellationToken));
         Assert.Equal("内容B", await File.ReadAllTextAsync(second, TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task DefaultBoxCanBeClearedButCannotBeDeleted()
+    {
+        await _viewModel.InitializeAsync();
+        var defaultId = _viewModel.SelectedGroup!.Id;
+        await _viewModel.AddPathsAsync([_workspace.CreateFile("keep.txt", "keep")]);
+
+        Assert.False(_viewModel.DeleteGroupCommand.CanExecute(null));
+        await _viewModel.DeleteGroupCommand.ExecuteAsync(null);
+        await ((IStashService)Dependency("_stash")).DeleteGroupAsync(defaultId);
+        await _viewModel.RefreshAsync();
+        Assert.Single(_viewModel.Items);
+        Assert.Equal(defaultId, Assert.Single(_viewModel.Groups).Id);
+
+        await _viewModel.ClearCurrentBoxCommand.ExecuteAsync(null);
+        Assert.Empty(_viewModel.Items);
+        Assert.Equal(defaultId, _viewModel.SelectedGroup!.Id);
+    }
+
+    [Fact]
+    public async Task DeletingCurrentBoxSelectsDefaultInsteadOfFirstBox()
+    {
+        await _viewModel.InitializeAsync();
+        var defaultId = _viewModel.SelectedGroup!.Id;
+        await ((IStashService)Dependency("_stash")).RenameGroupAsync(defaultId, "Z default");
+        await _viewModel.AddPathsAsync([_workspace.CreateFile("default.txt", "default")]);
+        var firstId = await _viewModel.SelectGroupAsync("A first");
+        var deletedId = await _viewModel.SelectGroupAsync("B delete");
+
+        Assert.True(_viewModel.DeleteGroupCommand.CanExecute(null));
+        await _viewModel.DeleteGroupCommand.ExecuteAsync(null);
+
+        Assert.Equal(firstId, _viewModel.Groups[0].Id);
+        Assert.DoesNotContain(_viewModel.Groups, group => group.Id == deletedId);
+        Assert.Equal(defaultId, _viewModel.SelectedGroup!.Id);
+        Assert.Equal("default.txt", Assert.Single(_viewModel.Items).DisplayName);
+        Assert.False(_viewModel.DeleteGroupCommand.CanExecute(null));
+    }
+
+    [Fact]
+    public async Task CompactShelfShowsFileNameOnlyForOneStandaloneFile()
+    {
+        await _viewModel.InitializeAsync();
+        var first = _workspace.CreateFile("first.txt", "1234");
+        var second = _workspace.CreateFile("folder/second.txt", "56789");
+        await _viewModel.AddPathsAsync([first]);
+        Assert.Equal("first.txt", _viewModel.ShelfFileName);
+        Assert.Equal(ItemViewModel.FormatSize(4), _viewModel.ShelfSummary);
+
+        await _viewModel.AddPathsAsync([second]);
+        Assert.Null(_viewModel.ShelfFileName);
+        Assert.Equal(FileStash.App.Resources.Strings.Format(FileStash.App.Resources.Strings.ShelfSummaryFormat,
+            2, ItemViewModel.FormatSize(9)), _viewModel.ShelfSummary);
+
+        await _viewModel.ClearAllDirectAsync();
+        await _viewModel.AddPathsAsync([Path.GetDirectoryName(second)!]);
+        Assert.Single(_viewModel.Items);
+        Assert.Null(_viewModel.ShelfFileName);
     }
 
     [Fact]

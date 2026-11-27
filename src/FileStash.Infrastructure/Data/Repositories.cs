@@ -76,15 +76,28 @@ public sealed class StashGroupRepository : IStashGroupRepository
             new { Id = id }, cancellationToken: ct)) > 0;
     }
 
-    public async Task DeleteAsync(string id, CancellationToken ct)
+    public async Task<bool> DeleteAsync(string id, CancellationToken ct)
     {
         await using var connection = await _connectionFactory.OpenAsync(ct);
 
         // StashItem 上的外键是 ON DELETE CASCADE，组删了项跟着删
-        await connection.ExecuteAsync(new CommandDefinition(
-            "DELETE FROM StashGroup WHERE Id = @Id;",
-            new { Id = id },
-            cancellationToken: ct));
+        return await connection.ExecuteAsync(new CommandDefinition(
+            "DELETE FROM StashGroup WHERE Id = @Id AND Kind <> @DefaultKind;",
+            new { Id = id, DefaultKind = StashGroupKind.Default },
+            cancellationToken: ct)) > 0;
+    }
+
+    public async Task<bool> ClearAllAsync(CancellationToken ct)
+    {
+        await using var connection = await _connectionFactory.OpenAsync(ct);
+        await using var transaction = await connection.BeginTransactionAsync(ct);
+        var groups = await connection.ExecuteAsync(new CommandDefinition(
+            "DELETE FROM StashGroup WHERE Kind <> @DefaultKind;",
+            new { DefaultKind = StashGroupKind.Default }, transaction, cancellationToken: ct));
+        var items = await connection.ExecuteAsync(new CommandDefinition(
+            "DELETE FROM StashItem;", transaction: transaction, cancellationToken: ct));
+        await transaction.CommitAsync(ct);
+        return groups > 0 || items > 0;
     }
 }
 

@@ -13,6 +13,7 @@ using FileStash.Core.Abstractions;
 using FileStash.Core.Models;
 using FileStash.Core.Services;
 using FileStash.Core.Utils;
+using Serilog;
 
 namespace FileStash.App.ViewModels;
 
@@ -226,6 +227,7 @@ public sealed partial class MainViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(HasSelectedGroup))]
     [NotifyPropertyChangedFor(nameof(CompactHeader))]
     [NotifyPropertyChangedFor(nameof(ShelfHeader))]
+    [NotifyCanExecuteChangedFor(nameof(DeleteGroupCommand))]
     private GroupViewModel? _selectedGroup;
 
     /// <summary>紧凑抬头念当前是哪个箱：只写"暂存区"时，多个箱看不出在看哪一个。</summary>
@@ -369,8 +371,16 @@ public sealed partial class MainViewModel : ObservableObject
         }
     }
 
-    public string ShelfSummary => Strings.Format(Strings.ShelfSummaryFormat, Items.Count,
-        ItemViewModel.FormatSize(Items.Sum(item => item.Item.TotalSize)));
+    public string? ShelfFileName => Items is [{ IsFolder: false } file] ? file.DisplayName : null;
+
+    public string ShelfSummary
+    {
+        get
+        {
+            var size = ItemViewModel.FormatSize(Items.Sum(item => item.Item.TotalSize));
+            return ShelfFileName is not null ? size : Strings.Format(Strings.ShelfSummaryFormat, Items.Count, size);
+        }
+    }
 
     public string DragAllBadgeText => Items.Count.ToString(System.Globalization.CultureInfo.CurrentCulture);
 
@@ -503,8 +513,7 @@ public sealed partial class MainViewModel : ObservableObject
             SearchQuery = string.Empty;
         }
 
-        // 记住在哪个箱：下次开应用回到同一个界面
-        _settings.Current.LastGroupId = value?.Id;
+        if (!IsRebuildingGroups) RememberSelectedGroup();
 
         if (value is null)
         {
@@ -513,6 +522,7 @@ public sealed partial class MainViewModel : ObservableObject
             Items.Clear();
             OnPropertyChanged(nameof(StatusSummary));
             OnPropertyChanged(nameof(DragAllBadgeText));
+            OnPropertyChanged(nameof(ShelfFileName));
             OnPropertyChanged(nameof(ShelfSummary));
             OnPropertyChanged(nameof(HasNoItems));
             OnPropertyChanged(nameof(HasSearchNoMatches));
@@ -525,6 +535,7 @@ public sealed partial class MainViewModel : ObservableObject
 
     /// <summary>启动时加载组与暂存项。</summary>
     internal bool IsRebuildingGroups { get; private set; }
+    private bool _isIndependentShelf;
     private bool _suppressSelectionLoad;
     private int _groupLoadVersion;
     private int _itemLoadVersion;
@@ -546,19 +557,22 @@ public sealed partial class MainViewModel : ObservableObject
     {
         var lastGroupId = _settings.Current.LastGroupId;
         await ShelfGroupMigration.AdoptLegacyAsync(_groups);
-        await LoadGroupsAsync();
-
-        if (!Groups.Any(group => group.Group.Kind == StashGroupKind.Default))
-        {
-            // 第一次运行：建一个默认组，否则界面是空的、"加入暂存"也没地方放
-            await _stash.CreateGroupAsync(Strings.DefaultGroupName, StashGroupKind.Default);
-            await LoadGroupsAsync();
-        }
-
-        // 上次在哪个箱就开哪个箱；那个箱被删了则回落到第一个
-        SelectedGroup = Groups.FirstOrDefault(group => group.Id == lastGroupId)
-            ?? Groups.FirstOrDefault(group => group.Group.Kind == StashGroupKind.Default) ?? Groups.FirstOrDefault();
+        await _stash.CreateGroupAsync(Strings.DefaultGroupName, StashGroupKind.Default);
+        await LoadGroupsAsync(loadSelection: false, preferredGroupId: lastGroupId);
         await LoadItemsAsync(SelectedGroup);
+    }
+
+    private void RememberSelectedGroup()
+    {
+        var id = SelectedGroup?.Id;
+        if (_isIndependentShelf || App.InSmoke || id is null || _settings.Current.LastGroupId == id) return;
+
+        _settings.Current.LastGroupId = id;
+        try { _settings.Save(_settings.Current); }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            Log.Warning(ex, "Unable to save the main window's selected stash group");
+        }
     }
 
     [RelayCommand]
@@ -598,23 +612,24 @@ public sealed partial class MainViewModel : ObservableObject
         SelectedGroup = Groups.FirstOrDefault(candidate => candidate.Id == SelectedGroup?.Id);
     }
 
-    [RelayCommand]
+    private bool CanDeleteGroup() => SelectedGroup is { Group.Kind: not StashGroupKind.Default };
+
+    [RelayCommand(CanExecute = nameof(CanDeleteGroup))]
     private async Task DeleteGroupAsync()
     {
-        if (SelectedGroup is null)
+        if (SelectedGroup is not { Group.Kind: not StashGroupKind.Default } group)
         {
             return;
         }
 
-        if (!_dialogs.Confirm(Strings.DeleteGroupTitle, Strings.Format(Strings.DeleteGroupConfirm, SelectedGroup.DisplayName)))
+        if (!_dialogs.Confirm(Strings.DeleteGroupTitle, Strings.Format(Strings.DeleteGroupConfirm, group.DisplayName)))
         {
             return;
         }
 
-        await _stash.DeleteGroupAsync(SelectedGroup.Id);
-        await LoadGroupsAsync();
-
-        SelectedGroup = Groups.FirstOrDefault();
+        await _stash.DeleteGroupAsync(group.Id);
+        await LoadGroupsAsync(loadSelection: false);
+        await LoadItemsAsync(SelectedGroup);
     }
 
     private bool CanClearAllBoxes() => !IsBusy;
@@ -638,18 +653,9 @@ public sealed partial class MainViewModel : ObservableObject
         {
             // SQLite's async API can execute synchronously. Cascading deletes must
             // not block painting/input on the dispatcher, especially for large boxes.
-            await Task.Run(async () =>
-            {
-                var allGroups = await _groups.GetAllAsync(CancellationToken.None);
-                foreach (var group in allGroups)
-                {
-                    await _stash.DeleteGroupAsync(group.Id);
-                }
-
-                await _stash.CreateGroupAsync(Strings.DefaultGroupName, StashGroupKind.Default);
-            });
-            await LoadGroupsAsync();
-            SelectedGroup = Groups.FirstOrDefault();
+            await Task.Run(_stash.ClearAllGroupsAsync);
+            await LoadGroupsAsync(loadSelection: false);
+            await LoadItemsAsync(SelectedGroup);
             _dialogs.ShowInfo(Strings.ClearAllBoxesTitle, Strings.ClearAllBoxesDone);
         }
         finally
@@ -1237,6 +1243,7 @@ public sealed partial class MainViewModel : ObservableObject
     /// <summary>Creates a separately persisted transit shelf without a naming dialog.</summary>
     public async Task CreateShelfAsync()
     {
+        _isIndependentShelf = true;
         await InitializeAsync();
         var name = $"{Strings.CompactTitle} · {DateTime.Now:MM-dd HH:mm:ss}";
         var group = _lifetime is null ? await _stash.CreateGroupAsync(name, StashGroupKind.Temporary)
@@ -1476,7 +1483,7 @@ public sealed partial class MainViewModel : ObservableObject
         await LoadItemsAsync(SelectedGroup);
     }
 
-    private async Task LoadGroupsAsync(bool loadSelection = true)
+    private async Task LoadGroupsAsync(bool loadSelection = true, string? preferredGroupId = null)
     {
         // 记住选中的那个：Groups.Clear() 会让列表框的选中项变成 null，
         // 双向绑定随之把 SelectedGroup 也置成 null ——
@@ -1484,7 +1491,7 @@ public sealed partial class MainViewModel : ObservableObject
         // 而且"加入暂存"这类操作在第一次之后就再也不生效了。
         var version = ++_groupLoadVersion;
         var selectedAtStart = SelectedGroup;
-        var selectedId = selectedAtStart?.Id;
+        var selectedId = preferredGroupId ?? selectedAtStart?.Id;
 
         var groups = await _groups.GetAllAsync(CancellationToken.None);
 
@@ -1512,7 +1519,7 @@ public sealed partial class MainViewModel : ObservableObject
         }
         finally { _suppressSelectionLoad = false; IsRebuildingGroups = false; }
         OnPropertyChanged(nameof(SelectedGroup));
-        _settings.Current.LastGroupId = SelectedGroup?.Id;
+        RememberSelectedGroup();
 
         SyncGroupSelection();
     }
@@ -1581,6 +1588,7 @@ public sealed partial class MainViewModel : ObservableObject
 
         OnPropertyChanged(nameof(StatusSummary));
         OnPropertyChanged(nameof(DragAllBadgeText));
+        OnPropertyChanged(nameof(ShelfFileName));
         OnPropertyChanged(nameof(ShelfSummary));
         OnPropertyChanged(nameof(HasNoItems));
         OnPropertyChanged(nameof(HasSearchNoMatches));

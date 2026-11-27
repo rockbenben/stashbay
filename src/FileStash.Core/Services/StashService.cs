@@ -74,8 +74,18 @@ public sealed class StashService : IStashService
 
     public async Task DeleteGroupAsync(string groupId)
     {
-        await using var storageLease = await StorageWriteLease.AcquireAsync(_blobStore, CancellationToken.None);
-        await _groups.DeleteAsync(groupId, CancellationToken.None);
+        bool removed;
+        await using (var lease = await StorageWriteLease.AcquireAsync(_blobStore, CancellationToken.None))
+            removed = await _groups.DeleteAsync(groupId, CancellationToken.None);
+        if (removed) GroupsChanged?.Invoke();
+    }
+
+    public async Task ClearAllGroupsAsync()
+    {
+        bool changed;
+        await using (var lease = await StorageWriteLease.AcquireAsync(_blobStore, CancellationToken.None))
+            changed = await _groups.ClearAllAsync(CancellationToken.None);
+        if (changed) GroupsChanged?.Invoke();
     }
 
     public async Task<AddResult> AddAsync(

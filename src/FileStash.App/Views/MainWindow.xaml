@@ -214,7 +214,7 @@
                     </StackPanel>
                 </Grid>
 
-                <!-- 唯一整块拖出区：叠卡、拖出提示、项数与总大小 -->
+                <!-- 唯一整块拖出区：叠卡、拖出提示和摘要 -->
                 <Border x:Name="ShelfExportSurface" Grid.Row="1"
                         Background="Transparent" Cursor="Hand"
                         Margin="18,0,18,4" Focusable="True"
@@ -246,7 +246,11 @@
                                 <ContentControl ContentTemplate="{StaticResource ShelfFileStackGlyph}"/>
                             </Grid>
                             <TextBlock Text="{x:Static app:Strings.ShelfDragPrompt}" FontSize="19" FontWeight="SemiBold" TextWrapping="Wrap" TextAlignment="Center" Foreground="{DynamicResource Brush.ShelfText}"/>
-                            <TextBlock Text="{Binding ShelfSummary}" FontSize="11.5" Margin="0,4,0,0" TextAlignment="Center" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource Brush.ShelfSecondary}"/>
+                            <StackPanel Margin="0,4,0,0" TextElement.FontSize="11.5" TextElement.Foreground="{DynamicResource Brush.ShelfSecondary}">
+                                <TextBlock Text="{Binding ShelfFileName}" TextAlignment="Center" TextTrimming="CharacterEllipsis"
+                                           Visibility="{Binding ShelfFileName, Converter={StaticResource NullToVisibility}}"/>
+                                <TextBlock Text="{Binding ShelfSummary}" TextAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
                         </StackPanel>
                     </Viewbox>
                 </Border>

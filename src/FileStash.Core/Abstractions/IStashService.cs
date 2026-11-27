@@ -24,8 +24,11 @@ public interface IStashService
     /// <summary>重命名指定暂存组。</summary>
     Task RenameGroupAsync(string groupId, string name);
 
-    /// <summary>删除指定暂存组及其包含的所有暂存项。</summary>
+    /// <summary>删除指定的非默认暂存组及其包含的所有暂存项。</summary>
     Task DeleteGroupAsync(string groupId);
+
+    /// <summary>清空所有暂存项并删除非默认组。</summary>
+    Task ClearAllGroupsAsync();
 
     /// <summary>将一个或多个文件/目录路径加入指定暂存组并生成快照。</summary>
     Task<AddResult> AddAsync(
