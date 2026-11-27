@@ -342,6 +342,7 @@ public static class Strings
     public static string TrayExit => Get(nameof(TrayExit));
     public static string TrayFloatingWindow => Get(nameof(TrayFloatingWindow));
     public static string TrayGitChanges => Get(nameof(TrayGitChanges));
+    public static string TrayHideFloatingWindow => Get(nameof(TrayHideFloatingWindow));
     public static string TrayHistory => Get(nameof(TrayHistory));
     public static string TrayNewShelf => Get(nameof(TrayNewShelf));
     public static string TrayOpenWorkbench => Get(nameof(TrayOpenWorkbench));

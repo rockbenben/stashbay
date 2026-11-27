@@ -803,6 +803,9 @@
   <data name="TrayFloatingWindow" xml:space="preserve">
     <value>Afficher la fenêtre flottante</value>
   </data>
+  <data name="TrayHideFloatingWindow" xml:space="preserve">
+    <value>Masquer la fenêtre flottante</value>
+  </data>
   <data name="TrayHistory" xml:space="preserve">
     <value>Historique des opérations …</value>
   </data>

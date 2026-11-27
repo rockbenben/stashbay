@@ -31,6 +31,11 @@
             AllowDrop="True"
             Drop="OnDrop"
             DragOver="OnDragOver">
+        <Border.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="{x:Static app:Strings.TrayHideFloatingWindow}" Click="OnHideClick"/>
+            </ContextMenu>
+        </Border.ContextMenu>
         <StackPanel VerticalAlignment="Center" IsHitTestVisible="False">
             <TextBlock Text="{x:Static app:Strings.AppName}"
                        HorizontalAlignment="Center"

@@ -411,7 +411,7 @@ public sealed partial class MainViewModel : ObservableObject
     public event Action? SettingsRequested;
     public event Action? HistoryRequested;
     public event Action? GitChangesRequested;
-    public event Action? FloatingWindowRequested;
+    public event Action? FloatingWindowToggleRequested;
     public event Action? RootPresetsRequested;
     public event Action? AboutRequested;
 
@@ -424,8 +424,16 @@ public sealed partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void OpenGitChanges() => GitChangesRequested?.Invoke();
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FloatingWindowActionText))]
+    private bool _isFloatingWindowVisible;
+
+    public string FloatingWindowActionText => IsFloatingWindowVisible
+        ? Strings.TrayHideFloatingWindow
+        : Strings.TrayFloatingWindow;
+
     [RelayCommand]
-    private void OpenFloatingWindow() => FloatingWindowRequested?.Invoke();
+    private void ToggleFloatingWindow() => FloatingWindowToggleRequested?.Invoke();
 
     [RelayCommand]
     private void OpenRootPresets() => RootPresetsRequested?.Invoke();

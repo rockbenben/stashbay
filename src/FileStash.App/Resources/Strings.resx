@@ -803,6 +803,9 @@
   <data name="TrayFloatingWindow" xml:space="preserve">
     <value>显示悬浮窗</value>
   </data>
+  <data name="TrayHideFloatingWindow" xml:space="preserve">
+    <value>隐藏悬浮窗</value>
+  </data>
   <data name="TrayHistory" xml:space="preserve">
     <value>操作历史…</value>
   </data>

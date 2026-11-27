@@ -64,6 +64,8 @@ public partial class FloatingWindow : Window
     }
 
     private Point _downScreenPos;
+    private void OnHideClick(object sender, RoutedEventArgs e) => Hide();
+
 
     private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {

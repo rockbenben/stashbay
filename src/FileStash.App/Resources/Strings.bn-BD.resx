@@ -803,6 +803,9 @@
   <data name="TrayFloatingWindow" xml:space="preserve">
     <value>ভাসমান উইন্ডো দেখান</value>
   </data>
+  <data name="TrayHideFloatingWindow" xml:space="preserve">
+    <value>ভাসমান উইন্ডো লুকান</value>
+  </data>
   <data name="TrayHistory" xml:space="preserve">
     <value>কাজের ইতিহাস…</value>
   </data>

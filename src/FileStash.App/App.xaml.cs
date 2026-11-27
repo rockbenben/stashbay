@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.IO;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Threading;
 using FileStash.App.Controls;
 using FileStash.App.Diagnostics;
@@ -56,6 +57,7 @@ public partial class App : Application
     private ShakeDetector? _shakeDetector;
     private GitBranchWatcher? _branchWatcher;
     private MainWindow? _mainWindow;
+    private FloatingWindow? _floatingWindow;
 
     /// <summary>正在重启（换语言）：这时别响应别的实例发来的指令。</summary>
     private bool _restarting;
@@ -883,6 +885,11 @@ public partial class App : Application
         workbenchItem.Click += (_, _) => viewModel.ShowWorkbench();
         menu.Items.Add(workbenchItem);
 
+        var floatingItem = new MenuItem { Command = viewModel.ToggleFloatingWindowCommand };
+        floatingItem.SetBinding(HeaderedItemsControl.HeaderProperty,
+            new Binding(nameof(MainViewModel.FloatingWindowActionText)) { Source = viewModel });
+        menu.Items.Add(floatingItem);
+
         var applyItem = new MenuItem { Header = Strings.TrayApplyOriginal, Command = new RelayCommand(async () => await viewModel.ApplyOriginalAsync()) };
         menu.Items.Add(applyItem);
 
@@ -897,10 +904,6 @@ public partial class App : Application
         var statusItem = new MenuItem { Header = Strings.TrayGitChanges };
         statusItem.Click += (_, _) => OpenGitStatusDialog();
         menu.Items.Add(statusItem);
-
-        var floatingItem = new MenuItem { Header = Strings.TrayFloatingWindow };
-        floatingItem.Click += (_, _) => OpenFloatingWindow();
-        menu.Items.Add(floatingItem);
 
         var historyItem = new MenuItem { Header = Strings.TrayHistory };
         historyItem.Click += (_, _) => OpenWindow<HistoryWindow>();
@@ -949,7 +952,8 @@ public partial class App : Application
         vm.NewShelfRequested += async () => await OpenNewShelfAsync();
         vm.HistoryRequested += () => OpenWindow<HistoryWindow>();
         vm.GitChangesRequested += () => OpenGitStatusDialog();
-        vm.FloatingWindowRequested += () => OpenFloatingWindow();
+        vm.IsFloatingWindowVisible = _floatingWindow?.IsVisible == true;
+        vm.FloatingWindowToggleRequested += ToggleFloatingWindow;
         vm.RootPresetsRequested += () => OpenWindow<RootPresetsWindow>();
         vm.AboutRequested += () => OpenWindow<AboutWindow>();
     }
@@ -1027,27 +1031,40 @@ public partial class App : Application
         dialog.Show();
     }
 
-    private void OpenFloatingWindow()
+    private void ToggleFloatingWindow()
     {
-        if (_host is null)
+        if (_host is null || IsShuttingDown)
         {
             return;
         }
 
-        var existing = Application.Current.Windows.OfType<FloatingWindow>().FirstOrDefault();
-
-        if (existing is not null)
+        if (_floatingWindow?.IsVisible == true)
         {
-            if (!existing.IsVisible)
+            _floatingWindow.Hide();
+            return;
+        }
+
+        if (_floatingWindow is null)
+        {
+            var window = _host.Services.GetRequiredService<FloatingWindow>();
+            var mainViewModel = _host.Services.GetRequiredService<MainViewModel>();
+            void UpdateVisibility(bool visible)
             {
-                existing.Show();
+                mainViewModel.IsFloatingWindowVisible = visible;
+                foreach (var shelf in Windows.OfType<MainWindow>())
+                    shelf.ViewModel.IsFloatingWindowVisible = visible;
             }
 
-            return;
+            window.IsVisibleChanged += (_, _) => UpdateVisibility(window.IsVisible);
+            window.Closed += (_, _) =>
+            {
+                _floatingWindow = null;
+                UpdateVisibility(false);
+            };
+            _floatingWindow = window;
         }
 
-        var window = _host.Services.GetRequiredService<FloatingWindow>();
-        window.Show();
+        _floatingWindow.Show();
     }
 
     /// <summary>开一个工具窗口（非模态，重复打开时激活已有的那个）。</summary>
@@ -1340,7 +1357,7 @@ public partial class App : Application
         builder.Services.AddTransient<SettingsWindow>();
         builder.Services.AddTransient<RootPresetsWindow>();
         builder.Services.AddTransient<GitStatusDialog>();
-        builder.Services.AddSingleton<FloatingWindow>();
+        builder.Services.AddTransient<FloatingWindow>();
         builder.Services.AddTransient<AboutWindow>();
 
         // 宿主日志接到已经建好的 Serilog 实例上（同一个日志器，不另配一遍）

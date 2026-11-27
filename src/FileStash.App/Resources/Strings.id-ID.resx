@@ -803,6 +803,9 @@
   <data name="TrayFloatingWindow" xml:space="preserve">
     <value>Tampilkan jendela mengambang</value>
   </data>
+  <data name="TrayHideFloatingWindow" xml:space="preserve">
+    <value>Sembunyikan jendela mengambang</value>
+  </data>
   <data name="TrayHistory" xml:space="preserve">
     <value>Riwayat operasi…</value>
   </data>

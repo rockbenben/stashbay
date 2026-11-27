@@ -803,6 +803,9 @@
   <data name="TrayFloatingWindow" xml:space="preserve">
     <value>Hiện cửa sổ nổi</value>
   </data>
+  <data name="TrayHideFloatingWindow" xml:space="preserve">
+    <value>Ẩn cửa sổ nổi</value>
+  </data>
   <data name="TrayHistory" xml:space="preserve">
     <value>Lịch sử thao tác…</value>
   </data>
