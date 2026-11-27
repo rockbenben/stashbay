@@ -441,20 +441,6 @@ public sealed partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void OpenAbout() => AboutRequested?.Invoke();
 
-    [RelayCommand]
-    private void OpenGitHub()
-    {
-        if (App.InSmoke) return;
-        try
-        {
-            Process.Start(new ProcessStartInfo("https://github.com/rockbenben/stashbay") { UseShellExecute = true });
-        }
-        catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException)
-        {
-            _dialogs.ShowWarning(Strings.OpenFailedTitle, ex.Message);
-        }
-    }
-
     public IReadOnlyList<EnumOption<TargetMode>> TargetModes { get; } =
     [
         new(TargetMode.OriginalLocation, Strings.TargetOriginal),

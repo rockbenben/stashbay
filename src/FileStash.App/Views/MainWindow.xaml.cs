@@ -27,10 +27,9 @@ public partial class MainWindow : Window
 
     private const double WorkbenchMinHeight = 380;
 
-    /// <summary>小暂存区的默认尺寸：拖放目标保持稳定，超出的内容在内部滚动。</summary>
-    private const double CompactWidth = 260;
-
-    private const double CompactDefaultHeight = 220;
+    /// <summary>小暂存区从最小尺寸开始，拖放前后保持稳定。</summary>
+    private const double CompactMinWidth = 220;
+    private const double CompactMinHeight = 180;
 
     private const double CompactMaxHeight = 480;
 
@@ -40,7 +39,7 @@ public partial class MainWindow : Window
     /// <summary>展开之前工作台在哪儿，收起小面板时好还原。</summary>
     private Rect _workbenchBounds;
     private bool _workbenchBoundsSaved;
-    private Size _compactSize = new(CompactWidth, CompactDefaultHeight);
+    private Size _compactSize = new(CompactMinWidth, CompactMinHeight);
     private Point _compactPosition;
     private bool _compactPositionSaved;
     private bool _workbenchIsMaximized;
@@ -201,8 +200,8 @@ public partial class MainWindow : Window
 
             Topmost = true;
 
-            MinWidth = 260;
-            MinHeight = 180;
+            MinWidth = CompactMinWidth;
+            MinHeight = CompactMinHeight;
             MaxWidth = 440;
             MaxHeight = CompactMaxHeight;
 
